@@ -1,0 +1,316 @@
+<?php
+
+require_once 'metsis_fimex.constants.inc';
+include_once drupal_get_path('module', 'metsis_fimex') . '/includes/metsis_fimex.inc';
+$epsg = array();
+
+function metsis_fimex_init() {
+    drupal_add_css(drupal_get_path('module', 'metsis_wms') . '/css/style.min.css');
+    drupal_add_js(drupal_get_path('module', 'metsis_wms') . '/js/bundle.js');
+}
+
+function metsis_fimex_menu() {
+    $menu[TRANSFORMATION_ENDPOINT] = array('title' => t('Transform dataset'), 'description' => 'Creates a form to collect infromation needed for transformations with fimex', 'page callback' => 'drupal_get_form', 'page arguments' => array('metsis_fimex'), 'access callback' => TRUE,);
+    return $menu;
+}
+
+function metsis_fimex($form, &$form_state) {
+    global $user;
+    global $metsis_conf;
+    global $epsg;
+    if ($metsis_conf['authentication_required'] === 1) {
+        adc_require_login(drupal_get_destination(), $metsis_conf['authentication_default_message']);
+    } if ($metsis_conf['message']['visible'] === TRUE) {
+        drupal_set_message($metsis_conf['message']['under_construction'], 'warning');
+    } if (DEBUG) {
+        display_example_requests();
+    } if (!($user->uid)) {
+        drupal_set_message($metsis_conf['authentication_default_message']);
+        $dest = drupal_get_destination();
+        drupal_goto('user/login', array('query' => drupal_get_destination()));
+    } $email = isset($_GET['email']) ? check_plain($_GET['email']) : $user->mail;
+    $dataset_id = isset($_GET['dataset_id']) ? check_plain($_GET['dataset_id']) : '';
+    $dataset_ids = explode(",", $dataset_id);
+    $opendap_global_attributes = adc_get_od_global_attributes($dataset_id, SOLR_CORE_PARENT)['data']['findAllAttributes'];
+    $opendap_variables = adc_get_od_variables($dataset_id, SOLR_CORE_PARENT)['data']['findAllVariables'];
+    if (empty($dataset_ids)) {
+        drupal_goto("/metadata_search");
+    } $fields = array(METADATA_PREFIX . "geographic_extent_rectangle_east", METADATA_PREFIX . "geographic_extent_rectangle_west", METADATA_PREFIX . "geographic_extent_rectangle_north", METADATA_PREFIX . "geographic_extent_rectangle_south", METADATA_PREFIX . "temporal_extent_start_date", METADATA_PREFIX . "temporal_extent_end_date", METADATA_PREFIX . "title", METADATA_PREFIX . "abstract", METADATA_PREFIX . "data_access_resource");
+    $solr_data = [];
+    for ($i = 0; $i < count($dataset_ids); $i++) {
+        $solr_data[] = msb_get_fields(SOLR_CORE_PARENT, $dataset_ids[$i], $fields);
+    } $dar = [];
+    foreach ($solr_data as $sd) {
+        if ($sd['response']['numFound'] == 0) {
+            drupal_set_message("Invalid dataset ID", 'error');
+        } $dar[] = msb_concat_data_access_resource($sd['response']['docs'][0][METADATA_PREFIX . 'data_access_resource']);
+    } $opendap_ddx = $dar[0]['OPeNDAP']['url'] . ".ddx";
+    $jod_data = adc_get_od_data($opendap_ddx);
+    foreach ($opendap_global_attributes as $odga) {
+        if ($odga['name'] == 'start_date' || $odga['name'] == 'min_time' || $odga['name'] == 'start_time' || $odga['name'] == 'calculated_start_time') {
+            $od_temporal_extent['start_date'] = $odga['value'];
+        }
+        else {
+            $od_temporal_extent['start_date'] = "";
+        } if ($odga['name'] == 'stop_date' || $odga['name'] == 'max_time' || $odga['name'] == 'stop_time' || $odga['name'] == 'calculated_stop_time') {
+            $od_temporal_extent['stop_date'] = $odga['value'];
+        }
+        else {
+            $od_temporal_extent['stop_date'] = '';
+        }
+    } $epsg = get_proj4_strings();
+    $od_proj4 = adc_get_od_proj4($jod_data);
+    $epsg['Original'] = $od_proj4['Original'];
+    $od_global_attributes = $opendap_global_attributes;
+    if (!array_key_exists('title', $od_global_attributes)) {
+        $od_global_attributes['title'] = "Title (discovery metadata): " . implode(",", $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'title']);
+    } if (!array_key_exists('abstract', $od_global_attributes)) {
+        $od_global_attributes['abstract'] = "Abstract (discovery metadata): " . implode(",", $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'abstract']);
+    } if (!array_key_exists('description', $od_global_attributes)) {
+        $od_global_attributes['description'] = "Description: MISSING";
+    } $opendap_urls = [];
+    foreach ($dar as $dd) {
+        $opendap_urls[] = $dd['OPeNDAP']['url'];
+    } $form['opendap'] = array('opendap' => array('#type' => 'hidden', '#value' => implode(";", $opendap_urls),),);
+    $form['od_title'] = array('#markup' => '<h1>' . $od_global_attributes['title'] . '</h1>');
+    $form['od_abstract'] = array('#markup' => '<h4>' . $od_global_attributes['abstract'] . '</h4>');
+    $form['actions'] = array('#type' => 'actions');
+    $form['user_info'] = array('#type' => 'fieldset', '#title' => t('The e-mail address to send the results to'), '#weight' => 1, '#collapsible' => TRUE, '#collapsed' => FALSE, '#attributes' => array('class' => array('user-info-fieldset'), 'msb-tooltip' => "Enter the e-mail you wish the results to be sent to.",),);
+    $form['user_info']['email'] = array('email' => array('#title' => t('Send results to:'), '#type' => 'textfield', '#required' => TRUE, '#default_value' => t($email), '#element_validate' => array('email_validate'), '#attributes' => array('class' => array('user-info', 'beautytips'), 'title' => "The e-mail address to send the results to",),),);
+    $form['geographical_area'] = array('#type' => 'fieldset', '#title' => t('Select spatial extent'), '#weight' => 2, '#collapsible' => TRUE, '#collapsed' => FALSE, '#attributes' => array('class' => array('geographical-area-fieldset'), 'msb-tooltip' => "Geographical area of desired output data (in degrees, relative to zero meridian/equator)",),);
+    $form['geographical_area'][] = array('north' => array('#title' => t('Degrees north'), '#type' => 'textfield', '#default_value' => $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'geographic_extent_rectangle_north'], '#element_validate' => array('geographical_region_validate'), '#attributes' => array('class' => array('geographical-area', 'beautytips'), 'title' => "Degrees north relative to zero meridian/equator",),), 'south' => array('#title' => t('Degrees south'), '#type' => 'textfield', '#default_value' => $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'geographic_extent_rectangle_south'], '#element_validate' => array('geographical_region_validate'), '#attributes' => array('class' => array('geographical-area', 'beautytips'), 'title' => "Degrees south relative to zero meridian/equator",),), 'east' => array('#title' => t('Degrees east'), '#type' => 'textfield', '#default_value' => $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'geographic_extent_rectangle_east'], '#element_validate' => array('geographical_region_validate'), '#attributes' => array('class' => array('geographical-area', 'beautytips'), 'title' => "Degrees east relative to zero meridian/equator",),), 'west' => array('#title' => t('Degrees west'), '#type' => 'textfield', '#default_value' => $solr_data[0]['response']['docs'][0][METADATA_PREFIX . 'geographic_extent_rectangle_west'], '#element_validate' => array('geographical_region_validate'), '#attributes' => array('class' => array('geographical-area', 'beautytips'), 'title' => "Degrees west relative to zero meridian/equator",),),);
+    $form['temporal_extent'] = array('#type' => 'fieldset', '#title' => t('Select temporal extent'), '#weight' => 3, '#collapsible' => TRUE, '#collapsed' => FALSE, '#attributes' => array('class' => array('temporal-extent-fieldset'), 'msb-tooltip' => "Temporal extent of output data",),);
+    $form['temporal_extent'][] = array('start_date' => array('#title' => t('Start date'), '#type' => 'textfield', '#element_validate' => array('metsis_date_validate'), '#attributes' => array('class' => array('temporal-extent', 'beautytips'), 'title' => "Start date of output data",),), 'stop_date' => array('#title' => t('Stop date'), '#type' => 'textfield', '#element_validate' => array('metsis_date_validate'), '#attributes' => array('class' => array('temporal-extent', 'beautytips'), 'title' => "Stop date of output data",),),);
+    $variables = deprecated_adc_get_od_variables($jod_data);
+    $od_vars = array();
+    foreach ($variables as $v) {
+        $name = isset($v['name']) ? $v['name'] : "";
+        $standard_name = isset($v['standard_name']) ? $v['standard_name'] : "";
+        $long_name = isset($v['long_name']) ? $v['long_name'] : "";
+        $units = isset($v['units']) ? $v['units'] : "";
+        $od_vars[] = array('name' => $name, 'standard_name' => $standard_name, 'long_name' => $long_name, 'units' => $units,);
+    } $header = array('name' => t('Name'), 'standard_name' => t('Standard name'), 'long_name' => t('Long name'), 'units' => t('Units'),);
+    $options = array();
+    foreach ($od_vars as $v) {
+        $options[$v['name']] = array('name' => $v['name'], 'standard_name' => $v['standard_name'], 'long_name' => $v['long_name'], 'units' => $v['units'],);
+    } $form['od_variables'] = array('#type' => 'fieldset', '#title' => t('Select variables'), '#weight' => 5, '#collapsible' => TRUE, '#collapsed' => FALSE, '#element_validate' => array('select_variables_validate'), '#attributes' => array('class' => array('od-variables-fieldset',), 'msb-tooltip' => "Variables",),);
+    $form['od_variables']['selected_variables'] = array('#type' => 'tableselect', '#header' => $header, '#options' => $options, '#empty' => t(''), '#weight' => 5,);
+    $projection_options = array();
+    foreach ($epsg as $key => $value) {
+        global $epsg;
+        if (!isset($value['description'])) {
+            $projection_options[$key] = "No description found";
+        }
+        else {
+            $projection_options[$key] = $value['description'];
+        }
+    } $form['projection'] = array('#type' => 'fieldset', '#title' => t('Select map projection'), '#weight' => 7, '#collapsible' => TRUE, '#collapsed' => FALSE, '#attributes' => array('class' => array('projection-fieldset'), 'msb-tooltip' => "Map projection",),);
+    $form['projection']['selected_projection'] = array('#type' => 'select', '#title' => t('Projection'), '#options' => $projection_options, '#default_value' => "Original", '#description' => t(''), '#empty' => t(''), '#weight' => 7,);
+    $form['projection'][] = array('x_axis_from' => array('#title' => t('x-axis from:'), '#type' => 'textfield', '#element_validate' => array('map_region_validate'), '#attributes' => array('placeholder' => t('Minimum value of x-coordinate'), 'class' => array('map-region', 'beautytips'), 'title' => "x-axis from",),), 'x_axis_to' => array('#title' => t('x-axis to:'), '#type' => 'textfield', '#element_validate' => array('map_region_validate'), '#attributes' => array('placeholder' => t('Maximum value of x-coordinate'), 'class' => array('map-region', 'beautytips'), 'title' => "x-axis to",),), 'y_axis_from' => array('#title' => t('y-axis from:'), '#type' => 'textfield', '#element_validate' => array('map_region_validate'), '#attributes' => array('placeholder' => t('Minmum value of y-coordinate'), 'class' => array('map-region', 'beautytips'), 'title' => "y-axis from",),), 'y_axis_to' => array('#title' => t('y-axis to:'), '#type' => 'textfield', '#element_validate' => array('map_region_validate'), '#attributes' => array('placeholder' => t('Maximum value of y-coordinate'), 'class' => array('map-region', 'beautytips'), 'title' => "y-axis to",),),);
+    $interpolations = array("nearestneighbor" => "nearestneighbor", "bilinear" => "bilinear", "bicubic" => "bicubic", "coord_nearestneighbor" => "coord_nearestneighbor", "coord_kdtree" => "coord_kdtree", "forward_max" => "forward_max", "forward_mean" => "forward_mean", "forward_median" => "forward_median", "forward_sum" => "forward_sum",);
+    $form['projection']['selected_interpolation'] = array('#type' => 'select', '#title' => t('Interpolation'), '#options' => $interpolations, '#description' => t(''), '#empty' => t(''), '#weight' => 7,);
+    $form['projection']['steps'] = array('#type' => 'textfield', '#title' => t('Number of steps'), '#description' => t(''), '#empty' => t(''), '#element_validate' => array('integer_validate'), '#attributes' => array('placeholder' => t('Number of point to interpolate to'), 'class' => array('interpolation-steps', 'beautytips'), 'title' => "Number of steps for interpolation",));
+    ;
+    $form['#submit'][] = 'metsis_fimex_submit';
+    $form['submit'] = array('#type' => 'submit', '#value' => t('Submit'), '#weight' => 13,);
+    $form['back_to_search'] = array('#weight' => 14, '#markup' => '<a href="#" class="adc-button adc-back">Back to results</a>',);
+    $path = drupal_get_path('module', 'metsis_fimex');
+    $form['#attached'] = array('css' => array('type' => 'file', 'data' => $path . '/css/metsis_fimex.css',), 'js' => array('type' => 'file', 'data' => $path . '/js/metsis_fimex.js',),);
+    return $form;
+}
+
+function metsis_fimex_submit($form, &$form_state) {
+    $receipt = adc_get_fimex_query($form_state);
+    adc_set_message($receipt);
+}
+
+function metsis_fimex_extra_submit($form, &$form_state) {
+    
+}
+
+function foo_valid() {
+    drupal_set_message("TODO: foo validate", 'warning', FALSE);
+}
+
+function bar_valid() {
+    
+}
+
+function select_variables_validate($form, &$form_state) {
+    if (!array_filter($form_state['values']['selected_variables'])) {
+        form_set_error('', t('You must choose atleast one variable!'));
+    }
+}
+
+function geographical_region_validate() {
+    
+}
+
+function metsis_date_validate() {
+    
+}
+
+function map_region_validate() {
+    
+}
+
+function email_validate() {
+    
+}
+
+function integer_validate() {
+    
+}
+
+function get_wps_fimex_info($wps_fimex_url) {
+    $res = drupal_http_request($wps_fimex_url);
+    $data = new SimpleXMLElement($res->data);
+    $data = drupal_json_decode(drupal_json_encode($data));
+    return $data;
+}
+
+function create_transformation_order($form, &$form_state) {
+    global $user;
+    global $base_url;
+    global $metsis_conf;
+    if (DEBUG) {
+        $q = "";
+        $qh = "";
+        $qt = "";
+        $qh .= "http://";
+        $qh .= $metsis_conf['metsis_basket_server'];
+        $qh .= ":";
+        $qh .= $metsis_conf['metsis_basket_server_port'];
+        $qh .= "/";
+        $qh .= $metsis_conf['metsis_basket_server_service'];
+        $qh .= "?";
+        $qt .= "userId=";
+        $qt .= $user->name;
+        $qt .= "&email=";
+        $qt .= $form_state['values']['email'];
+        $qt .= "&site=";
+        $qt .= $metsis_conf['drupal_site_data_center_desc'] ? $metsis_conf['drupal_site_data_center_desc'] : $base_url;
+        $qt .= "&format=";
+        $qt .= $metsis_conf['default_data_archive_format'] ? $metsis_conf['default_data_archive_format'] : "tgz";
+        $qt .= "&uri=";
+        $qt .= $form_state['values']['opendap'];
+        $qt .= "&fiInterpolateProjString=";
+        $qt .= urlencode(get_proj4_strings($form_state['values']['selected_projection']));
+        $qt .= "&fiInterpolateMethod=";
+        $qt .= $form_state['values']['selected_interpolation'];
+        $qt .= "&fiSelectVariables=";
+        $qt .= implode(",", array_filter($form_state['values']['selected_variables']));
+        $qt .= "&fiReducetimeStart=";
+        $qt .= $form_state['values']['start_date'];
+        $qt .= "&fiReducetimeEnd=";
+        $qt .= $form_state['values']['stop_date'];
+        $qt .= "&fiInterpolateXAxisMin=";
+        $qt .= $form_state['values']['x_axis_from'];
+        $qt .= "&fiInterpolateXAxisMax=";
+        $qt .= $form_state['values']['x_axis_to'];
+        $qt .= "&fiInterpolateYAxisMin=";
+        $qt .= $form_state['values']['y_axis_from'];
+        $qt .= "&fiInterpolateYAxisMax=";
+        $qt .= $form_state['values']['y_axis_to'];
+        $qt .= "&fiInterpolateHorSteps=";
+        $qt .= $form_state['values']['steps'];
+        $q .= $qh;
+        $q .= $qt;
+    }
+}
+
+function adc_get_fimex_query($form_state) {
+    global $user;
+    global $base_url;
+    global $metsis_conf;
+    global $epsg;
+    $basket_wps_date_format = "Y-m-d H:i:s";
+    $req_params_mandatory = array('userId' => $user->name, 'email' => $form_state['values']['email'], 'site' => $metsis_conf['drupal_site_data_center_desc'] ? $metsis_conf['drupal_site_data_center_desc'] : $base_url, 'format' => $metsis_conf['default_data_archive_format'] ? $metsis_conf['default_data_archive_format'] : 'tgz', 'uri' => $form_state['values']['opendap'], 'fiSelectVariables' => implode(",", array_filter($form_state['values']['selected_variables'])), 'fiReducetimeStart' => get_metsis_date($form_state['values']['start_date'], $basket_wps_date_format), 'fiReducetimeEnd' => get_metsis_date($form_state['values']['stop_date'], $basket_wps_date_format),);
+    $req_params_mandatory['fiReduceboxNorth'] = $form_state['values']['north'];
+    $req_params_mandatory['fiReduceboxSouth'] = $form_state['values']['south'];
+    $req_params_mandatory['fiReduceboxEast'] = $form_state['values']['east'];
+    $req_params_mandatory['fiReduceboxWest'] = $form_state['values']['west'];
+    if (!empty($form_state['values']['x_axis_from']) && !empty($form_state['values']['x_axis_to']) && !empty($form_state['values']['y_axis_from']) && !empty($form_state['values']['y_axis_to']) && !empty($form_state['values']['steps'])) {
+        $req_params_projection = array('fiInterpolateProjString' => $epsg[$form_state['values']['selected_projection']]['proj4string'], 'fiInterpolateMethod' => $form_state['values']['selected_interpolation'], 'fiInterpolateXAxisMin' => $form_state['values']['x_axis_from'], 'fiInterpolateXAxisMax' => $form_state['values']['x_axis_to'], 'fiInterpolateYAxisMin' => $form_state['values']['y_axis_from'], 'fiInterpolateYAxisMax' => $form_state['values']['y_axis_to'], 'fiInterpolateHorSteps' => $form_state['values']['steps'],);
+    } if (!empty($req_params_projection)) {
+        $req_params = array_merge($req_params_projection, $req_params_mandatory);
+    }
+    else {
+        $req_params = $req_params_mandatory;
+    } return adc_basket_query(METSIS_BASKET_SERVER, METSIS_BASKET_SERVER_PORT, METSIS_BASKET_SERVER_SERVICE, $req_params);
+}
+
+function metsis_fimex_theme() {
+    return array('metsis_fimex_form' => array('render element' => 'form'),);
+}
+
+function theme_metsis_fimex_form($variables) {
+    $form = $variables['form'];
+    $output = '';
+    $output .= '<div class="non-map-div">';
+    $output .= '<div class="topics-and-variables-div">';
+    $output .= drupal_render($form['topics_and_variables']);
+    $output .= '</div>';
+    $output .= '<div class="data-collection-period-div">';
+    $output .= drupal_render($form['data_collection_period']);
+    $output .= '</div>';
+    $output .= '<div class="bounding-box-div">';
+    $output .= drupal_render($form['bounding_box']);
+    $output .= '</div>';
+    $output .= '<div class="institutions-div">';
+    $output .= drupal_render($form['institutions']);
+    $output .= '</div>';
+    $output .= '<div class="investigator-div">';
+    $output .= drupal_render($form['investigator']);
+    $output .= '</div>';
+    $output .= '<div class="full-text-search-div">';
+    $output .= drupal_render($form['full_text_search']);
+    $output .= '</div>';
+    $output .= '<div class="operational-status-div">';
+    $output .= drupal_render($form['operational_status']);
+    $output .= '</div>';
+    $output .= '<div class="form-action-div">';
+    $output .= drupal_render($form['submit']);
+    if (FORM_RESET_VISIBLE) {
+        $output .= drupal_render($form['reset']);
+    } if (BASKET_ELEMENTS_VISIBLE) {
+        global $user;
+        if (($user->uid) && get_user_item_count($user->uid) > 0) {
+            $output .= drupal_render($form['goto_basket']);
+        }
+    } $output .= '</div>';
+    $output .= '</div>';
+    $output .= '<div class="map-div">';
+    $output .= '<div class="geographical-search-div">';
+    $output .= drupal_render($form['geographical_search']);
+    $output .= '</div>';
+    $output .= '</div>';
+    $output .= drupal_render_children($form);
+    return $output;
+}
+
+function adc_get_fimex_info() {
+    global $user;
+    global $base_url;
+    global $metsis_conf;
+    $metsis_fimex_server = "157.249.176.177";
+    $metsis_fimex_server_port = "80";
+    $metsis_fimex_server_service = "cgi-bin/pywps.cgi";
+    $fimex_service = "http://";
+    $fimex_service .= $metsis_fimex_server;
+    $fimex_service .= ":";
+    $fimex_service .= $metsis_fimex_server_port;
+    $fimex_service .= "/";
+    $fimex_service .= $metsis_fimex_server_service;
+    $form_data = array('service' => 'wps', 'version' => '1.0.0', 'request' => 'describeprocess', 'identifier' => 'transformation',);
+    $options = array('data' => "?" . http_build_query($form_data),);
+    $result = drupal_http_request($fimex_service, $options);
+}
+
+function display_example_requests() {
+    global $user;
+    $requests = array('eg0' => array('requet' => "http://basket.metsis.met.no:8080/basketService?userId=staging_admin&email=YOURMAIL%40met.no&site=SIOS+Data+Management+Service&format=tgz&uri=http%3A%2F%2Fnbstds.met.no%2Fthredds%2FdodsC%2FNBS%2FS2A%2F2017%2F01%2F19%2FS2A_MSIL1C_20170119T110351_N0204_R094_T32VML_20170119T110348.nc&fiSelectVariables=B2&fiInterpolateMethod=nearestneighbor&fiInterpolateProjString=%2Bproj%3Dutm%20%2Bzone%3D33%20%2Bellps%3DWGS84&fiInterpolateXAxisMin=-75000&fiInterpolateXAxisMax=200000&fiInterpolateYAxisMin=6450000&fiInterpolateYAxisMax=6650000&fiInterpolateHorSteps=200", 'description' => 'Example 0: simple variable extraction from NBS data on nbstds.met.no',), 'eg1' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/fileServer/data/met.no/itp78/itp78_itp78grd1262.nc", 'description' => "Example 1 without transformation. OBS. When you are not doing transformation you need to spesify HTTP or ODATA address, NOT OPeNDAP address because you are downloading the ENTIRE file",), 'eg2' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_12_DEF.nc_20160307&fiInterpolateProjString=%2Bproj%3Dstere+%2Blat_0%3D90+%2Blat_ts%3D71+%2Blon_0%3D0+%2Bk%3D1+%2Bx_0%3D0+%2By_0%3D0+%2Bdatum%3DWGS84+%2Bunits%3Dm+%2Bno_defs&fiInterpolateMethod=nearestneighbor&fiSelectVariables=air_temperature_2m,relative_humidity_2m&fiReducetimeStart=2016-03-08 00:00:00&fiReducetimeEnd=2016-03-09 00:00:00&fiInterpolateXAxisMin=-405273.4375&fiInterpolateXAxisMax=1523437.5&fiInterpolateYAxisMin=-3789062.5&fiInterpolateYAxisMax=-1665039.0625&fiInterpolateHorSteps=100", 'description' => "Example2 with transformation, using opendap address. Note that fiReducetimeStart and fiReducetimeEnd are within data range of the file you're looking at.",), 'eg3' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/fileServer/cryoclim/met.no/osisaf-sh/osisaf-sh_aggregated_ice_concentration_sh_polstere-100_200910010000.nc;http://thredds.met.no/thredds/fileServer/cryoclim/met.no/osisaf-sh/osisaf-sh_aggregated_ice_concentration_sh_polstere-100_200909010000.nc;http://thredds.met.no/thredds/fileServer/cryoclim/met.no/osisaf-sh/osisaf-sh_aggregated_ice_concentration_sh_polstere-100_200908010000.nc", 'description' => "Example3, several files, no transformation. Again, HTTP or ODATA address",), 'eg4' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_12_DEF.nc_20160307&fiSelectVariables=air_temperature_2m,relative_humidity_2m&fiReducetimeStart=2016-03-08 00:00:00&fiReducetimeEnd=2016-03-09 00:00:00", 'description' => "Example 4, single file, simple variable extraction, no regridding",), 'eg5' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_12_DEF.nc_20160307&fiInterpolateProjString=%2Bproj%3Dstere+%2Blat_0%3D90+%2Blat_ts%3D71+%2Blon_0%3D0+%2Bk%3D1+%2Bx_0%3D0+%2By_0%3D0+%2Bdatum%3DWGS84+%2Bunits%3Dm+%2Bno_defs&fiInterpolateMethod=nearestneighbor&fiSelectVariables=air_temperature_2m,relative_humidity_2m&fiReducetimeStart=2016-03-08 00:00:00&fiReducetimeEnd=2016-03-09 00:00:00&fiInterpolateXAxisMin=-40527.4375&fiInterpolateXAxisMax=152343.5&fiInterpolateYAxisMin=-378906.5&fiInterpolateYAxisMax=-166503.0625&fiInterpolateHorSteps=10", 'description' => "Example 5, as 4 but regrid to small domain",), 'eg6' => array('request' => "http://basket.metsis.met.no:8080/basketService?userId=$user->name&email=$user->mail&site=sios&format=tgz&uri=http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_00_DEF.nc_20160307;http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_06_DEF.nc_20160307;http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_12_DEF.nc_20160307;http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/07/AROME_MetCoOp_18_DEF.nc_20160307;http://thredds.met.no/thredds/dodsC/aromemetcoopstarc/2016/03/08/AROME_MetCoOp_00_DEF.nc_20160308&fiInterpolateProjString=%2Bproj%3Dstere+%2Blat_0%3D90+%2Blat_ts%3D71+%2Blon_0%3D0+%2Bk%3D1+%2Bx_0%3D0+%2By_0%3D0+%2Bdatum%3DWGS84+%2Bunits%3Dm+%2Bno_defs&fiInterpolateMethod=nearestneighbor&fiSelectVariables=air_temperature_2m,relative_humidity_2m&fiReducetimeStart=2016-03-08 00:00:00&fiReducetimeEnd=2016-03-09 00:00:00&fiInterpolateXAxisMin=-40527.4375&fiInterpolateXAxisMax=152343.5&fiInterpolateYAxisMin=-378906.5&fiInterpolateYAxisMax=-166503.0625&fiInterpolateHorSteps=10", 'description' => "Example 6: As 5 but several files",),);
+    foreach ($requests as $r) {
+        
+    }
+}
