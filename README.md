@@ -20,6 +20,9 @@ The design principle of METSIS are based on the following:
 * Modular
 * Service Oriented
 
+## Environment
+This component is a module linking the METSIS backend services to the Drupal Content Management System. It is written primarily in PHP, with some Javascript elements. It is currently interfaced and tested against Drupal 7.
+
 ## Context
  See https://pm.met.no/arctic-data-centre. 
 
