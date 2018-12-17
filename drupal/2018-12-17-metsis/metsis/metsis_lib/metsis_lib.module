@@ -1,0 +1,148 @@
+<?php
+
+require_once 'includes/metsis_lib.utils.inc';
+
+function metsis_lib_init() {
+    
+}
+
+function metsis_lib_greet() {
+    watchdog("metsis_lib", "Greetings from METSIS LIB");
+}
+
+function metsis_build_result_table($solr_object) {
+    $show_children = FALSE;
+    foreach ($solr_object['response']['docs'] as $doc) {
+        $parent = $doc['id'];
+        if ($show_children) {
+            $children = get_child_datasets($parent);
+            $_SESSION['solr']['parent'][$parent] = $children;
+        }
+    } $header = array('datasetName' => t('Dataset name'), 'institutions' => t("Institutions"), 'title' => t('Title'), 'project' => t('Project'), 'keywords' => t('Keywords'), 'abstract' => t('Abstract'), 'collection_period' => t('Collection period'),);
+    $options = array();
+    foreach ($_SESSION['solr']['response']['docs'] as $doc) {
+        $mapthumb_base_image = "http://public-wms.met.no/backgroundmaps/northpole.map?SERVICE=WMS&REQUEST=GetMap&VERSION=1.1.1&FORMAT=image%2Fpng&SRS=EPSG:32661&BBOX=-3000000,-3000000,7000000,7000000&WIDTH=64&HEIGHT=64&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=true&LAYERS=borders&STYLES=";
+        if (isset($doc['mmd_system_specific_product_metadata_dataset_wmsInfo_w:ncWmsSetup_aggregate_url'][0])) {
+            $getcapdoc = $doc['mmd_system_specific_product_metadata_dataset_wmsInfo_w:ncWmsSetup_aggregate_url'][0];
+        }
+        else {
+            drupal_set_message($doc['id'] . " is missing getCapabilities URL", 'error');
+            $getcapdoc = "missing";
+        } $target_url = 'metsis/map/wms?dataset=' . $getcapdoc;
+        if (array_key_exists($doc['id'], $_SESSION['solr']['map_thumbnails'])) {
+            $mapthumb_overlay_image = $_SESSION['solr']['map_thumbnails'][$doc['id']];
+        }
+        else {
+            $mapthumb_overlay_image = "sites/default/files/satellite.png";
+        } $mapthumb = get_map_thumb_divs($mapthumb_base_image, $mapthumb_overlay_image, $target_url);
+        $dataset_name = $doc['id'];
+        $institutions = !empty($doc['mmd_personnel_organisation']) ? $doc['mmd_personnel_organisation'] : ' ';
+        $title = $doc['mmd_title'][0];
+        if (is_array($doc['mmd_project_long_name'])) {
+            
+        } $project = $doc['mmd_project_long_name'];
+        $keywords = "TODO";
+        $abstract = $doc['mmd_abstract'][0];
+        $temporal_extent_start_date = !empty($doc['mmd_temporal_extent_start_date']) ? $doc['mmd_temporal_extent_start_date'] : ' ';
+        $temporal_extent_end_date = !empty($doc['mmd_temporal_extent_end_date']) ? $doc['mmd_temporal_extent_end_date'] : ' ';
+        $collection_period = $temporal_extent_start_date . " -- " . $temporal_extent_end_date;
+        if (isset($doc['mmd_data_access_resource'])) {
+            $data_access = $doc['mmd_data_access_resource'];
+        }
+        else {
+            $data_access = "METADATUM 'data_access_resource' was not found!";
+        } $options[$dataset_name] = array('datasetName' => l(t($dataset_name . $mapthumb), $data_access, array('external' => TRUE, 'html' => TRUE, 'attributes' => array('class' => array('ext_data_source', 'parent'),))), 'institutions' => t($institutions), 'title' => t($title), 'project' => t($project), 'keywords' => t($keywords), 'abstract' => t($abstract), 'collection_period' => t($collection_period), '#attributes' => array());
+        if ($show_children) {
+            foreach ($_SESSION['solr']['parent'] [$doc['id']]['response']['docs'] as $doc) {
+                $dataset_name = $doc['id'];
+                $temporal_extent_start_date = !empty($doc['mmd_temporal_extent_start_date']) ? $doc['mmd_temporal_extent_start_date'] : ' ';
+                $temporal_extent_end_date = !empty($doc['mmd_temporal_extent_end_date']) ? $doc['mmd_temporal_extent_end_date'] : ' ';
+                $collection_period = $temporal_extent_start_date . " -- " . $temporal_extent_end_date;
+                if (isset($doc['mmd_data_access_resource'])) {
+                    $data_access = $doc['mmd_data_access_resource'];
+                }
+                else {
+                    $data_access = "METADATUM 'data_access_resource' was not found!";
+                } $options[$dataset_name] = array('datasetName' => l(t($dataset_name), $data_access, array('external' => TRUE, 'html' => TRUE, 'attributes' => array('class' => array('ext_data_source'),))), 'institutions' => '', 'title' => '', 'project' => '', 'keywords' => '', 'abstract' => '', 'collection_period' => t($collection_period), '#attributes' => array('class' => array('childdataset')));
+            }
+        }
+    } $form ['table'] = array('#type' => 'tableselect', '#header' => $header, '#sticky' => false, '#options' => $options, '#empty' => t('No datasets found.'), '#multiple' => true, '#tree' => TRUE, '#attributes' => array('class' => array('datasets', 'sortable',)));
+    $form ['pager'] = array('#markup' => theme('pager', array('quantity' => 5)));
+    return $form;
+}
+
+function is_block_visible($block_name) {
+    module_load_include('inc', 'block', 'block.admin');
+    global $theme_key;
+    $blocks = block_admin_display_prepare_blocks($theme_key);
+    foreach ($blocks as $block) {
+        if ($block['delta'] == $block_name && $block['region'] != -1) {
+            
+        }
+    }
+}
+
+function get_child_datasets($parentid) {
+    $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+    $res = $con->get('/solr/' . SOLR_CORE_CHILD . '/select', array("q" => 'mmd_related_dataset:' . $parentid, "fl" => 'id,mmd_temporal_extent_start_date,mmd_temporal_extent_end_date,mmd_data_access_resource', "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH, "wt" => "json", "indent" => "true"));
+    return json_decode($res['body'], true);
+}
+
+function get_map_thumb_divs($base_image, $overlay_image, $target_url) {
+    $string = <<<EOD
+  <div class = "thumbnail_container">
+    <div class = "thumbnail base_image">
+      <!--<a target="_blank" href = "$target_url">-->
+      <a class="ext_data_source" href = "$target_url">
+        <img
+          src = "$base_image"
+        />
+     </a>
+    </div>
+  <div class = "thumbnail overlay_image">
+      <a href = "$target_url">
+        <img
+          src = "$overlay_image" 
+        />
+     </a>
+   </div>
+  </div>
+EOD;
+    return $string;
+}
+
+function adc_date_to_int($string) {
+    $d = new DateTime($string);
+    return($d->getTimestamp());
+}
+
+function adc_get_now_minus_hours($hours) {
+    return date('Y-m-d\TH:i:s\Z', time() - 3600 * $hours);
+}
+
+function adc_remove_duplicate_messages($type) {
+    $stack = array();
+    if (isset($_SESSION['messages'][$type])) {
+        foreach ($_SESSION['messages'][$type] as $k => $msg) {
+            if (in_array($msg, $stack)) {
+                unset($_SESSION['messages'][$type][$k]);
+            }
+            else {
+                $stack[] = $msg;
+            }
+        }
+    }
+}
+
+function adc_parse_solr_mmd_type_one($metadata_element) {
+    $element_array = [];
+    if (is_array($metadata_element)) {
+        foreach ($metadata_element as $k => $v) {
+            $la = explode(",", $v);
+            $lal = explode(":", $la[0], 2);
+            $lar = explode(":", $la[1], 2);
+            $element_array[$lal[0]] = str_replace(array('"'), '', $lal[1]);
+            $element_array[$lal[0] . " " . $lar[0]] = $lar[1];
+        }
+    } return $element_array;
+}

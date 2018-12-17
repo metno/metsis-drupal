@@ -1,0 +1,10 @@
+name = METSIS cache
+description = Provides cache management of METSIS related operations and data.
+version = 7.x-1.13
+core = 7.x 
+package = METSIS
+project = metsis
+
+dependencies[] = metsis_lib
+dependencies[] = metsis_search
+dependencies[] = metsis_basket
