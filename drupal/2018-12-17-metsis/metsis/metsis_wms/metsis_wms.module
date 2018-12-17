@@ -1,0 +1,225 @@
+<?php
+
+require_once 'metsis_wms.constants.inc';
+
+function metsis_wms_init() {
+    
+}
+
+function metsis_wms_menu() {
+    $items['metsis_wms'] = array('title' => 'METSIS OL3 WMS node', 'page callback' => 'get_custom_content', 'access arguments' => array('access content'),);
+    return $items;
+}
+
+function get_custom_content() {
+    $datasetURL = filter_input(INPUT_GET, "datasetURL");
+    $content = '<div class="map container"><div id="map"></div><div id="lyr-switcher"></div>' . '<div id="proj-container"></div><div id="timeslider-container"></div></div>' . '<div id="wmsURL" class="element-hidden">' . $datasetURL . '</div>';
+    return $content;
+}
+
+function metsis_wms_exit() {
+    
+}
+
+function metsis_wms_node() {
+    global $user;
+    $values = array('type' => 'page', 'uid' => $user->uid, 'status' => 1, 'comment' => 1, 'promote' => 0,);
+    $entity = entity_create('node', $values);
+    $ewrapper = entity_metadata_wrapper('node', $entity);
+    $ewrapper->title->set('YOUR TITLE');
+    $my_body_content = '<div id="map">this should be the map</div>A bunch of text about things that interest me';
+    $ewrapper->body->set(array('value' => $my_body_content));
+    $ewrapper->body->summary->set('Things that interest me');
+    $my_date = new DateTime('January 1, 2017');
+    $entity->field_my_date[LANGUAGE_NONE][0] = array('value' => date_format($my_date, 'Y-m-d'), 'timezone' => 'UTC', 'timezone_db' => 'UTC',);
+    $ewrapper->save();
+}
+
+function wms_client_node($node_title) {
+    global $user;
+    $WMSNode = new stdClass();
+    $WMSNode->type = 'page';
+    node_object_prepare($WMSNode);
+    $WMSNode->uid = $user->uid;
+    $WMSNode->name = $user->name;
+    $WMSNode->title = $node_title;
+    $WMSNode->language = 'en';
+    $WMSNode->body[$WMSNode->language][0]['value'] = 'Your value';
+    $WMSNode->body[$WMSNode->language][0]['summary'] = 'Your summary';
+    $WMSNode->body[$WMSNode->language][0]['format'] = 'filtered_html';
+    $WMSNode->menu = array('enabled' => 1, 'mlid' => 0, 'module' => 'menu', 'hidden' => 0, 'has_children' => 0, 'customized' => 0, 'options' => array(), 'expanded' => 0, 'parent_depth_limit' => 8, 'link_title' => 'WMS', 'description' => 'OL3 WMS client container', 'parent' => 'main-menu:0', 'weight' => 0, 'plid' => 0, 'menu_name' => 'main-menu');
+    $WMSNode->path['alias'] = 'Your Alias';
+    $WMSNode->comment = 0;
+    $WMSNode->status = 1;
+    $WMSNode->promote = 0;
+    $WMSNode->revision = 0;
+    $WMSNode->changed = $_SERVER['REQUEST_TIME'];
+    $WMSNode->created = $_SERVER['REQUEST_TIME'];
+    node_submit($WMSNode);
+    node_save($WMSNode);
+    drupal_set_message("Node with nid " . $WMSNode->nid . " saved!\n");
+}
+
+function node_exists($node_title) {
+    $query = "SELECT n.title FROM node n WHERE n.title = '" . $node_title . "' ";
+    $result = db_query($query);
+    if (!$result->rowCount()) {
+        return FALSE;
+    }
+    else {
+        return TRUE;
+    }
+}
+
+function get_markup() {
+    $string = <<<EOM
+              <div class="map container">
+            <div id="map"></div>            
+            <div id="lyr-switcher"></div>
+            <div id="proj-container"></div>
+            <div id="timeslider-container"></div>
+        </div>
+        
+        
+        <script type="text/javascript">
+            $(document).ready(function () {               
+                var wmsClient = new wmsc({"wmsUrl":"http://thredds.met.no/thredds/wms/cryoclim/met.no/osisaf-nh-agg?SERVICE=WMS&REQUEST=GetCapabilities"}).init();                
+            });
+        </script>        
+EOM;
+    return $string;
+}
+
+function get_metsis_map_wms_markup($solr_core, $metadata_identifier) {
+    global $metsis_conf;
+    global $base_url;
+    if (is_array($metadata_identifier) && (count($metadata_identifier) > 1)) {
+        adc_require_login(drupal_get_destination(), $metsis_conf['authentication_default_message']);
+    } if ($metsis_conf['message']['visible'] === TRUE) {
+        drupal_set_message($metsis_conf['message']['under_construction'], 'warning');
+    } $fields = array(METADATA_PREFIX . "data_access_resource", METADATA_PREFIX . "data_access_wms_layers_wms_layer");
+    $wms_url_lhs = $base_url . "/" . "metsis/map/getcap?dataset=";
+    $wms_data = [];
+    $web_map_servers = [];
+    foreach ($metadata_identifier as $mi) {
+        $ldar = msb_get_fields($solr_core, $mi, $fields);
+        $wms_data[$mi]['dar'] = msb_concat_data_access_resource($ldar['response']['docs'][0][$fields[0]]);
+        $wms_data[$mi]['layers'] = $ldar['response']['docs'][0][$fields[1]];
+        $layers = implode('","', $wms_data[$mi]['layers'] = $ldar['response']['docs'][0][$fields[1]]);
+        $layers = '"' . $layers . '"';
+        if ($metsis_conf['wms_restrict_layers'] === 1) {
+            $web_map_servers[$mi] = '{capabilitiesUrl: "' . $wms_url_lhs . $wms_data[$mi]['dar']['OGC_WMS']['url'] . CAPDOC_POSTFIX . '",activeLayer:"' . $wms_data[$mi]['layers'][0] . '",layers: [' . $layers . ']}';
+        }
+        else {
+            $web_map_servers[$mi] = '{capabilitiesUrl: "' . $wms_url_lhs . $wms_data[$mi]['dar']['OGC_WMS']['url'] . CAPDOC_POSTFIX . '",activeLayer:"",layers: []}';
+        }
+    } $webMapServers = implode(',', $web_map_servers);
+    if (is_array($metadata_identifier)) {
+        $wms_urls = [];
+        foreach ($metadata_identifier as $eu) {
+            $wms_urls[] = $eu . CAPDOC_POSTFIX;
+        } $wms_url_rhs = implode(",", $wms_urls);
+    }
+    else {
+        $wms_url_rhs = $metadata_identifier . CAPDOC_POSTFIX;
+    } $wms_url = $wms_url_lhs . $wms_url_rhs;
+    $wms_map_center_lat = $metsis_conf['wms_map_center_lat'];
+    $wms_map_center_lon = $metsis_conf['wms_map_center_lon'];
+    $wms_map_init_zoom = $metsis_conf['wms_map_init_zoom'];
+    $wms_visible_layer_title = $metsis_conf['wms_visible_layer_title'];
+    $wms_product_select = strtolower(WMS_PRODUCT_SELECT);
+    $path_to_wms_module = drupal_get_path('module', 'metsis_wms');
+    $path_to_css = "../../" . $path_to_wms_module . "/css/style.min.css";
+    $path_to_js = "../../" . $path_to_wms_module . "/js/bundle.js";
+    $path_to_metsis_lib_utils_js = "../../" . drupal_get_path('module', 'metsis_lib') . '/js/custom/utils.js';
+    $path_to_jquery_update_js = "../../" . drupal_get_path('module', 'jquery_update') . "/replace/jquery/1.10/jquery.min.js";
+    $adc_buttons_css = $base_url . '/' . drupal_get_path('module', 'metsis_lib') . '/css/adc-buttons.css';
+    $string = <<<EOM
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>OpenLayers</title>
+        <!--<style data-href="app.css" type="text/css"></style>-->
+        <link rel="shortcut icon" href="">
+        <link rel="stylesheet" href="$path_to_css" type="text/css" >
+        <style>
+            #map {
+                width: 100%;
+                /*height: 600px;*/
+                height: 90%;
+            }
+            .map.container {
+                width: 100%;
+                height: 95%
+            }
+        </style>
+        <script src="$path_to_jquery_update_js"></script>
+        <script  type="text/javascript" src="$path_to_js"></script>
+        <script  type="text/javascript" src="$path_to_metsis_lib_utils_js"></script>
+        <style type="text/css" media="all">
+        @import url("$adc_buttons_css");
+        </style>
+    </head>
+    <body>
+      <div class="ajax">
+        <div class="map container ajax">
+            <div id="map"></div>
+            <div id="map-menu" class="layer-switcher"></div>
+            <!--<div class="ui compact vertical icon menu">
+                <a class="item">
+                    <i class="diamond icon"></i>
+                </a>
+                <a class="item">
+                    <i class="video camera icon"></i>
+                </a>
+                <a class="item">
+                    <i class="video play icon"></i>
+                </a>
+            </div>-->
+            <div id="lyr-switcher"></div>
+            <div id="proj-container"></div>
+            <div id="timeslider-container"></div>
+        </div>
+
+
+        <script type="text/javascript">
+            var sClient;
+            $(document).ready(function () {
+                var wms = mapClient
+                        .wms({
+                            lon: $wms_map_center_lon,
+                            lat: $wms_map_center_lat,
+                            zoom: $wms_map_init_zoom,
+                            webMapServers: [
+                              $webMapServers
+                            ],
+                           productSelect: $wms_product_select});
+            });
+       
+        </script>
+        <script type="text/javascript">
+         function reloadPage() {
+           location.reload();
+         }
+        </script> 
+        <div class="center">
+            <div class="botton-wrap">
+               <!--<a class="adc-button adc-sbutton" href="/metadata_search">Search</a>-->
+               <a class="adc-button adc-sbutton adc-back" href="#">Back to results</a>
+               <a class="adc-button adc-sbutton" href="/basket">Basket</a>
+               <a class="adc-button adc-sbutton" onclick="reloadPage()">Reset</a>
+               <!--<button onclick="reloadPage()">Reload page</button>-->
+            </div>
+        </div>
+      </div>  
+    </body>
+</html>
+
+EOM;
+    return $string;
+}
+
+function h_get_wms_ol_js($args_array) {
+    
+}
