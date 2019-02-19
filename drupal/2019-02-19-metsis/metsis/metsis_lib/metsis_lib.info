@@ -1,0 +1,29 @@
+name = METSIS lib
+description = Provides library routines for METSIS modules.
+version = 7.x-1.14
+core = 7.x
+package = METSIS
+project = metsis
+
+dependencies[] = ctools
+dependencies[] = date
+dependencies[] = entity
+dependencies[] = views
+dependencies[] = views_bulk_operations
+dependencies[] = jquery_update
+
+
+
+;classes
+files[] = classes/class.myclass.php
+;files[] = classes/class.headerlist.php
+files[] = classes/class.httpconnection.php
+files[] = classes/class.xmlelement.php
+
+
+;includes
+;files[] = includes/context.inc
+;files[] = includes/css-cache.inc
+
+
+
