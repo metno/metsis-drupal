@@ -1,0 +1,2412 @@
+<?php
+
+/**
+ * This module is deprecated and will be removed. Use METSIS Q search instead;
+ * This module must remain activated, but the "metsis_search" must not be used.
+ * In admin/structure/block disable "metsis_search" (set its "REGION" to "-None-")
+ * and enable "metsis_qsearch" (set its "REGION" to "Content") 
+ */
+require_once 'metsis_search.constants.inc';
+require_once 'metsis_search.utils.inc';
+
+/**
+ * implements hook_init
+ */
+function metsis_search_init() {
+    drupal_add_css(drupal_get_path('module', 'metsis_wms') . '/css/style.min.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/tables.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/icons.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/adc-buttons.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/autocomplete.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/map_thumbnails.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/popups.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_search') . '/css/styles.css');
+    //need to extract exactly what is needed from /colorbox/example1/colorbox.css
+    //using it as is interfering with other dialogues including messing up logout.
+    // drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/js/contrib/colorbox/jquery.colorbox.js');
+    drupal_add_js(drupal_get_path('module', 'metsis_wms') . '/js/bundle.js');
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/externalData.js');
+    //need to extract exactly what is needed from /colorbox/example1/colorbox.css
+    //using it as is interferes with other dialogues including messing up logout.
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/contrib/colorbox/jquery.colorbox.js');
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/foo.js');
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/extdataiframe.js');
+    drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/utils.js');
+}
+
+/*
+ * Implements hook_help(){
+ */
+
+function metsis_search_help($path, $arg) {
+    switch ($path) {
+        case 'admin/help#metsis_search':
+            $output = '<h3>' . t('About') . '</h3>';
+            $output .= '<p>' . t('The METSIS search module provides a browser interface to search METADATA indexed in SOLR. Enable this module to provide the "metsis_search" block. Then go to the <a href
+="@metsis_search">blocks admin page</a>', array('@metsis_search' => '/metadata_search#overlay=admin/structure/block')) . ' to activate METSIS search.</p>';
+            return $output;
+        case 'admin/content/metsis_search':
+            return '<p>' . t('METSIS search.') . '</p>';
+    }
+}
+
+/*
+ * Implements hook_help()}
+ */
+
+/**
+ * Implements hook_language_negotiation_info_alter().
+ *
+ * Remove the 'cache' setting from LOCALE_LANGUAGE_NEGOTIATION_BROWSER since
+ * the code that utilizes this setting will in fact prevent browser negotiation.
+ */
+//function metsis_search_language_negotiation_info_alter(&$negotiation_info) {
+//    unset($negotiation_info[LOCALE_LANGUAGE_NEGOTIATION_BROWSER]['cache']);
+//}
+/**
+ * implements hook_block_menu
+ */
+function metsis_search_menu() {
+    //adc_remove_duplicate_messages('warning');
+    /**
+     * test{
+     * check the GET parameter (search_id)
+     * if there is a match for search_id in search_cache populate form with 
+     * values from search_id record 
+     * adjust the back button to return to search
+     * 
+     */
+//    $start_result_row = isset($_GET['sr']) ? check_plain($_GET['sr']) : 0;
+//    $number_of_rows = isset($_GET['nr']) ? check_plain($_GET['nr']) : 50;
+    //$search_id = isset($_GET['search_id']) ? check_plain($_GET['search_id']) : '';
+    //sdpm($search_id);
+    /**
+     * test}
+     */
+    $items[METADATA_PREFIX . 'keywords/autocomplete'] = array(
+      'title' => 'Autocomplete for mmd_keywords',
+      'page callback' => 'msb_mmd_keywords_autocomplete',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK
+    );
+    /**
+     * path to raw wms page
+     */
+    $items['metsis/map/wms'] = array(
+      'title' => 'METSIS OL3 WMS',
+      'page callback' => 'metsis_map_wms',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK
+    );
+
+    /**
+     * path to getCap
+     */
+    $items['metsis/map/getcap'] = array(
+      'title' => 'GetCapabilities',
+      'page callback' => 'getCapDoc',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+//    $items['metsis/display/metadata'] = array(
+//      'title' => '',
+////      'title' => 'Available metadata',
+//      'page callback' => 'adc_get_metadata',
+//      'access arguments' => array('access content'),
+//      //'access arguments' => array('administer users'),
+//      'type' => MENU_CALLBACK,
+//    );
+    $items['metsis/display/children'] = array(
+      'title' => 'Child datasets',
+      'description' => 'This page is accessible to authenticated users only',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('msb_display_children_form'),
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,
+        //'type' => MENU_CALLBACK,
+    );
+    $items['authenticated_users_only'] = array(
+      'title' => 'Authenticated users',
+      'page callback' => 'authenticated_users_page_callback_function',
+      'description' => 'This page is accessible to authenticated users only',
+      //'access callback' => 'user_is_logged_in',
+      'access arguments' => array('user_is_logged_in'),
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+/**
+ * implements hook_block_info
+ */
+function metsis_search_block_info() {
+    $blocks['metsis_search'] = array(
+      'info' => t('metsis_search'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+    return $blocks;
+}
+
+/**
+ * implements hook_block_view
+ */
+function metsis_search_block_view($block_name = '') {
+    $block = array();
+    switch ($block_name) {
+        case 'metsis_search':
+            $metsis_search_block = drupal_get_form('metsis_search_form');
+            $block['content'] = drupal_render($metsis_search_block);
+
+            break;
+    }
+    return $block;
+}
+
+function metsis_search_form($form, &$form_state) {
+    global $metsis_conf;
+
+//    if ($metsis_conf['metsis_search_authentication_required']['boolean'] === TRUE) {
+//        adc_require_login(drupal_get_destination(), $metsis_conf['authentication_default_message']);
+//    }
+//    if ($metsis_conf['message']['visible'] === TRUE) {
+//        drupal_set_message(t($metsis_conf['message']['under_construction']), 'warning');
+//    }
+    /**
+     * test{
+     * arguments to block
+     */
+//var_dump(session_id());
+//danger!
+//drupal_set_message(session_id(),'error');
+//sdpm($_SESSION);
+//sdpm($_COOKIE);
+//var_dump($_COOKIE);
+    //$search_id = isset($_GET['search_id']) ? check_plain($_GET['search_id']) : '';
+    //sdpm($search_id);
+
+    /**
+     * test}
+     */
+    /**
+     * tests only for dev
+     */
+    msb_get_feature_type("http://thredds.nersc.no/", "timeSeries");
+    /**
+     * end tests only for dev
+     */
+    /**
+     * Beauty tips tests{
+     *  not working at the moment. Drupal seems to override these settings.
+     */
+    $options['bt_drupal_help_page'] = array(
+      'cssSelect' => '.msb-tooltip li a',
+      'ajaxPath' => array(0 => "$(this).attr('href')", 1 => '.clear-block p'),
+      'trigger' => array(0 => 'mouseover', 1 => 'click'),
+      'width' => 350,
+    );
+    // beautytips_add_beautytips($options);
+    /**
+     * Beauty tips tests}
+     */
+    /**
+     * update local mmd keywords{
+     * Essential that this is done here
+     */
+    //msb_update_local_mmd_keywords();
+    /**
+     * update local mmd keywords}
+     */
+    if ($form_state['rebuild']) {
+        $form_state['input'] = array();
+    }
+    //get the current step
+    $step = isset($form_state['storage']['step']) ? $form_state['storage']['step'] : 1;
+    //make sure we set an initial value
+    $form_state['storage']['step'] = $step;
+
+    if ($step == 1) {
+        //return the form elements for step one
+        adc_remove_duplicate_messages('warning');
+        return multi_step1_form($form, $form_state);
+    }
+    elseif ($step == 2) {
+        //return the form elements for step two
+        adc_remove_duplicate_messages('warning');
+        return multi_step2_form($form, $form_state);
+    }
+    else {
+        //return the form elements for the final step
+        return multi_step_last_form($form, $form_state);
+    }
+}
+
+//metsis_search_form}  
+
+/**
+ * Build and return the form for STEP #1{
+ */
+function multi_step1_form($form, &$form_state) {
+    global $metsis_conf;
+
+    /**
+     * "full text search field"{
+     */
+    $form['full_text_search'] = array(
+      //TODO
+      '#type' => 'fieldset',
+      '#title' => t('Full text search'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#attributes' => array('class' => array('full-text-search-fieldset')),
+    );
+    $form['full_text_search']['chosen_full_text_search'] = array(
+      '#type' => 'textfield',
+      '#element_validate' => array('msb_text_search_validate'),
+      '#attributes' => array(
+        'placeholder' => t('Search words'),
+      ),
+        // '#description' => t('Full text search'),
+    );
+    /*
+     * "full text search field"}
+     */
+    /**
+     * investigator{
+     */
+    if (INVESTIGATOR_VISIBLE) {
+        $form['investigator'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Investigator'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#attributes' => array('class' => array('investigator-fieldset')),
+        );
+        $form['investigator']['chosen_investigator'] = array(
+          '#type' => 'textfield',
+          // '#size' => '50',
+          '#element_validate' => array('adc_investigator_validate'),
+          '#attributes' => array(
+            'placeholder' => t('Investigator\'s name'),
+          ),
+            //'#description' => t('Any combination of: A-Z, a-z, asterisk "*", spaces is allowed.'),
+        );
+    }
+    /*
+     * investigator}
+     */
+
+    /**
+     * Topics and variables{
+     */
+    if (TOPICS_AND_VARIABLES_VISIBLE) {
+        $form['topics_and_variables'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Topics and variables'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#attributes' => array('class' => array('topics-and-variables-fieldset')),
+        );
+        $form['topics_and_variables']['chosen_topics_and_variables_a'] = array(
+          '#type' => 'textfield',
+          '#autocomplete_path' => METADATA_PREFIX . 'keywords/autocomplete',
+          // '#required' => TRUE,
+          // '#default_value' => $default_value,
+          //'#default_value' => get_junk_args(),
+          '#element_validate' => array('msb_text_search_validate'),
+          '#attributes' => array(
+            'placeholder' => t('Science keyword'),
+          ),
+            //'#description' => t('Type in a science keyword like, "cryosphere" or "remote sensing"'),
+        );
+    }
+    /**
+     * Topics and varibles}
+     */
+    /**
+     * operational status{
+     */
+    $form['operational_status'] = array(
+      '#type' => 'hidden',
+      // disable for now at the request of project owner
+      //'#type' => 'fieldset',
+      '#title' => t('Operational status'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => array(
+          'operational-status-fieldset',
+        ),
+        'title' => hack_get_skos_opstat("Operational Status"),
+      ),
+    );
+    $form['operational_status']['chosen_operational_status'] = array(
+      '#type' => 'checkboxes',
+      '#options' => drupal_map_assoc(msb_get_operational_statuses()),
+    );
+    /**
+     * operational status}
+     */
+    /**
+     * Institutions{
+     */
+    if (INSTITUTIONS_VISIBLE) {
+        $form['institutions'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Institutions'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#tree' => TRUE,
+          '#attributes' => array('class' => array('institutions-fieldset')),
+        );
+        $form['institutions']['chosen_institutions'] = array(
+          '#type' => 'checkboxes',
+          //'#title' => t('Institutions'),
+          '#options' => drupal_map_assoc(msb_get_institutions()),
+        );
+    }
+    /**
+     * Institutions}
+     */
+    /**
+     * platform_long_name{
+     */
+    if (PLATFORM_LONG_NAME_VISIBLE) {
+        $form['platform_long_name'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Platform'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#tree' => TRUE,
+          '#attributes' => array('class' => array('platform_long_name-fieldset')),
+        );
+        $form['platform_long_name']['chosen_platform_long_name'] = array(
+          '#type' => 'checkboxes',
+          //'#title' => t('Platform'),
+          '#options' => drupal_map_assoc(msb_get_platform_long_name()),
+        );
+    }
+    /**
+     * platform_long_name}
+     */
+    /**
+     * platform_long_name{
+     */
+    global $metsis_conf;
+    if ($metsis_conf['cloud_cover_value_visible'] === TRUE) {
+
+        $form['cloud_cover_value'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Cloud cover [%] of scene'),
+          '#collapsible' => TRUE,
+          '#collapsed' => TRUE,
+          '#tree' => TRUE,
+          '#attributes' => array('class' => array('cloud_cover_value-fieldset')),
+        );
+        $form['cloud_cover_value']['chosen_cloud_cover_value'] = array(
+          //'#type' => 'checkboxes',
+          '#type' => 'radios',
+          //'#title' => t('Cloud cover [%] of scene'),
+          //'#options' => drupal_map_assoc(msb_get_cloud_cover_value()),
+          '#options' => drupal_map_assoc($metsis_conf['cloud_cover_value_search_options']),
+        );
+    }
+    /**
+     * cloud_cover_value}
+     */
+    /**
+     * Geographical search{
+     */
+    //TODO: should use standard Drupal methods instead.
+    //$jquery_path = "https://" . DRUPAL_SERVER . "/" . "/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js";
+    $jquery_path = "/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js";
+    $form['geographical_search'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Geographical search'),
+      '#collapsible' => TRUE,
+      // setting collapsed to TRUE prevents the map from being loaded - this is probably a timing issue.
+      '#collapsed' => FALSE,
+      '#attached' => array(
+        'js' => array(
+          $jquery_path,
+        ),
+      ),
+      '#attributes' => array(
+        'class' => array(
+          'geographical-search-fieldset',
+        // 'under_construction',
+        ),
+      ),
+    );
+    /**
+     * data collection period{
+     */
+    $form['data_collection_period'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Data collection period'),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#attributes' => array(
+        'class' => array(
+          'data-collection-period-fieldset',
+        ),
+      // 'msb-tooltip' => "",
+      ),
+    );
+
+    $form['data_collection_period'][] = array(
+      '#type' => 'item',
+      //'#title' => t('start date'),
+      'finished_after' => array(
+        '#type' => 'date_popup',
+        '#title' => t('Start date'),
+        '#default_value' => msb_get_short_isodate(adc_get_now_minus_hours(SEARCH_MAX_METADATA_AGE)),
+        '#date_format' => 'Y-m-d',
+        '#date_year_range' => '-50:+2',
+        '#datepicker_options' => array(
+          'changeMonth' => TRUE,
+          'changeYear' => TRUE,
+        // 'minDate' => 0,
+        // 'maxDate' => 0
+        ),
+        '#element_validate' => array('msb_start_finish_date_validate'),
+        '#attributes' => array(
+          'placeholder' => t('yyyy-mm-dd'),
+          'class' => array(
+            'adc-highlight',
+          // 'datepicker',
+          // 'beautytips',
+          ),
+          'title' => "Start date BEFORE or FROM",
+        // 'msb-tooltip' => "Filling this field will result in finding data created AFTER given date.",
+        ),
+      ),
+      'finished_before' => array(
+        '#type' => 'date_popup',
+        '#title' => t('End date'),
+        '#default_value' => date('Y-m-d'),
+        '#date_format' => 'Y-m-d',
+        '#date_year_range' => '-50:+2',
+        '#datepicker_options' => array(
+        // 'minDate' => 0,
+        // 'maxDate' => 0
+        ),
+        '#element_validate' => array('msb_start_finish_date_validate'),
+        '#attributes' => array(
+          'placeholder' => t('yyyy-mm-dd'),
+          'class' => array(
+            'adc-highlight',
+          //'datepicker',
+          // 'beautytips',
+          ),
+          'title' => "End date FROM or AFTER",
+        // 'msb-tooltip' => "Filling this field will result in finding data created BEFORE given date.",
+        ),
+      //'#description' => t('Some desciption.'),
+      //'#after_build' => array('msb_form_uidatepicker'),
+      ),
+    );
+    /*
+     * map coordinate search{
+     */
+
+    $form['bounding_box'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Bounding box'),
+      //  '#weight' => 11,
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array(
+        'class' => array(
+          'bounding-box-fieldset',
+        ),
+      ),
+    );
+    $form['bounding_box'][] = array(
+      '#type' => 'item',
+      '#title' => t('Top left longitude'),
+      'bbox_top_left_lon' => array(
+        '#type' => 'textfield',
+        '#element_validate' => array('adc_longitude_validate'),
+        '#attributes' => array(
+          'placeholder' => t('Top left longitude'),
+          'title' => "Top left longitude",
+        ),
+      ),
+      'bbox_top_left_lat' => array(
+        '#type' => 'textfield',
+        '#element_validate' => array('adc_latitude_validate'),
+        '#title' => t('Top left latitude'),
+        '#attributes' => array(
+          'placeholder' => t('Top left latitude'),
+          'title' => "Top left latitude",
+        ),
+      ),
+      'bbox_bottom_right_lon' => array(
+        '#type' => 'textfield',
+        '#element_validate' => array('adc_longitude_validate'),
+        '#title' => t('Bottom right longitude'),
+        '#attributes' => array(
+          'placeholder' => t('Bottom right longitude'),
+          'title' => "Bottom right longitude",
+        ),
+      ),
+      'bbox_bottom_right_lat' => array(
+        '#type' => 'textfield',
+        '#element_validate' => array('adc_latitude_validate'),
+        '#title' => t('Bottom right latitude'),
+        '#attributes' => array(
+          'placeholder' => t('Bottom right latitude'),
+          'title' => "Bottom right latitude",
+        ),
+      ),
+    );
+    /*
+     * map coordinate search}
+     */
+    /**
+     * geographical search map
+     */
+    $form['geographical_search']['map'] = array(
+      '#prefix' => ' ',
+      '#markup' => adc_get_geographical_search_map(),
+      '#suffix' => ' ',
+    );
+    $form['#validate'][] = 'msb_all_or_none_latlon_validate';
+    $form['#validate'][] = 'msb_foo_validate';
+    /*
+     * submit button{
+     */
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Search'),
+      '#submit' => array('metsis_search_submit'),
+    );
+    /*
+     * submit button}
+     */
+    /*
+     * reset button{
+     */
+    if (FORM_RESET_VISIBLE) {
+//        $form['reset'] = array(
+//          '#type' => 'button',
+//          '#title' => 'reset',
+//          '#value' => t('Clear all'),
+//          '#executes_submit_callback' => FALSE,
+//          //'#disabled' => TRUE,
+//          //'#validate' => array(),
+//          '#attributes' => array(
+//            //'onclick' => 'this.form.reset(); return false;',
+//            'class' => array(
+//              'form-reset-button',
+//            ),
+//          ),
+//        );
+        $form['options']['reset'] = array(
+          '#type' => 'submit',
+          '#value' => t('Reset'),
+          '#submit' => array('metsis_search_form_reset'),
+        );
+    }
+
+    /*
+     * reset button}
+     */
+    /*
+     * goto_basket button{
+     */
+    //TODO: need to check that the user has > 0 items in basket (function TODO)
+    if (BASKET_ELEMENTS_VISIBLE) {
+        global $user;
+        if (($user->uid) && get_user_item_count($user->uid) > 0) {
+            $form['goto_basket'] = array(
+              // '#type' => 'button',
+              '#type' => 'submit',
+//              '#value' => t('Basket (' . get_user_item_count($user->uid) . ')'),
+              '#value' => t('Basket (@basket_item_count)', array('@basket_item_count' => get_user_item_count($user->uid))),
+              '#submit' => array('adc_goto_basket'),
+              '#validate' => array(),
+              '#attributes' => array(
+                'class' => array(
+                  'adc-button-small',
+                //  'goto-basket-button',
+                ),
+              ),
+            );
+            //empty basket
+            $form['empty_basket'] = array(
+              // '#type' => 'button',
+              '#type' => 'submit',
+              '#value' => t('Empty basket'),
+              '#submit' => array('adc_empty_basket'),
+              '#validate' => array(),
+              '#attributes' => array(
+                'class' => array(
+                  'adc-button-small',
+                //  'empty-basket-button',
+                ),
+              ),
+            );
+        }
+    }
+    /*
+     * goto basket button}
+     */
+
+    /*
+     * theme the form{
+     */
+    $path = drupal_get_path('module', 'metsis_search');
+    $form['#attached'] = array
+      (
+      'css' => array
+        (
+        'type' => 'file',
+        'data' => $path . '/css/metsis_search.css',
+      ),
+      'js' => array
+        (
+        'type' => 'file',
+        'data' => $path . '/js/metsis_search.js',
+      ),
+    );
+    /*
+     * theme the form}
+     */
+    //return system_settings_form($form);
+    return $form;
+}
+
+/*
+ *  implement hook_theme{
+ */
+
+function metsis_search_theme() {
+    return array
+      (
+      'metsis_search_form' => array
+        (
+        'render element' => 'form'
+      ),
+    );
+}
+
+/*
+ * implement hook_theme}
+ */
+/*
+ * implement theme function for form{
+ */
+
+function theme_metsis_search_form($variables) {
+    global $metsis_conf;
+    $form = $variables['form'];
+    $output = '';
+    //$output = '<h2>' . t('METADATA search') . '</h2>';
+    $output .= '<div class="non-map-div">';
+    //  
+    $output .= '<div class="full-text-search-div">';
+    $output .= drupal_render($form['full_text_search']);
+    $output .= '</div>';
+    //
+    if (COLLECTION_PERIOD_VISIBLE) {
+        $output .= '<div class="data-collection-period-div">';
+        $output .= drupal_render($form['data_collection_period']);
+        $output .= '</div>';
+    }
+    //  
+    $output .= '<div class="bounding-box-div">';
+    $output .= drupal_render($form['bounding_box']);
+    $output .= '</div>';
+    //
+    if (INSTITUTIONS_VISIBLE) {
+        $output .= '<div class="institutions-div">';
+        $output .= drupal_render($form['institutions']);
+        $output .= '</div>';
+    }
+    if (PLATFORM_LONG_NAME_VISIBLE) {
+        $output .= '<div class="platform_long_name-div">';
+        $output .= drupal_render($form['platform_long_name']);
+        $output .= '</div>';
+    }
+    //
+    if ($metsis_conf['cloud_cover_value_visible'] === TRUE) {
+        $output .= '<div class="cloud_cover_value-div">';
+        $output .= drupal_render($form['cloud_cover_value']);
+        $output .= '</div>';
+    }
+    //
+    if (INVESTIGATOR_VISIBLE) {
+        $output .= '<div class="investigator-div">';
+        $output .= drupal_render($form['investigator']);
+        $output .= '</div>';
+    }
+    //
+    if (TOPICS_AND_VARIABLES_VISIBLE) {
+        $output .= '<div class="topics-and-variables-div">';
+        $output .= drupal_render($form['topics_and_variables']);
+        $output .= '</div>';
+    }
+    //
+    $output .= '<div class="operational-status-div">';
+    $output .= drupal_render($form['operational_status']);
+    $output .= '</div>';
+    ////
+    ////form-action-div{
+    $output .= '<div class="form-action-div">';
+    ////form-submit-div{
+    //$output .= '<div class="form-submit-div">';
+    $output .= drupal_render($form['submit']);
+    //$output .= '</div>';
+    ////form-submit-div}
+    ////form-reset-div{
+    ////$output .= '<div class="adc-button adc-sbutton">'; 
+    //$output .= '<div class="form-reset-div">';
+    ////$output .= '<a class="adc-button adc-sbutton">';
+    //$output .= '<a>';
+    $output .= drupal_render($form['options']['reset']);
+    if (FORM_RESET_VISIBLE) {
+        $output .= drupal_render($form['reset']);
+    }
+    //$output .= '</a>';
+    //$output .= '</div>';
+    ////goto-basket-div{
+    if (BASKET_ELEMENTS_VISIBLE) {
+        global $user;
+        if (($user->uid) && get_user_item_count($user->uid) > 0) {
+            $output .= drupal_render($form['goto_basket']);
+            $output .= drupal_render($form['empty_basket']);
+        }
+    }
+    ////goto-basket-div}
+    $output .= '</div>';
+    ////form-reset-div}
+
+    $output .= '</div>';
+    ////form-action-div}
+    ////map-div{
+    $output .= '<div class="map-div">';
+    ////
+    $output .= '<div class="geographical-search-div">';
+    $output .= drupal_render($form['geographical_search']);
+    $output .= '</div>';
+    ////
+    $output .= '</div>';
+
+    $output .= drupal_render_children($form);
+
+    return $output;
+}
+
+/*
+ * implement theme function for form}
+ */
+/*
+ * Build and return the form for STEP #1}
+ */
+
+/*
+ * Build and return the form for STEP #2{
+ */
+
+function multi_step2_form($form, &$form_state) {
+    $form ['table'] = msb_get_ctable($form_state);
+    //TODO: back button
+    /*
+      $form['back'] = array(
+      '#type' => 'submit',
+      '#value' => 'Back',
+      //drupal seem to ignore #limit_validation_errors if
+      //the submit handler isn't set for the button
+      '#submit' => array('metsis_search_submit'),
+      //when the user click 'Back' drupal will try to validate
+      //the current values in the form. We want the user to be able
+      //to go back even if they haven't filled in a value. we can
+      //disable validation by setting #limit_validation_errors
+      //to empty array
+      '#limit_validation_errors' => array()
+      );
+     */
+
+    $form['#validate'][] = 'adc_min_select_validate';
+
+    /*
+     * add_to_basket button{
+     */
+    if (BASKET_ELEMENTS_VISIBLE) {
+        if (count($form['table']['table']['#options']) > 0) {
+            $form['add_to_basket'] = array(
+              '#weight' => 2,
+              '#type' => 'submit',
+              '#value' => t('Add to basket'),
+              '#submit' => array('metsis_search_submit', 'msb_add_to_basket', 'go_to_start'),
+              '#access callback' => 'user_is_logged_in',
+              '#access arguments' => 'user_is_logged_in',
+            );
+        }
+    }
+    $form['back_to_search'] = array(
+      '#weight' => 3,
+      '#markup' => '<a href="#" class="adc-button adc-back">Back to search</a>',
+//      '#markup' => '<a class="adc-button" href="/metadata_search/">Back to search</a>',
+    );
+    /**
+     * pagination tests{
+     */
+    $form['more_data'] = array(
+      '#type' => 'submit',
+      '#weight' => 4,
+      '#markup' => '<a href="#" class="adc-button">more data</a>',
+      '#submit' => array('pagination_submit_handler')
+    );
+
+    /**
+     * pagination tests} 
+     */
+    return $form;
+}
+
+/*
+ * Build and return the form for STEP #2}
+ */
+
+/*
+ *  form submit handers{
+ */
+
+/**
+ * pagination tests{
+ */
+function pagination_submit_handler() {
+    multi_step1_form_submit_handler($form, $form_state);
+}
+
+//
+//function metsis_search_submit($form, &$form_state, $step_number = null) {
+//
+//    //get the current step. In multi_step_form we set the initial
+//    //value to 1. We will increment and decrement this value for each
+//    //for step.
+//    if (is_null($step_number)) {
+//        $currentStep = $form_state['storage']['step'];
+//    }
+//    else {
+//        $currentStep = $step_number;
+//    }
+//
+//    if ($currentStep == 1) {
+//        //process the submitted data for step 1
+//        multi_step1_form_submit_handler($form, $form_state);
+//    }
+//    else if ($currentStep == 2) {
+//        //process the submitted data for step 2
+//        multi_step2_form_submit_handler($form, $form_state);
+//    }
+//    else {
+//        //process the submitted data for the final step
+//        multi_step_last_form_submit_handler($form, $form_state);
+//    }
+//}
+
+/**
+ * pagination tests} 
+ */
+function metsis_search_submit($form, &$form_state) {
+
+    //get the current step. In multi_step_form we set the initial
+    //value to 1. We will increment and decrement this value for each
+    //for step.
+    $currentStep = $form_state['storage']['step'];
+
+    if ($currentStep == 1) {
+        //process the submitted data for step 1
+        multi_step1_form_submit_handler($form, $form_state);
+    }
+    else if ($currentStep == 2) {
+        //process the submitted data for step 2
+        multi_step2_form_submit_handler($form, $form_state);
+    }
+    else {
+        //process the submitted data for the final step
+        multi_step_last_form_submit_handler($form, $form_state);
+    }
+}
+
+function multi_step1_form_submit_handler($form, &$form_state) {
+    global $metsis_conf;
+    if (adc_limit_empty_search($form_state) === TRUE) {
+        drupal_set_message("Displaying datasets registered since <b>" . adc_get_now_minus_hours(SEARCH_MAX_METADATA_AGE) . "</b>.  Refine your search for more specific results.", 'status');
+        $form_state['values']['finished_after'] = adc_get_now_minus_hours(SEARCH_MAX_METADATA_AGE);
+        //$metsis_conf['random_key']=md5(rand(1,10000));
+        //sdpm($metsis_conf['random_key']);
+    }
+    $form_state['rebuild'] = TRUE;
+    $form_state['storage']['step'] ++;
+    return $form;
+}
+
+function multi_step2_form_submit_handler($form, &$form_state) {
+    //we have to determine which button was pressed. The
+    //"Back" or the "Next" button.
+    if ($form_state['clicked_button']['#value'] == 'Back') {
+        //"back" was clicked, decrement the current step by
+        //by 1.
+        $form_state['storage']['step'] --;
+        //we want the form to be rebuilt and carry data along with it.
+        $form_state['rebuild'] = TRUE;
+        return; //exit the function
+    }
+    if ($form_state['clicked_button']['#value'] == 'Add to basket') {
+        //"Add to basket" was clicked, increment the current step by
+        //by 1.
+        $form_state['storage']['step'] ++;
+        //we want the form to be rebuilt and carry data along with it.
+        $form_state['rebuild'] = TRUE;
+        //$form_state['rebuild'] = FALSE;
+        return; //exit the function
+    }
+    return $form;
+}
+
+/*
+ *  form submit handers}
+ */
+/*
+ * multi_step_last_form{
+ */
+
+function multi_step_last_form($form, &$form_state) {
+    //TODO: back button
+    $form['back'] = array(
+      '#type' => 'submit',
+      '#value' => 'Back',
+      '#submit' => array('multi_step_form_submit'),
+      //prevent validation of the back button
+      '#limit_validation_errors' => array()
+    );
+    //$form['finish'] = array('#type' => 'submit', '#value' => 'Finish');
+    return $form;
+}
+
+/*
+ * multi_step_last_form}
+ */
+/*
+ * msb_get_map_thumbnails{
+ */
+
+/**
+ * DEPRECATED in this current form
+ * thumbnails are now fetched on the fly. This may have to be redone
+ * if on-the-fly fetching proves to be slow
+ *  should really take an array of IDs as input and return map thumbnails only for those
+ * this needs to be re-factored - it's a library general function
+ */
+function msb_get_map_thumbnails() {
+    $array = [];
+    $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+    //$res = $con->get('/solr/thumbnail/select', array("q" => "*:*",
+    $res = $con->get('/solr/' . SOLR_CORE_MAP_THUMBNAILS . '/select', array("q" => "*:*",
+      "fl" => 'mmd_metadata_identifier,thumbnail',
+      // "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH,
+      "wt" => "json",
+      "indent" => "true")
+    );
+    $tmp = json_decode($res['body'], true);
+    if ($tmp['response']['numFound'] != 0) {
+        foreach ($tmp['response']['docs'] as $doc) {
+            //$array[$doc[METADATA_PREFIX .'metadata_identifier']] = $doc['thumbnail'];
+            $array[$doc['mmd_metadata_identifier']] = $doc['thumbnail'];
+        }
+    }
+    return $array;
+}
+
+/*
+ * msb_get_map_thumbnails}
+ */
+
+/**
+ * deprecated
+ * use adc_get_map_thumb_divs instead
+ * hack_msb_get_map_thumb_divs{
+ */
+function hack_msb_get_map_thumb_divs($base_image, $overlay_image, $target_url) {
+    $string = <<<EOD
+    <div class = "thumbnail_container">
+      <div class = "thumbnail base_image">
+        <a target="_blank" href = "$target_url">
+          <img
+            src = "$base_image"
+           />
+        </a>
+      </div>
+      <div class = "thumbnail overlay_image">
+        <a target="_blank" href = "$target_url">
+          <img
+            src = "$overlay_image" 
+           />
+        </a>
+      </div>
+    </div>  
+EOD;
+    return $string;
+}
+
+/**
+ * hack_msb_get_map_thumb_divs}
+ */
+
+/**
+ * deprecated
+ * use adc_get_map_thumb_divs instead
+ * msb_get_map_thumb_divs{
+ */
+function msb_get_map_thumb_divs($base_image, $overlay_image, $target_url) {
+    $string = <<<EOD
+  <!--<div class = "colorbox-load">-->
+    <div class = "thumbnail_container">
+      <div class = "thumbnail base_image">
+        <!--<a class="colorbox-load" href = "$target_url">-->
+        <!--<a target="_blank" class="ext_data_source" href = "$target_url">-->
+        <a href = "$target_url">
+          <img
+            src = "$base_image"
+           />
+        </a>
+      </div>
+      <div class = "thumbnail overlay_image">
+        <!--<a target="_blank" href = "$target_url">-->
+        <a href = "$target_url">
+          <img
+            src = "$overlay_image" 
+           />
+        </a>
+      </div>
+    </div>  
+  <!--</div>-->
+EOD;
+    return $string;
+}
+
+/*
+ * msb_get_map_thumb_divs}
+ */
+
+/**
+ * adc_get_map_thumb_divs{
+ */
+function adc_get_map_thumb_divs($thumbnail, $target_url) {
+    //todo 5
+    //rename CSS class since "overlay_image" is not meaningful now
+    $string = <<<EOD
+    <div class = "thumbnail_container">
+      <div class = "thumbnail overlay_image">
+        <a href = "$target_url">
+          <img
+            src = "$thumbnail" 
+           />
+        </a>
+      </div>
+    </div>  
+EOD;
+    return $string;
+}
+
+/*
+ * adc_get_map_thumb_divs}
+ */
+/*
+ * msb_get_ctable{
+ */
+
+function msb_get_ctable($form_state) {
+    global $metsis_conf;
+    global $base_url;
+    $solr_obj = msb_do_search($form_state);
+    $show_children = FALSE;
+    $children = NULL;
+    /*
+     * search results table header{
+     */
+    $header = array();
+    if (DATASETNAME_VISIBLE) {
+        $header['datasetName'] = t('Dataset name');
+    }
+    if (INSTITUTIONS_VISIBLE) {
+        $header['institutions'] = t('Institutions');
+    }
+    if (PLATFORM_LONG_NAME_VISIBLE) {
+        $header['platform_long_name'] = t('Platform');
+    }
+    if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+        $header['cloud_cover_value'] = t('Cloud cover [%] of scene');
+    }
+    if (TITLE_VISIBLE) {
+        $header['title'] = t('Title');
+    }
+    if (PROJECT_VISIBLE) {
+        $header['project'] = t('Project');
+    }
+    if (KEYWORDS_VISIBLE) {
+        $header['keywords'] = t('Keywords');
+    }
+    if (ABSTRACT_VISIBLE) {
+        $header['abstract'] = t('Abstract');
+    }
+    if (COLLECTION_PERIOD_VISIBLE) {
+        $header['collection_period'] = t('Collection period');
+    }
+//    $header = array(
+//      'datasetName' => t('Dataset name'),
+//      'institutions' => t('Institutions'),
+//      'title' => t('Title'),
+//      'project' => t('Project'),
+//      'keywords' => t('Keywords'),
+//      'abstract' => t('Abstract'),
+//      'collection_period' => t('Collection period'),
+//    );
+    /*
+     * search results table header}
+     */
+    /**
+     * search results table rows (AKA options!){
+     */
+    $options = array();
+    if (!empty($solr_obj['error'])) {
+        drupal_set_message($solr_obj['error']['msg'], 'error');
+        return;
+    }
+    if (!empty($solr_obj['response']['numFound'])) {
+        drupal_set_message("<b>Number of datasets found: " . $solr_obj['response']['numFound'] . "</b>");
+        //drupal_set_message("Number of  <i>parent</i> datasets displayed: " . $solr_obj['response']['numFound']);
+    }
+    foreach ($solr_obj['response']['docs'] as $doc) {
+        //todo 00
+        //$children_links = msb_get_children_links($doc[METADATA_PREFIX .'metadata_identifier']);
+        $children_links = adc_get_leveltwo_links($doc['id']);
+        /*
+         * thumbnails{
+         */
+        /*
+         * TODO: method needed to produce the link with thumbnail map
+         */
+        /*
+         * backgorund map is hardcoded in here. It needs to be passed 
+         * as a method argument and must be configurable
+         * via the Drupal admin interface
+         */
+
+        //$mapthumb_base_image = MAPTHUMB_BASE_IMAGE;
+        //$mapthumb_base_image="https://public-wms.met.no/verportal/verportal.map?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&FORMAT=image/png&WIDTH=256&HEIGHT=256&TRANSPARENT=true&LAYERS=background&STYLES=&CRS=EPSG:4326&bbox=59.4386,7.18299,60.4363,9.17732";
+        if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']) && (!empty($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']) )) {
+            //$getcapdoc = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'] . CAPDOC_POSTFIX;
+            //todo0 this has to be moved to the map page generation point in metsis_wms since we need to pass in an object not just a string
+            $getcapdoc = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'];
+            /**
+             * fetch map thumbnails and create markup{
+             */
+            //$target_url = 'metsis/map/wms?dataset=' . $getcapdoc;
+            $target_url = $base_url . '/' . 'metsis/map/wms?dataset=' . $doc[METADATA_PREFIX . 'metadata_identifier'];
+            //todo 3
+            //no error handling for now
+            //$tmp_thumb_response = msb_get_fields(SOLR_CORE_MAP_THUMBNAILS, $doc[METADATA_PREFIX . 'metadata_identifier'], array("thumbnail", "base_map"));
+            $tmp_thumb_response = msb_get_fields(SOLR_CORE_MAP_THUMBNAILS, $doc[METADATA_PREFIX . 'metadata_identifier'], array("thumbnail_data"));
+            if (count($tmp_thumb_response['response']['docs']) > 0) {
+                $thumbnail_data = $tmp_thumb_response['response']['docs'][0]['thumbnail_data'];
+//                $mapthumb_overlay_image = $tmp_thumb_response['response']['docs'][0]['thumbnail'];
+//                $mapthumb_base_image = $tmp_thumb_response['response']['docs'][0]['base_map'];
+            }
+            else {
+                //todo 2
+                //use t() for message with variable place holder
+                drupal_set_message("No thumbnail URL is indexed for <b>" . $doc[METADATA_PREFIX . 'metadata_identifier'] . "</b>", 'warning');
+                $thumbnail_data = NULL;
+//                $mapthumb_overlay_image = NULL;
+//                $mapthumb_base_image = NULL;
+            }
+//            $thumbnails = msb_get_map_thumbnails();
+//            //if (array_key_exists($doc['id'], $thumbnails)) {
+//            if (array_key_exists($doc[METADATA_PREFIX . 'metadata_identifier'], $thumbnails)) {
+//                $mapthumb_overlay_image = $thumbnails[$doc[METADATA_PREFIX . 'metadata_identifier']];
+//                //$mapthumb_overlay_image = $thumbnails[$doc['id']];
+//            }
+//            else {
+//                //TODO: do we need a default overlay image?
+//                $mapthumb_overlay_image = "sites/default/files/satellite.png";
+//            }
+            $mapthumb = adc_get_map_thumb_divs($thumbnail_data, $target_url);
+//            $mapthumb = msb_get_map_thumb_divs($mapthumb_base_image, $mapthumb_overlay_image, $target_url);
+            /*
+             * fetch map thumbnails and create markup}
+             */
+        }
+        else {
+            //dataset does not have an associated getCapapbilities and is not meant to have one!
+            //No map icon or thumbnail should be generated for the dataset, no error message should be issued
+            //and no link to WMS should be created
+            //drupal_set_message($doc['id'] . " is <b>missing getCapabilities URL</b>", 'error');
+            // $getcapdoc = "do_not_show_thumbnail";
+            $mapthumb = NULL;
+            $children = $show_children ? msb_get_children($doc[METADATA_PREFIX . 'metadata_identifier']) : NULL;
+            //$children = $show_children ? msb_get_children($doc['id']) : NULL;
+        }
+        /*
+         * thumbnails}
+         */
+        /*
+         * link to metsis/display/metadata
+         */
+//        $metadata_page_link = msb_get_md_links($doc['id']);
+//        $fimex_link = msb_get_fimex_link($doc['id']);
+        $metadata_page_link = msb_get_md_links('l1', $doc[METADATA_PREFIX . 'metadata_identifier']);
+        if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
+            $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier']);
+        }
+        else {
+            $fimex_link = "";
+        }
+        if (DATASETNAME_VISIBLE) {
+            //$dataset_name = $doc['id'];
+            $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
+        }
+        if (INSTITUTIONS_VISIBLE) {
+            $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
+        }
+        if (PLATFORM_LONG_NAME_VISIBLE) {
+            $platform_long_name = !empty($doc[METADATA_PREFIX . 'platform_long_name'][0]) ? $doc[METADATA_PREFIX . 'platform_long_name'][0] : ' ';
+        }
+        global $metsis_conf;
+        if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+            if (array_key_exists(METADATA_PREFIX . "cloud_cover_value", $doc)) {
+                $cloud_cover_value = $doc[METADATA_PREFIX . 'cloud_cover_value'];
+            }
+            else {
+                $cloud_cover_value = NULL;
+            }
+        }
+        if (TITLE_VISIBLE) {
+            $title = $doc[METADATA_PREFIX . 'title'][0];
+        }
+        if (PROJECT_VISIBLE) {
+            $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
+        }
+        if (KEYWORDS_VISIBLE) {
+            $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
+        }
+        if (ABSTRACT_VISIBLE) {
+            $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
+        }
+        $temporal_extent_start_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_start_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_start_date'] : '';
+        $temporal_extent_end_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_end_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_end_date'] : '';
+        //debug{
+        //$temporal_extent_end_date='1980-01-19T12:00:00Z';
+        //debug}
+        if (COLLECTION_PERIOD_VISIBLE) {
+
+            if ((RESULTS_DATE_DISPLAY_FORMAT != '') && $temporal_extent_start_date != '' && $temporal_extent_end_date != '') {
+                $collection_period = get_metsis_date($temporal_extent_start_date, RESULTS_DATE_DISPLAY_FORMAT) . " to " . get_metsis_date($temporal_extent_end_date, RESULTS_DATE_DISPLAY_FORMAT);
+            }
+            else {
+                $collection_period = $temporal_extent_start_date . " to " . $temporal_extent_end_date;
+            }
+        }
+
+        //if (isset($doc[METADATA_PREFIX . 'metadata_identifier'][METADATA_PREFIX . 'related_information_resource'][0])) {
+        if (isset($doc[METADATA_PREFIX . 'metadata_identifier'][METADATA_PREFIX . 'related_information_resource'])) {
+            //test{commented out for testing the qsearch module
+            //$dlp = adc_parse_solr_mmd_type_one($doc[METADATA_PREFIX . 'related_information_resource']);
+            $data_access_HTTP = get_data_access_markup($doc[METADATA_PREFIX . 'metadata_identifier'], $dlp['"Dataset landing page"']);
+            //sdpm($dlp['"User Guide" "description"']);
+        }
+        elseif (isset($doc[METADATA_PREFIX . 'data_access']['type']['HTTP']['url'])) {
+
+            $data_access_HTTP = get_data_access_markup($doc[METADATA_PREFIX . 'title'][0], $doc[METADATA_PREFIX . 'data_access']['type']['HTTP']['url']);
+        }
+        else {
+            //$data_access_HTTP = $doc[METADATA_PREFIX . 'metadata_identifier'];
+            $data_access_HTTP = $doc[METADATA_PREFIX . 'title'][0];
+        }
+        /*
+         * TODO: OPeNDAP metadata listed as invalid string (not a proper URL) has to be 
+         * tackled much earlier, preferably in SOLR.
+         */
+        /**
+         * all OPeNDAP links requested removed from search result tabulation
+         */
+//        if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url']) && $doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url'] != MISSING_METADATA) {
+//            $OPeNDAP_extensions = array('html', 'info', 'das', 'dds');
+//            $oea = array();
+//            foreach ($OPeNDAP_extensions as $ode) {
+//                $oea[$ode] = $doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url'] . "." . $ode;
+//            }
+//            $doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url'] = $oea;
+//            $opendap_html = msb_markup_opendap_links($doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url'], "html");
+//            $opendap_info = msb_markup_opendap_links($doc[METADATA_PREFIX . 'data_access']['type']['OPeNDAP']['url'], "info");
+//        }
+//        else {
+//            $opendap_html = "";
+//            $opendap_info = "";
+//        }
+        if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'])) {
+            $data_access_OGC_WMS = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'];
+        }
+        else {
+            $data_access_OGC_WMS = "metadata_not_found";
+        }
+        //test{commented out for testing the qsearch module
+        //$dar = adc_parse_solr_mmd_type_one($doc['mmd_data_access_resource']);
+        if (isset($dar['"HTTP"'])) {
+            $netcdf_download = get_data_access_markup("Download .NetCDF product", $dar['"HTTP"']);
+        }
+        else {
+            $netcdf_download = "";
+        }
+        if (isset($dar['"ODATA"'])) {
+            $odata_download = get_data_access_markup("Download .SAFE product", $dar['"ODATA"']);
+        }
+        else {
+            $odata_download = "";
+        }
+        $options[$dataset_name] = array();
+        if (DATASETNAME_VISIBLE) {
+            //todo 5
+            //refactor - test for what's available earlier. E.g. $fimex_link
+            //opendap requested removed
+            //$options[$dataset_name]['datasetName'] = t($data_access_HTTP . $children_links . $metadata_page_link . $opendap_html . $opendap_info . $fimex_link . $mapthumb);
+            $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $children_links . $metadata_page_link . $fimex_link . $mapthumb);
+        }
+        if (INSTITUTIONS_VISIBLE) {
+            $options[$dataset_name]['institutions'] = t($institutions);
+        }
+        //nsb{
+        if (PLATFORM_LONG_NAME_VISIBLE) {
+            $options[$dataset_name]['platform_long_name'] = t($platform_long_name);
+        }
+        global $metsis_conf;
+        if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+            //$options[$dataset_name]['cloud_cover_value'] = t($cloud_cover_value);
+            if ($cloud_cover_value != NULL) {
+                $options[$dataset_name]['cloud_cover_value'] = t(number_format($cloud_cover_value, ($metsis_conf['results_number_decimal_display_format'])));
+            }
+            else {
+                $options[$dataset_name]['cloud_cover_value'] = t($cloud_cover_value);
+            }
+        }
+        //nsb}
+        if (TITLE_VISIBLE) {
+            $options[$dataset_name]['title'] = t($title);
+        }
+        if (PROJECT_VISIBLE) {
+            if ($project != "") {
+                $options[$dataset_name]['project'] = t($project);
+            }
+            else {
+                $options[$dataset_name]['project'] = "";
+            }
+        }
+        if (KEYWORDS_VISIBLE) {
+            $options[$dataset_name]['keywords'] = t($keywords);
+        }
+        if (ABSTRACT_VISIBLE) {
+            $options[$dataset_name]['abstract'] = t($abstract);
+        }
+        $options[$dataset_name]['collection_period'] = t($collection_period);
+
+//          array(
+//          'datasetName' => t($data_access_HTTP . $children_links . $metadata_page_link . $opendap_html . $opendap_info . $fimex_link . $mapthumb),
+//          'institutions' => t($institutions),
+//          'title' => t($title),
+//          'project' => t($project) ? !is_null($project) : "",
+//          'keywords' => t($keywords),
+//          'abstract' => t($abstract),
+//          'collection_period' => t($collection_period),
+//          '#attributes' => array(
+//          //  'style' => array('display:none;'),
+//          // 'class' => array('accordion',
+//          // )
+//          )
+//        );
+        //TODO: showing children in initial table is VERY slow. 
+        //Should not be used.
+        if ($show_children) {
+            $max_count = 10;
+            $count = ($children['response']['numFound'] > $max_count) ? $max_count : $children['response']['numFound'];
+            for ($i = 0; $i < $count; $i++) {
+                
+            }
+            for ($i = 0; $i < $count; $i++) {
+                $child = $children['response']['docs'][$i];
+                //$dataset_name = $child['id'];
+                $dataset_name = $child[METADATA_PREFIX . 'metadata_identifier'];
+
+                $temporal_extent_start_date = !empty($child[METADATA_PREFIX . 'temporal_extent_start_date']) ? $child[METADATA_PREFIX . 'temporal_extent_start_date'] : ' ';
+                $temporal_extent_end_date = !empty($child[METADATA_PREFIX . 'temporal_extent_end_date']) ? $child[METADATA_PREFIX . 'temporal_extent_end_date'] : ' ';
+                $collection_period = msb_get_short_isodate($temporal_extent_start_date) . " to " . msb_get_short_isodate($temporal_extent_end_date);
+                if (isset($child[METADATA_PREFIX . 'data_access_resource'])) {
+                    $data_access_HTTP = $child[METADATA_PREFIX . 'data_access_resource'];
+                }
+                else {
+                    $data_access_HTTP = "Metadata item 'data_access_resource' was not found!";
+                }
+                $options[$dataset_name] = array(
+                  'datasetName' => l(t($dataset_name), $data_access_HTTP, array(
+                    'external' => TRUE,
+                    'html' => TRUE,
+                    'attributes' => array('class' => array('ext_data_source'),
+                    // 'id' => 'somid'
+                    )
+                  )),
+                  'institutions' => '',
+                  'title' => '',
+                  'project' => '',
+                  'keywords' => '',
+                  'abstract' => '',
+                  'collection_period' => t($collection_period),
+                  '#attributes' => array(
+                    //  'style' => array('display:none;'),
+                    'class' => array(
+                      'childdataset',
+                    )
+                  )
+                );
+            }
+        }
+    }
+    if (BASKET_ELEMENTS_VISIBLE) {
+        $form ['table'] = array(
+          '#header' => $header,
+          '#type' => 'tableselect',
+          '#sticky' => false,
+          '#options' => $options,
+          //'#disabled' => TRUE,
+          '#empty' => t('No datasets found.'),
+          '#weight' => 0,
+          '#multiple' => true,
+          '#tree' => TRUE,
+          '#attributes' => array(
+            'class' => array(
+              'datasets',
+              'sortable',
+            )
+          )
+        );
+    }
+    else {
+        $form ['table'] = array(
+          '#header' => $header,
+          '#theme' => 'table',
+          '#rows' => $options,
+          '#empty' => t('No datasets found.'),
+          '#weight' => 0,
+          '#attributes' => array(
+            'class' => array(
+              'datasets',
+              'sortable',
+            )
+          )
+        );
+    }
+//TODO: theme pager is no use here since the tabulated data is fetched on the fly.
+// the data should be cached and fetched from local db like basket.
+    $form ['pager'] = array(
+      '#theme' => 'pager',
+      '#markup' => theme('pager', array('quantity' => 5))
+    );
+    return $form;
+}
+
+/**
+ * msb_get_ctable}
+ */
+/*
+ * msb_do_search{
+ */
+function msb_do_search($form_state) {
+    $fields = "id,"
+        . METADATA_PREFIX . "personnel_organisation,"
+        . METADATA_PREFIX . "abstract,"
+        . METADATA_PREFIX . "personnel_name,"
+        . METADATA_PREFIX . "title,"
+        . METADATA_PREFIX . "temporal_extent_start_date,"
+        . METADATA_PREFIX . "temporal_extent_end_date,"
+        . METADATA_PREFIX . "personnel_role,"
+        . METADATA_PREFIX . "metadata_identifier,"
+        . METADATA_PREFIX . "last_metadata_update,"
+        . METADATA_PREFIX . "platform_long_name,"
+        . METADATA_PREFIX . "cloud_cover_value,"
+        . METADATA_PREFIX . "data_center_contact_name,"
+        . METADATA_PREFIX . "collection,"
+        . METADATA_PREFIX . "geographic_extent_rectangle_east,"
+        . METADATA_PREFIX . "geographic_extent_rectangle_south,"
+        . METADATA_PREFIX . "geographic_extent_rectangle_west,"
+        . METADATA_PREFIX . "geographic_extent_rectangle_north,"
+        . METADATA_PREFIX . "data_center_data_center_url,"
+        . METADATA_PREFIX . "platform_short_name,"
+        . METADATA_PREFIX . "related_information_resource,"
+        . METADATA_PREFIX . "project_long_name,"
+        . METADATA_PREFIX . "dataset_production_status,"
+        . METADATA_PREFIX . "access_constraint,"
+        . METADATA_PREFIX . "iso_topic_category,"
+        . METADATA_PREFIX . "temporal_extent_start_date,"
+        . METADATA_PREFIX . "temporal_extent_end_date,"
+        . METADATA_PREFIX . "data_center_data_center_name_long_name,"
+        . METADATA_PREFIX . "dataset_language,"
+        . METADATA_PREFIX . "data_center_contact_role,"
+        . METADATA_PREFIX . "project_short_name,"
+        . METADATA_PREFIX . "activity_type,"
+        . METADATA_PREFIX . "keywords_keyword,"
+        . METADATA_PREFIX . "related_information_type,"
+        . METADATA_PREFIX . "operational_status,"
+        . METADATA_PREFIX . "instrument_long_name,"
+        . METADATA_PREFIX . "data_center_contact_email,"
+        . METADATA_PREFIX . "metadata_status,"
+        . METADATA_PREFIX . "abstract,"
+        . METADATA_PREFIX . "personnel_role,"
+        . METADATA_PREFIX . "data_access_description,"
+        . METADATA_PREFIX . "data_center_data_center_name_short_name,"
+        . METADATA_PREFIX . "data_access_resource,"
+        . METADATA_PREFIX . "personnel_email,"
+        . "bbox,"
+        . METADATA_PREFIX . "data_access_wms_layers_wms_layer,"
+        . METADATA_PREFIX . "data_access_type";
+
+    /**
+     * pagination tests{
+     */
+    //sdpm($form_state);
+    $params = drupal_get_query_parameters();
+    if (key_exists('sr', $params)) {
+        $start_result_row = $params['sr'];
+    }
+    else {
+        $start_result_row = 0;
+    }
+    if (key_exists('nr', $params)) {
+        $number_of_rows = $params['nr'];
+    }
+    else {
+        $number_of_rows = 30;
+    }
+
+    //sdpm($_SESSION);
+    $user_query_array = array(
+      "q" => msb_get_final_solr_q($form_state),
+      "start" => $start_result_row,
+      "rows" => $number_of_rows,
+      "wt" => "json",
+      "fl" => $fields,
+    );
+
+    $pagination_con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+    $pagination_res = $pagination_con->get('/solr/' . SOLR_CORE_PARENT . '/select', $user_query_array);
+    $pagination_query_res = json_decode($pagination_res['body'], true);
+
+    $_SESSION['response']['numFound'] = $pagination_query_res['response']['numFound'];
+    $_SESSION['form_state']['values'] = $form_state['values'];
+    //sdpm($pagination_query_res);
+    //sdpm($_SESSION);
+
+    /**
+     * pagination tests}
+     */
+    $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+    $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', array(
+      "q" => msb_get_final_solr_q($form_state),
+      "start" => $start_result_row,
+      "rows" => $number_of_rows,
+      //"rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH,
+      "wt" => "json",
+      "fl" => $fields,
+        )
+    );
+    $query_res = json_decode($res['body'], true);
+
+    $counter = 0;
+    foreach ($query_res['response']['docs'] as $doc) {
+        if (!empty($doc[METADATA_PREFIX . 'data_access_resource'])) {
+            $query_res['response']['docs'][$counter][METADATA_PREFIX . 'data_access']['type'] = msb_concat_data_access_resource($doc[METADATA_PREFIX . 'data_access_resource']);
+        }
+        $counter = $counter + 1;
+    }
+    return $query_res;
+}
+
+/*
+ * msb_do_search}
+ */
+/*
+ * validation methods{
+ */
+
+/*
+ * all or non latlon valid{
+ * All or none of the lat lon must be entered for now
+ */
+
+function msb_all_or_none_latlon_validate($form, &$form_state) {
+    if (!empty($form_state['values']['bbox_top_left_lat']) || !empty($form_state['values']['bbox_top_left_lon']) || !empty($form_state['values']['bbox_bottom_right_lat']) || !empty($form_state['values']['bbox_bottom_right_lat'])) {
+        if (empty($form_state['values']['bbox_top_left_lat']) || empty($form_state['values']['bbox_top_left_lon']) || empty($form_state['values']['bbox_bottom_right_lat']) || empty($form_state['values']['bbox_bottom_right_lat'])) {
+
+            form_set_error('geographical_search', t('All <b>OR</b> none of the "Geographical search" values must be set.'));
+        }
+    }
+}
+
+/**
+ * all or non latlon valid}
+ */
+/*
+ * validate investigator{
+ */
+function adc_investigator_validate($element, $form_state) {
+    //TODO
+    //must validate here and ensure that "dangerous" characters are not allowed
+    //test{
+    //sdpm(decode_entities($element['#value']));
+    //test}
+    // if (!preg_match('/^[a-zA-Z\s*]*$/', $element['#value'])) {
+    //    form_error($element, t('Allowed characters are: A-Z, a-z, asterisk "*, spaces and an empty field.'));
+    // }
+}
+
+/*
+ * validate investigator}
+ */
+
+/*
+ * validate text searches{
+ * only used in metsis_search
+ */
+
+function msb_text_search_validate($element, $form_state) {
+    if (!preg_match('/^[0-9a-zA-Z\s\*\"\'\(\)>\/\_]*$/', $element['#value'])) {
+        form_error($element, t('Allowed characters are: 0-9, A-Z, a-z, asterisk "*", ">", "/", "_", pairs of single or double quotes, pairs of parentheses, spaces and an empty field.'));
+    }
+}
+
+/*
+ * validate text searches}
+ */
+
+/*
+ * validate geographical search bounding box lat lon values{
+ */
+
+function msb_latlon_validate($element, $form_state) {
+    if (!empty($element['#value']) && !is_numeric($element['#value'])) {
+        form_error($element, t('Field must be numeric'));
+    }
+}
+
+function msb_start_finish_date_validate($element, $form_state) {
+    //the old way without date and popup_date
+    //if (!empty($element['#value']) && !msb_date_validate($element['#value'])) {
+    if (!empty($element['#value']['date']) && !msb_date_validate($element['#value']['date'])) {
+        form_error($element, t('Not a valid date'));
+    }
+}
+
+/**
+ *  general form validation
+ */
+function msb_foo_validate($form, &$form_state) {
+    //drupal_set_message("msb foo validate");
+}
+
+//function adc_min_select_validate($form, &$form_state) {
+//    //todo refactor
+//    //adc_require_login(drupal_get_destination(), METSIS_BASKET_AUTHENTICATION_REQUIRED_MESSAGE);
+//    if (!array_filter($form_state ['values'] ['table'])) {
+//        form_set_error('', t('You must choose atleast one item!'));
+//    }
+//}
+
+/*
+ * form validation}
+ */
+
+/**
+ * validation methods}
+ */
+/*
+ * form utility methods{
+ */
+/*
+ * get operational statuses
+ * query SOLR for all possible operational statuses and return an associative array 
+ * The possible values for all datasets must be fetched from SOLR.
+ */
+function msb_get_operational_statuses() {
+    $obj = msb_get_docs_fields(array(METADATA_PREFIX . 'operational_status'));
+    $checkboxes = [];
+    foreach ($obj['response']['docs'] as $doc) {
+        if (!empty($doc[METADATA_PREFIX . 'operational_status']) && !in_array($doc[METADATA_PREFIX . 'operational_status'], $checkboxes)) {
+            $checkboxes[] = $doc[METADATA_PREFIX . 'operational_status'];
+        }
+    }
+    return $checkboxes;
+}
+
+/*
+ * end get operational statuses
+ */
+
+//
+///*
+// * get all contributing institutions{
+// */
+//
+//function msb_get_institutions() {
+//    /**
+//     * not a mandatory metadata item
+//     */
+//    $obj = msb_get_docs_fields(array(METADATA_PREFIX . 'personnel_organisation'));
+//    $checkboxes = [];
+//    foreach ($obj['response']['docs'] as $doc) {
+//        if (count($doc) > 0) {
+//            if (!in_array($doc[METADATA_PREFIX . 'personnel_organisation'][0], $checkboxes)) {
+//                $checkboxes[] = $doc[METADATA_PREFIX . 'personnel_organisation'][0];
+//            }
+//        }
+//    }
+//    return $checkboxes;
+//}
+//
+///*
+// * get all contributing intitutions}
+// */
+/*
+ * get all platform_long_name{
+ */
+
+//
+//function msb_get_platform_long_name() {
+//    $obj = metsis_get_parent_facet_field(METADATA_PREFIX . 'platform_long_name');
+//    $checkboxes = [];
+//    foreach ($obj['facet_counts']['facet_fields'][METADATA_PREFIX . 'platform_long_name'] as $pln) {
+//        if (is_string($pln)) {
+//            $checkboxes[] = $pln;
+//        }
+//    }
+//    return $checkboxes;
+//}
+
+function msb_get_platform_long_name() {
+    $obj = msb_get_docs_fields(array(METADATA_PREFIX . 'platform_long_name'));
+    $checkboxes = [];
+    foreach ($obj['response']['docs'] as $doc) {
+        if (!isset($doc[METADATA_PREFIX . 'platform_long_name'][0])) {
+            drupal_set_message("Platform not defined for all datasets!", 'warning');
+        }
+        else {
+            if (!in_array($doc[METADATA_PREFIX . 'platform_long_name'][0], $checkboxes)) {
+                $checkboxes[] = $doc[METADATA_PREFIX . 'platform_long_name'][0];
+                //$myobject=drupal_http_request("http://157.249.176.182:8080/solr/dev-l1/select?q=*%3A*&wt=json&indent=true&facet=true&facet.field=mmd_platform_long_name");
+                //sdpm(json_decode($myobject, true));
+                //$myjobject=json_decode($myobject->data);
+                //sdpm($myjobject);
+            }
+        }
+    }
+
+    return $checkboxes;
+}
+
+/*
+ * get all platform_long_name}
+ */
+/*
+ * get all cloud_cover_value{
+ */
+
+//will not use for now - will be used when we start facets
+function msb_get_cloud_cover_value() {
+    $obj = msb_get_docs_fields(array(METADATA_PREFIX . 'cloud_cover_value'));
+    $checkboxes = [];
+    foreach ($obj['response']['docs'] as $doc) {
+        if (!in_array($doc[METADATA_PREFIX . 'cloud_cover_value'], $checkboxes)) {
+            $checkboxes[] = $doc[METADATA_PREFIX . 'cloud_cover_value'];
+        }
+    }
+    return $checkboxes;
+}
+
+/*
+ * get all cloud_cover_value}
+ */
+/*
+ * get docs fields
+ * metsis lib function
+ * query SOLR on  field(s)
+ */
+
+//
+//function msb_get_docs_fields($fields) {
+//    $fl = implode(",", $fields);
+//    $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+//    $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', array("q" => "*:*",
+//      "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH,
+//      "wt" => "json",
+//      "fl" => "$fl",
+//        )
+//    );
+//    return json_decode($res['body'], true);
+//}
+//
+/**
+ * get docs fields}
+ */
+/*
+ * get final SOLR query string{
+ */
+function msb_get_final_solr_q($form_state) {
+    $qarray = array();
+    $q = '*:*';
+    //sdpm($form_state);
+    /**
+     * mmd_metadata_status = "active" is assumed for all queries in the Drupal portal.
+     */
+    $qarray[] = (METADATA_PREFIX . 'metadata_status:"active"');
+    if (!empty(adc_get_full_text_search($form_state))) {
+        $qarray[] = adc_get_full_text_search($form_state);
+    }
+
+    if (!empty(adc_get_investigator($form_state))) {
+        $qarray[] = adc_get_investigator($form_state);
+    }
+    if (!empty(msb_get_chosen_topics_and_variables($form_state))) {
+        $qarray[] = msb_get_chosen_topics_and_variables($form_state);
+    }
+    if (!empty(msb_get_chosen_operational_status($form_state))) {
+        $qarray[] = msb_get_chosen_operational_status($form_state);
+    }
+    if (!empty(msb_get_chosen_institutions($form_state))) {
+        $qarray[] = msb_get_chosen_institutions($form_state);
+    }
+    //nsb{
+    if (!empty(msb_get_chosen_platform_long_name($form_state))) {
+        $qarray[] = msb_get_chosen_platform_long_name($form_state);
+    }
+    if (!empty(msb_get_chosen_cloud_cover_value($form_state))) {
+        $qarray[] = msb_get_chosen_cloud_cover_value($form_state);
+    }
+    //nsb}
+    if (!empty(adc_get_chosen_dates($form_state))) {
+        $qarray[] = adc_get_chosen_dates($form_state);
+    }
+    if (!empty(adc_get_geographical_search_q($form_state))) {
+        $qarray[] = adc_get_geographical_search_q($form_state);
+    }
+    if (!empty($qarray)) {
+        $q = implode(" AND ", $qarray);
+    }
+    //if (DEBUG) {
+    //    sdpm("SOLR query string: ");
+    //sdpm($q);
+    // }
+    return $q;
+}
+
+/*
+ * get final SOLR query string}
+ */
+/*
+ * msb_get_full_text_search{
+ */
+
+/*
+ * adc_get_full_text_search{
+ * The "full_text" index in SOLR is created specifically for this function
+ *
+ * What is included in the "full_text" index is determined in the
+ * SOLR indexing routines and must be parametrized to cater for different
+ * projects
+ *
+ * note that "full_text" is not defined in the MMD spec. It is a utility index
+ * created only in SOLR
+ *
+ */
+
+function adc_get_full_text_search($form_state) {
+    $q = "";
+    $fields = array(
+      'full_text',
+    );
+    if (!empty($form_state['values']['chosen_full_text_search'])) {
+        $ss = $form_state['values']['chosen_full_text_search'];
+        $q .= "(";
+        $q .= $ss;
+        $q .= ")";
+        $qq = array();
+        foreach ($fields as $f) {
+            $qq[] = $f . ":" . $q;
+        }
+        $q = implode(" ", $qq);
+//        $q = "(" . implode(" ", $qq) . ")";
+    }
+//    sdpm("full text search is: ");
+//    sdpm($q);
+    return $q;
+}
+
+/*
+ * adc_get_investigator{
+ */
+
+//
+function adc_get_investigator($form_state) {
+    $q = "";
+    if (INVESTIGATOR_VISIBLE) {
+        if (!empty($form_state['values']['chosen_investigator'])) {
+            $investigator = $form_state['values']['chosen_investigator'];
+        }
+        if (!empty($investigator)) {
+            $q = "("
+                . METADATA_PREFIX
+                . "personnel_role"
+                . ":"
+                . "Investigator"
+                . " "
+                . "AND"
+                . " "
+                . METADATA_PREFIX
+                . "personnel_name"
+                . ":"
+                . "\""
+                . $investigator
+                . "\""
+                . ")"
+            ;
+        }
+    }
+    return $q;
+}
+
+/*
+ * adc_get_investigator}
+ */
+
+/**
+ * get chosen topics and variables{
+ */
+function msb_get_chosen_topics_and_variables($form_state) {
+    $q = "";
+    $topics_and_variables = array();
+    if (!empty($form_state['values']['chosen_topics_and_variables_a'])) {
+        $topics_and_variables[] = $form_state['values']['chosen_topics_and_variables_a'];
+    }
+    if (!empty($form_state['values']['chosen_topics_and_variables_b'])) {
+        $topics_and_variables[] = $form_state['values']['chosen_topics_and_variables_b'];
+    }
+    if (!empty($topics_and_variables)) {
+        $q = "mmd_keywords_keyword:(\"" . implode("\" AND \"", $topics_and_variables) . "\")";
+    }
+    return $q;
+}
+
+/*
+ * get chosen topics and variables}
+ */
+
+/*
+ * get chosen institutions{
+ */
+
+//
+//function msb_get_chosen_institutions($form_state) {
+//    $q = "";
+//    if (INSTITUTIONS_VISIBLE) {
+//        $chosen_institutions = array_filter($form_state['values']['institutions']['chosen_institutions']);
+//        if (!empty($chosen_institutions)) {
+//            $q = "mmd_personnel_organisation:(\"" . implode("\" OR \"", $chosen_institutions) . "\")";
+//        }
+//    }
+//    return $q;
+//}
+
+/*
+ * get chosen institutions}
+ */
+
+/*
+ * get chosen platform_long_name{
+ */
+//
+//function msb_get_chosen_platform_long_name($form_state) {
+//    $q = "";
+//    if (PLATFORM_LONG_NAME_VISIBLE) {
+//        $chosen_platform_long_name = array_filter($form_state['values']['platform_long_name']['chosen_platform_long_name']);
+//        if (!empty($chosen_platform_long_name)) {
+//            $q = "mmd_platform_long_name:(\"" . implode("\" OR \"", $chosen_platform_long_name) . "\")";
+//        }
+//    }
+//    return $q;
+//}
+
+/*
+ * get chosen platform_long_name}
+ */
+
+/*
+ * get cloud_cover_value{
+ */
+//
+//function msb_get_chosen_cloud_cover_value($form_state) {
+//    global $metsis_conf;
+//    $q = "";
+//    if ($metsis_conf['cloud_cover_value_visible'] === TRUE) {
+//        //KEEP THE COMMENTS
+//        //for now we are using single value radios
+//        //we may end up with checkboxes in which case we need array_filter etc.
+//        //$chosen_cloud_cover_value = array_filter($form_state['values']['cloud_cover_value']['chosen_cloud_cover_value']);
+//        $chosen_cloud_cover_value = $form_state['values']['cloud_cover_value']['chosen_cloud_cover_value'];
+//
+//        /**
+//         * test{
+//         */
+//        //sdpm("cloud_cover_value = " . $form_state['values']['cloud_cover_value']['chosen_cloud_cover_value']);
+//        //sdpm($form_state);
+//        /**
+//         * test}
+//         */
+//        if (!empty($chosen_cloud_cover_value)) {
+//            if ($chosen_cloud_cover_value == ">90%") {
+//                $q = "mmd_cloud_cover_value:[90 TO *]";
+//                /*
+//                 * todo0
+//                 * test{
+//                 * currently these are indexed as strings arrays which is wrong.
+//                 * hacking it with regex is not the way to go but it can be done.
+//                 * Simplictic regex won't work though. The line below will return
+//                 * 9.123 as well as 91.123 and 100*  
+//                 */
+//                //$q = "mmd_cloud_cover_value:(9*.* OR 100*)";
+//                /*
+//                 * test}
+//                 */
+//            }
+//            else {
+//
+//                $patterns = array();
+//                $patterns[0] = '/([<])/';
+//                $patterns[1] = '/(%)/';
+//                $replacements = array();
+//                $replacements[0] = '';
+//                $replacements[1] = '';
+//                $chosen_cloud_cover_value = preg_replace($patterns, $replacements, $chosen_cloud_cover_value);
+//                $q = "mmd_cloud_cover_value:[* TO " . $chosen_cloud_cover_value . "]";
+//            }
+//            //todo01
+//            //get the string and strip the inequality and % symbols
+//            //construct [* TO value] unless we are at >90% in 
+//            //which case [90 TO *]
+//            //$q = "mmd_cloud_cover_value:(\"" . implode("\" OR \"", $chosen_cloud_cover_value) . "\")";
+//            //$q = "mmd_cloud_cover_value:" . $chosen_cloud_cover_value;
+//        }
+//    }
+//    return $q;
+//}
+//
+/*
+ * get cloud_cover_value}
+ */
+/*
+ * get chosen data collection period{
+ */
+
+function adc_get_chosen_dates($form_state) {
+    $q = "";
+    if (!empty($form_state['values']['finished_after']) && empty($form_state['values']['finished_before'])) {
+        $finished_after = $form_state['values']['finished_after'];
+        $q = "mmd_temporal_extent_start_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]";
+    }
+    if (empty($form_state['values']['finished_after']) && !empty($form_state['values']['finished_before'])) {
+        $finished_before = $form_state['values']['finished_before'];
+        $q = "mmd_temporal_extent_end_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
+    }
+    if (!empty($form_state['values']['finished_after']) && !empty($form_state['values']['finished_before'])) {
+        $finished_after = $form_state['values']['finished_after'];
+        $finished_before = $form_state['values']['finished_before'];
+        $q = "mmd_temporal_extent_start_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]"
+            . " AND "
+            . "mmd_temporal_extent_end_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
+    }
+    return $q;
+}
+
+/*
+ * get chosen data collection period}
+ */
+
+/*
+ * adc_get_geographical_search_q{
+ */
+
+function adc_get_geographical_search_q($form_state) {
+    $q = "";
+    $bbox = array();
+
+    if (!empty($form_state['values']['bbox_top_left_lat'])) {
+        $bbox['bbox_top_left_lat'] = $form_state['values']['bbox_top_left_lat'];
+    }
+    if (!empty($form_state['values']['bbox_top_left_lon'])) {
+        $bbox['bbox_top_left_lon'] = $form_state['values']['bbox_top_left_lon'];
+    }
+    if (!empty($form_state['values']['bbox_bottom_right_lat'])) {
+        $bbox['bbox_bottom_right_lat'] = $form_state['values']['bbox_bottom_right_lat'];
+    }
+    if (!empty($form_state['values']['bbox_bottom_right_lon'])) {
+        $bbox['bbox_bottom_right_lon'] = $form_state['values']['bbox_bottom_right_lon'];
+    }
+
+    if ((!empty($bbox['bbox_top_left_lat'])) AND ( !empty($bbox['bbox_bottom_right_lat'])) AND ( !empty($bbox['bbox_bottom_right_lon'])) AND ( !empty($bbox['bbox_top_left_lon']))) {
+        //bbox:"Intersects(ENVELOPE(topleft.lon,bottomrigth.lon,topleft.lat,bottomright.lat))"
+        $q .= "bbox:";
+        $q .= "\"";
+        $q .= "Intersects(ENVELOPE(";
+        $q .= $bbox['bbox_top_left_lon'];
+        $q .= ",";
+        $q .= $bbox['bbox_bottom_right_lon'];
+        $q .= ",";
+        $q .= $bbox['bbox_top_left_lat'];
+        $q .= ",";
+        $q .= $bbox['bbox_bottom_right_lat'];
+        $q .= "))";
+        $q .= "\"";
+    }
+    return $q;
+}
+
+/*
+ * adc_get_geographical_search_q}
+ */
+
+/*
+ * get chosen operational_status{
+ */
+
+function msb_get_chosen_operational_status($form_state) {
+    $q = "";
+
+    $chosen_operational_status = array_filter($form_state['values']['operational_status']['chosen_operational_status']);
+
+    if (!empty($chosen_operational_status)) {
+        if (DEBUG) {
+            
+        }
+        $q = METADATA_PREFIX . "operational_status:(\"" . implode("\" OR \"", $chosen_operational_status) . "\")";
+    }
+    return $q;
+}
+
+/*
+ * get chosen operational_status}
+ */
+
+//
+///*
+// * get_ol3_wms_markup{
+// */
+///*
+// * TODO: refactor to get_metsis_map_wms_markup($externalURL,$options)
+// */
+//
+//function get_metsis_map_wms_markup($externalURL) {
+//    global $metsis_conf;
+//    $wms_url_lhs = "/metsis/map/getcap?dataset=";
+//    if (is_array($externalURL)) {
+//        $wms_urls = [];
+//        foreach ($externalURL as $eu) {
+//            $wms_urls[] = $eu . CAPDOC_POSTFIX;
+//        }
+//        $wms_url_rhs = implode(",", $wms_urls);
+//    }
+//    else {
+//        $wms_url_rhs = $externalURL . CAPDOC_POSTFIX;
+//    }
+//    $wms_url = $wms_url_lhs . $wms_url_rhs;
+//    //watchdog('WMS debug', $externalURL);
+//    $wms_map_center_lat = $metsis_conf['wms_map_center_lat'];
+//    $wms_map_center_lon = $metsis_conf['wms_map_center_lon'];
+//    $wms_map_init_zoom = $metsis_conf['wms_map_init_zoom'];
+//    $wms_visible_layer_title = $metsis_conf['wms_visible_layer_title'];
+//
+//    $path_to_wms_module = drupal_get_path('module', 'metsis_wms');
+//    $path_to_css = "../../" . $path_to_wms_module . "/css/style.min.css";
+//    $path_to_js = "../../" . $path_to_wms_module . "/js/bundle.js";
+//    $path_to_jquery_update_js = "../../" . drupal_get_path('module', 'jquery_update') . "/replace/jquery/1.10/jquery.min.js";
+//
+//    $string = <<<EOM
+//<!doctype html>
+//<html>
+//    <head>
+//        <meta charset="utf-8">
+//        <title>OpenLayers</title>
+//        <link rel="shortcut icon" href="">
+//        <link rel="stylesheet" href="$path_to_css" type="text/css" >
+//        <style>
+//            #map {
+//                width: 100%;
+//                height: 80%;                
+//            }
+//            .map.container {
+//                width: 100%;
+//                height: 100%
+//            }            
+//        </style>
+//        <script src="$path_to_jquery_update_js"></script>
+//        <script  type="text/javascript" src="$path_to_js"></script>
+//    </head>
+//    <body>
+//        <div class="map container">
+//            <div id="map"></div>            
+//            <div id="lyr-switcher"></div>
+//            <div id="proj-container"></div>
+//            <div id="timeslider-container"></div>
+//        </div>
+//        
+//        <script type="text/javascript">
+//            $(document).ready(function () {               
+//                      var wms = mapClient.wms({
+//                          "visibleLayerTitle": "$wms_visible_layer_title", 
+//                          lon: $wms_map_center_lon, 
+//                          lat: $wms_map_center_lat, 
+//                          zoom: $wms_map_init_zoom,
+//                          "wmsUrl":"$wms_url"
+//                              });
+//            });  
+//        </script>   
+//    </body>
+//</html>
+//EOM;
+//    return $string;
+//}
+//
+///*
+// * get_ol3_wms_markup}
+// */
+/*
+ * getCapDoc{
+ */
+//
+//function getCapDoc() {
+//    $query = drupal_get_query_parameters();
+//    if (count($query) > 0) {
+//        $url = $query['dataset'] . '&REQUEST=' . $query['REQUEST'];
+//        print drupal_http_request($url)->data;
+//    }
+//}
+
+/*
+ * getCapDoc}
+ */
+
+/*
+ * wms{
+ * TODO: parameterization
+ */
+
+//function metsis_map_wms() {
+//
+//    $query = drupal_get_query_parameters();
+//    if (count($query) > 0) {
+//        $datasets = explode(",", $query['dataset']);
+//        $externalURL = $datasets;
+//    }
+//    $page = get_metsis_map_wms_markup($externalURL);
+//    print $page;
+//}
+
+/*
+ * get geographical search map{
+ */
+//
+//function adc_get_geographical_search_map() {
+//    global $metsis_conf;
+//    $search_map_center_lat = $metsis_conf['search_map_center_lat'];
+//    $search_map_center_lon = $metsis_conf['search_map_center_lon'];
+//    $search_map_init_zoom = $metsis_conf['search_map_init_zoom'];
+//    $string = <<<EOM
+//        <div class="map container">
+//            <div id="map"></div>                   
+//        </div>
+//        <script type="text/javascript">
+//                  var sClient;
+//            $(document).ready(function () {
+//                sClient = mapClient.search({
+//                    lon: $search_map_center_lon, 
+//                    lat: $search_map_center_lat, 
+//                    zoom: $search_map_init_zoom, 
+//                    bbox: {
+//                        topleft: {latId: 'edit-bbox-top-left-lat', lonId: 'edit-bbox-top-left-lon'}, 
+//                        bottomright: {latId: 'edit-bbox-bottom-right-lat', lonId: 'edit-bbox-bottom-right-lon'}
+//                          }
+//                        }
+//                      );
+//               //console.log(sClient.polygon);
+//            });
+//        </script> 
+//EOM;
+//    return $string;
+//}
+
+/*
+ * get geographical search map}
+ */
+
+/*
+ * metsis_search_date_popup_process_alter{
+ */
+/*
+ * hack: implemet hook alter for the date_popup since for some silly reason
+ * it does not allow removing #description and #title from the form field element 
+ * options 
+ * 
+ * with luck the authors will offer these options in future releases and this hook can be
+ * removed although its presence should not have any adverse effects for these versions
+ */
+
+/**
+ * Altering Date Popup to remove labels and description for specific field
+ */
+function metsis_search_date_popup_process_alter(&$element, &$form_state, $context) {
+    //remove things based on form_id, element etc. with if() 
+    //or remove things from all elements
+    //declared as '#type' => 'date_popup'
+    //if ($element['#name'] == 'finished_before') {
+    unset($element['date']['#description']);
+    unset($element['date']['#title']);
+    // }
+}
+
+/**
+ * To remove for all date fields remove if statement
+ */
+/*
+ * metsis_search_date_popup_process_alter}
+ */
+
+/*
+ * TODO: form reset is not working yet
+ */
+//function metsis_search_form_alter($form, $form_state, $form_id) {
+//
+//    if ($form_id == "metsis_search_form") {
+//        if ($form_state['storage']['step'] == 2) {
+//            sdpm($form_state);
+//            foreach ($form['table']['table']['#options'] as $key => $value) {
+//                if($key == "urn:x-wmo:md:int.ecmwf::yopp"){
+//                  $form['table']['table']['#options'][$key]['#disabled'] = TRUE; 
+//                  $form['table']['table']['#options'][$key] = "junk";
+//                }
+//            }
+//        }
+//    }
+//   // return $form;
+//}
+
+function metsis_search_form_reset($form, &$form_state) {
+    $form_state['rebuild'] = FALSE;
+}

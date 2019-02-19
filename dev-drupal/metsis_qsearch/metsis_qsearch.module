@@ -1,0 +1,316 @@
+<?php
+
+// for now we just use the constants from metsis_search
+// will point to this modules constants when we can remove metsis_search
+//require_once drupal_get_path('module', 'metsis_search') . '/metsis_search.constants.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.constants.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.forms.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.results.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.utils.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.misc.inc';
+require_once drupal_get_path('module', 'metsis_lib') . '/includes/metsis_lib.constants.inc';
+
+/**
+ * test{
+ * @return type
+ */
+//function metsis_qsearch_permission() {
+// return array(
+//   'edit my settings' => array(
+//     'title' => t('Edit My Settings'), 
+//     'description' => t('Edit My Custom Settings Page'),
+//  ),
+// );
+//}
+/**
+ * test}
+ */
+
+/**
+ * implements hook_init
+ */
+function metsis_qsearch_init() {
+    //sdpm(drupal_get_library('system'));
+    drupal_add_css(drupal_get_path('module', 'metsis_wms') . '/css/style.min.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/tables.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/metsis_lib.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/icons.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/adc-buttons.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/autocomplete.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/map_thumbnails.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/css/popups.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_qsearch') . '/css/qstyles.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_qsearch') . '/css/metsis_qsearch_misc.css');
+    //need to extract exactly what is needed from /colorbox/example1/colorbox.css
+    //using it as is interfering with other dialogues including messing up logout.    
+
+
+    drupal_add_js(drupal_get_path('module', 'metsis_qsearch') . '/js/metsis_qsearch.js');
+    drupal_add_js(drupal_get_path('module', 'metsis_wms') . '/js/bundle.js');
+    drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/utils.js');
+    drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/metsis_utils.js');
+    /**
+     * test{
+     */
+//    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/js/contrib/colorbox-master/example1/colorbox.css');
+//    drupal_add_css(drupal_get_path('module', 'metsis_lib') . '/js/contrib/colorbox-master/jquery.colorbox.js'); 
+//    drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/foo.js');
+    // drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/extdataiframe.js');
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/externalData.js');
+    /**
+     * test}
+     */
+    /**
+     * test{
+     */
+//    drupal_session_start();
+//    $_SESSION['nosave'] = TRUE;
+//    sdpm($_SESSION);
+//    drupal_set_message(session_id());
+    /**
+     * test}
+     */
+    /**
+     * debug call stack test{
+     */
+    //sdpm(implode(', ', array_column(debug_backtrace(), 'function')));
+    /**
+     * debug call stack test}
+     */
+}
+
+/**
+ * test{
+ */
+//function metsis_qsearch_theme($existing, $type, $theme, $path){
+//  return array(
+//    'metadata' => array(
+//      'variables' => array('content' => NULL),
+//      'file' => 'metadata', // place you file in 'theme' folder of you module folder
+//      'path' => drupal_get_path('module', 'metsis_qsearch') .'/theme/metadata'
+//    )
+//  );
+//}
+
+/*
+ * implement hook_theme{
+ */
+
+function metsis_qsearch_theme($existing, $type, $theme, $path) {
+    $module_path = drupal_get_path('module', 'metsis_qsearch');
+    return array(
+      'metsis_qsearch_form' => array(
+        'render element' => 'form'
+      ),
+      'metadata' => array(
+        'variables' => array('content' => NULL),
+        // template file in 'theme' directory
+        'template' => 'metadata',
+        // TODO-10 need to refactor callbacks to metadata.inc.... 
+        // 'file' => 'metadata.inc', 
+        'path' => $module_path . '/theme'
+      ),
+      //todo-2 wms ol3 client needs to be templated so the current theme
+      //has controle of the page
+      'wms' => array(
+        'variables' => array('content' => NULL),
+        'template' => 'wms',
+        // TODO-2 need to refactor callbacks to wms.inc.... 
+        // 'file' => 'wms.inc', 
+        'path' => $module_path . '/theme'
+      )
+    );
+}
+
+/*
+ * implement hook_theme}
+ */
+
+/**
+ * test}
+ */
+/*
+ * Implements hook_help(){
+ */
+
+function metsis_qsearch_help($path, $arg) {
+    switch ($path) {
+        case 'admin/help#metsis_qsearch':
+            $output = '<h3>' . t('About') . '</h3>';
+            $output .= '<p>' . t('The METSIS Q search module provides a browser interface to search METADATA indexed in SOLR. Enable this module to provide the "metsis_qsearch" block. Then go to the <a href
+="@metsis_qsearch">blocks admin page</a>', array('@metsis_qsearch' => '/metadata_qsearch#overlay=admin/structure/block')) . ' to activate METSIS Q search.</p>';
+            return $output;
+        case 'admin/content/metsis_qsearch':
+            return '<p>' . t('METSIS Q search.') . '</p>';
+    }
+}
+
+/*
+ * Implements hook_help()}
+ */
+
+/**
+ * implements hook_block_menu
+ */
+function metsis_qsearch_menu() {
+    $items[METADATA_PREFIX . 'keywords/autocomplete'] = array(
+      'title' => 'Autocomplete for mmd_keywords',
+      'page callback' => 'msb_mmd_keywords_autocomplete',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK
+    );
+    /**
+     * path to raw wms page
+     */
+    $items['metsis/map/wms'] = array(
+      'title' => 'METSIS OL3 WMS',
+      'page callback' => 'metsis_map_wms',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK
+    );
+
+    /**
+     * path to getCap
+     */
+    $items['metsis/map/getcap'] = array(
+      'title' => 'GetCapabilities',
+      'page callback' => 'getCapDoc',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    );
+    $items['metsis/display/metadata'] = array(
+      'title' => '',
+//      'title' => 'Available metadata',
+      'page callback' => 'adc_get_metadata',
+      'access arguments' => array('access content'),
+      //'access arguments' => array('administer users'),
+      'type' => MENU_CALLBACK,
+        /**
+         * test{
+         */
+        //CTools Automodal (ctools_automodal). 
+        //Should give me a popup (overlay), but does not work
+        //'modal' => TRUE,
+        /**
+         * test}
+         */
+    );
+    /**
+     * test{
+     */
+    //CTools Automodal (ctools_automodal). 
+    //Should give me a popup (overlay), but does not work
+//    $items['metsis/junk'] = array(
+//      'page callback' => 'drupal_get_form',
+//      'page arguments' => array('metsis_qsearch_form'),
+//      'access arguments' => array('access content'),
+//      'modal' => TRUE, // This line is where the magic happens.
+//    );
+    /**
+     * test}
+     */
+    $items['metsis/display/children'] = array(
+      'title' => 'Child datasets',
+      'description' => 'This page is accessible to authenticated users only',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('msb_display_children_form'),
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,
+    );
+    $items['authenticated_users_only'] = array(
+      'title' => 'Authenticated users',
+      'page callback' => 'authenticated_users_page_callback_function',
+      'description' => 'This page is accessible to authenticated users only',
+      //'access callback' => 'user_is_logged_in',
+      'access arguments' => array('user_is_logged_in'),
+      'type' => MENU_CALLBACK,
+    );
+
+    /**
+     * TODO
+     * Both the 'results' node and the title must be configurable on a per site basis
+     */
+    $items['results'] = array(
+      //'title' => 'Q Search results',
+      //$items['abczyx'] = array(
+      'title' => 'Search results',
+      'page callback' => 'qsearch_results_page',
+      'access callback' => TRUE,
+    );
+
+
+    return $items;
+}
+
+/**
+ * implements hook_block_info
+ */
+function metsis_qsearch_block_info() {
+    $blocks['metsis_qsearch'] = array(
+      'info' => t('metsis_qsearch'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+    return $blocks;
+}
+
+/**
+ * implements hook_block_view
+ */
+function metsis_qsearch_block_view($block_name = '') {
+
+    $block = array();
+    //$block['access arguments'] = 'metsis_qsearch_permissions';
+    switch ($block_name) {
+        case 'metsis_qsearch':
+            $metsis_qsearch_block = drupal_get_form('metsis_qsearch_form');
+            $block['content'] = drupal_render($metsis_qsearch_block);
+
+            break;
+    }
+    return $block;
+}
+
+function metsis_qsearch_form($form, &$form_state) {
+    /**
+     * test{
+     */
+    //sdpm(COLLECTION);
+    //$qcache = filter_input(INPUT_GET, 'qcache', FILTER_DEFAULT);
+    //sdpm($qcache);
+    /**
+     * test}
+     */
+    global $metsis_conf;
+//
+//    if ($metsis_conf['metsis_search_authentication_required']['boolean'] === TRUE) {
+//        adc_require_login(drupal_get_destination(), $metsis_conf['authentication_default_message']);
+//    }
+//    if ($metsis_conf['message']['visible'] === TRUE) {
+//        drupal_set_message(t($metsis_conf['message']['under_construction']), 'warning');
+//    }
+    /**
+     * update local mmd keywords{
+     * Essential that this is done here
+     */
+    msb_update_local_mmd_keywords();
+    /**
+     * update local mmd keywords}
+     */
+    if ($form_state['rebuild']) {
+        $form_state['input'] = array();
+    }
+    return metsis_qsearch_zero_form($form, $form_state);
+}
+
+/**
+ * Implements hook_permission().
+ */
+//function metsis_qsearch_permission() {
+//  return array(
+//    'metsis_qsearch_permissions' => array(
+//      'title' => t('Administer permissions'),
+//      'description' => t('Administer permissions for the METSIS Q search module'),
+//    ),
+//  );
+//}
+
