@@ -1,0 +1,10 @@
+name = METSIS WMS
+description = Provides an OL3 WMS client interface.
+version = 7.x-1.14
+core = 7.x 
+package = METSIS
+project = metsis
+
+dependencies[] = metsis_lib
+
+files[] = metsis_wms.constants.inc
