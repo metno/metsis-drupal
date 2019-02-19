@@ -1,0 +1,78 @@
+<?php
+/**
+ * The main entry point for the elements module.
+ * 
+ */
+
+require_once drupal_get_path('module', 'metsis_elements') . '/includes/metsis_elements.constants.inc';
+require_once drupal_get_path('module', 'metsis_elements') . '/includes/metsis_elements.utils.inc';
+require_once drupal_get_path('module', 'metsis_elements') . '/includes/metsis_elements_forms.inc';
+require_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.constants.inc';
+
+/**
+ * Implements hook_init().
+ */
+function metsis_elements_init() {
+    //drupal_set_message('METSIS ELEMENTS module enabled');
+    //drupal_add_css(drupal_get_path('module', 'metsis_elements') . '/css/metsis_elements_responsive.css');
+}
+
+/**
+ * Implements hook_help().
+ */
+function metsis_elements_help($path, $arg) {
+    switch ($path) {
+        case 'admin/help#metsis_elements':
+            $output = '<h3>' . t('About') . '</h3>';
+            $output .= '<p>' . t('The METSIS ELEMENTS module provides a 
+                block containing a tabular form for level 2 datasets. 
+                Enable this module to provide the "metsis_elements" block. Then go to the 
+                <a href="@metsis_elements">blocks admin page</a>', array(
+                  '@metsis_elements' => '/metsis_elements#overlay=admin/structure/block'
+                    )
+                ) . ' to activate and configure METSIS ELEMENTS.</p>';
+            return $output;
+        case 'admin/content/metsis_elements':
+            return '<p>' . t('METSIS ELEMENTS.') . '</p>';
+    }
+}
+
+/**
+ * Implements hook_info().
+ */
+function metsis_elements_block_info() {
+    $blocks['metsis_elements_config_form'] = array(
+      'info' => t('metsis_elements config form'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+
+    return $blocks;
+}
+
+function metsis_elements_block_view($delta = '') {
+    switch ($delta) {
+        case 'metsis_elements_config_form':
+            if (user_access('access content')) {
+                //$block['subject'] = t('ELEMENTS');
+                //$block['content'] = zz_get_block_content();
+                $block['content'] = drupal_get_form('elements_tabular_form');
+                return $block;
+            }
+            break;
+    }
+}
+
+function metsis_elements_theme($existing, $type, $theme, $path) {
+    $module_path = drupal_get_path('module', 'metsis_elements');
+    $items['elements_tabular_form'] = array(
+      'render element' => 'form',
+      'template' => 'metsis_elements_block',
+      'path' => $module_path . '/theme',
+    );
+    $items['elements_datasets'] = array(
+      'render element' => 'element',
+      'template' => 'metsis_elements_block',
+      'path' => $module_path . '/theme',
+    );
+    return $items;
+}

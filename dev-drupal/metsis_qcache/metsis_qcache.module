@@ -1,0 +1,9 @@
+<?php
+
+require_once drupal_get_path('module', 'metsis_qcache') . '/includes/metsis_qcache.constants.inc';
+require_once drupal_get_path('module', 'metsis_qcache') . '/includes/metsis_qcache.utils.inc';
+require_once drupal_get_path('module', 'metsis_qcache') . '/includes/metsis_qcache.config.inc';
+
+function metsis_qcache_init() {
+    //drupal_set_message('metsis_qcache enabled');
+}

@@ -1,0 +1,103 @@
+<?php
+
+require_once drupal_get_path('module', 'metsis_timeseries') . '/includes/metsis_timeseries.constants.inc';
+require_once drupal_get_path('module', 'metsis_timeseries') . '/includes/metsis_timeseries.utils.inc';
+require_once drupal_get_path('module', 'metsis_timeseries') . '/includes/metsis_timeseries.plot_forms.inc';
+
+/**
+ * Implements hook_init().
+ */
+function metsis_timeseries_init() {
+    //drupal_set_message('time series module enabled');
+    //drupal_add_css(drupal_get_path('module', 'metsis_timeseries') . '/css/metsis_timeseries.css');
+    drupal_add_css(drupal_get_path('module', 'metsis_timeseries') . '/css/metsis_timeseries_responsive.css');
+    //drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/metsis_utils.js');
+}
+
+/**
+ * Implements hook_help().
+ */
+function metsis_timeseries_help($path, $arg) {
+    switch ($path) {
+        case 'admin/help#metsis_timeseries':
+            $output = '<h3>' . t('About') . '</h3>';
+            $output .= '<p>' . t('The METSIS time series module provides a 
+                browser interface for extracting time series data. Enable this 
+                module to provide the "metsis_timeseries" block. Then go to the 
+                <a href="@metsis_timeseries">blocks admin page</a>', array(
+                  '@metsis_timeseries' => '/metsis_timesereies#overlay=admin/structure/block'
+                    )
+                ) . ' to activate METSIS timeseries.</p>';
+            return $output;
+        case 'admin/content/metsis_timeseries':
+            return '<p>' . t('METSIS timeseries.') . '</p>';
+    }
+}
+
+/**
+ * Implements hook_info().
+ */
+function metsis_timeseries_block_info() {
+    $blocks['metsis_timeseries_config_form'] = array(
+      'info' => t('metsis_timeseries config form'),
+      'cache' => DRUPAL_NO_CACHE,
+    );
+
+    return $blocks;
+}
+
+function metsis_timeseries_block_view($delta = '') {
+    switch ($delta) {
+        case 'metsis_timeseries_config_form':
+            if (user_access('access content')) {
+            //if (user_access('administer users')) {
+                //$block['subject'] = t('Time Series');
+                //$block['content'] = zz_get_block_content();
+                //$block['content'] = ts_config_form();
+                $block['content'] = drupal_get_form('ts_config_form');
+                return $block;
+            }
+            break;
+    }
+}
+
+function metsis_timeseries_theme($existing, $type, $theme, $path) {
+    $module_path = drupal_get_path('module', 'metsis_timeseries');
+    $items['ts_config_form'] = array(
+      'render element' => 'form',
+      'template' => 'metsis_timeseries_block',
+      'path' => $module_path . '/theme',
+    );
+    $items['ts_variables'] = array(
+      'render element' => 'element',
+      'template' => 'metsis_timeseries_block',
+      'path' => $module_path . '/theme',
+    );
+    return $items;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+//function metsis_timeseries_permission() {
+//  return array(
+//    'metsis_timeseries_permissions' => array(
+//      'title' => t('Administer permissions'),
+//      'description' => t('Administer permissions for the METSIS timeseries module'),
+//    ),
+//  );
+//}
+
+
+
+
+
+
+
+
+
+
+function zz_get_block_content() {
+    return "this is the block content";
+}
