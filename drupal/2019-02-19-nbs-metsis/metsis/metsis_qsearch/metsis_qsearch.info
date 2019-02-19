@@ -1,0 +1,11 @@
+name = METSIS Q search
+description = Provides a user search interface.
+version = 7.x-1.14
+core = 7.x 
+package = METSIS
+project = metsis
+
+dependencies[] = metsis_lib
+dependencies[] = metsis_wms
+dependencies[] = metsis_basket
+
