@@ -1,0 +1,25 @@
+/*#autocomplete {
+    height: 100px;
+    max-height: 100px;
+    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #808080;
+}*/
+#autocomplete {    
+    height: 100px;
+    max-height: 100px;
+    overflow: auto;
+    /*  overflow-y: auto;
+      overflow-x: hidden;
+      background-color:white;
+      border:1px solid #C5DBEC;
+      overflow:hidden;
+      padding:0;
+      z-index:99999;
+      
+      top: 0px;*/
+    background-color: #D1D0CE;
+    position: absolute;
+    margin: 20px 0px 0px 0px; /* The top margin defines the offset of textbox */
+}
