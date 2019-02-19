@@ -1,0 +1,73 @@
+.tscontainer{
+    height: 100%;
+    display: grid;
+    grid-gap: 3px;
+    grid-template-columns: repeat(2,50px) / repeat(12, 1fr);
+    grid-template-areas:
+        "h h h h h h h h h h h h"
+        "c c c c c c c c c c c m"
+        "f f f f f f f f f f f f"
+}
+
+.dataset{
+    background: #FAEBD7;
+    grid-area: h;
+}
+.mmd_title{
+    background: #00FFFF;
+    grid-area: h;
+}
+
+.mmd_abstract{
+    background:#885534;
+    grid-area: h;
+}
+
+.mmd_metadata_identifier{
+    background: red;
+    grid-area: h;
+}
+
+.plot{
+    display:grid;
+    grid-gap: 3px;
+    background: blue;
+    grid-area: c;
+}
+.plot_x{
+    background: #DC143C;
+}
+.plot_y{
+    background: #9932CC;
+}
+
+.tsmenu{
+    display:grid;
+    grid-gap: 3px;
+    background: yellow;
+    grid-area: m;
+}
+
+.everyNth{
+    background: yellow;
+}
+
+.fileFormat{
+    background: pink;
+}
+.tsfooter{
+    background: #003366;
+    grid-area: f;
+}
+.tsplot{
+    background: #ffffff;  
+}
+.tssubmit{
+    background: #2F4F4F;
+    grid-area: f;
+}
+.ts_plot_image{
+    background: #ffffff;
+    max-width: 100%;
+    max-height: 100%;
+}
