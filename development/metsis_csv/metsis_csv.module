@@ -1,0 +1,42 @@
+<?php
+
+require_once drupal_get_path('module', 'metsis_csv') . '/includes/metsis_csv.constants.inc';
+require_once drupal_get_path('module', 'metsis_csv') . '/includes/metsis_csv.utils.inc';
+require_once drupal_get_path('module', 'metsis_csv') . '/includes/metsis_csv_forms.inc';
+
+function metsis_csv_init() {
+  drupal_add_css(drupal_get_path('module', 'metsis_csv') . '/css/metsis_csv_responsive.css');
+}
+
+function metsis_csv_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#metsis_csv': $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The METSIS CSV module provides a 
+                browser interface for extracting data in ASCII format as comma separated values (CSV). 
+                Enable this module to provide the "metsis_csv" block. Then go to the 
+                <a href="@metsis_csv">blocks admin page</a>', array('@metsis_csv' => '/metsis_csv#overlay=admin/structure/block')) . ' to activate and configure METSIS CSV.</p>';
+      return $output;
+    case 'admin/content/metsis_csv': return '<p>' . t('METSIS CSV.') . '</p>';
+  }
+}
+
+function metsis_csv_block_info() {
+  $blocks['metsis_csv_config_form'] = array('info' => t('metsis_csv config form'), 'cache' => DRUPAL_NO_CACHE,);
+  return $blocks;
+}
+
+function metsis_csv_block_view($delta = '') {
+  switch ($delta) {
+    case 'metsis_csv_config_form': if (user_access('access content')) {
+        $block['content'] = drupal_get_form('csv_config_form');
+        return $block;
+      } break;
+  }
+}
+
+function metsis_csv_theme($existing, $type, $theme, $path) {
+  $module_path = drupal_get_path('module', 'metsis_csv');
+  $items['csv_config_form'] = array('render element' => 'form', 'template' => 'metsis_csv_block', 'path' => $module_path . '/theme',);
+  $items['csv_variables'] = array('render element' => 'element', 'template' => 'metsis_csv_block', 'path' => $module_path . '/theme',);
+  return $items;
+}
