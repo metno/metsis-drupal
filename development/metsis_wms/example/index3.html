@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>OpenLayers</title>
+        <!--<style data-href="app.css" type="text/css"></style>-->
+        <link rel="shortcut icon" href="">
+        <link rel="stylesheet" href="style.min.css" type="text/css" >
+
+        <style>
+            #map {
+                width: 100%;
+                height: 600px;
+            }
+            .map.container {
+                width: 100%;
+                height: 70%
+            }
+        </style>
+        <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+        <script  type="text/javascript" src="bundle.js"></script>
+    </head>
+    <body>
+
+        <div class="map container">
+            <div id="map"></div>
+            <div id="map-menu" class="layer-switcher"></div>
+            <!--<div class="ui compact vertical icon menu">
+                <a class="item">
+                    <i class="diamond icon"></i>
+                </a>
+                <a class="item">
+                    <i class="video camera icon"></i>
+                </a>
+                <a class="item">
+                    <i class="video play icon"></i>
+                </a>
+            </div>-->
+            <div id="lyr-switcher"></div>
+            <div id="proj-container"></div>
+            <div id="timeslider-container"></div>
+        </div>
+
+
+        <script type="text/javascript">
+            var sClient;
+            $(document).ready(function () {
+                var wms = mapClient
+                        .wms({
+                            /*"visibleLayerTitle": "averaged sea ice edge",*/
+                            lon: 15.4824,
+                            lat: 78.2452,
+                            zoom: 7,
+                            /*"wmsUrl": "http://thredds.met.no/thredds/wms/cryoclim/met.no/osisaf-nh-agg?SERVICE=WMS&REQUEST=GetCapabilities",*/
+                            webMapServers: [
+                                {
+                                    capabilitiesUrl: "http://thredds.met.no/thredds/wms/cryoclim/met.no/osisaf-nh-agg?SERVICE=WMS&REQUEST=GetCapabilities",
+                                    activeLayer: 'averaged sea ice edge',
+                                    layers: []
+                                },
+                                {
+                                    capabilitiesUrl: "http://thredds.met.no/thredds/wms/sea_ice/SIW-METNO-ARC-SEAICE_HR-OBS/ice_conc_svalbard_aggregated?REQUEST=GetCapabilities&VERSION=1.3.0&SERVICE=WMS",
+                                    activeLayer: '',
+                                    layers: []
+                                }
+                            ],
+                            productSelect: true});
+            });
+        </script>
+    </body>
+</html>
