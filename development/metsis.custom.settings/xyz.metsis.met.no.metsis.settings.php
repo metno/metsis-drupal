@@ -9,7 +9,7 @@
  *                                                                   *
  * *******************************************************************
  */
-$dev_message = '<h1 style="color:red; font-size: 500%;">You are on XYZ local VM clone</h1>';
+$dev_message = '<h1 style="color:red; font-size: 200%;">You are on XYZ local VM clone. Updated: '.date("Y-m-d H:i:s").'</h1>';
 drupal_set_message($dev_message, 'warning');
 
 # METSIS global/shared settings
