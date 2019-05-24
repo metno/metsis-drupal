@@ -19,9 +19,9 @@ function metsis_qsearch_init() {
   drupal_add_css(drupal_get_path('module', 'metsis_qsearch') . '/css/qstyles.css');
   drupal_add_css(drupal_get_path('module', 'metsis_qsearch') . '/css/metsis_qsearch_misc.css');
   drupal_add_js(drupal_get_path('module', 'metsis_qsearch') . '/js/metsis_qsearch.js');
-  drupal_add_js(drupal_get_path('module', 'metsis_wms') . '/js/bundle.js');
   drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/utils.js');
   drupal_add_js(drupal_get_path('module', 'metsis_lib') . '/js/custom/metsis_utils.js');
+  drupal_add_js(drupal_get_path('module', 'metsis_wms') . '/js/bundle.js');
 }
 
 function metsis_qsearch_theme($existing, $type, $theme, $path) {

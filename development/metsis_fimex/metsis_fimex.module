@@ -63,14 +63,16 @@ function metsis_fimex($form, &$form_state) {
   $solr_cores = adc_get_solr_core($dataset_ids);
   for ($i = 0; $i < count($dataset_ids); $i++) {
     $solr_data[] = msb_get_fields(SOLR_CORE_CHILD, $dataset_ids[$i], $fields);
-  } sdpm($solr_data);
-  sdpm($solr_cores);
+  } 
+  //sdpm($solr_data);
+  //sdpm($solr_cores);
   $dar = [];
   foreach ($solr_data as $sd) {
     if ($sd['response']['numFound'] == 0) {
       drupal_set_message("Invalid dataset ID", 'error');
     } $dar[] = msb_concat_data_access_resource($sd['response']['docs'][0][METADATA_PREFIX . 'data_access_resource']);
-  } sdpm($dar);
+  } 
+  //sdpm($dar);
   $opendap_ddx = $dar[0]['OPeNDAP']['url'] . ".ddx";
   $jod_data = adc_get_od_data($opendap_ddx);
   foreach ($opendap_global_attributes as $odga) {
