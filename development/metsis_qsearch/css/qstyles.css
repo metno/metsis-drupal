@@ -41,3 +41,41 @@
 /*.pagination{
     background: red;
 }*/
+
+/*#number_of_pages_info_div {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 10px;
+    background-color: yellow;
+    padding-top: 50px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    font-size: 20px;
+    height: 60px;
+    margin: 0 auto;
+}*/
+
+/*
+table.sticky-header{
+    position: -webkit-sticky;
+    position: sticky;
+    top: 400px;
+    background-color: red;
+    padding-top: 300px;
+}*/
+
+/*header {
+ background: #fff;
+ position: -webkit-sticky;  Safari 
+ position: sticky;
+ top: 0;
+ height: 60px;
+}
+nav {
+ position: -webkit-sticky;  Safari 
+ position: sticky;
+ top: 60px;
+ background: orange;
+ height: 60px;
+}*/

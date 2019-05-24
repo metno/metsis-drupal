@@ -11,6 +11,11 @@
  */
 $dev_message = '<h1 style="color:red; font-size: 200%;">You are on XYZ local VM clone. Updated: '.date("Y-m-d H:i:s").'</h1>';
 drupal_set_message($dev_message, 'warning');
+//$zz=variable_get('file_public_path', conf_path() . '/files/stamp.txt');
+//$stamp=DRUPAL_ROOT;
+//$yy=file($zz, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+//
+//drupal_set_message($stamp,'warning');
 
 # METSIS global/shared settings
 if (file_exists('sites/all/metsis-global-settings.php')) {

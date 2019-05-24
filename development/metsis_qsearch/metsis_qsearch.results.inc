@@ -9,11 +9,14 @@ function q_get_paged_form() {
 
 function q_results_tabular_form($form, &$form_state) {
   $params = drupal_get_query_parameters();
-  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
-  $form['#validate'][] = 'adc_min_select_validate';
   $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
   $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
   $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
+  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
+  $form['#validate'][] = 'adc_min_select_validate';
+//  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
+//  $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
+//  $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
   if (BASKET_ELEMENTS_VISIBLE) {
     if (count($form['table']['table']['#options']) > 0) {
       $form['add_to_basket'] = array('#weight' => 2, '#type' => 'submit', '#value' => t('Add to basket'), '#submit' => array('adc_add_to_basket'),);

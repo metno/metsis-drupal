@@ -153,13 +153,16 @@ function metsis_map_wms() {
 
 function adc_get_geographical_search_map() {
   global $metsis_conf;
+  global $base_url;
   $search_map_center_lat = $metsis_conf['search_map_center_lat'];
   $search_map_center_lon = $metsis_conf['search_map_center_lon'];
   $search_map_init_zoom = $metsis_conf['search_map_init_zoom'];
+  $path_to_bundle = $base_url.'/'.drupal_get_path('module', 'metsis_wms'). '/js/bundle.js';
   $string = <<<EOM
         <div class="map container">
             <div id="map"></div>                   
         </div>
+        <script type="text/javascript" src="$path_to_bundle"></script>
         <script type="text/javascript">
                   var sClient;
             $(document).ready(function () {
