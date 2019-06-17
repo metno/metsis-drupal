@@ -315,9 +315,9 @@ function msb_get_ctable($form_state) {
     $header['title'] = t('Title');
   } if (PROJECT_VISIBLE) {
     $header['project'] = t('Project');
-  } if (KEYWORDS_VISIBLE) {
+  } if (RESULTS_KEYWORDS_VISIBLE) {
     $header['keywords'] = t('Keywords');
-  } if (ABSTRACT_VISIBLE) {
+  } if (RESULTS_ABSTRACT_VISIBLE) {
     $header['abstract'] = t('Abstract');
   } if (COLLECTION_PERIOD_VISIBLE) {
     $header['collection_period'] = t('Collection period');
@@ -368,9 +368,9 @@ function msb_get_ctable($form_state) {
       $title = $doc[METADATA_PREFIX . 'title'][0];
     } if (PROJECT_VISIBLE) {
       $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
-    } if (KEYWORDS_VISIBLE) {
+    } if (RESULTS_KEYWORDS_VISIBLE) {
       $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
-    } if (ABSTRACT_VISIBLE) {
+    } if (RESULTS_ABSTRACT_VISIBLE) {
       $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
     } $temporal_extent_start_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_start_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_start_date'] : '';
     $temporal_extent_end_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_end_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_end_date'] : '';
@@ -428,9 +428,9 @@ function msb_get_ctable($form_state) {
       else {
         $options[$dataset_name]['project'] = "";
       }
-    } if (KEYWORDS_VISIBLE) {
+    } if (RESULTS_KEYWORDS_VISIBLE) {
       $options[$dataset_name]['keywords'] = t($keywords);
-    } if (ABSTRACT_VISIBLE) {
+    } if (RESULTS_ABSTRACT_VISIBLE) {
       $options[$dataset_name]['abstract'] = t($abstract);
     } $options[$dataset_name]['collection_period'] = t($collection_period);
     if ($show_children) {

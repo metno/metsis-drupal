@@ -417,6 +417,14 @@ function adc_get_datasets_fields($solr_server, $solr_port, $solr_core, $metadata
   return json_decode($json, TRUE);
 }
 
+function adc_get_datasets_fields_reverse_lookup($solr_server, $solr_port, $solr_core, $mmd_metadata_identifier, $fields_array, $start_row, $no_of_rows) {
+  $fields = implode(',', $fields_array);
+  $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_related_dataset:' . $mmd_metadata_identifier . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
+  $result = drupal_http_request($url);
+  $json = $result->data;
+  return json_decode($json, TRUE);
+}
+
 function adc_get_datasets_fields_mikey($solr_server, $solr_port, $solr_core, $metadata_identifier_array, $fields_array, $start_row, $no_of_rows) {
   $fields = implode(',', $fields_array);
   $metadata_identifiers = implode('" OR "', $metadata_identifier_array);
@@ -436,7 +444,9 @@ function msb_get_institutions() {
         $checkboxes[] = $doc[METADATA_PREFIX . 'personnel_organisation'][0];
       }
     }
-  } return $checkboxes;
+  }
+  sort($checkboxes);
+  return $checkboxes;
 }
 
 function msb_facet_get_collections() {

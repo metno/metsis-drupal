@@ -1,3 +1,14 @@
 #adcllist ul {
     list-style-type: none;
 }
+
+div.adc_hint{
+    font-size: 90%;
+    color:red;
+}
+span.adc_label{
+    color: red;
+}
+span.adc_placeholder{
+    color: red;
+}
