@@ -93,9 +93,6 @@ function metsis_qsearch_zero_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => defined('HINT_FULL_TEXT') ? '<div class="adc_hint">' . t(HINT_FULL_TEXT) . '</div>' : '',
     '#element_validate' => array('msb_text_qsearch_validate'),
-//    '#attributes' => array(
-//      'placeholder' =>  t(PLACEHOLDER_FULL_TEXT),
-//      ),
     '#attributes' => array(
       'placeholder' => defined('PLACEHOLDER_FULL_TEXT') ? t(PLACEHOLDER_FULL_TEXT) : t('Search words'),
     ),
@@ -126,8 +123,29 @@ function metsis_qsearch_zero_form($form, &$form_state) {
       '#default_value' => $investigator,
     );
   } if (TOPICS_AND_VARIABLES_VISIBLE) {
-    $form['topics_and_variables'] = array('#type' => 'fieldset', '#title' => t('Topics and variables'), '#collapsible' => TRUE, '#collapsed' => TOPICS_AND_VARIABLES_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('topics-and-variables-fieldset')),);
-    $form['topics_and_variables']['chosen_topics_and_variables_a'] = array('#type' => 'textfield', '#autocomplete_path' => METADATA_PREFIX . 'keywords/autocomplete', '#element_validate' => array('msb_text_qsearch_validate'), '#attributes' => array('placeholder' => t('Science keyword'),), '#default_value' => $topics_and_variables,);
+    $form['topics_and_variables'] = array(
+      '#type' => 'fieldset',
+      '#title' => defined('LABEL_TOPICS_AND_VARIABLES') ? '<span class="adc_label">' . t(LABEL_TOPICS_AND_VARIABLES) . '</span>' : t('Topics and variables'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TOPICS_AND_VARIABLES_INITIALLY_COLLAPSED,
+      '#attributes' => array(
+        'class' => array(
+          'topics-and-variables-fieldset'
+        )
+      ),
+    );
+    $form['topics_and_variables']['chosen_topics_and_variables_a'] = array(
+      '#type' => 'textfield',
+      '#title' => defined('HINT_TOPICS_AND_VARIABLES') ? '<div class="adc_hint">' . t(HINT_TOPICS_AND_VARIABLES) . '</div>' : '',
+      '#autocomplete_path' => METADATA_PREFIX . 'keywords/autocomplete',
+      '#element_validate' => array(
+        'msb_text_qsearch_validate'
+      ),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_TOPICS_AND_VARIABLES') ? t(PLACEHOLDER_TOPICS_AND_VARIABLES) : t('Investigator\'s name'),
+      ),
+      '#default_value' => $topics_and_variables,
+    );
   } $form['operational_status'] = array('#access' => FALSE, '#type' => 'hidden', '#title' => t('Operational status'), '#collapsible' => TRUE, '#collapsed' => TRUE, '#tree' => TRUE, '#attributes' => array('class' => array('operational-status-fieldset',), 'title' => hack_get_skos_opstat("Operational Status"),),);
   $form['operational_status']['chosen_operational_status'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_get_operational_statuses()),);
   if (INSTITUTIONS_VISIBLE) {
@@ -143,7 +161,18 @@ function metsis_qsearch_zero_form($form, &$form_state) {
     );
     $form['institutions']['chosen_institutions'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_get_institutions()), '#default_value' => $institutions,);
   } if (COLLECTIONS_VISIBLE) {
-    $form['collections'] = array('#type' => 'fieldset', '#title' => t('Collections'), '#collapsible' => TRUE, '#collapsed' => COLLECTIONS_INITIALLY_COLLAPSED, '#tree' => TRUE, '#attributes' => array('class' => array('collections-fieldset')),);
+    $form['collections'] = array(
+      '#type' => 'fieldset',
+      '#title' => defined('LABEL_COLLECTIONS') ? '<span class="adc_label">' . t(LABEL_COLLECTIONS) . '</span>' : t('Collections'),
+      '#collapsible' => TRUE,
+      '#collapsed' => COLLECTIONS_INITIALLY_COLLAPSED,
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => array(
+          'collections-fieldset'
+        )
+      ),
+    );
     $form['collections']['chosen_collections'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_facet_get_collections()), '#default_value' => $collections,);
   } $platform_long_name_array = q_get_platform_long_name();
   ksort($platform_long_name_array);
