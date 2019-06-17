@@ -81,23 +81,32 @@ function qsearch_get_ctable($form_state, $page_number) {
   $header = array();
   if (DATASETNAME_VISIBLE) {
     $header['datasetName'] = t('Dataset name');
-  } if (INSTITUTIONS_VISIBLE) {
+  } if (RESULTS_INSTITUTIONS_VISIBLE) {
     $header['institutions'] = t('Institutions');
-  } if (PLATFORM_LONG_NAME_VISIBLE) {
+  } if (RESULTS_PLATFORM_LONG_NAME_VISIBLE) {
     $header['platform_long_name'] = t('Platform');
-  } if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+  } //if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+  if (RESULTS_CLOUD_COVER_VALUE_VISIBLE) {
     $header['cloud_cover_value'] = t('Cloud cover [%] of scene');
   } if (TITLE_VISIBLE) {
     $header['title'] = t('Title');
   } if (PROJECT_VISIBLE) {
     $header['project'] = t('Project');
-  } if (KEYWORDS_VISIBLE) {
+  } if (RESULTS_KEYWORDS_VISIBLE) {
     $header['keywords'] = t('Keywords');
-  } if (ABSTRACT_VISIBLE) {
+  } if (RESULTS_ABSTRACT_VISIBLE) {
     $header['abstract'] = t('Abstract');
-  } if (COLLECTION_PERIOD_VISIBLE) {
+  } if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
     $header['collection_period'] = t('Collection period');
-  } $options = array();
+  }
+  /**
+   * test{
+   */
+  $header['call_it_what_you_want'] = t('Call it what you want');
+  /**
+   * test}
+   */
+  $options = array();
   if (!empty($solr_obj['error'])) {
     drupal_set_message($solr_obj['error']['msg'], 'error');
     return;
@@ -149,9 +158,10 @@ function qsearch_get_ctable($form_state, $page_number) {
       $fimex_link = "";
     } if (DATASETNAME_VISIBLE) {
       $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
-    } if (INSTITUTIONS_VISIBLE) {
+    } if (RESULTS_INSTITUTIONS_VISIBLE) {
       $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
-    } if (PLATFORM_LONG_NAME_VISIBLE) {
+    } //if (PLATFORM_LONG_NAME_VISIBLE) {
+    if (RESULTS_PLATFORM_LONG_NAME_VISIBLE) {
       $platform_long_name = !empty($doc[METADATA_PREFIX . 'platform_long_name'][0]) ? $doc[METADATA_PREFIX . 'platform_long_name'][0] : ' ';
     } global $metsis_conf;
     if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
@@ -165,9 +175,9 @@ function qsearch_get_ctable($form_state, $page_number) {
       $title = $doc[METADATA_PREFIX . 'title'][0];
     } if (PROJECT_VISIBLE) {
       $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
-    } if (KEYWORDS_VISIBLE) {
+    } if (RESULTS_KEYWORDS_VISIBLE) {
       $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
-    } if (ABSTRACT_VISIBLE) {
+    } if (RESULTS_ABSTRACT_VISIBLE) {
       if (isset($doc[METADATA_PREFIX . 'abstract'])) {
         $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
       }
@@ -250,12 +260,14 @@ function qsearch_get_ctable($form_state, $page_number) {
       if (!isset($mapthumb)) {
         $mapthumb = "";
       } $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_page_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
-    } if (INSTITUTIONS_VISIBLE) {
+    } if (RESULTS_INSTITUTIONS_VISIBLE) {
       $options[$dataset_name]['institutions'] = t($institutions);
-    } if (PLATFORM_LONG_NAME_VISIBLE) {
+    } //if (PLATFORM_LONG_NAME_VISIBLE) {
+    if (RESULTS_PLATFORM_LONG_NAME_VISIBLE) {
       $options[$dataset_name]['platform_long_name'] = t($platform_long_name);
     } global $metsis_conf;
-    if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+    //if ($metsis_conf['results_cloud_cover_value_visible'] === TRUE) {
+    if (RESULTS_CLOUD_COVER_VALUE_VISIBLE) {
       if ($cloud_cover_value != NULL) {
         $options[$dataset_name]['cloud_cover_value'] = t(number_format($cloud_cover_value, ($metsis_conf['results_number_decimal_display_format'])));
       }
@@ -271,11 +283,14 @@ function qsearch_get_ctable($form_state, $page_number) {
       else {
         $options[$dataset_name]['project'] = "";
       }
-    } if (KEYWORDS_VISIBLE) {
+    } if (RESULTS_KEYWORDS_VISIBLE) {
       $options[$dataset_name]['keywords'] = t($keywords);
-    } if (ABSTRACT_VISIBLE) {
+    } if (RESULTS_ABSTRACT_VISIBLE) {
       $options[$dataset_name]['abstract'] = t($abstract);
-    } $options[$dataset_name]['collection_period'] = t($collection_period);
+    } if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
+      $options[$dataset_name]['collection_period'] = t($collection_period);
+    }
+    $options[$dataset_name]['call_it_what_you_want'] = t($mapthumb);
     if ($show_children) {
       $max_count = 10;
       $count = ($children['response']['numFound'] > $max_count) ? $max_count : $children['response']['numFound'];

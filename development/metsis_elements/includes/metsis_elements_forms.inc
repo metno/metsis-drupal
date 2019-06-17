@@ -15,7 +15,7 @@ function elements_tabular_form($form, &$form_state) {
   $start_row = ($page_number - 1) * $number_results_per_page;
   $_SESSION['elements']['number_of_pages'] = $number_of_pages;
   $fields_array = explode(',', REQUIRED_CHILD_METADATA);
-  $solr_obj = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_CHILD, $metadata_identifier_array, $fields_array, $start_row, $number_results_per_page);
+  $solr_obj = adc_get_datasets_fields_reverse_lookup(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_CHILD, $metadata_identifier, $fields_array, $start_row, $number_results_per_page);
   $rso = reshape_solr_obj($solr_obj);
   $rsok = array_keys($rso);
   $thumbnails = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_MAP_THUMBNAILS, $rsok, array(METADATA_PREFIX . 'metadata_identifier', 'thumbnail_data'), 0, 1000000000);
