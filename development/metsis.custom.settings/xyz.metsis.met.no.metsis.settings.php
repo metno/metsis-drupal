@@ -9,14 +9,13 @@
  *                                                                   *
  * *******************************************************************
  */
-$dev_message = '<h1 style="color:red; font-size: 200%;">You are on XYZ local VM clone. Updated: '.date("Y-m-d H:i:s").'</h1>';
+$dev_message = '<h1 style="color:red; font-size: 200%;">You are on XYZ local VM clone. Updated: ' . date("Y-m-d H:i:s") . '</h1>';
 drupal_set_message($dev_message, 'warning');
 //$zz=variable_get('file_public_path', conf_path() . '/files/stamp.txt');
 //$stamp=DRUPAL_ROOT;
 //$yy=file($zz, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 //
 //drupal_set_message($stamp,'warning');
-
 # METSIS global/shared settings
 if (file_exists('sites/all/metsis-global-settings.php')) {
   include 'sites/all/metsis-global-settings.php';
@@ -69,14 +68,14 @@ $metsis_conf['solr_server_port'] = '8080';
 /**
  * SOLR server core details
  */
-$metsis_conf['solr_core_parent'] = 'adc-l1';
-$metsis_conf['solr_core_child'] = 'adc-l2';
+$metsis_conf['solr_core_parent'] = 'nbs-l1';
+$metsis_conf['solr_core_child'] = 'nbs-l2';
 //todo5 $metsis_conf['solr_core_map_thumbnails'] must be changed
 //the solr core should be renamed to something more 
 //appropriate since it now contains other config data than exclusive to 
 //maps
-$metsis_conf['solr_core_map_thumbnails'] = 'adc-thumbnail';
-$metsis_conf['solr_core_config'] = 'adc-thumbnail';
+$metsis_conf['solr_core_map_thumbnails'] = 'nbs-thumbnail';
+$metsis_conf['solr_core_config'] = 'nbs-thumbnail';
 /**
  * solr metadata prefix
  */
@@ -94,7 +93,7 @@ $metsis_conf['metadata_prefix'] = 'mmd_';
  *    in SOLR we can add further restriction with AND so
  *    mmd_collection:(the global list from config with OR as operator) AND mmd_collection(user selections from the form with OR operator)
  */
-$metsis_conf['collections'] = 'ADC,NBS';
+$metsis_conf['collections'] = 'NBS,ADC';
 $metsis_conf['collections_visible'] = FALSE;
 $metsis_conf['collections_initially_collapsed'] = TRUE;
 
@@ -279,7 +278,6 @@ $metsis_conf['results_per_page'] = 17;
 //Other ISO 8601 formats to be implemented
 //1. single space between double quotes means blank start/stop date
 //2. no space between quotes for start date means use today's date
-
 $metsis_conf['default_start_date'] = " ";
 $metsis_conf['default_end_date'] = " ";
 // if the user does not refine search look for data younger than
@@ -291,19 +289,23 @@ $metsis_conf['search_max_metadata_age'] = 54000.00; // hours
 $metsis_conf['topics_and_variables_visible'] = TRUE;
 $metsis_conf['topics_and_variables_initially_collapsed'] = TRUE;
 $metsis_conf['institutions_visible'] = TRUE;
+$metsis_conf['results_institutions_visible'] = FALSE;
 $metsis_conf['institutions_initially_collapsed'] = TRUE;
 $metsis_conf['investigator_visible'] = TRUE;
 $metsis_conf['investigator_initially_collapsed'] = TRUE;
 //search results tablulation
-$metsis_conf['abstract_visible'] = TRUE;
+$metsis_conf['results_abstract_visible'] = FALSE;
+$metsis_conf['results_collection_period_visible'] = FALSE;
 
 $metsis_conf['title_visible'] = FALSE;
 $metsis_conf['project_visible'] = FALSE;
-$metsis_conf['keywords_visible'] = TRUE;
+$metsis_conf['results_keywords_visible'] = FALSE;
 
 $metsis_conf['platform_long_name_visible'] = TRUE;
 $metsis_conf['platform_long_name_initially_collapsed'] = TRUE;
-$metsis_conf['results_cloud_cover_value_visible'] = TRUE;
+$metsis_conf['results_platform_long_name_visible'] = TRUE;
+$metsis_conf['results_investigator_visible'] = TRUE;
+$metsis_conf['results_cloud_cover_value_visible'] = FALSE;
 $metsis_conf['cloud_cover_value_visible'] = TRUE;
 $metsis_conf['cloud_cover_value_initially_collapsed'] = TRUE;
 $metsis_conf['cloud_cover_value_search_options'] = array(
@@ -560,3 +562,34 @@ $metsis_conf['sort_by_time'] = 'desc';
 /**
  * search resutls sort order}
  */
+/**
+ * labels, hints and placeholders
+ */
+$metsis_conf['label_temporal_extent'] = 'label_temporal_extent';
+$metsis_conf['hint_temporal_extent_start_date'] = 'hint_temporal_extent_start_date';
+$metsis_conf['placeholder_temporal_extent_start_date'] = 'placeholder_temporal_extent_start_date';
+$metsis_conf['hint_temporal_extent_end_date'] = 'hint_temporal_extent_end_date';
+$metsis_conf['placeholder_temporal_extent_end_date'] = 'placeholder_temporal_extent_end_date';
+
+$metsis_conf['label_bounding_box'] = 'label_bounding_box';
+$metsis_conf['hint_top_left_longitude'] = 'hint_top_left_longitude';
+$metsis_conf['placeholder_top_left_longitude'] = 'placeholder_top_left_longitude';
+$metsis_conf['hint_top_left_latitude'] = 'hint_top_left_latitude';
+$metsis_conf['placeholder_top_left_latitude'] = 'placeholder_top_left_latitude';
+$metsis_conf['hint_bottom_right_longitude'] = 'hint_bottom_right_longitude';
+$metsis_conf['placeholder_bottom_right_longitude'] = 'placeholder_bottom_right_longitude';
+$metsis_conf['hint_bottom_right_latitude'] = 'hint_bottom_right_latitude';
+$metsis_conf['placeholder_bottom_right_latitude'] = 'placeholder_bottom_right_latitude';
+
+$metsis_conf['label_full_text'] = 'label_full_text';
+$metsis_conf['hint_full_text'] = 'hint_full_text';
+$metsis_conf['placeholder_full_text'] = 'placeholder_full_text';
+
+$metsis_conf['label_geographic_extent'] = 'label_geographic_extent';
+
+$metsis_conf['label_institutions'] = 'label_institutions';
+$metsis_conf['label_platform_long_name'] = 'label_platform_long_name';
+
+$metsis_conf['label_investigator'] = 'label_investigator';
+$metsis_conf['hint_investigator'] = 'hint_investigator';
+$metsis_conf['placeholder_investigator'] = 'placeholder_investigator';

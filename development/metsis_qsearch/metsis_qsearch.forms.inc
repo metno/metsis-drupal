@@ -78,18 +78,69 @@ function metsis_qsearch_zero_form($form, &$form_state) {
     if (property_exists('mq_cached_form_state_values', 'chosen_topics_and_variables_a')) {
       $topics_and_variables = $mq_cached_form_state_values->chosen_topics_and_variables_a;
     }
-  } $form['full_text_search'] = array('#type' => 'fieldset', '#title' => t('Full text search'), '#collapsible' => TRUE, '#collapsed' => FULL_TEXT_SEARCH_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('full-text-search-fieldset')),);
-  $form['full_text_search']['chosen_full_text_search'] = array('#type' => 'textfield', '#element_validate' => array('msb_text_qsearch_validate'), '#attributes' => array('placeholder' => t('Search words'),), '#default_value' => $full_text_search,);
+  }
+  $form['full_text_search'] = array(
+    '#type' => 'fieldset',
+    '#title' => defined('LABEL_FULL_TEXT') ? '<span class="adc_label">' . t(LABEL_FULL_TEXT) . '</span>' : t('Full text search'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FULL_TEXT_SEARCH_INITIALLY_COLLAPSED,
+    '#attributes' => array(
+      'class' => array('full-text-search-fieldset')
+    ),
+  );
+
+  $form['full_text_search']['chosen_full_text_search'] = array(
+    '#type' => 'textfield',
+    '#title' => defined('HINT_FULL_TEXT') ? '<div class="adc_hint">' . t(HINT_FULL_TEXT) . '</div>' : '',
+    '#element_validate' => array('msb_text_qsearch_validate'),
+//    '#attributes' => array(
+//      'placeholder' =>  t(PLACEHOLDER_FULL_TEXT),
+//      ),
+    '#attributes' => array(
+      'placeholder' => defined('PLACEHOLDER_FULL_TEXT') ? t(PLACEHOLDER_FULL_TEXT) : t('Search words'),
+    ),
+    '#default_value' => $full_text_search,
+  );
+
   if (INVESTIGATOR_VISIBLE) {
-    $form['investigator'] = array('#type' => 'fieldset', '#title' => t('Investigator'), '#collapsible' => TRUE, '#collapsed' => INVESTIGATOR_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('investigator-fieldset')),);
-    $form['investigator']['chosen_investigator'] = array('#type' => 'textfield', '#element_validate' => array('adc_investigator_validate'), '#attributes' => array('placeholder' => t('Investigator\'s name'),), '#default_value' => $investigator,);
+    $form['investigator'] = array(
+      '#type' => 'fieldset',
+      '#title' => defined('LABEL_INVESTIGATOR') ? '<span class="adc_label">' . t(LABEL_INVESTIGATOR) . '</span>' : t('Investigator'),
+      '#collapsible' => TRUE,
+      '#collapsed' => INVESTIGATOR_INITIALLY_COLLAPSED,
+      '#attributes' => array(
+        'class' => array(
+          'investigator-fieldset'
+        )
+      ),
+    );
+    $form['investigator']['chosen_investigator'] = array(
+      '#type' => 'textfield',
+      '#title' => defined('HINT_INVESTIGATOR') ? '<div class="adc_hint">' . t(HINT_INVESTIGATOR) . '</div>' : '',
+      '#element_validate' => array(
+        'adc_investigator_validate'
+      ),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_INVESTIGATOR') ? t(PLACEHOLDER_INVESTIGATOR) : t('Investigator\'s name'),
+      ),
+      '#default_value' => $investigator,
+    );
   } if (TOPICS_AND_VARIABLES_VISIBLE) {
     $form['topics_and_variables'] = array('#type' => 'fieldset', '#title' => t('Topics and variables'), '#collapsible' => TRUE, '#collapsed' => TOPICS_AND_VARIABLES_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('topics-and-variables-fieldset')),);
     $form['topics_and_variables']['chosen_topics_and_variables_a'] = array('#type' => 'textfield', '#autocomplete_path' => METADATA_PREFIX . 'keywords/autocomplete', '#element_validate' => array('msb_text_qsearch_validate'), '#attributes' => array('placeholder' => t('Science keyword'),), '#default_value' => $topics_and_variables,);
   } $form['operational_status'] = array('#access' => FALSE, '#type' => 'hidden', '#title' => t('Operational status'), '#collapsible' => TRUE, '#collapsed' => TRUE, '#tree' => TRUE, '#attributes' => array('class' => array('operational-status-fieldset',), 'title' => hack_get_skos_opstat("Operational Status"),),);
   $form['operational_status']['chosen_operational_status'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_get_operational_statuses()),);
   if (INSTITUTIONS_VISIBLE) {
-    $form['institutions'] = array('#type' => 'fieldset', '#title' => t('Institutions'), '#collapsible' => TRUE, '#collapsed' => INSTITUTIONS_INITIALLY_COLLAPSED, '#tree' => TRUE, '#attributes' => array('class' => array('institutions-fieldset')),);
+    $form['institutions'] = array(
+      '#type' => 'fieldset',
+      //'#title' => t('Institutions'),
+      '#title' => defined('LABEL_INSTITUTIONS') ? '<span class="adc_label">' . t(LABEL_INSTITUTIONS) . '</span>' : t('Institutions'),
+      '#collapsible' => TRUE,
+      '#collapsed' => INSTITUTIONS_INITIALLY_COLLAPSED,
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => array('institutions-fieldset')),
+    );
     $form['institutions']['chosen_institutions'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_get_institutions()), '#default_value' => $institutions,);
   } if (COLLECTIONS_VISIBLE) {
     $form['collections'] = array('#type' => 'fieldset', '#title' => t('Collections'), '#collapsible' => TRUE, '#collapsed' => COLLECTIONS_INITIALLY_COLLAPSED, '#tree' => TRUE, '#attributes' => array('class' => array('collections-fieldset')),);
@@ -106,7 +157,17 @@ function metsis_qsearch_zero_form($form, &$form_state) {
     $instrument_polarisations_array = explode(',', INSTRUMENT_POLARISATIONS);
     sort($instrument_polarisations_array);
   } if (PLATFORM_LONG_NAME_VISIBLE) {
-    $form['platform_long_name'] = array('#type' => 'fieldset', '#title' => t('Platform'), '#collapsible' => TRUE, '#collapsed' => PLATFORM_LONG_NAME_INITIALLY_COLLAPSED, '#tree' => TRUE, '#attributes' => array('class' => array('platform_long_name-fieldset')),);
+    $form['platform_long_name'] = array(
+      '#type' => 'fieldset',
+      //'#title' => t('Platform'), 
+      '#title' => defined('LABEL_PLATFORM_LONG_NAME') ? '<span class="adc_label">' . t(LABEL_PLATFORM_LONG_NAME) . '</span>' : t('Platform'),
+      '#collapsible' => TRUE,
+      '#collapsed' => PLATFORM_LONG_NAME_INITIALLY_COLLAPSED,
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => array('platform_long_name-fieldset')
+      ),
+    );
     foreach ($platform_long_name_array as $k => $v) {
       $form['platform_long_name'][$k]['chosen_platform_long_name'] = array('#type' => 'checkboxes', '#options' => array_combine(array($k), array($v)), '#default_value' => array_values($c_platform), '#attributes' => array('class' => array('platform-long-name-check-box',),),);
       if ($k == 'sentinel_1a') {
@@ -147,8 +208,28 @@ function metsis_qsearch_zero_form($form, &$form_state) {
     }
   } global $metsis_conf;
   $jquery_path = "/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js";
-  $form['geographical_search'] = array('#type' => 'fieldset', '#title' => t('Geographical search'), '#collapsible' => TRUE, '#collapsed' => FALSE, '#attached' => array('js' => array($jquery_path,),), '#attributes' => array('class' => array('geographical-search-fieldset',),),);
-  $form['data_collection_period'] = array('#type' => 'fieldset', '#title' => t('Data collection period'), '#collapsible' => TRUE, '#collapsed' => DATA_COLLECTION_PERIOD_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('data-collection-period-fieldset',),),);
+  $form['geographical_search'] = array(
+    '#type' => 'fieldset',
+    '#title' => defined('LABEL_GEOGRAPHIC_EXTENT') ? '<span class="adc_label">' . t(LABEL_GEOGRAPHIC_EXTENT) . '</span>' : t('Geographical search'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#attached' => array(
+      'js' => array($jquery_path,),
+    ),
+    '#attributes' => array(
+      'class' => array(
+        'geographical-search-fieldset',),
+    ),
+  );
+  $form['data_collection_period'] = array(
+    '#type' => 'fieldset',
+    '#title' => defined('LABEL_TEMPORAL_EXTENT') ? '<span class="adc_label">' . t(LABEL_TEMPORAL_EXTENT) . '</span>' : t('Data collection period'),
+    '#collapsible' => TRUE,
+    '#collapsed' => DATA_COLLECTION_PERIOD_INITIALLY_COLLAPSED,
+    '#attributes' => array(
+      'class' => array('data-collection-period-fieldset',),
+    ),
+  );
   if ($finished_after != '') {
     $default_finished_after = $finished_after;
   }
@@ -165,9 +246,83 @@ function metsis_qsearch_zero_form($form, &$form_state) {
   }
   else {
     $default_finished_before = "";
-  } $form['data_collection_period'][] = array('#type' => 'item', 'finished_after' => array('#type' => 'date_popup', '#title' => t('Start date'), '#default_value' => $default_finished_after, '#date_format' => 'Y-m-d', '#date_year_range' => '-50:+2', '#datepicker_options' => array('changeMonth' => TRUE, 'changeYear' => TRUE,), '#element_validate' => array('msb_start_finish_date_validate'), '#attributes' => array('placeholder' => t('yyyy-mm-dd'), 'class' => array('adc-highlight',), 'title' => "Start date BEFORE or FROM",),), 'finished_before' => array('#type' => 'date_popup', '#title' => t('End date'), '#default_value' => $default_finished_before, '#date_format' => 'Y-m-d', '#date_year_range' => '-50:+2', '#datepicker_options' => array(), '#element_validate' => array('msb_start_finish_date_validate'), '#attributes' => array('placeholder' => t('yyyy-mm-dd'), 'class' => array('adc-highlight',), 'title' => "End date FROM or AFTER",),),);
-  $form['bounding_box'] = array('#type' => 'fieldset', '#title' => t('Bounding box'), '#collapsible' => TRUE, '#collapsed' => BOUNDING_BOX_INITIALLY_COLLAPSED, '#attributes' => array('class' => array('bounding-box-fieldset',),),);
-  $form['bounding_box'][] = array('#type' => 'item', '#title' => t('Top left longitude'), 'bbox_top_left_lon' => array('#type' => 'textfield', '#element_validate' => array('adc_longitude_validate'), '#attributes' => array('placeholder' => t('Top left longitude'), 'title' => "Top left longitude",), '#default_value' => $bbox_top_left_lon,), 'bbox_top_left_lat' => array('#type' => 'textfield', '#element_validate' => array('adc_latitude_validate'), '#title' => t('Top left latitude'), '#attributes' => array('placeholder' => t('Top left latitude'), 'title' => "Top left latitude",), '#default_value' => $bbox_top_left_lat,), 'bbox_bottom_right_lon' => array('#type' => 'textfield', '#element_validate' => array('adc_longitude_validate'), '#title' => t('Bottom right longitude'), '#attributes' => array('placeholder' => t('Bottom right longitude'), 'title' => "Bottom right longitude",), '#default_value' => $bbox_bottom_right_lon,), 'bbox_bottom_right_lat' => array('#type' => 'textfield', '#element_validate' => array('adc_latitude_validate'), '#title' => t('Bottom right latitude'), '#default_value' => $bbox_bottom_right_lat, '#attributes' => array('placeholder' => t('Bottom right latitude'), 'title' => "Bottom right latitude",),),);
+  }
+  $form['data_collection_period'][] = array(
+    '#type' => 'item',
+    'finished_after' => array('#type' => 'date_popup',
+      '#title' => defined('HINT_TEMPORAL_EXTENT_START_DATE') ? '<div class="adc_hint">' . t(HINT_TEMPORAL_EXTENT_START_DATE) . '</div>' : t('Start date'),
+      '#default_value' => $default_finished_after,
+      '#date_format' => 'Y-m-d',
+      '#date_year_range' => '-50:+2',
+      '#datepicker_options' => array('changeMonth' => TRUE, 'changeYear' => TRUE,),
+      '#element_validate' => array('msb_start_finish_date_validate'),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_TEMPORAL_EXTENT_START_DATE') ? t(PLACEHOLDER_TEMPORAL_EXTENT_START_DATE) : t('yyyy-mm-dd'),
+        'class' => array('adc-highlight',),
+        'title' => "Start date BEFORE or FROM",),),
+    'finished_before' => array('#type' => 'date_popup',
+      '#title' => defined('HINT_TEMPORAL_EXTENT_END_DATE') ? '<div class="adc_hint">' . t(HINT_TEMPORAL_EXTENT_END_DATE) . '</div>' : t('End date'),
+      '#default_value' => $default_finished_before,
+      '#date_format' => 'Y-m-d',
+      '#date_year_range' => '-50:+2',
+      '#datepicker_options' => array(),
+      '#element_validate' => array('msb_start_finish_date_validate'),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_TEMPORAL_EXTENT_START_DATE') ? t(PLACEHOLDER_TEMPORAL_EXTENT_END_DATE) : t('yyyy-mm-dd'),
+        'class' => array('adc-highlight',),
+        'title' => "End date FROM or AFTER",)
+    ,)
+    ,);
+  $form['bounding_box'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Bounding box'),
+    '#title' => defined('LABEL_BOUNDING_BOX') ? '<span class="adc_label">' . t(LABEL_BOUNDING_BOX) . '</span>' : t('Bounding box'),
+    '#collapsible' => TRUE,
+    '#collapsed' => BOUNDING_BOX_INITIALLY_COLLAPSED,
+    '#attributes' => array(
+      'class' => array('bounding-box-fieldset',),
+    ),
+  );
+  $form['bounding_box'][] = array(
+    '#type' => 'item',
+    '#title' => defined('HINT_TOP_LEFT_LONGITUDE') ? '<div class="adc_hint">' . t(HINT_TOP_LEFT_LONGITUDE) . '</div>' : t('Top left longitude'),
+    'bbox_top_left_lon' => array(
+      '#type' => 'textfield',
+      '#element_validate' => array('adc_longitude_validate'),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_TOP_LEFT_LONGITUDE') ? t(PLACEHOLDER_TOP_LEFT_LONGITUDE) : t('Top left longitude'),
+        'title' => "Top left longitude",),
+      '#default_value' => $bbox_top_left_lon,
+    ),
+    'bbox_top_left_lat' => array(
+      '#type' => 'textfield',
+      '#element_validate' => array('adc_latitude_validate'),
+      '#title' => defined('HINT_TOP_LEFT_LATITUDE') ? '<div class="adc_hint">' . t(HINT_TOP_LEFT_LATITUDE) . '</div>' : t('Top left latitude'),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_TOP_LEFT_LATITUDE') ? t(PLACEHOLDER_TOP_LEFT_LATITUDE) : t('Top left latitude'),
+        'title' => "Top left latitude",),
+      '#default_value' => $bbox_top_left_lat,
+    ),
+    'bbox_bottom_right_lon' => array(
+      '#type' => 'textfield',
+      '#element_validate' => array('adc_longitude_validate'),
+      '#title' => defined('HINT_BOTTOM_RIGHT_LONGITUDE') ? '<div class="adc_hint">' . t(HINT_BOTTOM_RIGHT_LONGITUDE) . '</div>' : t('Bottom right longitude'),
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_BOTTOM_RIGHT_LONGITUDE') ? t(PLACEHOLDER_BOTTOM_RIGHT_LONGITUDE) : t('Bottom right longitude'),
+        'title' => "Bottom right longitude",),
+      '#default_value' => $bbox_bottom_right_lon,
+    ),
+    'bbox_bottom_right_lat' => array(
+      '#type' => 'textfield',
+      '#element_validate' => array('adc_latitude_validate'),
+      '#title' => defined('HINT_BOTTOM_RIGHT_LATITUDE') ? '<div class="adc_hint">' . t(HINT_BOTTOM_RIGHT_LATITUDE) . '</div>' : t('Bottom right latitude'),
+      '#default_value' => $bbox_bottom_right_lat,
+      '#attributes' => array(
+        'placeholder' => defined('PLACEHOLDER_BOTTOM_RIGHT_LATITUDE') ? t(PLACEHOLDER_BOTTOM_RIGHT_LATITUDE) : t('Bottom right latitude'),
+        'title' => "Bottom right latitude",
+      ),
+    ),
+  );
   $form['geographical_search']['map'] = array('#prefix' => ' ', '#markup' => adc_get_geographical_search_map(), '#suffix' => ' ',);
   $form['#validate'][] = 'msb_all_or_none_latlon_validate';
   $form['#validate'][] = 'msb_foo_validate';
