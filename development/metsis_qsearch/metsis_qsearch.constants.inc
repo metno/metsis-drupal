@@ -32,6 +32,9 @@ if (isset($metsis_conf['collections'])) {
   define('COLLECTIONS', adc_array_to_solror(array_map('trim', explode(',', $metsis_conf['collections']))));
 } define('COLLECTIONS_VISIBLE', $metsis_conf['collections_visible']);
 define('COLLECTIONS_INITIALLY_COLLAPSED', $metsis_conf['collections_initially_collapsed']);
+if (isset($metsis_conf['label_collections'])) {
+  define('LABEL_COLLECTIONS', $metsis_conf['label_collections']);
+}
 define('INVESTIGATOR_VISIBLE', $metsis_conf['investigator_visible']);
 define('INVESTIGATOR_INITIALLY_COLLAPSED', $metsis_conf['investigator_initially_collapsed']);
 if (isset($metsis_conf['results_investigator_visible'])) {
@@ -170,3 +173,15 @@ if (isset($metsis_conf['hint_investigator'])) {
 if (isset($metsis_conf['placeholder_investigator'])) {
   define('PLACEHOLDER_INVESTIGATOR', $metsis_conf['placeholder_investigator']);
 }
+
+if (isset($metsis_conf['label_topics_and_variables'])) {
+  define('LABEL_TOPICS_AND_VARIABLES', $metsis_conf['label_topics_and_variables']);
+}
+if (isset($metsis_conf['hint_topics_and_variables'])) {
+  define('HINT_TOPICS_AND_VARIABLES', $metsis_conf['hint_topics_and_variables']);
+}
+if (isset($metsis_conf['placeholder_topics_and_variables'])) {
+  define('PLACEHOLDER_TOPICS_AND_VARIABLES', $metsis_conf['placeholder_topics_and_variables']);
+}
+
+

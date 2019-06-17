@@ -94,7 +94,7 @@ $metsis_conf['metadata_prefix'] = 'mmd_';
  *    mmd_collection:(the global list from config with OR as operator) AND mmd_collection(user selections from the form with OR operator)
  */
 $metsis_conf['collections'] = 'NBS,ADC';
-$metsis_conf['collections_visible'] = FALSE;
+$metsis_conf['collections_visible'] = TRUE;
 $metsis_conf['collections_initially_collapsed'] = TRUE;
 
 /**
@@ -593,3 +593,11 @@ $metsis_conf['label_platform_long_name'] = 'label_platform_long_name';
 $metsis_conf['label_investigator'] = 'label_investigator';
 $metsis_conf['hint_investigator'] = 'hint_investigator';
 $metsis_conf['placeholder_investigator'] = 'placeholder_investigator';
+
+$metsis_conf['label_collections'] = 'label_collections';
+
+
+
+$metsis_conf['label_topics_and_variables'] = 'label_topics_and_variables';
+$metsis_conf['hint_topics_and_variables'] = 'hint_topics_and_variables';
+$metsis_conf['placeholder_topics_and_variables'] = 'placeholder_topics_and_variables';
