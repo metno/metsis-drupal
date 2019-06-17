@@ -3,9 +3,9 @@
 //$this_url = url(current_path(), array('absolute' => TRUE, 'query' => drupal_get_query_parameters()));
 ?>
 <!--<div class="share_these_results_by_mail">
-    <a href="mailto:?subject=Metadata&body=<?php //print($this_url);   ?>"
+    <a href="mailto:?subject=Metadata&body=<?php //print($this_url);     ?>"
        title="Share via e-mail"><br>
-        <img src="/<?php //print($icons_path);   ?>/mail.png">
+        <img src="/<?php //print($icons_path);     ?>/mail.png">
     </a>
 </div>-->
 <h2><?php print t('Available Metadata'); ?></h2>
