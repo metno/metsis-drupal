@@ -78,6 +78,7 @@ function qsearch_get_ctable($form_state, $page_number) {
   $solr_obj = q_do_search($_SESSION['qsearch']['initial_user_query'], $number_results_per_page, $start_row);
   $show_children = FALSE;
   $children = NULL;
+
   $header = array();
   if (DATASETNAME_VISIBLE) {
     $header['datasetName'] = t('Dataset name');
@@ -103,6 +104,20 @@ function qsearch_get_ctable($form_state, $page_number) {
    * test{
    */
   $header['call_it_what_you_want'] = t('Call it what you want');
+  /**
+   * test{
+   */
+  $results_table_columns = array_map('trim', explode(',', 'this, that,the, other'));
+  //var_dump($results_table_columns);
+  $results_table_columns_kv = [];
+  foreach ($results_table_columns as $k => $v) {
+    $results_table_columns_kv[$v] = $v;
+    $header[$v] = $v;
+  }
+  //var_dump($results_table_columns_kv);
+  /**
+   * test}
+   */
   /**
    * test}
    */
@@ -311,10 +326,35 @@ function qsearch_get_ctable($form_state, $page_number) {
       }
     }
   } if (BASKET_ELEMENTS_VISIBLE) {
-    $form ['table'] = array('#header' => $header, '#type' => 'tableselect', '#sticky' => false, '#options' => $options, '#empty' => t('No datasets found.'), '#weight' => 0, '#multiple' => true, '#tree' => TRUE, '#attributes' => array('class' => array('datasets', 'sortable',)));
+    $form ['table'] = array(
+      '#header' => $header,
+      '#type' => 'tableselect',
+      '#sticky' => false,
+      '#options' => $options,
+      '#empty' => t('No datasets found.'),
+      '#weight' => 0,
+      '#multiple' => true,
+      '#tree' => TRUE,
+      '#attributes' => array(
+        'class' => array(
+          'datasets', 'sortable',
+        )
+      )
+    );
   }
   else {
-    $form ['table'] = array('#header' => $header, '#theme' => 'table', '#rows' => $options, '#empty' => t('No datasets found.'), '#weight' => 0, '#attributes' => array('class' => array('datasets', 'sortable',)));
+    $form ['table'] = array(
+      '#header' => $header,
+      '#theme' => 'table',
+      '#rows' => $options,
+      '#empty' => t('No datasets found.'),
+      '#weight' => 0,
+      '#attributes' => array(
+        'class' => array(
+          'datasets', 'sortable',
+        )
+      )
+    );
   } $path = drupal_get_path('module', 'metsis_qsearch');
   $form['#attached'] = array('css' => array('type' => 'file', 'data' => $path . '/css/simplePagination.css',), 'js' => array('type' => 'file', 'data' => $path . '/js/jquery.simplePagination.js',),);
   return $form;
