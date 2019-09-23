@@ -146,8 +146,22 @@ function metsis_qsearch_zero_form($form, &$form_state) {
       ),
       '#default_value' => $topics_and_variables,
     );
-  } $form['operational_status'] = array('#access' => FALSE, '#type' => 'hidden', '#title' => t('Operational status'), '#collapsible' => TRUE, '#collapsed' => TRUE, '#tree' => TRUE, '#attributes' => array('class' => array('operational-status-fieldset',), 'title' => hack_get_skos_opstat("Operational Status"),),);
-  $form['operational_status']['chosen_operational_status'] = array('#type' => 'checkboxes', '#options' => drupal_map_assoc(msb_get_operational_statuses()),);
+  }
+  $form['operational_status'] = array(
+    '#access' => FALSE,
+    '#type' => 'hidden',
+    '#title' => t('Operational status'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    '#tree' => TRUE,
+    '#attributes' => array('class' => array('operational-status-fieldset',),
+      'title' => hack_get_skos_opstat("Operational Status"),
+    ),
+  );
+  $form['operational_status']['chosen_operational_status'] = array(
+    '#type' => 'checkboxes',
+    '#options' => drupal_map_assoc(msb_get_operational_statuses()),
+  );
   if (INSTITUTIONS_VISIBLE) {
     $form['institutions'] = array(
       '#type' => 'fieldset',
@@ -361,15 +375,34 @@ function metsis_qsearch_zero_form($form, &$form_state) {
   } if (BASKET_ELEMENTS_VISIBLE) {
     global $user;
     if (($user->uid) && get_user_item_count($user->uid) > 0) {
-      $form['goto_basket'] = array('#type' => 'submit', '#value' => t('Basket (@basket_item_count)', array('@basket_item_count' => get_user_item_count($user->uid))), '#submit' => array('adc_goto_basket'), '#validate' => array(), '#attributes' => array('class' => array('adc-button-small',),),);
+      $form['goto_basket'] = array(
+        '#type' => 'submit',
+        '#value' => t('Basket (@basket_item_count)',
+          array(
+            '@basket_item_count' => get_user_item_count($user->uid))),
+        '#submit' => array(
+          'adc_goto_basket'
+        ),
+        '#validate' => array(),
+        '#attributes' => array(
+          'class' => array(
+            'adc-button-small',
+          ),
+        ),
+      );
       $form['empty_basket'] = array('#type' => 'submit', '#value' => t('Empty basket'), '#submit' => array('adc_empty_basket'), '#validate' => array(), '#attributes' => array('class' => array('adc-button-small',),),);
     }
   } $path = drupal_get_path('module', 'metsis_qsearch');
-  $form['#attached'] = array('css' => array('type' => 'file', 'data' => $path . '/css/metsis_qsearch.css',), 'js' => array('type' => 'file', 'data' => $path . '/js/metsis_qsearch.js',),);
+  $form['#attached'] = array(
+    'css' => array('type' => 'file', 'data' => $path . '/css/metsis_qsearch.css',),
+    'js' => array('type' => 'file', 'data' => $path . '/js/metsis_qsearch.js',),
+  );
+  //$form['#attributes'] = array('OnSubmit' => 'alert("Submission interruption");');
   return $form;
 }
 
 function metsis_qsearch_submit($form, &$form_state) {
+
   $initial_user_query = msb_get_final_solr_qq($form_state);
   $_SESSION['qsearch']['initial_user_query'] = $initial_user_query;
   $bytes = 32;
@@ -436,7 +469,8 @@ function theme_metsis_qsearch_form($variables) {
       $output .= drupal_render($form['goto_basket']);
       $output .= drupal_render($form['empty_basket']);
     }
-  } $output .= '</div>';
+  }
+  $output .= '</div>';
   $output .= '</div>';
   $output .= '<div class="map-div">';
   $output .= '<div class="geographical-search-div">';

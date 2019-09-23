@@ -19,8 +19,10 @@ $parent = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_PA
         <div class="elementsbox contentb">
 
             <?php print drupal_render_children($form); ?>
-            <a href="<?php print($calling_results_page); ?>" class="adc-button"><?php print t('Back to results') ?>
-            </a>
+<!--            <a href="<?php print($calling_results_page); ?>" class="adc-button"><?php print t('Back to results') ?>
+            </a>-->
+<!--            <a href="<?php print($calling_results_page); ?>" class="button"><?php print t('Back to results') ?>
+            </a>-->
         </div>
     </div>
 </div>

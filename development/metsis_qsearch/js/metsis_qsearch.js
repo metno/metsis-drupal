@@ -11,18 +11,8 @@ function escapeRegExp(string) {
                 var url = window.location.href;
                 var parser = document.createElement('a');
                 parser.href = url;
-                //alert(parser.protocol); //e.g. https:
-                //alert(parser.hostname); //e.g. xyz.metsis.met.no
-                //alert(parser.port);     //e.g. 8080
                 var path = parser.pathname; //e.g. /results/ or /child
-                //alert(parser.search);   //e.g. ?page=1 or ?metadata_identifier=2d90033b-99dc-5a7a-a441-f9bd08ba233f&calling_results_page=https://xyz.metsis.met.no/results?page=1&page=8
-                //alert(parser.hash);
                 var params = url.match(/[(\?|\&)]([^=]+)\=([^&#]+)/g);
-                //if url = "https://xyz.metsis.met.no/child?metadata_identifier=2d90033b-99dc-5a7a-a441-f9bd08ba233f&calling_results_page=https://xyz.metsis.met.no/results?page=1&page=8"
-                //params[0] is then ?metadata_identifier=2d90033b-99dc-5a7a-a441-f9bd08ba233f
-                //params[1] is then &calling_results_page=https://xyz.metsis.met.no/results?page=1
-                //params[2] is then &page=8
-
                 if (path == "/child") {
                     paginationHrefTextPrefix = params[0] + params[1] + "&page=";
                 } else {
@@ -252,26 +242,8 @@ function escapeRegExp(string) {
     Drupal.behaviors.metsisQSearchShareSearch = {
         //}anonymous function wrapper
         attach: function () {
-            $('#shared-search').on('click', function (event) {
-                //alert($(this).attr('zulu') + " copied");
-                /**
-                 * test{ 
-                 */
+            $('#edit-share-results').on('click', function (event) {
                 $('.quid-share-string').toggle("slow");
-//                var id = $(this).attr('id');
-//                var el = document.getElementById(id);
-//                var range = document.createRange();
-//                range.selectNodeContents(el);
-//                var sel = window.getSelection();
-//                sel.removeAllRanges();
-//                sel.addRange(range);
-//                document.execCommand('copy');
-//                alert("Contents copied to clipboard.");
-//                return false;
-                /**
-                 * test} 
-                 */
-
             });
         }
         //anonymous function wrapper{
@@ -280,20 +252,23 @@ function escapeRegExp(string) {
 /**
  * copy search URL}
  */
-/**
- * TODO 05
- * JS qsearch form reset button{
- */
-/**
- * JS qsearch form reset button}
- */
 
-//
-//
-//function copyToClipboard(element) {
-//    var $temp = $("<input>");
-//    $("body").append($temp);
-//    $temp.val($(element).text()).select();
-//    document.execCommand("copy");
-//    //$temp.remove();
-//}
+/**
+ * metadata div display{
+ */
+(function ($) {
+    Drupal.behaviors.metsisQSearchMetadataDisplay = {
+        //}anonymous function wrapper
+        attach: function () {
+            $('.adc-button').on('click', function (event) {
+                var mid = $(this).attr('id');
+                var res = mid.match(/metadata-div/g);
+                if (res.length > 0) {
+                    $(this).children().toggle();
+                }
+            }
+            );
+        }
+    }
+    //anonymous function wrapper{  
+}(jQuery));
