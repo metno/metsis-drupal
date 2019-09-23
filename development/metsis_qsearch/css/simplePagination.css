@@ -20,6 +20,10 @@ ul.simple-pagination {
     padding: 0;
     margin: 0;
 }
+.simple-pagination.ul{
+  padding-left: unset !important;
+}
+
 
 .simple-pagination li {
     list-style: none;

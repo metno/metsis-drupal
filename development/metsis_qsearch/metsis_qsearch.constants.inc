@@ -13,7 +13,12 @@ if (isset($metsis_conf['dar_http_button_text'])) {
   define('DAR_OGC_WMS_BUTTON_TEXT', $metsis_conf['dar_ogc_wms_button_text']);
 } if (isset($metsis_conf['solr_metadata_button_text'])) {
   define('SOLR_METADATA_BUTTON_TEXT', $metsis_conf['solr_metadata_button_text']);
-} define('TS_VISUALIZATION_BUTTON_TEXT', $metsis_conf['ts_visualization_button_text']);
+} 
+if(isset($metsis_conf['show_metadata_inline']) && $metsis_conf['show_metadata_inline'] === TRUE){
+  define('SHOW_METADATA_INLINE' ,$metsis_conf['show_metadata_inline']);
+}
+
+define('TS_VISUALIZATION_BUTTON_TEXT', $metsis_conf['ts_visualization_button_text']);
 define('CSV_BUTTON_TEXT', $metsis_conf['csv_button_text']);
 if (isset($metsis_conf['landing_page_button_var'])) {
   define('LANDING_PAGE_BUTTON_VAR', $metsis_conf['landing_page_button_var']);
@@ -185,3 +190,6 @@ if (isset($metsis_conf['placeholder_topics_and_variables'])) {
 }
 
 
+if (isset($metsis_conf['results_thumb_column_header'])) {
+  define('RESULTS_THUMB_COLUMN_HEADER', $metsis_conf['results_thumb_column_header']);
+}

@@ -63,3 +63,37 @@
 //
 })(jQuery);
 
+/**
+ * test{
+ * NOT ready for use.
+ * 
+ * needs
+ * code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css
+ * and
+ * code.jquery.com/ui/1.12.1/jquery-ui.js
+ * 
+ */
+/*
+
+(function ($) {
+    //prefer anonymous functions since these are more easily ported to other applications
+    jQuery(function () {
+        jQuery("#slider-range").slider({
+            range: true,
+            min: 0,
+            max: 500,
+            values: [75, 300], //start and stop dates from OPeNDAP must be passed in here
+            slide: function (event, ui) {
+                jQuery("#amount").val("" + ui.values[ 0 ] + " - " + ui.values[ 1 ]);
+            }
+        });
+        jQuery("#amount").val("$" + $("#slider-range").slider("values", 0) +
+                " - " + jQuery("#slider-range").slider("values", 1));
+    });
+//
+})(jQuery);
+
+*/
+/**
+ * test}
+ */

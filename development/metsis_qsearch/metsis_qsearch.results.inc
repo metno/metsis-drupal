@@ -8,50 +8,133 @@ function q_get_paged_form() {
 }
 
 function q_results_tabular_form($form, &$form_state) {
+  global $user;
+
   $params = drupal_get_query_parameters();
-  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
-  $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
-  $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
-  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
-  $form['#validate'][] = 'adc_min_select_validate';
 //  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
 //  $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
 //  $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
+  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
+
+  $form['#validate'][] = 'adc_min_select_validate';
+  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
+  $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
+
+
+//  $bts_markup = '<a class="adc-button" href="/';
+//  $bts_markup .= METSIS_QSEARCH_ENDPOINT;
+//  $bts_markup .= '/?quid=';
+//  $bts_markup .= $_SESSION['qsearch']['quid'];
+//  $bts_markup .= '">Back to search</a>';
+//  $form['back_to_search'] = array('#weight' => 3, '#markup' => $bts_markup,);
+  global $base_url;
+//  if (SHARE_RESULTS_EMAIL_BUTTON_VISIBLE !== FALSE) {
+//    $ss_markup = '<div class="adc-button"> ';
+//    $ss_markup .= '<a href="mailto:?subject=Data search&body=';
+//    $ss_markup .= $base_url;
+//    $ss_markup .= '/';
+//    $ss_markup .= METSIS_QSEARCH_ENDPOINT;
+//    $ss_markup .= '/?quid=';
+//    $ss_markup .= $_SESSION['qsearch']['quid'];
+//    $ss_markup .= '">';
+//    $ss_markup .= SHARE_RESULTS_EMAIL_BUTTON_TEXT;
+//    $ss_markup .= '</a>';
+//    $ss_markup .= '</div>';
+//    $form['share_search'] = array('#weight' => 7, '#markup' => $ss_markup,);
+//  }
+  $form['adc_buttons_wrapper'] = array(
+    '#prefix' => defined('ADC_FLOATING_BUTTONS') ? '<div  class="adc-floating-buttons">' : '<div  class="adc-buttons-wrapper">',
+    '#suffix' => '</div>',
+  );
+  $form['adc_buttons_wrapper']['pagination'] = array(
+    '#markup' => $pager_markup,
+    '#prefix' => '<div id="number_of_pages_info_div">',
+    '#suffix' => '</div>',
+  );
   if (BASKET_ELEMENTS_VISIBLE) {
     if (count($form['table']['table']['#options']) > 0) {
-      $form['add_to_basket'] = array('#weight' => 2, '#type' => 'submit', '#value' => t('Add to basket'), '#submit' => array('adc_add_to_basket'),);
+      $form['adc_buttons_wrapper']['add_to_basket'] = array(
+        '#type' => 'submit',
+        '#value' => t('Add to basket'),
+        '#submit' => array('adc_add_to_basket'),
+        '#validate' => array(),
+        '#attributes' => array(
+          'class' => array(
+            'adc-button-small',
+          ),
+        ),
+      );
     }
-  } $bts_markup = '<a class="adc-button" href="/';
-  $bts_markup .= METSIS_QSEARCH_ENDPOINT;
-  $bts_markup .= '/?quid=';
-  $bts_markup .= $_SESSION['qsearch']['quid'];
-  $bts_markup .= '">Back to search</a>';
-  $form['back_to_search'] = array('#weight' => 3, '#markup' => $bts_markup,);
-  global $base_url;
+  }
+  $form['adc_buttons_wrapper']['back_to_search'] = array(
+    '#type' => 'submit',
+    '#value' => t('Back to search'),
+    '#submit' => array('adc_go_back_to_search'),
+    '#validate' => array(),
+    '#attributes' => array(
+      'class' => array(
+        'adc-button-small',
+      ),
+    ),
+  );
+
+  if (($user->uid) && get_user_item_count($user->uid) > 0) {
+    $form['adc_buttons_wrapper']['goto_basket'] = array(
+      '#type' => 'submit',
+      '#value' => t('Basket (@basket_item_count)',
+        array(
+          '@basket_item_count' => get_user_item_count($user->uid))),
+      '#submit' => array(
+        'adc_goto_basket'
+      ),
+      '#validate' => array(),
+      '#attributes' => array(
+        'class' => array(
+          'adc-button-small',
+        ),
+      ),
+    );
+  }
+
+  if (SHARE_RESULTS_COPY_BUTTON_VISIBLE !== FALSE) {
+    $form['adc_buttons_wrapper']['share_results'] = array(
+      '#type' => 'button',
+      '#value' => t(SHARE_RESULTS_COPY_BUTTON_TEXT),
+      '#attributes' => array(
+        'onclick' => 'return(false);',
+        'class' => array(
+          'adc-button-small',
+        ),
+      ),
+    );
+  }
+
   if (SHARE_RESULTS_EMAIL_BUTTON_VISIBLE !== FALSE) {
-    $ss_markup = '<div class="adc-button"> ';
-    $ss_markup .= '<a href="mailto:?subject=Data search&body=';
-    $ss_markup .= $base_url;
-    $ss_markup .= '/';
-    $ss_markup .= METSIS_QSEARCH_ENDPOINT;
-    $ss_markup .= '/?quid=';
-    $ss_markup .= $_SESSION['qsearch']['quid'];
-    $ss_markup .= '">';
-    $ss_markup .= SHARE_RESULTS_EMAIL_BUTTON_TEXT;
-    $ss_markup .= '</a>';
-    $ss_markup .= '</div>';
-    $form['share_search'] = array('#weight' => 7, '#markup' => $ss_markup,);
-  } if (SHARE_RESULTS_COPY_BUTTON_VISIBLE !== FALSE) {
-    $ssc_markup = '<div id="shared-search" class="adc-button" zulu="';
-    $ssc_markup .= $base_url;
-    $ssc_markup .= '/';
-    $ssc_markup .= METSIS_QSEARCH_ENDPOINT;
-    $ssc_markup .= '/?quid=';
-    $ssc_markup .= $_SESSION['qsearch']['quid'];
-    $ssc_markup .= '">';
-    $ssc_markup .= SHARE_RESULTS_COPY_BUTTON_TEXT;
-    $ssc_markup .= '</div>';
-    $form['share_copy_search'] = array('#weight' => 8, '#markup' => $ssc_markup,);
+    $form['adc_buttons_wrapper']['share_search_by_mail'] = array(
+      '#type' => 'submit',
+      '#value' => t(SHARE_RESULTS_EMAIL_BUTTON_TEXT),
+      '#submit' => array('adc_search_by_mail'),
+      '#validate' => array(),
+      '#attributes' => array(
+        'class' => array(
+          'adc-button-small',
+        ),
+      ),
+    );
+  }
+
+
+  if (SHARE_RESULTS_COPY_BUTTON_VISIBLE !== FALSE) {
+//    $ssc_markup = '<div id="shared-search" class="adc-button"';
+//    $ssc_markup .= $base_url;
+//    $ssc_markup .= '/';
+//    $ssc_markup .= METSIS_QSEARCH_ENDPOINT;
+//    $ssc_markup .= '/?quid=';
+//    $ssc_markup .= $_SESSION['qsearch']['quid'];
+//    $ssc_markup .= '">';
+//    $ssc_markup .= SHARE_RESULTS_COPY_BUTTON_TEXT;
+//    $ssc_markup .= '</div>';
+//    $form['share_copy_search'] = array('#weight' => 8, '#markup' => $ssc_markup,);
     $quid_share_markup = '<div class="quid-share-string">';
     $quid_share_markup .= $base_url;
     $quid_share_markup .= '/';
@@ -59,8 +142,9 @@ function q_results_tabular_form($form, &$form_state) {
     $quid_share_markup .= '/?quid=';
     $quid_share_markup .= $_SESSION['qsearch']['quid'];
     $quid_share_markup .= '</div>';
-    $form['quid_share_string_div'] = array('#weight' => 80, '#markup' => $quid_share_markup,);
-  } return $form;
+    $form['adc_buttons_wrapper']['quid_share_string_div'] = array('#weight' => 80, '#markup' => $quid_share_markup,);
+  }
+  return $form;
 }
 
 function q_results_tabular_form_submit($form, &$form_state) {
@@ -100,34 +184,18 @@ function qsearch_get_ctable($form_state, $page_number) {
   } if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
     $header['collection_period'] = t('Collection period');
   }
-  /**
-   * test{
-   */
-  $header['call_it_what_you_want'] = t('Call it what you want');
-  /**
-   * test{
-   */
-  $results_table_columns = array_map('trim', explode(',', 'this, that,the, other'));
-  //var_dump($results_table_columns);
-  $results_table_columns_kv = [];
-  foreach ($results_table_columns as $k => $v) {
-    $results_table_columns_kv[$v] = $v;
-    $header[$v] = $v;
+  if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
+    $header['results_thumb_column_header'] = t(RESULTS_THUMB_COLUMN_HEADER);
   }
-  //var_dump($results_table_columns_kv);
-  /**
-   * test}
-   */
-  /**
-   * test}
-   */
   $options = array();
   if (!empty($solr_obj['error'])) {
     drupal_set_message($solr_obj['error']['msg'], 'error');
     return;
   } if (!empty($solr_obj['response']['numFound'])) {
     drupal_set_message("<b>" . t("Number of datasets found") . ": " . $solr_obj['response']['numFound'] . "</b>", 'status', FALSE);
-  } foreach ($solr_obj['response']['docs'] as $doc) {
+  }
+  $metadata_div_counter = 0;
+  foreach ($solr_obj['response']['docs'] as $doc) {
     if (key_exists(METADATA_PREFIX . 'related_dataset', $doc)) {
       $child_count = count($doc[METADATA_PREFIX . 'related_dataset']);
       if ($child_count > 0) {
@@ -135,6 +203,7 @@ function qsearch_get_ctable($form_state, $page_number) {
       }
     } if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']) && (!empty($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']) )) {
       $getcapdoc = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'];
+      //$target_url = $base_url . '/' . 'metsis/map/wms?dataset=' . $doc[METADATA_PREFIX . 'metadata_identifier'] . '&solr_core=' . SOLR_CORE_PARENT;
       $target_url = $base_url . '/' . 'metsis/map/wms?dataset=' . $doc[METADATA_PREFIX . 'metadata_identifier'] . '&solr_core=' . SOLR_CORE_PARENT;
       $tmp_thumb_response = msb_get_fields(SOLR_CORE_MAP_THUMBNAILS, $doc[METADATA_PREFIX . 'metadata_identifier'], array("thumbnail_data", "thumbnail", "base_map"));
       if (count($tmp_thumb_response['response']['docs']) > 0) {
@@ -160,7 +229,18 @@ function qsearch_get_ctable($form_state, $page_number) {
     else {
       $mapthumb = NULL;
       $children = $show_children ? msb_get_children($doc[METADATA_PREFIX . 'metadata_identifier']) : NULL;
-    } $metadata_page_link = msb_get_md_links('l1', $doc[METADATA_PREFIX . 'metadata_identifier']);
+    }
+
+
+    if (defined('SHOW_METADATA_INLINE') && SHOW_METADATA_INLINE === TRUE) {
+      $metadata_link = metsis_get_metadata_div(adc_get_solr_core(array($doc['mmd_metadata_identifier']))[$doc['mmd_metadata_identifier']], $doc['mmd_metadata_identifier'], $metadata_div_counter);
+    }
+    else {
+      $metadata_link = msb_get_md_links('l1', $doc[METADATA_PREFIX . 'metadata_identifier']);
+    }
+
+
+
     if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
       if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
         $fimex_link = "";
@@ -270,11 +350,19 @@ function qsearch_get_ctable($form_state, $page_number) {
     }
     else {
       $odata_download = "";
-    } $options[$dataset_name] = array();
+    }
+
+    $options[$dataset_name] = array();
     if (DATASETNAME_VISIBLE) {
       if (!isset($mapthumb)) {
         $mapthumb = "";
-      } $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_page_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
+      }
+      if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button);
+      }
+      else {
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
+      }
     } if (RESULTS_INSTITUTIONS_VISIBLE) {
       $options[$dataset_name]['institutions'] = t($institutions);
     } //if (PLATFORM_LONG_NAME_VISIBLE) {
@@ -305,7 +393,9 @@ function qsearch_get_ctable($form_state, $page_number) {
     } if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
       $options[$dataset_name]['collection_period'] = t($collection_period);
     }
-    $options[$dataset_name]['call_it_what_you_want'] = t($mapthumb);
+    if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
+      $options[$dataset_name]['results_thumb_column_header'] = t($mapthumb);
+    }
     if ($show_children) {
       $max_count = 10;
       $count = ($children['response']['numFound'] > $max_count) ? $max_count : $children['response']['numFound'];
@@ -325,7 +415,9 @@ function qsearch_get_ctable($form_state, $page_number) {
         } $options[$dataset_name] = array('datasetName' => l(t($dataset_name), $data_access_HTTP, array('external' => TRUE, 'html' => TRUE, 'attributes' => array('class' => array('ext_data_source'),))), 'institutions' => '', 'title' => '', 'project' => '', 'keywords' => '', 'abstract' => '', 'collection_period' => t($collection_period), '#attributes' => array('class' => array('childdataset',)));
       }
     }
-  } if (BASKET_ELEMENTS_VISIBLE) {
+    $metadata_div_counter += 1;
+  }
+  if (BASKET_ELEMENTS_VISIBLE) {
     $form ['table'] = array(
       '#header' => $header,
       '#type' => 'tableselect',

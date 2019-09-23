@@ -69,10 +69,6 @@ class HttpConnection {
           $this->response .= fread($fp, 4096);
         }
       }
-//              sdpm("This is the request sent to host:");
-//              sdpm($this->request);
-//              sdpm(urldecode($this->request));
-
       fclose($fp);
     }
     else {

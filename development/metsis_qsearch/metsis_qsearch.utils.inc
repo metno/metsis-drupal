@@ -148,7 +148,9 @@ function metsis_map_wms() {
     else {
       $page = get_metsis_map_wms_markup($externalURL);
     }
-  } print $page;
+  }
+  //print $page;
+  return $page;
 }
 
 function adc_get_geographical_search_map() {
@@ -555,6 +557,29 @@ function adc_goto_basket() {
   else {
     drupal_goto($metsis_conf['basket_endpoint']);
   } return;
+}
+
+function adc_go_back_to_search() {
+  global $base_url;
+  $bts_url = $base_url;
+  $bts_url .= '/';
+  $bts_url .= METSIS_QSEARCH_ENDPOINT;
+  $bts_url .= '/?quid=';
+  $bts_url .= $_SESSION['qsearch']['quid'];
+  drupal_goto($bts_url);
+  return;
+}
+
+function adc_search_by_mail() {
+  global $base_url;
+  $sbm_url = 'mailto:?subject=Data search&body=';
+  $sbm_url .= $base_url;
+  $sbm_url .= '/';
+  $sbm_url .= METSIS_QSEARCH_ENDPOINT;
+  $sbm_url .= '/?quid=';
+  $sbm_url .= $_SESSION['qsearch']['quid'];
+  drupal_goto($sbm_url);
+  return;
 }
 
 function adc_longitude_validate() {

@@ -48,3 +48,10 @@ function adc_elements_add_to_basket(&$form, &$form_state) {
     }
   }
 }
+
+function adc_go_to_calling_results_page() {
+  $crp_url = metsis_get_session_var('calling_results_page');
+  metsis_del_session_var('calling_results_page');
+  drupal_goto($crp_url);
+  return;
+}
