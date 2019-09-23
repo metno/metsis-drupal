@@ -146,3 +146,55 @@ function adc_parse_solr_mmd_type_one($metadata_element) {
     }
   } return $element_array;
 }
+
+
+/**
+ * test{
+ */
+/**
+ * Implementation of hook_menu().
+ * @see https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7
+ */
+//function metsis_lib_menu() {
+// 
+//  // Setup a URL to retrieve the JSON array.
+//  $items['node/%/metsis_lib/pageviews'] = array(
+//    'page callback'     => 'metsis_lib_get_pageviews',
+//    'page arguments'    => array(3),
+//    'type'              => MENU_CALLBACK,
+//    'access arguments'  => array('access content'),
+//    'delivery callback' => 'metsis_lib_ajax'
+//  );
+// 
+//  return $items;
+//}
+// 
+///**
+// * Returns the number of pageviews for a node ID.
+// */
+//function metsis_lib_get_pageviews($nid) {
+// 
+//  // Some fancy function that returns pageviews.
+//  return fancyPageviews($nid);
+//}
+// 
+///**
+// * Renders a JSON array.
+// */
+//function metsis_lib_ajax($pageviews) {
+// 
+//  // Tell the browser to expect JSON data.
+//  // @see https://api.drupal.org/api/drupal/includes!bootstrap.inc/function/drupal_add_http_header/7
+//  drupal_add_http_header('Content-Type', 'application/json');
+// 
+//  // Output the JSON result
+//  // @see https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_json_output/7
+//  print drupal_json_output(array('pageviews', $pageviews));
+// 
+//  // Perform end-of-request tasks.
+//  // @see https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_page_footer/7
+//  drupal_page_footer();
+//}
+/**
+ * test}
+ */

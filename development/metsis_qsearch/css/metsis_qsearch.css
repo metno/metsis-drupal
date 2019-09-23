@@ -77,7 +77,9 @@ div.clear{
 .product_type_details{
     margin-left:50px;
 }
-
+.map_base_layer-div{
+    background-color: #912D2B;
+}
 /*label {
 
     padding:10px;
@@ -95,10 +97,7 @@ div.clear{
     width: 200px;
     height: 200px;
 }*/
-.initially-hidden{
-    display: none;
-    margin-left:50px;
-}
+
 .form-item-zzplatform-long-name-zzchosen-platform-long-name-sentinel-2a{
     display: none;
 }

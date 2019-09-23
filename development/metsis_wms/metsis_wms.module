@@ -126,7 +126,9 @@ function get_metsis_map_wms_markup($solr_core, $metadata_identifier) {
   $wms_map_center_lat = $metsis_conf['wms_map_center_lat'];
   $wms_map_center_lon = $metsis_conf['wms_map_center_lon'];
   $wms_map_init_zoom = $metsis_conf['wms_map_init_zoom'];
-  $wms_visible_layer_title = $metsis_conf['wms_visible_layer_title'];
+  //$wms_visible_layer_title = $metsis_conf['wms_visible_layer_title'];
+  $wms_which_base_layer = defined('WMS_WHICH_BASE_LAYER') ? WMS_WHICH_BASE_LAYER : $wms_which_base_layer = 'north';
+  $wms_overlay_border = defined('WMS_OVERLAY_BORDER') ? strtolower(WMS_OVERLAY_BORDER) : $wms_overlay_border = 'true'; 
   $wms_product_select = strtolower(WMS_PRODUCT_SELECT);
   $path_to_wms_module = drupal_get_path('module', 'metsis_wms');
   $path_to_css = "/" . $path_to_wms_module . "/css/style.min.css";
@@ -191,6 +193,8 @@ function get_metsis_map_wms_markup($solr_core, $metadata_identifier) {
                             lon: $wms_map_center_lon,
                             lat: $wms_map_center_lat,
                             zoom: $wms_map_init_zoom,
+                            whichBaseLayer: '$wms_which_base_layer',
+                            overlayBorder: $wms_overlay_border,
                             webMapServers: [
                               $webMapServers
                             ],

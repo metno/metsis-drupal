@@ -199,22 +199,18 @@ function adc_get_button_markup($metadata_identifier, $button_uri) {
   return $url;
 }
 
-function adc_get_metadata() {
+function metsis_get_metadata_table($solr_core, $metadata_identifier) {
   global $metsis_conf;
   $metadata_sort_order = $metsis_conf['metadata_sort_order'];
-  $page_inputs = drupal_get_query_parameters();
   $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
-  if ($page_inputs['core'] == 'l1') {
-    $core = SOLR_CORE_PARENT;
-  } if ($page_inputs['core'] == 'l2') {
-    $core = SOLR_CORE_CHILD;
-  } $res = $con->get('/solr/' . $core . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $page_inputs['datasetID'] . '"', "wt" => "json", "indent" => "true"));
+  $res = $con->get('/solr/' . $solr_core . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $metadata_identifier . '"', "wt" => "json", "indent" => "true"));
   $body = json_decode($res['body'], true);
   if (array_filter($body['response']['docs'][0])) {
     $metadata = array_filter($body['response']['docs'][0]);
     if (isset($metadata[METADATA_PREFIX . 'cloud_cover_value'])) {
       $metadata[METADATA_PREFIX . 'cloud_cover_value'] = number_format($metadata[METADATA_PREFIX . 'cloud_cover_value'], $metsis_conf['results_number_decimal_display_format']);
-    } $zmetadata = array_intersect_key($metadata, array_flip($metsis_conf['metadata_visible']));
+    }
+    $zmetadata = array_intersect_key($metadata, array_flip($metsis_conf['metadata_visible']));
     $metadata = $zmetadata;
     $header = array('Metadata key', 'Metadata value');
     $top_array = array();
@@ -226,16 +222,89 @@ function adc_get_metadata() {
       else {
         $bottom_array[$k] = $v;
       }
-    } $sorted_top_array = array();
+    }
+    $sorted_top_array = array();
     foreach (array_values($metadata_sort_order) as $key) {
       if (key_exists($key, $top_array)) {
         $sorted_top_array[$key] = $top_array[$key];
       }
-    } ksort($bottom_array);
+    }
+    ksort($bottom_array);
     $top_rows = h_adc_get_metadata($sorted_top_array);
     $bottom_rows = h_adc_get_metadata($bottom_array);
     $rows = array_merge($top_rows, $bottom_rows);
-    $metadata_table = theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('class' => array('ext_data_souce'),),));
+    $metadata_table = theme('table', array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array(
+        'class' => array(
+          'ext_data_souce'),
+      ),
+      )
+    );
+    return theme('metadata_inline', array('metadata_table' => $metadata_table));
+  }
+}
+function metsis_get_metadata_div($solr_core, $metadata_identifier, $metadata_div_counter) {
+  $button_text = defined('SOLR_METADATA_BUTTON_TEXT') ? t(SOLR_METADATA_BUTTON_TEXT) : t(Metadata);
+  $metadata = '<div id="metadata-div-' . $metadata_div_counter;
+  $metadata .= '" class="adc-button">' . $button_text . '<div class="metadata-div-' . $metadata_div_counter . ' initially-hidden';
+  $metadata .= '">';
+  $metadata .= metsis_get_metadata_table($solr_core, $metadata_identifier);
+  $metadata .= '</div></div>';
+
+  return $metadata;
+}
+function adc_get_metadata() {
+  global $metsis_conf;
+  $metadata_sort_order = $metsis_conf['metadata_sort_order'];
+  $page_inputs = drupal_get_query_parameters();
+  $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+  if ($page_inputs['core'] == 'l1') {
+    $core = SOLR_CORE_PARENT;
+  }
+  if ($page_inputs['core'] == 'l2') {
+    $core = SOLR_CORE_CHILD;
+  }
+  $res = $con->get('/solr/' . $core . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $page_inputs['datasetID'] . '"', "wt" => "json", "indent" => "true"));
+  $body = json_decode($res['body'], true);
+  if (array_filter($body['response']['docs'][0])) {
+    $metadata = array_filter($body['response']['docs'][0]);
+    if (isset($metadata[METADATA_PREFIX . 'cloud_cover_value'])) {
+      $metadata[METADATA_PREFIX . 'cloud_cover_value'] = number_format($metadata[METADATA_PREFIX . 'cloud_cover_value'], $metsis_conf['results_number_decimal_display_format']);
+    }
+    $zmetadata = array_intersect_key($metadata, array_flip($metsis_conf['metadata_visible']));
+    $metadata = $zmetadata;
+    $header = array('Metadata key', 'Metadata value');
+    $top_array = array();
+    $bottom_array = array();
+    foreach ($metadata as $k => $v) {
+      if (in_array($k, $metadata_sort_order)) {
+        $top_array[$k] = $v;
+      }
+      else {
+        $bottom_array[$k] = $v;
+      }
+    }
+    $sorted_top_array = array();
+    foreach (array_values($metadata_sort_order) as $key) {
+      if (key_exists($key, $top_array)) {
+        $sorted_top_array[$key] = $top_array[$key];
+      }
+    }
+    ksort($bottom_array);
+    $top_rows = h_adc_get_metadata($sorted_top_array);
+    $bottom_rows = h_adc_get_metadata($bottom_array);
+    $rows = array_merge($top_rows, $bottom_rows);
+    $metadata_table = theme('table', array(
+      'header' => $header,
+      'rows' => $rows,
+      'attributes' => array(
+        'class' => array(
+          'ext_data_souce'),
+      ),
+      )
+    );
     return theme('metadata', array('metadata_table' => $metadata_table));
   }
 }
@@ -548,7 +617,8 @@ function msb_get_md_links($solr_core_level, $dataset_id) {
   }
   else {
     $solr_metadata_button_text = "Metadata";
-  } $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
+  }
+  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
   return $url;
 }
 
@@ -694,3 +764,53 @@ function adc_get_core_name_from_basket($metadata_identifier) {
 function test00() {
   
 }
+
+function metsis_set_session_var($name, $value) {
+  $name = session_id() . '__metsis__' . $name;
+  variable_del($name);
+  variable_set($name, $value);
+}
+
+function metsis_get_session_var($name) {
+  return variable_get(session_id() . '__metsis__' . $name);
+}
+
+function metsis_del_session_var($name) {
+  variable_del(session_id() . '__metsis__' . $name);
+}
+
+function adc_get_map_base_layer($top_left_lat, $bottom_right_lat, $tol = 1.0e-10) {
+
+  if ((abs($bottom_right_lat) > $tol) && ($bottom_right_lat > 0) && ($top_left_lat > 0)) {
+    return ("north");
+  }
+  if ((abs($top_left_lat) > $tol) && ($top_left_lat < 0) && ($bottom_right_lat < 0)) {
+    return ("south");
+  }
+  else {
+    return ("world");
+  }
+}
+
+/**
+ * test{
+ */
+//function metsis_get_session_var($name) {
+//  $name = session_id() . '__metsis__' . $name;
+//  return array_map('unserialize', db_query('SELECT name, value FROM {metsis_variable}')->fetchAllKeyed());
+//}
+//
+//function metsis_set_session_var($name, $value) {
+//    $name = session_id() . '__metsis__' . $name;
+//  db_merge('metsis_variable')->key(array('name' => $name))->fields(array('value' => serialize($value)))->execute();
+//}
+//
+//function metsis_del_session_var($name) {
+//  $name = session_id() . '__metsis__' . $name;
+//  db_delete('metsis_variable')
+//    ->condition('name', $name)
+//    ->execute();
+//}
+/**
+ * test}
+ */

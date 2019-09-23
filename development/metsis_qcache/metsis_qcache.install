@@ -6,6 +6,65 @@ function metsis_qcache_install() {
 
 function metsis_qcache_schema() {
   $schema = [];
-  $schema['metsis_qcache'] = array('description' => 'The base table for METSIS qcache', 'fields' => array('mq_id' => array('description' => 'The primary identifier for a METSIS metsis_qcache item (item id).', 'type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE,), 'session_id' => array('type' => 'text', 'not null' => FALSE, 'description' => "Drupal session ID. ",), 'query_id' => array('type' => 'text', 'not null' => FALSE, 'description' => "Query ID. This is passed in to search form to recreate search.",), 'query' => array('type' => 'text', 'not null' => FALSE, 'description' => "Query. The JSON serialized Drupal query.",), 'drupal_form_id' => array('type' => 'text', 'not null' => FALSE, 'description' => "Query. The JSON serialized Drupal query.",), 'qcache_timestamp' => array('description' => 'Timestamp for when item was added to qcache.', 'type' => 'int', 'length' => 11, 'not null' => FALSE,), 'node_id' => array('description' => 'A Drupal node related to this record.', 'type' => 'int', 'length' => 11, 'not null' => FALSE,),), 'primary key' => array('mq_id'),);
+  $schema['metsis_qcache'] = array(
+    'description' => 'The base table for METSIS qcache',
+    'fields' => array(
+      'mq_id' => array(
+        'description' => 'The primary identifier for a METSIS metsis_qcache item (item id).',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ), 'session_id' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "Drupal session ID. ",
+      ),
+      'query_id' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "Query ID. This is passed in to search form to recreate search.",
+      ),
+      'query' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "Query. The JSON serialized Drupal query.",
+      ), 'drupal_form_id' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "Query. The JSON serialized Drupal query.",),
+      'qcache_timestamp' => array(
+        'description' => 'Timestamp for when item was added to qcache.',
+        'type' => 'int', 'length' => 11, 'not null' => FALSE,),
+      'node_id' => array(
+        'description' => 'A Drupal node related to this record.',
+        'type' => 'int',
+        'length' => 11,
+        'not null' => FALSE,
+      ),
+    ),
+    'primary key' => array('mq_id'),
+  );
+  $schema['metsis_variable'] = array(
+    'description' => 'The base table for METSIS variables',
+    'fields' => array(
+      'mv_id' => array(
+        'description' => 'The primary identifier for a METSIS metsis_variable item.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "METSIS variable name",
+      ),
+      'value' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => "METSIS variable value.",
+      ),
+    ),
+    'primary key' => array('mv_id'),
+  );
   return $schema;
 }
