@@ -1,0 +1,87 @@
+/*
+.free-text-fieldset,
+.geographical-search-fieldset,
+.operational-status-fieldset,
+.data-collection-period-fieldset,
+.institutions-fieldset,
+.topics-and-variables-fieldset{
+    width: 100%;
+    font-size: 100%;
+}*/
+
+.under_construction{
+    color: #ffffff;
+    background: repeating-linear-gradient(
+        45deg,
+        #f0bc08,
+        #f0bc08 10px,
+        #433a31 10px,
+        #433a31 20px
+        );
+}
+.bbox-top-left-lat,
+.bbox-top-left-lon,
+.bbox-bottom-right-lat,
+.bbox-bottom-right-lon{
+    width: 20em;
+}
+
+/*.samelineDiv{
+    float:left;
+}*/
+
+.bboxA,
+.bboxB,
+.bboxC,
+.bboxD{ 
+    display:inline-block;
+    padding: 4px; 
+    margin:1px; 
+}
+/*.messages.error{
+    color: #ffffff;
+    background: repeating-linear-gradient(
+        45deg,
+        #f0bc08,
+        #f0bc08 10px,
+        #433a31 10px,
+        #433a31 20px
+        );
+}*/
+
+.normal {
+    filter: invert(0%);
+}
+
+.inverted {
+    filter: invert(100%);
+}
+
+/*
+ * dampen the colors in the selectors{
+ * need to to this for other selectors as well
+ */
+.ui-datepicker-header select.ui-datepicker-month,
+.ui-datepicker-header select.ui-datepicker-year {
+    background: #e6e6e6;
+    color: #6d6d6d;
+}
+/*
+ * dampen the colors in the selectors}
+ */
+
+/*
+ * dampen the colors in the view_bulk_operations selectors{
+ * This is not ideal since the selection items don't have CSS classes
+ * set by the module and we don't want to set these globally!
+ */
+/*
+.form-select,
+ option{
+    background: #e6e6e6;
+    color: #6d6d6d;
+}
+*/
+/*
+ * dampen the colors in the view_bulk_operations selectors}
+ */
