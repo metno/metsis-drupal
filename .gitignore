@@ -3,6 +3,7 @@
 # manually added entries{                                                      #
 #                                                                              #
 not-for-git
+nbproject
 .idea/
 metsis/metsis.custom.settings/xyz.metsis.met.no.metsis.settings.php
 #                                                                              #
