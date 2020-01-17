@@ -6,6 +6,13 @@ not-for-git
 nbproject
 .idea/
 metsis/metsis.custom.settings/xyz.metsis.met.no.metsis.settings.php
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Ignore configuration files that may contain sensitive information.
+
 #                                                                              #
 # manually added entries}                                                      #
 #                                                                              #
