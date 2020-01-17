@@ -762,6 +762,7 @@ function adc_get_core_name_from_basket($metadata_identifier) {
 }
 
 function test00() {
+
   
 }
 
