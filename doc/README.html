@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="AsciiDoc 8.6.10">
+<title>METSIS module installation guide</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+.monospaced, code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+  padding: 0;
+  margin: 0;
+}
+pre {
+  white-space: pre-wrap;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; vertical-align: text-bottom; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+@media screen {
+  body {
+    max-width: 50em; /* approximately 80 characters wide */
+    margin-left: 16em;
+  }
+
+  #toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 13em;
+    padding: 0.5em;
+    padding-bottom: 1.5em;
+    margin: 0;
+    overflow: auto;
+    border-right: 3px solid #f8f8f8;
+    background-color: white;
+  }
+
+  #toc .toclevel1 {
+    margin-top: 0.5em;
+  }
+
+  #toc .toclevel2 {
+    margin-top: 0.25em;
+    display: list-item;
+    color: #aaaaaa;
+  }
+
+  #toctitle {
+    margin-top: 0.5em;
+  }
+}
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>METSIS module installation guide</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph"><p>Version 1.0
+2020-03-30</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The <a href="https://github.com/metno/metsis-drupal">METSIS Drupal modules</a> provide connectivity between Drupal 7 and back office services. The following is a guide to installation, activation and configuration of the METSIS modules. Drupal version 7 (7.69 as of 2020-03-30) running in <a href="https://www.drupal.org/docs/7/multisite/multi-site-sharing-the-same-code-base">"multisite"</a> mode is assumed. It is also assumed that back office services such as TDS, mapserver, Solr, Fimex, OPenDAP parser, basket, Zoo WPS time series, Zoo WPS CSV are running with, were necessary, valid certificates and are accessible from the Drupal instance.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obtaining_the_modules">Obtaining the modules</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Releases of the modules are available on the <a href="https://github.com/metno/metsis-drupal/releases">METSIS github repository</a>. Always choose the most recent release.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_required_non_core_modules">Required non core modules</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A few third party modules (not part of the Drupal core) are also required. These must be download, installed and enabled. Table 1. lists these modules and versions which have been tested in production.</p></div>
+<table class="tableblock frame-all grid-all" id="table_required_non_core_modules"
+style="
+width:100%;
+">
+<caption class="title">Table 1. Required non core modules</caption>
+<col style="width:33%;">
+<col style="width:33%;">
+<col style="width:33%;">
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" >Package </th>
+<th class="tableblock halign-left valign-top" > Name </th>
+<th class="tableblock halign-left valign-top" > Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/ctools">Chaos tool suite</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Chaos tools</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-1.15</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/date">Date/Time</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Date</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-2.10</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/entity">Entity</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Entity API (entity)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-1.9</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/jquery_update">User interface</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">jQuery Update (jquery_update)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-2.7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/views">Views</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Views (views)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-3.23</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock"><a href="https://www.drupal.org/project/views_bulk_operations/releases/7.x-3.3">Views Bulk Operations</a></p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">Views Bulk Operations (views_bulk_operations)</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock">7.x-3.3</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph"><p>Some third party modules define <em>sub mdules</em>. Ensure that the following are enabled:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Chaos tools
+</p>
+</li>
+<li>
+<p>
+Date
+</p>
+</li>
+<li>
+<p>
+Date API
+</p>
+</li>
+<li>
+<p>
+Date Popup
+</p>
+</li>
+<li>
+<p>
+Entity API
+</p>
+</li>
+<li>
+<p>
+Views
+</p>
+</li>
+<li>
+<p>
+Views Bulk Operations
+</p>
+</li>
+<li>
+<p>
+Views UI
+</p>
+</li>
+<li>
+<p>
+Views Conditional
+</p>
+</li>
+<li>
+<p>
+jQuery Update
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_where_to_place_modules">Where to place modules</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>It is recommended that non core Drupal modules such METSIS and all third party modules be placed in separate directories under &lt;Drupal root&gt;/sites/all/modules. Drupal will traverse all levels in these directory hierarchies. A typical multisite installation might have the following directory structure for third party and METSIS modules.</p></div>
+<div class="literalblock">
+<div class="content monospaced">
+<pre>&lt;Drupal root&gt;/sites/all/modules
+                              ├── contrib
+                              │   ├── ctools
+                              │   ├── date
+                              │   ├── entity
+                              │   ├── jquery_update
+                              │   ├── views
+                              │   └── views_bulk_operations
+                              └── custom
+                                  └── metsis
+                                      ├── metsis_basket
+                                      ├── metsis_cache
+                                      ├── metsis_csv
+                                      ├── metsis_elements
+                                      ├── metsis_fimex
+                                      ├── metsis_lib
+                                      ├── metsis_qcache
+                                      ├── metsis_qsearch
+                                      ├── metsis_timeseries
+                                      ├── metsis_ts_bokeh
+                                      └── metsis_wms</pre>
+</div></div>
+<div class="paragraph"><p>For further details on custom Drupal modules see <a href="https://www.drupal.org/docs/7/creating-custom-modules"><em>Creating custom modules</em></a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_site_configuration">Site configuration</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>We will assume the site to be configured is called <strong><span class="maroon">mysite</span></strong> and is contained under &lt;Drupal root&gt;/sites/<strong><span class="maroon">mysite</span></strong>.</p></div>
+<div class="paragraph"><p>Each site in a multisite Drupal installation must be configured to use the METSIS modules. This is done by writing a <span class="monospaced">metsis.settings.php</span> file and pointing to it from <strong><span class="maroon">mysite</span></strong>/settings.php. The recommended location for <span class="monospaced">metsis.settings.php</span> is &lt;Drupal root&gt;/sites/<strong><span class="maroon">mysite</span></strong>/metsis.custom.settings (We will come back to the contents of <span class="monospaced">metsis.settings.php</span>.) Ensure that it is loaded into Drupal by adding</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>if (file_exists(<em>sites/<strong><span class="maroon">mysite</span></strong>/metsis.custom.settings/metsis.settings.php</em>)) {
+  include <em>sites/<strong><span class="maroon">mysite</span></strong>/metsis.custom.settings/metsis.settings.php</em>;
+}</pre>
+</div></div>
+<div class="paragraph"><p>at the end of &lt;Drupal root&gt;/sites/<strong><span class="maroon">mysite</span></strong>/settings.php</p></div>
+<div class="sect2">
+<h3 id="_span_class_monospaced_metsis_settings_php_span"><span class="monospaced">metsis.settings.php</span></h3>
+<div class="paragraph"><p>The <span class="monospaced">metsis.settings.php</span> file contains configuration settings for the METSIS modules. It is written in PHP, defines new variables used by Drupal as well as access or modify global variables created by Drupal. It is recommended that you use the sample <a href="metsis.settings.php">metsis.settings.php</a> file as a starting point for your site&#8217;s configuration. Most of the settings should be reasonable values for production sites. You will need to make a few changes to ensure that your local services/resource are specified correctly. A few of the variables are not to be touched (read the comments carefully) and are deprecated or to be moved out the configuration file in future releases. It is safe ignore variables where you are admonished to do so.</p></div>
+<div class="paragraph"><p>This file is based on the configuration files for two production sites (<a href="https://satellittdata.no/">satellittdata.no</a> and <a href="https://sios-svalbard.org/">Svalbard Integrated Arctic Earch System</a>) at <a href="https://met.no">The Norwegian Meteorological Institute</a>.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./icons/caution.png" alt="Caution">
+</td>
+<td class="content">This file usually contains information, such as IP addresses, about back office systems. Care must taken when sharing its contents.</td>
+</tr></table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_em_enabling_em_and_configuring_metsis_modules"><em>Enabling</em> and configuring METSIS modules</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Once you have a <span class="monospaced">metsis.settings.php</span> in place, you can <em>enable</em> (Drupal nomenclature) the METSIS modules from the Drupal admin browser interface or by using the Drupal shell, drush. This guide only refers to the admin browser interface.</p></div>
+<div class="paragraph"><p>Installing/enabling METSIS modules in Drupal is done like any other third party module:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+copy the module files into the appropriate directory
+</p>
+</li>
+<li>
+<p>
+login to the Drupal site as administrator
+</p>
+</li>
+<li>
+<p>
+go to the "Modules" page
+</p>
+</li>
+<li>
+<p>
+scroll down to the METSIS section
+</p>
+</li>
+<li>
+<p>
+tick all the checkboxes in the "ENABLED" column
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/modules-admin-overlay.png" alt=""modules admin overlay"">
+</span></p></div>
+<div class="sect2">
+<h3 id="_metsis_basket">metsis_basket</h3>
+<div class="paragraph"><p>The basket module performs the following tasks (using the back office basket service):</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+allows each user to mark data sets as "placed in basket"
+</p>
+</li>
+<li>
+<p>
+perform actions on one or several files. Actions examples are:
+</p>
+<div class="ulist"><ul>
+<li>
+<p>
+download
+</p>
+</li>
+<li>
+<p>
+delete
+</p>
+</li>
+<li>
+<p>
+transform
+</p>
+</li>
+<li>
+<p>
+visualize
+</p>
+</li>
+</ul></div>
+</li>
+<li>
+<p>
+relay transformation request to the WPS transformation service (fimex)
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Once you have installed and enabled metsis_basket you will need to create and configure
+a view block and configure the block. The following shows how this is done. The screenshots are from test sites.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+login in as the administrator
+</p>
+</li>
+<li>
+<p>
+Structure → Views → Add new view
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/000.jpg" alt=""login &#8594; structure"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="3">
+<li>
+<p>
+type in View name (test basket view)
+</p>
+</li>
+<li>
+<p>
+set Show to “METSIS Basket”
+</p>
+</li>
+<li>
+<p>
+deselect “Create a page”
+</p>
+</li>
+<li>
+<p>
+select “Create a block”
+</p>
+</li>
+<li>
+<p>
+set Display format to “Table”
+</p>
+</li>
+<li>
+<p>
+“Continue &amp; edit”
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75002.jpg" alt=""Continue &amp; edit"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="9">
+<li>
+<p>
+FIELDS → Add
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75004.jpg" alt=""FIELDS → Add"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="10">
+<li>
+<p>
+type “metsis” in search filter
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75006.jpg" alt=""metsis search filter"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="11">
+<li>
+<p>
+select
+</p>
+<div class="olist loweralpha"><ol class="loweralpha">
+<li>
+<p>
+Bulk operations: METSIS Basket
+</p>
+</li>
+<li>
+<p>
+METSIS Basket: Basket timestamp
+</p>
+</li>
+<li>
+<p>
+METSIS Basket: IID
+</p>
+</li>
+<li>
+<p>
+METSIS Basket: Metadata identifier
+</p>
+</li>
+<li>
+<p>
+METSIS Basket: UID
+</p>
+</li>
+</ol></div>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75008.jpg" alt=""Apply (all displays)"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75010.jpg" alt=""Apply (all displays)"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="13">
+<li>
+<p>
+configure each bulk operation as in screenshots followed by Apply (all displays)
+</p>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75012.jpg" alt=""Apply (all displays)"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75014.jpg" alt=""select bulk operations as shown in screenshot"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75016.jpg" alt=""configure the basket UID"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="15">
+<li>
+<p>
+configure basket timestamp
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75018.jpg" alt=""configure the basket UID"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="16">
+<li>
+<p>
+configure the basket UID field as in screenshot
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75020.jpg" alt=""configure the basket UID"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="17">
+<li>
+<p>
+configure the basket metadata identifier
+</p>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75022.jpg" alt=""configure the basket UID"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="18">
+<li>
+<p>
+configure the sort criteria
+</p>
+</li>
+<li>
+<p>
+select METSIS Basket: Basket timestamp Apply (all displays)
+</p>
+</li>
+<li>
+<p>
+Sort descending Apply (all displays)
+</p>
+</li>
+<li>
+<p>
+Under “BLOCK SETTINGS” → PAGER → Display a specified number of items→ Display all
+items
+</p>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/026.jpg" alt=""026.jpg"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/028.jpg" alt=""028.jpg"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/030.jpg" alt=""030.jpg"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/75032.jpg" alt=""75032.jpg"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="23">
+<li>
+<p>
+Advanced → CONTEXTUAL FILTERS → Add
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/036.jpg" alt=""036.jpg"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="24">
+<li>
+<p>
+select METSIS Basket: UID
+</p>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/038.jpg" alt=""038.jpg"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="26">
+<li>
+<p>
+Provide default value
+</p>
+</li>
+<li>
+<p>
+Type “User ID from logged in user”
+</p>
+</li>
+<li>
+<p>
+Apply (all displays)
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/040.jpg" alt=""040.jpg"">
+</span></p></div>
+<div class="olist arabic"><ol class="arabic" start="29">
+<li>
+<p>
+Save the view
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/042.jpg" alt=""042.jpg"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/044.jpg" alt=""044.jpg"">
+</span></p></div>
+<div class="paragraph"><p>The view is saved and a block is created. Use it like any other block.</p></div>
+<div class="olist arabic"><ol class="arabic" start="30">
+<li>
+<p>
+Structure → Blocks and look for your newly created view, “View: test basket view”
+</p>
+</li>
+<li>
+<p>
+choose “Content”
+</p>
+</li>
+<li>
+<p>
+“Save blocks”
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/046.jpg" alt=""046.jpg"">
+</span></p></div>
+<div class="paragraph"><p>This will place the block in the content region of every page on your site.</p></div>
+<div class="olist arabic"><ol class="arabic" start="33">
+<li>
+<p>
+To limit which pages it appears on do as with other blocks and edit the block and set
+“Only the listed pages”
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/050.jpg" alt=""050.jpg"">
+</span></p></div>
+<div class="paragraph"><p>The basket should now show only in the content area of the "basket" page and resemble the figure below.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/052.jpg" alt=""052.jpg"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_cache">metsis_cache</h3>
+<div class="paragraph"><p>The cache module is used internally for caching of some session information. It needs no configuration. It only needs to be placed in the metsis modules directory and enabled.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./icons/note.png" alt="Note">
+</td>
+<td class="content">This module will be removed from future releases. No action on the part of the site administrator will be required when upgrading to the next release of METSIS.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_csv">metsis_csv</h3>
+<div class="paragraph"><p>The CSV module provides time series data downloads as ASCII comma-separated values (CSV).</p></div>
+<div class="paragraph"><p>Follow these steps to enable, configure and display the ASCII download page</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Enable the module if you&#8217;ve not already done so (see above)
+</p>
+</li>
+<li>
+<p>
+Create a Drupal basic page and either note its Drupal node or give it a URL alias
+</p>
+</li>
+<li>
+<p>
+In the "Blocks" admin page look for <em>metsis_elements config form</em> and place it in the content region of your page
+</p>
+</li>
+<li>
+<p>
+save your changes
+</p>
+</li>
+<li>
+<p>
+Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>The image below shows an example of the ASCII download form (CSV).</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/csv-download-00.png" alt=""CSV variable tabulation"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_elements">metsis_elements</h3>
+<div class="paragraph"><p>The elements module provides tabulation of level 2 data.</p></div>
+<div class="paragraph"><p>Follow these steps to enable, configure and display the level 2 data search results tabulation.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Enable the module if you&#8217;ve not already done so (see above)
+</p>
+</li>
+<li>
+<p>
+Create a Drupal basic page and either note its Drupal node or give it a URL alias
+</p>
+</li>
+<li>
+<p>
+In the "Blocks" admin page look for <em>metsis_csv config form</em> and place it in the content region of your page
+</p>
+</li>
+<li>
+<p>
+save your changes
+</p>
+</li>
+<li>
+<p>
+Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Image below shows an example of level 2 data listing.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/level2-data-00.png" alt=""Level 2 tabulation"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_fimex">metsis_fimex</h3>
+<div class="paragraph"><p>The fimex module provides connectivity between Drupal and the WPS transformation
+services in the back office such as OPeNDAP parser, basket, TDS and pyWPS.</p></div>
+<div class="paragraph"><p>Once this module is enabled transformation service is made available at the
+site <em>transformation_endpoint</em> .</p></div>
+<div class="paragraph"><p>The images below show examples of the top and bottom of the transformation form.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/fimex-00.png" alt=""transformation form"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/fimex-01.png" alt=""transformation form"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_lib">metsis_lib</h3>
+<div class="paragraph"><p>The lib module provides functions used by the other METSIS modules. It requires no configuration. Place it in the metsis modules directory and enable it.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_qcache">metsis_qcache</h3>
+<div class="paragraph"><p>The qcache module is used internally for caching of some session information. It needs no configuration. Place it in the metsis modules directory and enable it.</p></div>
+<div class="paragraph"><p>This module also provides functionality for sharing of searches. Each search is associated with a unique URL that can be shared. The image below shows an example of such a URL displayed by clicking on the "SearchID" button.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/qcache-00.png" alt=""qcache SearchID"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_qsearch">metsis_qsearch</h3>
+<div class="paragraph"><p>The qsearch module provides a search form for data discovery and presents the search results in tabular form.</p></div>
+<div class="paragraph"><p>Follow these steps to enable, configure and display the search form.</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Enable the module if you&#8217;ve not already done so (see above)
+</p>
+</li>
+<li>
+<p>
+Create a Drupal basic page and either note its Drupal node or give it a URL alias
+</p>
+</li>
+<li>
+<p>
+In the "Blocks" admin page look for <em>metsis_qsearch</em> and place it in the content region of your page
+</p>
+</li>
+<li>
+<p>
+save your changes
+</p>
+</li>
+<li>
+<p>
+Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>The image below shows an example of the search form for data discovery (<a href="https://sios-svalbard.org/metadata_search">SIOS</a>)</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/sios-data-qsearch.png" alt=""qsearch results form"">
+</span></p></div>
+<div class="paragraph"><p>The images below show top and bottom portions of example searches (<a href="https://sios-svalbard.org/metadata_search">SIOS</a> and <a href="https://satellittdata.no/en/metadata_search">satellittdata.no</a> respectively).</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/sios-data-qsearch-results-00.png" alt=""qsearch results form"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/sios-data-qsearch-results-01.png" alt=""qsearch results form"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/qsearch-00.png" alt=""qsearch results form"">
+</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/qsearch-01.png" alt=""qsearch results form"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_timeseries">metsis_timeseries</h3>
+<div class="paragraph"><p>The timeseries module provides a form for configuring and creating time series plots using the back office Zoo WPS time series service. It assumes that time series data have the NetCDF Climate and Forecast (CF) <a href="http://cfconventions.org/cf-conventions/cf-conventions.html#_features_and_feature_types">featureType</a> set to "timeSeries". This module also provides the option of resampling the data by choosing every Nth data point.</p></div>
+<div class="paragraph"><p>Follow these steps to enable, configure and display the time series plot configuration page</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Enable the module if you&#8217;ve not already done so (see above)
+</p>
+</li>
+<li>
+<p>
+Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "ts")
+</p>
+</li>
+<li>
+<p>
+In the "Blocks" admin page look for <em>metsis_timeseries config form</em> and place it in the content region of your page
+</p>
+</li>
+<li>
+<p>
+save your changes
+</p>
+</li>
+<li>
+<p>
+Configure the block and limit its visibility to the page you created, using the node number or the alias (e.g. "ts") for the page
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>Image below shows an example of a time series plot form and a sample plot.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/time-series-00.png" alt=""Time series form"">
+</span></p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_ts_bokeh">metsis_ts_bokeh</h3>
+<div class="paragraph"><p>To be added when this module is in production.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_metsis_wms">metsis_wms</h3>
+<div class="paragraph"><p>The wms modules uses a using a bundled OpenLayers client to display data layers on a
+base map layer. Install and enable the module. No other configuration is necessary.</p></div>
+<div class="paragraph"><p>Image below shows an example of a map with data layers.</p></div>
+<div class="paragraph"><p><span class="image">
+<img src="./images/wms-00.png" alt=""wms OL3 client"">
+</span></p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrading_the_metsis_modules">Upgrading the METSIS modules</h2>
+<div class="sectionbody">
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./icons/caution.png" alt="Caution">
+</td>
+<td class="content">All cached data, including basket contents will be deleted during this
+procedure.</td>
+</tr></table>
+</div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+deactivate the METSIS modules in the Drupal admin interface (list tab)
+</p>
+</li>
+<li>
+<p>
+uninstall the METSIS modules in the Drupal admin interface (uninstall tab)
+</p>
+</li>
+<li>
+<p>
+delete the metsis module directories under &lt;Drupal root&gt;/sites/all/modules/custom/metsis
+</p>
+</li>
+<li>
+<p>
+copy the metsis module directories from the latest release into &lt;Drupal root&gt;/sites/all/modules/custom/
+</p>
+</li>
+<li>
+<p>
+activate the METSIS modules in the Drupal admin interface (list tab)
+</p>
+</li>
+<li>
+<p>
+repeat the basket view creation/configuration steps
+</p>
+</li>
+<li>
+<p>
+repeat the blocks configuration steps
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2020-04-10 19:40:10 CEST
+</div>
+</div>
+</body>
+</html>

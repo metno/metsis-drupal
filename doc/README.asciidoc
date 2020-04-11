@@ -1,0 +1,482 @@
+// to render HTML version of this document:
+// asciidoc -b html5 -a icons -a toc2 -a theme=flask README.asciidoc
+
+= METSIS module installation guide
+//===== Preamble =====
+:imagesdir: ./images
+:iconsdir: ./icons
+//:stylesdir: ./styles
+//:scriptsdir: ./js
+:toc:
+
+:hardbreaks:
+:hide-uri-scheme:
+
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:Date:      2020-03-30
+:Revision:  1.0
+:DrupalVersion: 7.69
+
+Version {revision}
+{Date}
+
+//===== Body =====
+
+== Introduction
+
+
+The link:https://github.com/metno/metsis-drupal[METSIS Drupal modules] provide connectivity between Drupal 7 and back office services. The following is a guide to installation, activation and configuration of the METSIS modules. Drupal version 7 ({DrupalVersion} as of {Date}) running in link:https://www.drupal.org/docs/7/multisite/multi-site-sharing-the-same-code-base["multisite"] mode is assumed. It is also assumed that back office services such as TDS, mapserver, Solr, Fimex, OPenDAP parser, basket, Zoo WPS time series, Zoo WPS CSV are running with, were necessary, valid certificates and are accessible from the Drupal instance.
+
+== Obtaining the modules
+
+Releases of the modules are available on the link:https://github.com/metno/metsis-drupal/releases[METSIS github repository]. Always choose the most recent release.
+
+== Required non core modules
+A few third party modules (not part of the Drupal core) are also required. These must be download, installed and enabled. Table 1. lists these modules and versions which have been tested in production.
+
+.Required non core modules
+[[table_required_non_core_modules]]
+[options="header"]
+|=======================
+|Package | Name | Version
+|link:https://www.drupal.org/project/ctools[Chaos tool suite]      | Chaos tools                   | 7.x-1.15
+|link:https://www.drupal.org/project/date[Date/Time]               | Date                          | 7.x-2.10
+|link:https://www.drupal.org/project/entity[Entity]                | Entity API (entity)           | 7.x-1.9
+|link:https://www.drupal.org/project/jquery_update[User interface] | jQuery Update (jquery_update) | 7.x-2.7
+|link:https://www.drupal.org/project/views[Views]                  | Views (views)                 | 7.x-3.23
+|link:https://www.drupal.org/project/views_bulk_operations/releases/7.x-3.3[Views Bulk Operations] | Views Bulk Operations (views_bulk_operations) | 7.x-3.3
+|=======================
+
+Some third party modules define _sub mdules_. Ensure that the following are enabled:
+
+* Chaos tools
+* Date
+* Date API
+* Date Popup
+* Entity API
+* Views
+* Views Bulk Operations
+* Views UI
+* Views Conditional
+* jQuery Update
+
+
+== Where to place modules
+
+It is recommended that non core Drupal modules such METSIS and all third party modules be placed in separate directories under <Drupal root>/sites/all/modules. Drupal will traverse all levels in these directory hierarchies. A typical multisite installation might have the following directory structure for third party and METSIS modules.
+
+[literal]
+<Drupal root>/sites/all/modules
+                              ├── contrib
+                              │   ├── ctools
+                              │   ├── date
+                              │   ├── entity
+                              │   ├── jquery_update
+                              │   ├── views
+                              │   └── views_bulk_operations
+                              └── custom
+                                  └── metsis
+                                      ├── metsis_basket
+                                      ├── metsis_cache
+                                      ├── metsis_csv
+                                      ├── metsis_elements
+                                      ├── metsis_fimex
+                                      ├── metsis_lib
+                                      ├── metsis_qcache
+                                      ├── metsis_qsearch
+                                      ├── metsis_timeseries
+                                      ├── metsis_ts_bokeh
+                                      └── metsis_wms
+
+
+For further details on custom Drupal modules see link:https://www.drupal.org/docs/7/creating-custom-modules[__Creating custom modules__].
+
+== Site configuration
+
+We will assume the site to be configured is called [maroon]*mysite* and is contained under <Drupal root>/sites/[maroon]*mysite*.
+
+Each site in a multisite Drupal installation must be configured to use the METSIS modules. This is done by writing a +metsis.settings.php+ file and pointing to it from [maroon]*mysite*/settings.php. The recommended location for +metsis.settings.php+ is <Drupal root>/sites/[maroon]*mysite*/metsis.custom.settings (We will come back to the contents of +metsis.settings.php+.) Ensure that it is loaded into Drupal by adding
+
+[subs="quotes"]
+[listing]
+if (file_exists('sites/[maroon]*mysite*/metsis.custom.settings/metsis.settings.php')) {
+  include 'sites/[maroon]*mysite*/metsis.custom.settings/metsis.settings.php';
+}
+
+at the end of <Drupal root>/sites/[maroon]*mysite*/settings.php
+
+=== +metsis.settings.php+
+
+The +metsis.settings.php+ file contains configuration settings for the METSIS modules. It is written in PHP, defines new variables used by Drupal as well as access or modify global variables created by Drupal. It is recommended that you use the sample link:metsis.settings.php[metsis.settings.php] file as a starting point for your site's configuration. Most of the settings should be reasonable values for production sites. You will need to make a few changes to ensure that your local services/resource are specified correctly. A few of the variables are not to be touched (read the comments carefully) and are deprecated or to be moved out the configuration file in future releases. It is safe ignore variables where you are admonished to do so.
+
+This file is based on the configuration files for two production sites (link:https://satellittdata.no/[satellittdata.no] and link:https://sios-svalbard.org/[Svalbard Integrated Arctic Earch System]) at link:https://met.no[The Norwegian Meteorological Institute].
+
+CAUTION: This file usually contains information, such as IP addresses, about back office systems. Care must taken when sharing its contents.
+
+== _Enabling_ and configuring METSIS modules
+Once you have a +metsis.settings.php+ in place, you can _enable_ (Drupal nomenclature) the METSIS modules from the Drupal admin browser interface or by using the Drupal shell, drush. This guide only refers to the admin browser interface.
+
+Installing/enabling METSIS modules in Drupal is done like any other third party module:
+
+. copy the module files into the appropriate directory
+. login to the Drupal site as administrator
+. go to the "Modules" page
+. scroll down to the METSIS section
+. tick all the checkboxes in the "ENABLED" column
+
+image:modules-admin-overlay.png[
+"modules admin overlay",width=87%,
+link="./images/modules-admin-overlay.png"]
+
+=== metsis_basket
+The basket module performs the following tasks (using the back office basket service):
+
+* allows each user to mark data sets as "placed in basket"
+
+* perform actions on one or several files. Actions examples are:
+- download
+- delete
+- transform
+- visualize
+
+* relay transformation request to the WPS transformation service (fimex)
+
+
+Once you have installed and enabled metsis_basket you will need to create and configure
+a view block and configure the block. The following shows how this is done. The screenshots are from test sites.
+
+. login in as the administrator
+. Structure → Views → Add new view
+
+image:000.jpg[
+"login -> structure",width=87%,
+link="./images/000.jpg"]
+
+[start=3]
+. type in View name (test basket view)
+. set Show to “METSIS Basket”
+. deselect “Create a page”
+. select “Create a block”
+. set Display format to “Table”
+. “Continue & edit”
+
+image:75002.jpg[
+"Continue & edit",width=87%,
+link="./images/75002.jpg"]
+
+[start=9]
+. FIELDS → Add
+
+image:75004.jpg[
+"FIELDS → Add",width=87%,
+link="./images/75004.jpg"]
+
+[start=10]
+. type “metsis” in search filter
+
+image:75006.jpg[
+"metsis search filter",width=87%,
+link="./images/75006.jpg"]
+
+[start=11]
+. select
+ .. Bulk operations: METSIS Basket
+ .. METSIS Basket: Basket timestamp
+ .. METSIS Basket: IID
+ .. METSIS Basket: Metadata identifier
+ .. METSIS Basket: UID
+. Apply (all displays)
+
+image:75008.jpg[
+"Apply (all displays)",width=87%,
+link="./images/75008.jpg"]
+
+image:75010.jpg[
+"Apply (all displays)",width=87%,
+link="./images/75010.jpg"]
+
+[start=13]
+. configure each bulk operation as in screenshots followed by Apply (all displays)
+. Apply (all displays)
+
+image:75012.jpg[
+"Apply (all displays)",width=87%,
+link="./images/75012.jpg"]
+
+image:75014.jpg[
+"select bulk operations as shown in screenshot",width=87%,
+link="./images/75014.jpg"]
+
+image:75016.jpg[
+"configure the basket UID",width=87%,
+link="./images/75016.jpg"]
+
+[start=15]
+. configure basket timestamp
+
+image:75018.jpg[
+"configure the basket UID",width=87%,
+link="./images/75018.jpg"]
+
+[start=16]
+. configure the basket UID field as in screenshot
+
+image:75020.jpg[
+"configure the basket UID",width=87%,
+link="./images/75020.jpg"]
+
+[start=17]
+. configure the basket metadata identifier
+. Apply (all displays)
+
+image:75022.jpg[
+"configure the basket UID",width=87%,
+link="./images/75022.jpg"]
+
+[start=18]
+. configure the sort criteria
+. select METSIS Basket: Basket timestamp Apply (all displays)
+. Sort descending Apply (all displays)
+. Under “BLOCK SETTINGS” → PAGER → Display a specified number of items→ Display all
+items
+. Apply (all displays)
+
+image:026.jpg[
+"026.jpg",width=87%,
+link="./images/026.jpg"]
+
+image:028.jpg[
+"028.jpg",width=87%,
+link="./images/028.jpg"]
+
+image:030.jpg[
+"030.jpg",width=87%,
+link="./images/030.jpg"]
+
+image:75032.jpg[
+"75032.jpg",width=87%,
+link="./images/75032.jpg"]
+
+[start=23]
+. Advanced → CONTEXTUAL FILTERS → Add
+
+image:036.jpg[
+"036.jpg",width=87%,
+link="./images/036.jpg"]
+
+[start=24]
+. select METSIS Basket: UID
+. Apply (all displays)
+
+image:038.jpg[
+"038.jpg",width=87%,
+link="./images/038.jpg"]
+
+[start=26]
+. Provide default value
+. Type “User ID from logged in user”
+. Apply (all displays)
+
+image:040.jpg[
+"040.jpg",width=87%,
+link="./images/040.jpg"]
+
+[start=29]
+. Save the view
+
+image:042.jpg[
+"042.jpg",width=87%,
+link="./images/042.jpg"]
+
+image:044.jpg[
+"044.jpg",width=87%,
+link="./images/044.jpg"]
+
+The view is saved and a block is created. Use it like any other block.
+
+[start=30]
+. Structure → Blocks and look for your newly created view, “View: test basket view”
+. choose “Content”
+. “Save blocks”
+
+image:046.jpg[
+"046.jpg",width=87%,
+link="./images/046.jpg"]
+
+
+This will place the block in the content region of every page on your site.
+
+[start=33]
+. To limit which pages it appears on do as with other blocks and edit the block and set
+“Only the listed pages”
+
+image:050.jpg[
+"050.jpg",width=87%,
+link="./images/050.jpg"]
+
+The basket should now show only in the content area of the "basket" page and resemble the figure below.
+
+image:052.jpg[
+"052.jpg",width=87%,
+link="./images/052.jpg"]
+
+=== metsis_cache
+The cache module is used internally for caching of some session information. It needs no configuration. It only needs to be placed in the metsis modules directory and enabled.
+
+NOTE: This module will be removed from future releases. No action on the part of the site administrator will be required when upgrading to the next release of METSIS.
+
+=== metsis_csv
+The CSV module provides time series data downloads as ASCII comma-separated values (CSV).
+
+Follow these steps to enable, configure and display the ASCII download page
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias
+. In the "Blocks" admin page look for _metsis_elements config form_ and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+
+The image below shows an example of the ASCII download form (CSV).
+
+image:csv-download-00.png[
+"CSV variable tabulation",width=87%,
+link="./images/csv-download-00.png"]
+
+
+=== metsis_elements
+The elements module provides tabulation of level 2 data.
+
+Follow these steps to enable, configure and display the level 2 data search results tabulation.
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias
+. In the "Blocks" admin page look for _metsis_csv config form_ and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+
+Image below shows an example of level 2 data listing.
+
+image:level2-data-00.png[
+"Level 2 tabulation",width=87%,
+link="./images/level2-data-00.png"]
+
+=== metsis_fimex
+The fimex module provides connectivity between Drupal and the WPS transformation
+services in the back office such as OPeNDAP parser, basket, TDS and pyWPS.
+
+Once this module is enabled transformation service is made available at the
+site _transformation_endpoint_ .
+
+The images below show examples of the top and bottom of the transformation form.
+
+image:fimex-00.png[
+"transformation form",width=87%,
+link="./images/fimex-00.png"]
+
+image:fimex-01.png[
+"transformation form",width=87%,
+link="./images/fimex-01.png"]
+
+
+=== metsis_lib
+The lib module provides functions used by the other METSIS modules. It requires no configuration. Place it in the metsis modules directory and enable it.
+
+=== metsis_qcache
+The qcache module is used internally for caching of some session information. It needs no configuration. Place it in the metsis modules directory and enable it.
+
+This module also provides functionality for sharing of searches. Each search is associated with a unique URL that can be shared. The image below shows an example of such a URL displayed by clicking on the "SearchID" button.
+
+image:qcache-00.png[
+"qcache SearchID",width=87%,
+link="./images/qcache-00.png"]
+
+=== metsis_qsearch
+The qsearch module provides a search form for data discovery and presents the search results in tabular form.
+
+Follow these steps to enable, configure and display the search form.
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias
+. In the "Blocks" admin page look for _metsis_qsearch_ and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+
+The image below shows an example of the search form for data discovery (link:https://sios-svalbard.org/metadata_search[SIOS])
+
+image:sios-data-qsearch.png[
+"qsearch results form",width=87%,
+link="./images/sios-data-qsearch.png"]
+
+
+The images below show top and bottom portions of example searches (link:https://sios-svalbard.org/metadata_search[SIOS] and link:https://satellittdata.no/en/metadata_search[satellittdata.no] respectively).
+
+
+image:sios-data-qsearch-results-00.png[
+"qsearch results form",width=87%,
+link="./images/sios-data-qsearch-results-00.png"]
+
+image:sios-data-qsearch-results-01.png[
+"qsearch results form",width=87%,
+link="./images/sios-data-qsearch-results-01.png"]
+
+image:qsearch-00.png[
+"qsearch results form",width=87%,
+link="./images/qsearch-00.png"]
+
+image:qsearch-01.png[
+"qsearch results form",width=87%,
+link="./images/qsearch-01.png"]
+
+=== metsis_timeseries
+
+The timeseries module provides a form for configuring and creating time series plots using the back office Zoo WPS time series service. It assumes that time series data have the NetCDF Climate and Forecast (CF) link:http://cfconventions.org/cf-conventions/cf-conventions.html#_features_and_feature_types[featureType] set to "timeSeries". This module also provides the option of resampling the data by choosing every Nth data point.
+
+Follow these steps to enable, configure and display the time series plot configuration page
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "ts")
+. In the "Blocks" admin page look for _metsis_timeseries config form_ and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias (e.g. "ts") for the page
+
+Image below shows an example of a time series plot form and a sample plot.
+
+image:time-series-00.png[
+"Time series form",width=87%,
+link="./images/time-series-00.png"]
+
+=== metsis_ts_bokeh
+
+To be added when this module is in production.
+
+=== metsis_wms
+
+The wms modules uses a using a bundled OpenLayers client to display data layers on a
+base map layer. Install and enable the module. No other configuration is necessary.
+
+Image below shows an example of a map with data layers.
+
+image:wms-00.png[
+"wms OL3 client",width=87%,
+link="./images/wms-00.png"]
+
+== Upgrading the METSIS modules
+
+CAUTION: All cached data, including basket contents will be deleted during this
+procedure.
+
+. deactivate the METSIS modules in the Drupal admin interface (list tab)
+. uninstall the METSIS modules in the Drupal admin interface (uninstall tab)
+. delete the metsis module directories under <Drupal root>/sites/all/modules/custom/metsis
+. copy the metsis module directories from the latest release into <Drupal root>/sites/all/modules/custom/
+. activate the METSIS modules in the Drupal admin interface (list tab)
+. repeat the basket view creation/configuration steps
+. repeat the blocks configuration steps
+
