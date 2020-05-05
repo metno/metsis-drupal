@@ -153,6 +153,10 @@ function adc_get_basket_items($user_id, $field) {
 function adc_basket_query($server, $port, $service, $req_params) {
   $con = new HttpConnection($server, $port);
   $res = $con->get($service, $req_params);
+  if(DEBUG == 1) {
+    watchdog('METSIS basket connection', '<pre>' . print_r($con, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
+    watchdog('METSIS basket response', '<pre>' . print_r($res, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
+  }
   $res_body = new SimpleXMLElement($res['body']);
   $jres_body = drupal_json_decode(drupal_json_encode($res_body));
   return $jres_body;

@@ -41,3 +41,6 @@ $metsis_conf['opendap_stop_time_strings'] = ['stop_time', 'ACQUISITION_STOP_TIME
 if (isset($metsis_conf['adc_floating_buttons']) && $metsis_conf['adc_floating_buttons'] === TRUE) {
   define('ADC_FLOATING_BUTTONS', $metsis_conf['adc_floating_buttons']);
 }
+if (isset($metsis_conf['debug']) && $metsis_conf['debug'] == 1) {
+  define('DEBUG', $metsis_conf['debug']);
+}

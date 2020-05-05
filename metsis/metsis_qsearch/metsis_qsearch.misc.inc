@@ -5,8 +5,8 @@ function firstmodule_form() {
 }
 
 function firstmodule_form1($form_state) {
-  $form['name'] = array('#type' => 'textfield', '#title' => t('First Name'),);
-  $form['submit'] = array('#type' => 'submit', '#value' => 'Submit',);
+  $form['name'] = ['#type' => 'textfield', '#title' => t('First Name'),];
+  $form['submit'] = ['#type' => 'submit', '#value' => 'Submit',];
   return $form;
 }
 

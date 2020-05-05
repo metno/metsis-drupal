@@ -34,4 +34,8 @@ function create_download_odata_action_order($uris) {
   $req_params = array('userId' => $user->name, 'email' => $user->mail, 'site' => $metsis_conf['drupal_site_data_center_desc'] ? $metsis_conf['drupal_site_data_center_desc'] : $base_url, 'format' => $metsis_conf['default_data_archive_format'] ? $metsis_conf['default_data_archive_format'] : "tgz", 'uri' => implode(";", $uris),);
   $receipt = adc_basket_query(METSIS_BASKET_SERVER, METSIS_BASKET_SERVER_PORT, METSIS_BASKET_SERVER_SERVICE, $req_params);
   drupal_set_message(t('Your download request has been queued for processing. An email with further instructions will be sent to:!values', array('!values' => theme('item_list', array('items' => array($receipt['email']),)))));
+  if(DEBUG == 1) {
+    watchdog('METSIS basket request parameters', '<pre>' . print_r($req_params, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
+    watchdog('METSIS basket response', '<pre>' . print_r($receipt, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
+  }
 }

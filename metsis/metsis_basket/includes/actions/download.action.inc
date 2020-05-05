@@ -33,5 +33,6 @@ function create_download_action_order($uris) {
   global $metsis_conf;
   $req_params = array('userId' => $user->name, 'email' => $user->mail, 'site' => $metsis_conf['drupal_site_data_center_desc'] ? $metsis_conf['drupal_site_data_center_desc'] : $base_url, 'format' => $metsis_conf['default_data_archive_format'] ? $metsis_conf['default_data_archive_format'] : "tgz", 'uri' => implode(";", $uris),);
   $receipt = adc_basket_query(METSIS_BASKET_SERVER, METSIS_BASKET_SERVER_PORT, METSIS_BASKET_SERVER_SERVICE, $req_params);
+
   drupal_set_message(t('Your download request has been queued for processing. An email with further instructions will be sent to:!values', array('!values' => theme('item_list', array('items' => array($receipt['email']),)))));
 }

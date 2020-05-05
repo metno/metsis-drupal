@@ -3,7 +3,7 @@
 require_once 'includes/metsis_lib.utils.inc';
 
 function metsis_lib_init() {
-  
+
 }
 
 function metsis_lib_greet() {
@@ -39,7 +39,7 @@ function metsis_build_result_table($solr_object) {
     $institutions = !empty($doc['mmd_personnel_organisation']) ? $doc['mmd_personnel_organisation'] : ' ';
     $title = $doc['mmd_title'][0];
     if (is_array($doc['mmd_project_long_name'])) {
-      
+
     } $project = $doc['mmd_project_long_name'];
     $keywords = "TODO";
     $abstract = $doc['mmd_abstract'][0];
@@ -77,7 +77,7 @@ function is_block_visible($block_name) {
   $blocks = block_admin_display_prepare_blocks($theme_key);
   foreach ($blocks as $block) {
     if ($block['delta'] == $block_name && $block['region'] != -1) {
-      
+
     }
   }
 }
@@ -102,7 +102,7 @@ function get_map_thumb_divs($base_image, $overlay_image, $target_url) {
   <div class = "thumbnail overlay_image">
       <a href = "$target_url">
         <img
-          src = "$overlay_image" 
+          src = "$overlay_image"
         />
      </a>
    </div>
@@ -135,6 +135,7 @@ function adc_remove_duplicate_messages($type) {
 }
 
 function adc_parse_solr_mmd_type_one($metadata_element) {
+
   $element_array = [];
   if (is_array($metadata_element)) {
     foreach ($metadata_element as $k => $v) {
@@ -156,7 +157,7 @@ function adc_parse_solr_mmd_type_one($metadata_element) {
  * @see https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7
  */
 //function metsis_lib_menu() {
-// 
+//
 //  // Setup a URL to retrieve the JSON array.
 //  $items['node/%/metsis_lib/pageviews'] = array(
 //    'page callback'     => 'metsis_lib_get_pageviews',
@@ -165,32 +166,32 @@ function adc_parse_solr_mmd_type_one($metadata_element) {
 //    'access arguments'  => array('access content'),
 //    'delivery callback' => 'metsis_lib_ajax'
 //  );
-// 
+//
 //  return $items;
 //}
-// 
+//
 ///**
 // * Returns the number of pageviews for a node ID.
 // */
 //function metsis_lib_get_pageviews($nid) {
-// 
+//
 //  // Some fancy function that returns pageviews.
 //  return fancyPageviews($nid);
 //}
-// 
+//
 ///**
 // * Renders a JSON array.
 // */
 //function metsis_lib_ajax($pageviews) {
-// 
+//
 //  // Tell the browser to expect JSON data.
 //  // @see https://api.drupal.org/api/drupal/includes!bootstrap.inc/function/drupal_add_http_header/7
 //  drupal_add_http_header('Content-Type', 'application/json');
-// 
+//
 //  // Output the JSON result
 //  // @see https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_json_output/7
 //  print drupal_json_output(array('pageviews', $pageviews));
-// 
+//
 //  // Perform end-of-request tasks.
 //  // @see https://api.drupal.org/api/drupal/includes!common.inc/function/drupal_page_footer/7
 //  drupal_page_footer();

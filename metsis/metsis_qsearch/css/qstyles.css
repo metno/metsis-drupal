@@ -1,47 +1,47 @@
 
-.under_construction{
-    color: #ffffff;
-    background: repeating-linear-gradient(
-        45deg,
-        #f0bc08,
-        #f0bc08 10px,
-        #433a31 10px,
-        #433a31 20px
-        );
+.under_construction {
+  color: #fff;
+  background: repeating-linear-gradient(
+    45deg,
+    #f0bc08,
+    #f0bc08 10px,
+    #433a31 10px,
+    #433a31 20px
+  );
 }
 .bbox-top-left-lat,
 .bbox-top-left-lon,
 .bbox-bottom-right-lat,
-.bbox-bottom-right-lon{
-    width: 20em;
+.bbox-bottom-right-lon {
+  width: 20em;
 }
 
 .bboxA,
 .bboxB,
 .bboxC,
-.bboxD{ 
-    display:inline-block;
-    padding: 4px; 
-    margin:1px; 
+.bboxD {
+  display: inline-block;
+  padding: 4px;
+  margin: 1px;
 }
 
 .normal {
-    filter: invert(0%);
+  filter: invert(0%);
 }
 
 .inverted {
-    filter: invert(100%);
+  filter: invert(100%);
 }
 .ui-datepicker-header select.ui-datepicker-month,
 .ui-datepicker-header select.ui-datepicker-year {
-    background: #e6e6e6;
-    color: #6d6d6d;
+  background: #e6e6e6;
+  color: #6d6d6d;
 }
 /*
 #light-pagination.pagination.light-theme.simple-pagination{
    background: #e6e6e6;
     position: fixed;
-    top: 95%;  
+    top: 95%;
 }*/
 
 /*.pagination{
@@ -70,25 +70,46 @@
 }*/
 
 
-table.sticky-header{
-    position: -webkit-sticky;
-    position: sticky;
-    top: 40px;
-    /*    background-color: red;
-        padding-top: 300px;*/
+table.sticky-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 40px;
+  /*    background-color: red;
+      padding-top: 300px;*/
 }
 
 /*header {
  background: #fff;
- position: -webkit-sticky;  Safari 
+ position: -webkit-sticky;  Safari
  position: sticky;
  top: 0;
  height: 60px;
 }
 nav {
- position: -webkit-sticky;  Safari 
+ position: -webkit-sticky;  Safari
  position: sticky;
  top: 60px;
  background: orange;
  height: 60px;
 }*/
+
+/*select {*/
+/*  width:100%;*/
+/*  !*overflow:hidden;*!*/
+/*  !*white-space:pre;*!*/
+/*  !*text-overflow:ellipsis;*!*/
+/*  !*-webkit-appearance: none;*!*/
+/*  !*overflow-x:auto;*!*/
+/*  overflow-x:scroll;*/
+/*  !*overflow-y:auto;*!*/
+/*}*/
+
+.institutions-list {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#edit-institutions-chosen-institutions  {
+    height:100px;
+    overflow:auto;
+    }

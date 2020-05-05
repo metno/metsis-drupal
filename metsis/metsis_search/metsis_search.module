@@ -260,11 +260,11 @@ function hack_msb_get_map_thumb_divs($base_image, $overlay_image, $target_url) {
       <div class = "thumbnail overlay_image">
         <a target="_blank" href = "$target_url">
           <img
-            src = "$overlay_image" 
+            src = "$overlay_image"
            />
         </a>
       </div>
-    </div>  
+    </div>
 EOD;
   return $string;
 }
@@ -286,11 +286,11 @@ function msb_get_map_thumb_divs($base_image, $overlay_image, $target_url) {
         <!--<a target="_blank" href = "$target_url">-->
         <a href = "$target_url">
           <img
-            src = "$overlay_image" 
+            src = "$overlay_image"
            />
         </a>
       </div>
-    </div>  
+    </div>
   <!--</div>-->
 EOD;
   return $string;
@@ -437,7 +437,7 @@ function msb_get_ctable($form_state) {
       $max_count = 10;
       $count = ($children['response']['numFound'] > $max_count) ? $max_count : $children['response']['numFound'];
       for ($i = 0; $i < $count; $i++) {
-        
+
       } for ($i = 0; $i < $count; $i++) {
         $child = $children['response']['docs'][$i];
         $dataset_name = $child[METADATA_PREFIX . 'metadata_identifier'];

@@ -5,24 +5,29 @@ global $metsis_conf;
 define('METSIS_QSEARCH_ENDPOINT', $metsis_conf['metsis_qsearch_endpoint']);
 if (isset($metsis_conf['dar_http_button_text'])) {
   define('DAR_HTTP_BUTTON_TEXT', $metsis_conf['dar_http_button_text']);
-} if (isset($metsis_conf['dar_odata_button_text'])) {
+}
+if (isset($metsis_conf['dar_odata_button_text'])) {
   define('DAR_ODATA_BUTTON_TEXT', $metsis_conf['dar_odata_button_text']);
-} if (isset($metsis_conf['dar_opendap_button_text'])) {
+}
+if (isset($metsis_conf['dar_opendap_button_text'])) {
   define('DAR_OPENDAP_BUTTON_TEXT', $metsis_conf['dar_opendap_button_text']);
-} if (isset($metsis_conf['dar_ogc_wms_button_text'])) {
+}
+if (isset($metsis_conf['dar_ogc_wms_button_text'])) {
   define('DAR_OGC_WMS_BUTTON_TEXT', $metsis_conf['dar_ogc_wms_button_text']);
-} if (isset($metsis_conf['solr_metadata_button_text'])) {
+}
+if (isset($metsis_conf['solr_metadata_button_text'])) {
   define('SOLR_METADATA_BUTTON_TEXT', $metsis_conf['solr_metadata_button_text']);
-} 
-if(isset($metsis_conf['show_metadata_inline']) && $metsis_conf['show_metadata_inline'] === TRUE){
-  define('SHOW_METADATA_INLINE' ,$metsis_conf['show_metadata_inline']);
+}
+if (isset($metsis_conf['show_metadata_inline']) && $metsis_conf['show_metadata_inline'] === TRUE) {
+  define('SHOW_METADATA_INLINE', $metsis_conf['show_metadata_inline']);
 }
 
 define('TS_VISUALIZATION_BUTTON_TEXT', $metsis_conf['ts_visualization_button_text']);
 define('CSV_BUTTON_TEXT', $metsis_conf['csv_button_text']);
 if (isset($metsis_conf['landing_page_button_var'])) {
   define('LANDING_PAGE_BUTTON_VAR', $metsis_conf['landing_page_button_var']);
-} define('SOLR_SERVER_IP', $metsis_conf['solr_server_ip']);
+}
+define('SOLR_SERVER_IP', $metsis_conf['solr_server_ip']);
 define('SOLR_SERVER_PORT', $metsis_conf['solr_server_port']);
 define('BASKET_ELEMENTS_VISIBLE', $metsis_conf['basket_elements_visible']);
 define('FORM_RESET_VISIBLE', $metsis_conf['form_reset_visible']);
@@ -35,7 +40,8 @@ if (isset($metsis_conf['results_institutions_visible'])) {
 define('INSTITUTIONS_INITIALLY_COLLAPSED', $metsis_conf['institutions_initially_collapsed']);
 if (isset($metsis_conf['collections'])) {
   define('COLLECTIONS', adc_array_to_solror(array_map('trim', explode(',', $metsis_conf['collections']))));
-} define('COLLECTIONS_VISIBLE', $metsis_conf['collections_visible']);
+}
+define('COLLECTIONS_VISIBLE', $metsis_conf['collections_visible']);
 define('COLLECTIONS_INITIALLY_COLLAPSED', $metsis_conf['collections_initially_collapsed']);
 if (isset($metsis_conf['label_collections'])) {
   define('LABEL_COLLECTIONS', $metsis_conf['label_collections']);
@@ -57,6 +63,7 @@ define('PROJECT_VISIBLE', $metsis_conf['project_visible']);
 if (isset($metsis_conf['results_keywords_visible'])) {
   define('RESULTS_KEYWORDS_VISIBLE', $metsis_conf['results_keywords_visible']);
 }
+
 if (isset($metsis_conf['results_cloud_cover_value_visible'])) {
   define('RESULTS_CLOUD_COVER_VALUE_VISIBLE', $metsis_conf['results_cloud_cover_value_visible']);
 }
@@ -77,31 +84,37 @@ define('BOUNDING_BOX_INITIALLY_COLLAPSED', $metsis_conf['bounding_box_initially_
 define('FULL_TEXT_SEARCH_INITIALLY_COLLAPSED', $metsis_conf['full_text_search_initially_collapsed']);
 if (isset($metsis_conf['instrument_polarisation_visible'])) {
   define('INSTRUMENT_POLARISATION_VISIBLE', $metsis_conf['instrument_polarisation_visible']);
-} if (isset($metsis_conf['instrument_polarisation_initially_collapsed'])) {
+}
+if (isset($metsis_conf['instrument_polarisation_initially_collapsed'])) {
   define('INSTRUMENT_POLARISATION_INITIALLY_COLLAPSED', $metsis_conf['instrument_polarisation_initially_collapsed']);
-} if (isset($metsis_conf['instrument_polarisations'])) {
+}
+if (isset($metsis_conf['instrument_polarisations'])) {
   define('INSTRUMENT_POLARISATIONS', $metsis_conf['instrument_polarisations']);
-} if (isset($metsis_conf['product_types'])) {
+}
+if (isset($metsis_conf['product_types'])) {
   define('PRODUCT_TYPES', $metsis_conf['product_types']);
-} if (isset($metsis_conf['product_types_visible'])) {
+}
+if (isset($metsis_conf['product_types_visible'])) {
   define('PRODUCT_TYPES_VISIBLE', $metsis_conf['product_types_visible']);
-} if (isset($metsis_conf['instrument_modes'])) {
+}
+if (isset($metsis_conf['instrument_modes'])) {
   define('INSTRUMENT_MODES', $metsis_conf['instrument_modes']);
-} if (isset($metsis_conf['instrument_modes_visible'])) {
+}
+if (isset($metsis_conf['instrument_modes_visible'])) {
   define('INSTRUMENT_MODES_VISIBLE', $metsis_conf['instrument_modes_visible']);
-} define('ICONS_PATH', conf_path() . '/files/icons');
+}
+define('ICONS_PATH', conf_path() . '/files/icons');
 define('SHARE_RESULTS_EMAIL_BUTTON_VISIBLE', $metsis_conf['share_results_email_button_visible']);
 define('SHARE_RESULTS_EMAIL_BUTTON_TEXT', $metsis_conf['share_results_email_button_text']);
 define('SHARE_RESULTS_COPY_BUTTON_VISIBLE', $metsis_conf['share_results_copy_button_visible']);
 define('SHARE_RESULTS_COPY_BUTTON_TEXT', $metsis_conf['share_results_copy_button_text']);
 define('RESULTS_PER_PAGE', $metsis_conf['results_per_page']);
-define('DEBUG', FALSE);
+//define('DEBUG', FALSE);
 define('CAPDOC_POSTFIX', $metsis_conf['capdoc_postfix']);
 define('MISSING_METADATA', $metsis_conf['missing_metadata']);
 define('NOT_APPLICABLE_METADATA', $metsis_conf['not_applicable_metadata']);
 define('MISSING_OPENDAP', $metsis_conf['missing_opendap']);
 define('MISSING_DATA_ACCESS_RESOURCE', $metsis_conf['missing_data_access_resource']);
-
 
 
 /**

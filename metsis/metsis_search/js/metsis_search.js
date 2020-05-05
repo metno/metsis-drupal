@@ -1,21 +1,28 @@
-(function ($) {
-    //}anonymous function wrapper
-    Drupal.behaviors.metsisFormReset = {
-        attach: function (context, settings) {
-            $("#edit-reset").click(function () {
-                console.log("You clicked!");
-                // alert("you clicked");
-            });
-            /*
-             $(".form-reset-button").submit(function (event) {
-             event.preventDefault();
-             alert("not submitting");
-             });
-             */
-        }
-    };
-    //anonymous function wrapper{
-}(jQuery));
+
+/**
+
+ ******************* DEPRECATED. DO NOT USE ********************
+
+ */
+
+// (function ($) {
+//     //}anonymous function wrapper
+//     Drupal.behaviors.metsisFormReset = {
+//         attach: function (context, settings) {
+//             $("#edit-reset").click(function () {
+//                 console.log("You clicked!");
+//                 // alert("you clicked");
+//             });
+//             /*
+//              $(".form-reset-button").submit(function (event) {
+//              event.preventDefault();
+//              alert("not submitting");
+//              });
+//              */
+//         }
+//     };
+//     //anonymous function wrapper{
+// }(jQuery));
 
 
 /*
@@ -42,15 +49,15 @@
 
 
 /*
- * 
- * 
+ *
+ *
  (function ($) {
  //}anonymous function wrapper
- 
+
  $(function () {
  $("#datepicker").datepicker();
  });
- 
+
  //anonymous function wrapper{
  }(jQuery));
  */
@@ -62,11 +69,11 @@
 /*
  (function ($) {
  //}anonymous function wrapper
- 
+
  $('legend').click(function () {
  $('fieldset').toggleClass('active');
  });
- 
+
  //anonymous function wrapper{
  }(jQuery));
  */
@@ -79,7 +86,7 @@
 /*
  (function ($) {
  //}anonymous function wrapper
- 
+
  $(function () {
  var dateFormat = "mm/dd/yy",
  from = $("#from")
@@ -99,7 +106,7 @@
  .on("change", function () {
  from.datepicker("option", "maxDate", getDate(this));
  });
- 
+
  function getDate(element) {
  var date;
  try {
@@ -108,11 +115,11 @@
  catch (error) {
  date = null;
  }
- 
+
  return date;
  }
  });
- 
+
  //anonymous function wrapper{
  }(jQuery));
  */
