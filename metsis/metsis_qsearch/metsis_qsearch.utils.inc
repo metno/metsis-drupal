@@ -282,6 +282,9 @@ function adc_get_leveltwo_links($dataset_id) {
   if ($number_of_children > 0) {
     $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton" href="' . $elements_url . '" >' . ELEMENTS_BUTTON_TEXT . '..[' . $number_of_children . ']</a>' . '</div>';
     return $url;
+  }else{
+    $url = '';
+    return $url;
   }
 }
 
@@ -304,6 +307,11 @@ function msb_count_children($datasetID) {
 
 function get_data_access_markup($dataset_id, $data_access) {
   $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '">' . $dataset_id . '</a>' . '</div>';
+  return $url;
+}
+
+function get_data_access_markup_nt($dataset_id, $data_access) {
+  $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" target="_blank" href="' . $data_access . '">' . $dataset_id . '</a>' . '</div>';
   return $url;
 }
 
@@ -661,6 +669,14 @@ function msb_get_fimex_link($dataset_id, $solr_core) {
   $url = '';
   $url .= '<div class="botton-wrap">';
   $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core . '" >Transform</a>';
+  $url .= '</div>';
+  return $url;
+}
+
+function msb_get_fimex_link_nt($dataset_id, $solr_core) {
+  $url = '';
+  $url .= '<div class="botton-wrap">';
+  $url .= '<a class="adc-button adc-sbutton" target="_blank" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core . '" >Transform</a>';
   $url .= '</div>';
   return $url;
 }

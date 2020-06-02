@@ -1,0 +1,109 @@
+.map-res{
+    background-color: white; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.ol-viewport {
+  height: 400px !important;
+}
+
+#map-res-popup {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    height: 200px; 
+    background: white; 
+    overflow: auto;
+}
+
+.map-res-thumb-pop {
+  left: 1em !important;
+  bottom: 2em !important;
+  top: unset !important;
+}
+
+.map-res-table table {
+  border: none !important;
+  vertical-align: middle;
+}
+
+.map-res-table td {
+  font-size: 12px;
+  vertical-align: middle;
+  padding: 0px;
+}
+
+.map-res-table .thumbnail_container{
+  display: block;
+}
+
+.map-res-exp-buttons tbody {
+  border: none !important;
+}
+.map-res-exp-buttons tr td {
+  font-size: 14px;
+  vertical-align: bottom;
+  border: none !important;
+}
+
+.map-res-elements tr td {
+  font-size: 12px;
+  vertical-align: middle;
+  border: none;
+  min-width: 20%;
+}
+
+.map-res-button {
+  background-color: #fafafa;
+  color: #333;
+  display: inline-block;
+  margin: 0.5em;
+  padding: 0.5em;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.map-res-thumb {
+  border: 0.1em solid black;
+  margin: 0.3em;
+}
+
+#tlphov-map-res {
+  font-size: small;
+  padding: 0.2em;
+  background: white;
+  width:100%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  overflow-wrap: anywhere;
+}
+
+#tlp-map-res {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: rgba(0,0,0,0.2);
+  font-size: 14px;
+  width:100%;
+  padding: 5px;
+}
+
+#popup-map-res{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  max-width: 23em;
+  height: 23em;
+  background: white;
+  overflow: auto;
+}
+
+
+#popup-map-res-content {
+  font-weight: bold;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.map-res-panel {
+margin-bottom: 0em;
+}

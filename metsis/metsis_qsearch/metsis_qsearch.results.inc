@@ -159,6 +159,7 @@ function qsearch_get_ctable($form_state, $page_number) {
   global $metsis_conf;
   global $base_url;
   $number_results_per_page = RESULTS_PER_PAGE;
+  $pins_on_res_map = PINS_ON_RES_MAP;
   $number_results_found = q_get_num_res_found($_SESSION['qsearch']['initial_user_query']);
   $number_of_pages = ceil($number_results_found / $number_results_per_page);
   $start_row = ($page_number - 1) * $number_results_per_page;
@@ -270,17 +271,20 @@ function qsearch_get_ctable($form_state, $page_number) {
     if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
       if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
         $fimex_link = "";
+        $fimex_link_nt = "";
       }
       else {
         $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT);
+        $fimex_link_nt = msb_get_fimex_link_nt($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT);
       }
     }
     else {
       $fimex_link = "";
+      $fimex_link_nt = "";
     }
-    if (DATASETNAME_VISIBLE) {
+    //if (DATASETNAME_VISIBLE) {
       $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
-    }
+    //}
     if (RESULTS_INSTITUTIONS_VISIBLE) {
       $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
     } //if (PLATFORM_LONG_NAME_VISIBLE) {
@@ -296,33 +300,33 @@ function qsearch_get_ctable($form_state, $page_number) {
         $cloud_cover_value = NULL;
       }
     }
-    if (TITLE_VISIBLE) {
+    //if (TITLE_VISIBLE) {
       $title = $doc[METADATA_PREFIX . 'title'][0];
-    }
-    if (PROJECT_VISIBLE) {
+    //}
+    //if (PROJECT_VISIBLE) {
       $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
-    }
-    if (RESULTS_KEYWORDS_VISIBLE) {
+    //}
+    //if (RESULTS_KEYWORDS_VISIBLE) {
       $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
-    }
+    //}
 
-    if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
+    //if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
       if (isset($doc[METADATA_PREFIX . 'collection'])) {
         $collection = $doc[METADATA_PREFIX . 'collection'][0];
       }
       else {
         $collection = '';
       }
-    }
+    //}
 
-    if (RESULTS_ABSTRACT_VISIBLE) {
+    //if (RESULTS_ABSTRACT_VISIBLE) {
       if (isset($doc[METADATA_PREFIX . 'abstract'])) {
         $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
       }
       else {
         $abstract = '';
       }
-    }
+    //}
     $temporal_extent_start_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_start_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_start_date'] : '';
     $temporal_extent_end_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_end_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_end_date'] : '';
     if (COLLECTION_PERIOD_VISIBLE) {
@@ -354,24 +358,30 @@ function qsearch_get_ctable($form_state, $page_number) {
         if (defined('LANDING_PAGE_BUTTON_VAR')) {
           if (LANDING_PAGE_BUTTON_VAR === 'metadata_identifier') {
             $data_access_HTTP = adc_get_button_markup($doc[METADATA_PREFIX . 'metadata_identifier'], $rir['Dataset landing page']['uri']);
+            $related_lp = adc_get_button_markup_nt($doc[METADATA_PREFIX . 'metadata_identifier'], $rir['Dataset landing page']['uri']);
           }
           if (LANDING_PAGE_BUTTON_VAR === 'title') {
             $data_access_HTTP = adc_get_button_markup($doc[METADATA_PREFIX . 'title'][0], $rir['Dataset landing page']['uri']);
+            $related_lp = adc_get_button_markup_nt($doc[METADATA_PREFIX . 'title'][0], $rir['Dataset landing page']['uri']);
           }
         }
         else {
           $data_access_HTTP = adc_get_button_markup($doc[METADATA_PREFIX . 'title'][0], $rir['Dataset landing page']['uri']);
+          $related_lp = adc_get_button_markup_nt($doc[METADATA_PREFIX . 'title'][0], $rir['Dataset landing page']['uri']);
         }
       }
       else {
         $data_access_HTTP = $doc[METADATA_PREFIX . 'title'][0];
+        $related_lp = $doc[METADATA_PREFIX . 'title'][0];
       }
     }
     elseif (isset($doc[METADATA_PREFIX . 'data_access']['type']['HTTP']['url'])) {
       $data_access_HTTP = get_data_access_markup($doc[METADATA_PREFIX . 'title'][0], $doc[METADATA_PREFIX . 'data_access']['type']['HTTP']['url']);
+      $related_lp = get_data_access_markup_nt($doc[METADATA_PREFIX . 'title'][0], $doc[METADATA_PREFIX . 'data_access']['type']['HTTP']['url']);
     }
     else {
       $data_access_HTTP = $doc[METADATA_PREFIX . 'title'][0];
+      $related_lp = $doc[METADATA_PREFIX . 'title'][0];
     }
     if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'])) {
       $data_access_OGC_WMS = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'];
@@ -412,10 +422,12 @@ function qsearch_get_ctable($form_state, $page_number) {
         $mapthumb = "";
       }
       if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
-        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button);
+        //$options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button);
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP);
       }
       else {
-        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
+        //$options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP);
       }
     }
     if (RESULTS_INSTITUTIONS_VISIBLE) {
@@ -460,6 +472,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
       $options[$dataset_name]['results_thumb_column_header'] = t($mapthumb);
     }
+
     if ($show_children) {
       $max_count = 10;
       $count = ($children['response']['numFound'] > $max_count) ? $max_count : $children['response']['numFound'];
@@ -494,8 +507,104 @@ function qsearch_get_ctable($form_state, $page_number) {
         ];
       }
     }
+//Lara
+    $geographical_extent_north = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_north'];
+    $geographical_extent_south = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_south'];
+    $geographical_extent_east = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_east'];
+    $geographical_extent_west = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_west'];
+    $geographical_extent = array($geographical_extent_north,$geographical_extent_south,$geographical_extent_east,$geographical_extent_west);
+    $latlon = array(($geographical_extent_south+$geographical_extent_north)/2, ($geographical_extent_east+$geographical_extent_west)/2);
+    $address_o = isset($dar['"OPeNDAP"']) ? $dar['"OPeNDAP"'] : '';
+    $address_w = isset($dar['"OGC WMS"']) ? $dar['"OGC WMS"'] : '';
+    $address_h = isset($dar['"HTTP"']) ? $dar['"HTTP"'] : '';
+    $address_od = isset($dar['"ODATA"']) ? $dar['"ODATA"'] : '';
+    $access_const =  isset($doc[METADATA_PREFIX . 'access_constraint']) ? $doc[METADATA_PREFIX . 'access_constraint'] : 'Unspecified';
+    $use_const =  isset($doc[METADATA_PREFIX . 'use_constraint'])? $doc[METADATA_PREFIX . 'use_constraint'] : 'Unspecified';
+    $isotopic = isset($doc[METADATA_PREFIX . 'iso_topic_category']) ? $doc[METADATA_PREFIX . 'iso_topic_category']  : '' ;
+    //$keywords = isset($doc[METADATA_PREFIX . 'keywords_keyword'])? $doc[METADATA_PREFIX . 'keywords_keyword'] : '' ;
+    $activity = isset($doc[METADATA_PREFIX . 'activity_type']) ? $doc[METADATA_PREFIX . 'activity_type'] : '' ;
+    $ds_prod_status = isset($doc[METADATA_PREFIX . 'dataset_production_status']) ? $doc[METADATA_PREFIX . 'dataset_production_status'] : '' ;
+    $md_status = isset($doc[METADATA_PREFIX . 'metadata_status']) ? $doc[METADATA_PREFIX . 'metadata_status'] : '' ;
+    $last_md_update = isset($doc[METADATA_PREFIX . 'last_metadata_update']) ? $doc[METADATA_PREFIX . 'last_metadata_update'] : '';
+    $dc_sh =  isset($doc[METADATA_PREFIX . 'data_center_data_center_name_short_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_short_name'] : '';
+    $dc_ln =  isset($doc[METADATA_PREFIX . 'data_center_data_center_name_long_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_long_name'] : '';
+    $dc_url = isset($doc[METADATA_PREFIX . 'data_center_data_center_url']) ? $doc[METADATA_PREFIX . 'data_center_data_center_url'] : '';
+    $dc_cr =  isset($doc[METADATA_PREFIX . 'data_center_contact_role']) ? $doc[METADATA_PREFIX . 'data_center_contact_role'] : '';
+    $dc_cn =  isset($doc[METADATA_PREFIX . 'data_center_contact_name']) ? $doc[METADATA_PREFIX . 'data_center_contact_name'] : '';
+    $dc_ce =  isset($doc[METADATA_PREFIX . 'data_center_contact_email']) ? $doc[METADATA_PREFIX . 'data_center_contact_email'] : '';
+    $related_lp_url = isset($rir['Dataset landing page']['uri']) ? $rir['Dataset landing page']['uri'] : '';
+
+
+
+    $extracted_info[$metadata_div_counter] = array(array($address_o,$address_w,$address_h,$address_od,$netcdf_download,$odata_download), 
+                                                   $dataset_name, 
+                                                   $geographical_extent, 
+                                                   $latlon,
+                                                   $title, 
+                                                   $abstract,
+                                                   array($temporal_extent_start_date, $temporal_extent_end_date),
+                                                   $mapthumb,
+                                                   array($related_lp,$related_lp_url),
+                                                   array($isotopic, $keywords, $collection, $activity, $project),
+                                                   array($ds_prod_status, $md_status, $last_md_update),
+                                                   array($dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce),
+                                                   array($fimex_link_nt, $visualize_button, $ascii_button,$leveltwo_button),'',
+                                                   array($access_const, $use_const),
+                                                   SOLR_CORE_PARENT);
     $metadata_div_counter += 1;
   }
+
+
+//Lara
+  $path = drupal_get_path('module', 'metsis_qsearch');
+  $ol5_path = libraries_get_path('openlayers5');
+
+  drupal_add_css($ol5_path . '/css/ol.css');
+  drupal_add_css($ol5_path . '/apidoc/styles/bootstrap.min.css');
+
+  drupal_add_js($ol5_path . '/build/ol.js');
+  drupal_add_js($ol5_path . '/apidoc/scripts/bootstrap.min.js');
+  drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
+
+
+  //Lara send info to js
+  //drupal_set_message(print_r($metadata_link,TRUE),'warning');
+  drupal_json_encode($extracted_info);
+
+  drupal_add_js(array('extracted_info' => $extracted_info,
+                      'pins' => $pins_on_res_map,
+                      'path' => $path,
+                      'site_name' => $base_url,), 'setting');
+
+
+  if ($pins_on_res_map){
+  $map_res_string = <<<EOM
+    <div id="popup-map-res" class="ol-popup">
+      <div id="popup-map-res-content"></div>
+    </div>
+  <div id="map-res" class="map-res">
+     <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
+  </div>
+EOM;
+  }else{
+  $map_res_string = <<<EOM
+    <div id="popup-map-res" class="ol-popup">
+      <div id="popup-map-res-content"></div>
+    </div>
+  <div id="map-res" class="map-res">
+     <label style="font-size: medium;">Select Projection</label>
+     <input type="radio" name="map-res-projection" value="EPSG:4326" checked>WGS:84</input>
+     <input type="radio" name="map-res-projection" value="EPSG:32661">UPS North</input>
+     <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
+  </div>
+EOM;
+  }
+
+  $form['res_map'] = array('#prefix' => ' ',
+                           '#markup' => $map_res_string,
+                           '#suffix' => ' ',
+                           );
+
   if (BASKET_ELEMENTS_VISIBLE) {
     $form ['table'] = [
       '#header' => $header,
@@ -531,9 +640,14 @@ function qsearch_get_ctable($form_state, $page_number) {
   }
   $path = drupal_get_path('module', 'metsis_qsearch');
   $form['#attached'] = [
-    'css' => [
-      'type' => 'file',
-      'data' => $path . '/css/simplePagination.css',
+    'css' => ['css' => [
+                       'type' => 'file',
+                       'data' => $path . '/css/simplePagination.css',
+                      ],
+              'css1' => [ 
+                       'type' => 'file',
+                       'data' => $path . '/css/metsis_res_map.css',
+                         ]
     ],
     'js' => [
       'type' => 'file',
