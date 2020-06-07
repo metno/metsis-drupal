@@ -4,7 +4,7 @@
 }
 
 .ol-viewport {
-  height: 400px !important;
+  /*height: 400px !important;*/
 }
 
 #map-res-popup {
@@ -26,22 +26,34 @@
 }
 
 .map-res-table td {
-  font-size: 12px;
+  font-size: 14px;
   vertical-align: middle;
-  padding: 0px;
+  padding: 5px;
 }
 
-.map-res-table .thumbnail_container{
-  display: block;
+.map-res-table td:first-child {
+  text-align: center;
 }
 
-.map-res-exp-buttons tbody {
-  border: none !important;
+.map-res-table-top tbody{
+  border: unset;
 }
-.map-res-exp-buttons tr td {
+.map-res-table-top td {
+  font-size: 14px;
+  vertical-align: middle;
+  padding: 5px;
+  border: unset !important;
+  line-height: 1.5;
+}
+
+.map-res-exp-buttons {
+  font-size: 14px;
+  border: unset !important;
+}
+
+.map-res-exp-buttons td {
   font-size: 14px;
   vertical-align: bottom;
-  border: none !important;
 }
 
 .map-res-elements tr td {

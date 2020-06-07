@@ -20,7 +20,6 @@ function q_results_tabular_form($form, &$form_state) {
   $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
   $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
 
-
   //  $bts_markup = '<a class="adc-button" href="/';
   //  $bts_markup .= METSIS_QSEARCH_ENDPOINT;
   //  $bts_markup .= '/?quid=';
@@ -217,6 +216,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     drupal_set_message("<b>" . t("Number of datasets found") . ": " . $solr_obj['response']['numFound'] . "</b>", 'status', FALSE);
   }
   $metadata_div_counter = 0;
+  $extracted_info = [];
   foreach ($solr_obj['response']['docs'] as $doc) {
     if (key_exists(METADATA_PREFIX . 'related_dataset', $doc)) {
       $child_count = count($doc[METADATA_PREFIX . 'related_dataset']);
@@ -285,9 +285,9 @@ function qsearch_get_ctable($form_state, $page_number) {
     //if (DATASETNAME_VISIBLE) {
       $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
     //}
-    if (RESULTS_INSTITUTIONS_VISIBLE) {
+    //if (RESULTS_INSTITUTIONS_VISIBLE) {
       $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
-    } //if (PLATFORM_LONG_NAME_VISIBLE) {
+    //} //if (PLATFORM_LONG_NAME_VISIBLE) {
     if (RESULTS_PLATFORM_LONG_NAME_VISIBLE) {
       $platform_long_name = !empty($doc[METADATA_PREFIX . 'platform_long_name'][0]) ? $doc[METADATA_PREFIX . 'platform_long_name'][0] : ' ';
     }
@@ -422,12 +422,10 @@ function qsearch_get_ctable($form_state, $page_number) {
         $mapthumb = "";
       }
       if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
-        //$options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button);
-        $options[$dataset_name]['datasetName'] = t($data_access_HTTP);
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button);
       }
       else {
-        //$options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
-        $options[$dataset_name]['datasetName'] = t($data_access_HTTP);
+        $options[$dataset_name]['datasetName'] = t($data_access_HTTP . $netcdf_download . $odata_download . $leveltwo_button . $metadata_link . $fimex_link . $visualize_button . $ascii_button . $mapthumb);
       }
     }
     if (RESULTS_INSTITUTIONS_VISIBLE) {
@@ -533,6 +531,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     $dc_cn =  isset($doc[METADATA_PREFIX . 'data_center_contact_name']) ? $doc[METADATA_PREFIX . 'data_center_contact_name'] : '';
     $dc_ce =  isset($doc[METADATA_PREFIX . 'data_center_contact_email']) ? $doc[METADATA_PREFIX . 'data_center_contact_email'] : '';
     $related_lp_url = isset($rir['Dataset landing page']['uri']) ? $rir['Dataset landing page']['uri'] : '';
+    $personnel_name = isset($doc[METADATA_PREFIX . 'personnel_name'][0]) ? trim($doc[METADATA_PREFIX . 'personnel_name'][0]) : '';
 
 
 
@@ -548,7 +547,8 @@ function qsearch_get_ctable($form_state, $page_number) {
                                                    array($isotopic, $keywords, $collection, $activity, $project),
                                                    array($ds_prod_status, $md_status, $last_md_update),
                                                    array($dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce),
-                                                   array($fimex_link_nt, $visualize_button, $ascii_button,$leveltwo_button),'',
+						   array($fimex_link_nt, $visualize_button, $ascii_button, $leveltwo_button, $target_url),
+						   array($institutions, $personnel_name),
                                                    array($access_const, $use_const),
                                                    SOLR_CORE_PARENT);
     $metadata_div_counter += 1;

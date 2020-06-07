@@ -32,27 +32,25 @@ var pins = Drupal.settings.pins;
 var site_name = Drupal.settings.site_name;
 
 
-if(pins){
-   var ch = document.getElementsByName('map-res-projection');
+var ch = document.getElementsByName('map-res-projection');
 
-   for (var i = ch.length; i--;) {
-      ch[i].onchange = function change_projection() {
-          var prj = this.value;
-      map.setView(new ol.View({
-                    zoom: defzoom,
-                    minZoom: 1,
-                    maxZoom: 12,
-                    center: projObjectforCode[prj].center,
-                    projection: projObjectforCode[prj].projection,}))
-      layer['base'].getSource().refresh();
-      //clear pins and polygons
-      map.getLayers().getArray()[1].getSource().clear(true);
-      if (pins) {
-        map.getLayers().getArray()[2].getSource().clear(true);
-      }
-      //rebuild vector source
-      buildFeatures(projObjectforCode[prj].projection);
-      }
+for (var i = ch.length; i--;) {
+   ch[i].onchange = function change_projection() {
+       var prj = this.value;
+   map.setView(new ol.View({
+                 zoom: defzoom,
+                 minZoom: 1,
+                 maxZoom: 12,
+                 center: projObjectforCode[prj].center,
+                 projection: projObjectforCode[prj].projection,}))
+   layer['base'].getSource().refresh();
+   //clear pins and polygons
+   map.getLayers().getArray()[1].getSource().clear(true);
+   if (pins) {
+     map.getLayers().getArray()[2].getSource().clear(true);
+   }
+   //rebuild vector source
+   buildFeatures(projObjectforCode[prj].projection);
    }
 }
 
@@ -159,7 +157,9 @@ function id_tooltip_h(){
       tlphovMapRes.style.display = 'inline-block';
       tlphovMapRes.innerHTML = '';
       for(var id in feature_ids){
-        overlayh.setPosition([coordinate[0] + coordinate[0]*3/100, coordinate[1] -  coordinate[1]*3/100]);
+        overlayh.setPosition(coordinate);
+        overlayh.setPositioning('top-left');
+        overlayh.setOffset([0,20]);
         if (pins) {
            tlphovMapRes.innerHTML += feature_ids[id].title+'<br>';
         }else{
@@ -232,7 +232,9 @@ function id_tooltip(){
                                         visualize_ts: feature.get('actions')[1],
                                         ascii_dl: feature.get('actions')[2],
                                         child: feature.get('actions')[3],
-                                        has_ts: feature.get('has_ts'),
+                                        visualize_thumb: feature.get('actions')[4],
+                                        institutions: feature.get('contacts')[0],
+                                        pi: feature.get('contacts')[1],
                                         core: feature.get('core'),
                                         access_constraint: feature.get('constraints')[0],
                                         use_constraint: feature.get('constraints')[1],
@@ -258,12 +260,14 @@ var markup = `
 </table>
 
 <div id="md-more-${id}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
-<table class="map-res-table">
+<table class="map-res-table-top">
   <tr>
-  <td>${feature_ids[id].thumb}</td>
+  ${(feature_ids[id].thumb != '') ? '<td style="min-width:25%;">'+feature_ids[id].thumb+'</td>' : ''}<br>
   <td>
       <strong>Title: </strong>${feature_ids[id].title}<br>
       <strong>Abstract: </strong>${feature_ids[id].abs}<br>
+      ${(feature_ids[id].institutions != ' ') ? '<strong>Institutions: </strong>'+feature_ids[id].institutions : ''}<br>
+      ${(feature_ids[id].pi != '') ? '<strong>PI: </strong>'+feature_ids[id].pi : ''}<br>
       <table class="map-res-exp-buttons">
       <tr><td><button data-parent="#map-res-acc-${id}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-full-${id}">Additional Metadata</button></td>
       <td><button data-parent="#map-res-acc-${id}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-access-${id}">Data Access</button></td> 
@@ -272,6 +276,7 @@ var markup = `
       <td>${feature_ids[id].visualize_ts}</td>
       <td>${feature_ids[id].ascii_dl}</td>
       <td>${feature_ids[id].child}</td>
+      <td>${(feature_ids[id].thumb != '') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].visualize_thumb+'>Visualize</a>' : ''}</td></tr>
       </table>
   </td></tr>
 </table>
@@ -304,7 +309,6 @@ var markup = `
   <tr><td colspan="2" style="width:25%;"><strong>Activity Type: </strong></td><td>${feature_ids[id].activity}</td></tr>
   <tr><td colspan="2" style="width:25%;"><strong>Project: </strong></td><td>${feature_ids[id].project}</td></tr>
   <tr><td colspan="2" style="width:25%;"><strong>Dataset production status: </strong></td><td>${feature_ids[id].ds_prod_status}</td></tr>
-  <tr><td colspan="2" style="width:25%;"><strong>Metadata status: </strong></td><td>${feature_ids[id].md_status}</td></tr>
 </table>
 </div>
 </div>
@@ -341,7 +345,6 @@ var markup = `
 //build up the point/polygon features
 function buildFeatures(prj) {
 
-
 var iconFeaturesPol=[];
 for(var i12=0; i12 <= extracted_info.length-1; i12++){
 if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
@@ -366,7 +369,7 @@ if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info
         info_status: extracted_info[i12][10],
         data_center: extracted_info[i12][11],
         actions: extracted_info[i12][12],
-        has_ts: extracted_info[i12][13],
+        contacts: extracted_info[i12][13],
         constraints: extracted_info[i12][14],
         core: extracted_info[i12][15],
   });
@@ -408,7 +411,7 @@ if (pins) {
         info_status: extracted_info[i12][10],
         data_center: extracted_info[i12][11],
         actions: extracted_info[i12][12],
-        has_ts: extracted_info[i12][13],
+        contacts: extracted_info[i12][13],
         constraints: extracted_info[i12][14],
         core: extracted_info[i12][15],
     });
