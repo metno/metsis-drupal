@@ -1,21 +1,38 @@
 //initialize projection
-var prj = 'EPSG:4326';
-var defzoom = 4;
+var defzoom = 2;
+
+// Import variables from php: array(address, id, layers)
+var extracted_info = Drupal.settings.extracted_info;
+var path = Drupal.settings.path;
+var pins = Drupal.settings.pins;
+var site_name = Drupal.settings.site_name;
+var init_proj = Drupal.settings.init_proj_res_map;
 
 // two projections will be possible
 // 32661
 proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
 ol.proj.proj4.register(proj4);
-var ext32661 = [-10e+06,-10e+06,10e+06,10e+06]; 
-var center32661 = [15,80]; 
+var ext32661 = [-4e+06,-3e+06,8e+06,8e+06];
+var center32661 = [0,89];
 var proj32661 = new ol.proj.Projection({
   code: 'EPSG:32661',
-  extent: [-20000000,-30000000,20000000,10000000]
+  extent: ext32661
 });
 
+// 32761
+proj4.defs('EPSG:32761', '+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+ol.proj.proj4.register(proj4);
+var ext32761 = [-8e+06,-8e+06,12e+06,10e+06];
+var center32761 = [0,-90]; 
+var proj32761 = new ol.proj.Projection({
+  code: 'EPSG:32761',
+  extent: ext32761
+});
+
+
 // 4326
-var ext4326 = [-180.0000, -90.0000, 180.0000, 90.0000]; 
-var center4326 = [15,70]; 
+var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000]; 
+var center4326 = [15,0]; 
 var proj4326 = new ol.proj.Projection({
   code: 'EPSG:4326',
   extent: ext4326
@@ -23,35 +40,47 @@ var proj4326 = new ol.proj.Projection({
 
 projObjectforCode = {
    'EPSG:4326': {extent: ext4326, center: center4326, projection: proj4326},
-   'EPSG:32661': {extent: ext32661, center: center32661, projection: proj32661}};
-
-// Import variables from php: array(address, id, layers)
-var extracted_info = Drupal.settings.extracted_info;
-var path = Drupal.settings.path;
-var pins = Drupal.settings.pins;
-var site_name = Drupal.settings.site_name;
+   'EPSG:32661': {extent: ext32661, center: center32661, projection: proj32661},
+   'EPSG:32761': {extent: ext32761, center: center32761, projection: proj32761}
+   };
 
 
 var ch = document.getElementsByName('map-res-projection');
 
 for (var i = ch.length; i--;) {
    ch[i].onchange = function change_projection() {
-       var prj = this.value;
-   map.setView(new ol.View({
-                 zoom: defzoom,
-                 minZoom: 1,
-                 maxZoom: 12,
-                 center: projObjectforCode[prj].center,
-                 projection: projObjectforCode[prj].projection,}))
-   layer['base'].getSource().refresh();
-   //clear pins and polygons
-   map.getLayers().getArray()[1].getSource().clear(true);
-   if (pins) {
-     map.getLayers().getArray()[2].getSource().clear(true);
-   }
-   //rebuild vector source
-   buildFeatures(projObjectforCode[prj].projection);
-   }
+      var prj = this.value;
+      if (prj == 'EPSG:32761') {
+        map.getLayers().removeAt(2,layer['pins']);
+        map.getLayers().removeAt(1,layer['polygons']);
+        map.getLayers().removeAt(0,layer['baseN']);
+        map.getLayers().insertAt(0,layer['baseS']);
+      }else{
+        map.getLayers().removeAt(2,layer['pins']);
+        map.getLayers().removeAt(1,layer['polygons']);
+        map.getLayers().removeAt(0,layer['baseS']);
+        map.getLayers().insertAt(0,layer['baseN']);
+      }
+      map.setView(new ol.View({
+                    zoom: defzoom,
+                    minZoom: 0,
+                    maxZoom: 12,
+                    extent: projObjectforCode[prj].extent,
+                    center: ol.proj.transform(projObjectforCode[prj].center, 'EPSG:4326', projObjectforCode[prj].projection),
+                    projection: projObjectforCode[prj].projection,}))
+
+      layer['baseN'].getSource().refresh();
+      layer['baseS'].getSource().refresh();
+      //clear pins and polygons
+      if(map.getLayers().getArray().length !== 1) {
+         map.getLayers().getArray()[1].getSource().clear(true);
+         if (pins) {
+            map.getLayers().getArray()[2].getSource().clear(true);
+         }
+      }
+      //rebuild vector source
+      buildFeatures(projObjectforCode[prj].projection);
+      }
 }
 
 //in nbs s1-ew
@@ -111,10 +140,10 @@ var iconStyleBk = new ol.style.Style({
 // Define all layers
 var layer = {};
 
-// Base layer WMS
-layer['base']  = new ol.layer.Tile({
+// Base layer WMS north
+layer['baseN']  = new ol.layer.Tile({
    type: 'base',
-   title: 'base',
+   title: 'bgN',
    source: new ol.source.TileWMS({ 
        url: 'https://public-wms.met.no/backgroundmaps/northpole.map',
        params: {'LAYERS': 'world', 'TRANSPARENT':'false', 'VERSION':'1.1.1','FORMAT':'image/png'},
@@ -122,16 +151,28 @@ layer['base']  = new ol.layer.Tile({
    })
 });
 
+// Base layer WMS south
+layer['baseS']  = new ol.layer.Tile({
+   type: 'base',
+   title: 'bgS',
+   source: new ol.source.TileWMS({ 
+       url: 'https://public-wms.met.no/backgroundmaps/southpole.map',
+       params: {'LAYERS': 'world', 'TRANSPARENT':'false', 'VERSION':'1.3.0','FORMAT':'image/png'},
+       crossOrigin: 'anonymous'
+   })
+});
+
 var map = new ol.Map({
    target: 'map-res',
-   layers: [ layer['base']
+   layers: [ layer['baseN']
            ],
    view: new ol.View({
                  zoom: defzoom, 
-                 minZoom: 1,
+                 minZoom: 0,
                  maxZoom: 12,
-                 center: center4326,
-                 projection: prj,
+                 center: projObjectforCode[init_proj].center,
+                 extent: projObjectforCode[init_proj].extent,
+                 projection: projObjectforCode[init_proj].projection,
    })
 });
 
@@ -166,6 +207,8 @@ function id_tooltip_h(){
            tlphovMapRes.innerHTML += feature_ids[id].id+'<br>';
         }
       }
+    }else{
+      tlphovMapRes.style.display = 'hidden';
     }
   });
 }
@@ -216,7 +259,8 @@ function id_tooltip(){
                                         abs:feature.get('abs'), 
                                         timeStart: feature.get('time')[0],
                                         timeEnd: feature.get('time')[1],
-                                        thumb: feature.get('thumb'),
+                                        thumb: feature.get('thumb')[0],
+                                        thumb_url: feature.get('thumb')[1],
                                         url_lp: feature.get('related_info')[0],
                                         url_lp_url: feature.get('related_info')[1],
                                         ds_prod_status: feature.get('info_status')[0],
@@ -274,6 +318,7 @@ var markup = `
       <td>${feature_ids[id].url_dlo}</td>
       <td>${feature_ids[id].fimex}</td>
       <td>${feature_ids[id].visualize_ts}</td>
+      <td>${(feature_ids[id].thumb_url != '') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].thumb_url+'>Visualize</a>' : ''}</td></tr>
       <td>${feature_ids[id].ascii_dl}</td>
       <td>${feature_ids[id].child}</td>
       <td>${(feature_ids[id].thumb != '') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].visualize_thumb+'>Visualize</a>' : ''}</td></tr>
@@ -348,7 +393,6 @@ function buildFeatures(prj) {
 var iconFeaturesPol=[];
 for(var i12=0; i12 <= extracted_info.length-1; i12++){
 if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
-//console.log(extracted_info[i12][0]);
   box_tl = ol.proj.transform([extracted_info[i12][2][3], extracted_info[i12][2][0]], 'EPSG:4326', prj);
   box_tr = ol.proj.transform([extracted_info[i12][2][2], extracted_info[i12][2][0]], 'EPSG:4326', prj);
   box_bl = ol.proj.transform([extracted_info[i12][2][3], extracted_info[i12][2][1]], 'EPSG:4326', prj);
@@ -386,8 +430,8 @@ var vectorSourcePol = new ol.source.Vector({
 
 //create a vector layer with all points from the vector source and pins
 var vectorLayerPol = new ol.layer.Vector({
-  source: vectorSourcePol,
-  //style: iconStyle,
+   title: 'polygons',
+   source: vectorSourcePol,
 });
 map.addLayer(vectorLayerPol);
 
@@ -431,22 +475,31 @@ if (pins) {
 
 //create a vector layer with all points from the vector source and pins
   var vectorLayerPin = new ol.layer.Vector({
+    title: 'pins',
     source: vectorSourcePin,
     //style: iconStyle,
   });
-  map.addLayer(vectorLayerPin);
+ map.addLayer(vectorLayerPin);
 }
 
 //Fit to extent of features
-if (map.getLayers().getArray()[1].getSource().getFeatures().length != 0) {
-   map.getView().fit(vectorSourcePol.getExtent());
-}else{
-   map.getView().fit(vectorSourcePin.getExtent());
-}
+//check if there are results
+//if(map.getLayers().getArray().length !== 1) {
+//   if (map.getLayers().getArray()[1].getSource().getFeatures().length != 0) {
+//      if (ol.extent.containsExtent(map.getView().calculateExtent(), map.getLayers().getArray()[2].getSource().getExtent())) {
+//         map.getView().fit(map.getLayers().getArray()[2].getSource().getExtent());
+//      }else{
+//         map.getView().fit(map.getView().calculateExtent());
+//      }
+//   }else{
+//         map.getView().fit(map.getView().calculateExtent());
+//   }
+//}
+
 }
 
 //initialize features
-buildFeatures(prj);
+buildFeatures(projObjectforCode[init_proj].projection);
 
 // display clickable ID in tooltip
 id_tooltip()
@@ -465,5 +518,3 @@ map.addControl(mousePositionControl);
 var zoomToExtentControl = new ol.control.ZoomToExtent({
 });
 map.addControl(zoomToExtentControl);
-
-

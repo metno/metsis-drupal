@@ -159,6 +159,7 @@ function qsearch_get_ctable($form_state, $page_number) {
   global $base_url;
   $number_results_per_page = RESULTS_PER_PAGE;
   $pins_on_res_map = PINS_ON_RES_MAP;
+  $init_proj_res_map = INIT_PROJ_RES_MAP;
   $number_results_found = q_get_num_res_found($_SESSION['qsearch']['initial_user_query']);
   $number_of_pages = ceil($number_results_found / $number_results_per_page);
   $start_row = ($page_number - 1) * $number_results_per_page;
@@ -226,7 +227,6 @@ function qsearch_get_ctable($form_state, $page_number) {
     }
     if (isset($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']) && (!empty($doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url']))) {
       $getcapdoc = $doc[METADATA_PREFIX . 'data_access']['type']['OGC_WMS']['url'];
-      //$target_url = $base_url . '/' . 'metsis/map/wms?dataset=' . $doc[METADATA_PREFIX . 'metadata_identifier'] . '&solr_core=' . SOLR_CORE_PARENT;
       $target_url = $base_url . '/' . 'metsis/map/wms?dataset=' . $doc[METADATA_PREFIX . 'metadata_identifier'] . '&solr_core=' . SOLR_CORE_PARENT;
       $tmp_thumb_response = msb_get_fields(SOLR_CORE_MAP_THUMBNAILS, $doc[METADATA_PREFIX . 'metadata_identifier'], [
         "thumbnail_data",
@@ -255,6 +255,7 @@ function qsearch_get_ctable($form_state, $page_number) {
       }
     }
     else {
+      $target_url = NULL;
       $mapthumb = NULL;
       $children = $show_children ? msb_get_children($doc[METADATA_PREFIX . 'metadata_identifier']) : NULL;
     }
@@ -542,7 +543,7 @@ function qsearch_get_ctable($form_state, $page_number) {
                                                    $title, 
                                                    $abstract,
                                                    array($temporal_extent_start_date, $temporal_extent_end_date),
-                                                   $mapthumb,
+                                                   array($mapthumb, $target_url),
                                                    array($related_lp,$related_lp_url),
                                                    array($isotopic, $keywords, $collection, $activity, $project),
                                                    array($ds_prod_status, $md_status, $last_md_update),
@@ -557,13 +558,13 @@ function qsearch_get_ctable($form_state, $page_number) {
 
 //Lara
   $path = drupal_get_path('module', 'metsis_qsearch');
-  $ol5_path = libraries_get_path('openlayers5');
+  $ol6_path = libraries_get_path('openlayers6');
 
-  drupal_add_css($ol5_path . '/css/ol.css');
-  drupal_add_css($ol5_path . '/apidoc/styles/bootstrap.min.css');
+  drupal_add_css($ol6_path . '/css/ol.css');
+  drupal_add_css($ol6_path . '/apidoc/styles/bootstrap.min.css');
 
-  drupal_add_js($ol5_path . '/build/ol.js');
-  drupal_add_js($ol5_path . '/apidoc/scripts/bootstrap.min.js');
+  drupal_add_js($ol6_path . '/build/ol.js');
+  drupal_add_js($ol6_path . '/apidoc/scripts/bootstrap.min.js');
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
 
 
@@ -574,31 +575,22 @@ function qsearch_get_ctable($form_state, $page_number) {
   drupal_add_js(array('extracted_info' => $extracted_info,
                       'pins' => $pins_on_res_map,
                       'path' => $path,
-                      'site_name' => $base_url,), 'setting');
+                      'site_name' => $base_url,
+                      'init_proj_res_map' => $init_proj_res_map,), 'setting');
 
 
-  if ($pins_on_res_map){
-  $map_res_string = <<<EOM
-    <div id="popup-map-res" class="ol-popup">
-      <div id="popup-map-res-content"></div>
-    </div>
-  <div id="map-res" class="map-res">
-     <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
-  </div>
-EOM;
-  }else{
   $map_res_string = <<<EOM
     <div id="popup-map-res" class="ol-popup">
       <div id="popup-map-res-content"></div>
     </div>
   <div id="map-res" class="map-res">
      <label style="font-size: medium;">Select Projection</label>
-     <input type="radio" name="map-res-projection" value="EPSG:4326" checked>WGS:84</input>
+     <input type="radio" name="map-res-projection" value="EPSG:4326">WGS:84</input>
      <input type="radio" name="map-res-projection" value="EPSG:32661">UPS North</input>
+     <input type="radio" name="map-res-projection" value="EPSG:32761">UPS South</input>
      <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
   </div>
 EOM;
-  }
 
   $form['res_map'] = array('#prefix' => ' ',
                            '#markup' => $map_res_string,
