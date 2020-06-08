@@ -51,12 +51,16 @@ for (var i = ch.length; i--;) {
    ch[i].onchange = function change_projection() {
       var prj = this.value;
       if (prj == 'EPSG:32761') {
-        map.getLayers().removeAt(2,layer['pins']);
+        if (pins) {
+	   map.getLayers().removeAt(2,layer['pins']);
+	}
         map.getLayers().removeAt(1,layer['polygons']);
         map.getLayers().removeAt(0,layer['baseN']);
         map.getLayers().insertAt(0,layer['baseS']);
       }else{
-        map.getLayers().removeAt(2,layer['pins']);
+        if (pins) {
+           map.getLayers().removeAt(2,layer['pins']);
+	}
         map.getLayers().removeAt(1,layer['polygons']);
         map.getLayers().removeAt(0,layer['baseS']);
         map.getLayers().insertAt(0,layer['baseN']);
@@ -318,10 +322,9 @@ var markup = `
       <td>${feature_ids[id].url_dlo}</td>
       <td>${feature_ids[id].fimex}</td>
       <td>${feature_ids[id].visualize_ts}</td>
-      <td>${(feature_ids[id].thumb_url != '') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].thumb_url+'>Visualize</a>' : ''}</td></tr>
+      <td>${(feature_ids[id].visualize_thumb != ' ') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].thumb_url+'>Visualize</a>' : ''}</td></tr>
       <td>${feature_ids[id].ascii_dl}</td>
       <td>${feature_ids[id].child}</td>
-      <td>${(feature_ids[id].thumb != '') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].visualize_thumb+'>Visualize</a>' : ''}</td></tr>
       </table>
   </td></tr>
 </table>

@@ -255,7 +255,7 @@ function qsearch_get_ctable($form_state, $page_number) {
       }
     }
     else {
-      $target_url = NULL;
+      $target_url = ' ';
       $mapthumb = NULL;
       $children = $show_children ? msb_get_children($doc[METADATA_PREFIX . 'metadata_identifier']) : NULL;
     }
@@ -534,8 +534,6 @@ function qsearch_get_ctable($form_state, $page_number) {
     $related_lp_url = isset($rir['Dataset landing page']['uri']) ? $rir['Dataset landing page']['uri'] : '';
     $personnel_name = isset($doc[METADATA_PREFIX . 'personnel_name'][0]) ? trim($doc[METADATA_PREFIX . 'personnel_name'][0]) : '';
 
-
-
     $extracted_info[$metadata_div_counter] = array(array($address_o,$address_w,$address_h,$address_od,$netcdf_download,$odata_download), 
                                                    $dataset_name, 
                                                    $geographical_extent, 
@@ -569,7 +567,6 @@ function qsearch_get_ctable($form_state, $page_number) {
 
 
   //Lara send info to js
-  //drupal_set_message(print_r($metadata_link,TRUE),'warning');
   drupal_json_encode($extracted_info);
 
   drupal_add_js(array('extracted_info' => $extracted_info,
