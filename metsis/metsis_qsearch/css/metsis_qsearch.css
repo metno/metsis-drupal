@@ -8,9 +8,14 @@
 .non-map-div .description{
     display: none;
 }
+#map-search {
+    width:100%;
+    height: 450px;
+}
 .map-div{
     float: left;
     width: 59%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 .full-text-search-div{
     width: 100%;
@@ -120,10 +125,6 @@ div.clear{
     border: none;
 }
 
-#map {
-    width:100%;
-    height: 450px;
-}
 .product_type_details{
     margin-left:50px;
 }

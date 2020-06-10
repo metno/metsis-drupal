@@ -383,8 +383,8 @@ function metsis_qsearch_zero_form($form, &$form_state) {
   $jquery_path = "/sites/all/modules/jquery_update/replace/jquery/1.10/jquery.min.js";
   $form['geographical_search'] = [
     '#type' => 'fieldset',
-    '#title' => defined('LABEL_GEOGRAPHIC_EXTENT') ? '<span class="adc_label">' . t(LABEL_GEOGRAPHIC_EXTENT) . '</span>' : t('Geographical search'),
-    '#collapsible' => TRUE,
+    //'#title' => defined('LABEL_GEOGRAPHIC_EXTENT') ? '<span class="adc_label">' . t(LABEL_GEOGRAPHIC_EXTENT) . '</span>' : t('Geographical search'),
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
     '#attached' => [
       'js' => [$jquery_path,],

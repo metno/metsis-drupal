@@ -244,29 +244,52 @@ function adc_get_geographical_search_map() {
   $search_map_center_lat = $metsis_conf['search_map_center_lat'];
   $search_map_center_lon = $metsis_conf['search_map_center_lon'];
   $search_map_init_zoom = $metsis_conf['search_map_init_zoom'];
-  $path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_wms') . '/js/bundle.js';
+  //$path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_wms') . '/js/bundle.js';
+  $path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_qsearch') . '/js/metsis_search_map.js';
+  $ol6_path = libraries_get_path('openlayers6');
+  drupal_add_css($ol6_path . '/css/ol.css');
+  drupal_add_js($ol6_path . '/build/ol.js');
+  drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
+ 
+
+  drupal_add_js(array('lon' => $search_map_center_lon,
+                      'lat' => $search_map_center_lat,
+                      'zoom' => $search_map_init_zoom,
+                      'bbox' => '{topleft: {latId: "edit-bbox-top-left-lat", lonId: "edit-bbox-top-left-lon"},
+                              bottomright: {latId: "edit-bbox-bottom-right-lat", lonId: "edit-bbox-bottom-right-lon"}
+                             }'), 
+                      'setting');
+
   $string = <<<EOM
-        <div class="map container">
-            <div id="map"></div>
-        </div>
+        <div id="map-search" class="map-search">
+        <input type="radio" id="4326" name="map-search-projection" value="EPSG:4326">WGS:84</input>
+        <input type="radio" id="32661" name="map-search-projection" value="EPSG:32661">UPS North</input>
+        <input type="radio" id="32761" name="map-search-projection" value="EPSG:32761">UPS South</input>
         <script type="text/javascript" src="$path_to_bundle"></script>
-        <script type="text/javascript">
-                  var sClient;
-            jQuery(document).ready(function () {
-                sClient = mapClient.search({
-                    lon: $search_map_center_lon,
-                    lat: $search_map_center_lat,
-                    zoom: $search_map_init_zoom,
-                    bbox: {
-                        topleft: {latId: 'edit-bbox-top-left-lat', lonId: 'edit-bbox-top-left-lon'},
-                        bottomright: {latId: 'edit-bbox-bottom-right-lat', lonId: 'edit-bbox-bottom-right-lon'}
-                          }
-                        }
-                      );
-               //console.log(sClient.polygon);
-            });
-        </script>
+        </div>
 EOM;
+//  $string = <<<EOM
+//        <div class="map container">
+//            <div id="map"></div>
+//        </div>
+//        <script type="text/javascript" src="$path_to_bundle"></script>
+//        <script type="text/javascript">
+//                  var sClient;
+//            jQuery(document).ready(function () {
+//                sClient = mapClient.search({
+//                    lon: $search_map_center_lon,
+//                    lat: $search_map_center_lat,
+//                    zoom: $search_map_init_zoom,
+//                    bbox: {
+//                        topleft: {latId: 'edit-bbox-top-left-lat', lonId: 'edit-bbox-top-left-lon'},
+//                        bottomright: {latId: 'edit-bbox-bottom-right-lat', lonId: 'edit-bbox-bottom-right-lon'}
+//                          }
+//                        }
+//                      );
+//               //console.log(sClient.polygon);
+//            });
+//        </script>
+//EOM;
   return $string;
 }
 
