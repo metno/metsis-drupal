@@ -272,16 +272,13 @@ function qsearch_get_ctable($form_state, $page_number) {
     if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
       if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
         $fimex_link = "";
-        $fimex_link_nt = "";
       }
       else {
         $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT);
-        $fimex_link_nt = msb_get_fimex_link_nt($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT);
       }
     }
     else {
       $fimex_link = "";
-      $fimex_link_nt = "";
     }
     //if (DATASETNAME_VISIBLE) {
       $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
@@ -546,7 +543,7 @@ function qsearch_get_ctable($form_state, $page_number) {
                                                    array($isotopic, $keywords, $collection, $activity, $project),
                                                    array($ds_prod_status, $md_status, $last_md_update),
                                                    array($dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce),
-						   array($fimex_link_nt, $visualize_button, $ascii_button, $leveltwo_button, $target_url),
+						   array($fimex_link, $visualize_button, $ascii_button, $leveltwo_button, $target_url),
 						   array($institutions, $personnel_name),
                                                    array($access_const, $use_const),
                                                    SOLR_CORE_PARENT);
@@ -582,9 +579,9 @@ function qsearch_get_ctable($form_state, $page_number) {
     </div>
   <div id="map-res" class="map-res">
      <label style="font-size: medium;">Select Projection</label>
-     <input type="radio" name="map-res-projection" value="EPSG:4326">WGS:84</input>
-     <input type="radio" name="map-res-projection" value="EPSG:32661">UPS North</input>
-     <input type="radio" name="map-res-projection" value="EPSG:32761">UPS South</input>
+     <input type="radio" id="4326" name="map-res-projection" value="EPSG:4326">WGS:84</input>
+     <input type="radio" id="32661" name="map-res-projection" value="EPSG:32661">UPS North</input>
+     <input type="radio" id="32761" name="map-res-projection" value="EPSG:32761">UPS South</input>
      <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
   </div>
 EOM;

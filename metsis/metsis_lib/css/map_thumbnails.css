@@ -24,8 +24,8 @@
 }
 .overlay_image{
 
-    z-index: 15;
-    /*    z-index: 9;*/
+    /* z-index: 15;*/
+    z-index: 9;
 
 }
 

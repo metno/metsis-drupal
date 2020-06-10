@@ -673,14 +673,6 @@ function msb_get_fimex_link($dataset_id, $solr_core) {
   return $url;
 }
 
-function msb_get_fimex_link_nt($dataset_id, $solr_core) {
-  $url = '';
-  $url .= '<div class="botton-wrap">';
-  $url .= '<a class="adc-button adc-sbutton" target="_blank" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core . '" >Transform</a>';
-  $url .= '</div>';
-  return $url;
-}
-
 function adc_keywords_to_string($keywords_array) {
   $glue = "<br>";
   return implode($glue, $keywords_array);

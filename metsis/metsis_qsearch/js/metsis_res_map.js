@@ -322,7 +322,7 @@ var markup = `
       <td>${feature_ids[id].url_dlo}</td>
       <td>${feature_ids[id].fimex}</td>
       <td>${feature_ids[id].visualize_ts}</td>
-      <td>${(feature_ids[id].visualize_thumb != ' ') ? '<a class="adc-button" target="_blank" href='+feature_ids[id].thumb_url+'>Visualize</a>' : ''}</td></tr>
+      <td>${(feature_ids[id].visualize_thumb != ' ') ? '<a class="adc-button" href='+feature_ids[id].thumb_url+'>Visualize</a>' : ''}</td>
       <td>${feature_ids[id].ascii_dl}</td>
       <td>${feature_ids[id].child}</td>
       </table>
