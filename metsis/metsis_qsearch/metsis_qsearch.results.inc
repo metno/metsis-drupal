@@ -168,6 +168,8 @@ function qsearch_get_ctable($form_state, $page_number) {
   $show_children = FALSE;
   $children = NULL;
 
+  $message_query = message_modified_searchstring($_SESSION['qsearch']['initial_user_query']);
+
   $header = [];
   if (DATASETNAME_VISIBLE) {
     $header['datasetName'] = t('Dataset name');
@@ -577,6 +579,9 @@ function qsearch_get_ctable($form_state, $page_number) {
     <div id="popup-map-res" class="ol-popup">
       <div id="popup-map-res-content"></div>
     </div>
+    <button type="button" class="adc-button" data-toggle="collapse" data-target="#message-query">Check your search fields</button>
+    <div id="message-query" class="collapse">$message_query</div>
+
   <div id="map-res" class="map-res">
      <label style="font-size: medium;">Select Projection</label>
      <input type="radio" id="4326" name="map-res-projection" value="EPSG:4326">WGS:84</input>

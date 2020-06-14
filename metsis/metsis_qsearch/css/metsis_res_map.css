@@ -118,5 +118,12 @@
 }
 
 .map-res-panel {
-margin-bottom: 0em;
+  margin-bottom: 0em;
+}
+
+#message-query {
+  background-color: white;
+  padding: 1em;
+  margin: 1em;
+  overflow: hidden;
 }

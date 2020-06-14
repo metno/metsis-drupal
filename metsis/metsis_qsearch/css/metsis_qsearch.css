@@ -6,6 +6,9 @@
 .non-map-div .form-item{
    margin-bottom: unset; 
 }
+.non-map-div .description{
+    display: none;
+}
 .map-div{
     float: left;
     width: 59%;
@@ -51,12 +54,19 @@ label[for="edit-finished-after"] {
 	width: 45%;
 	float: left;
 }	
+
 #edit-finished-after{
         width: 55%;
 }
 label[for="edit-finished-before"] {
 	width: 45%;
 	float: left;
+}	
+label[for="edit-finished-before-datepicker-popup-0"] {
+	display: none;
+}	
+label[for="edit-finished-after-datepicker-popup-0"] {
+	display: none;
 }	
 #edit-finished-before{
     width: 55%;

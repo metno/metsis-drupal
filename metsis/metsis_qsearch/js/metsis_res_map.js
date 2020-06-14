@@ -13,7 +13,7 @@ var init_proj = Drupal.settings.init_proj_res_map;
 proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
 ol.proj.proj4.register(proj4);
 var ext32661 = [-4e+06,-3e+06,8e+06,8e+06];
-var center32661 = [0,89];
+var center32661 = [0,80];
 var proj32661 = new ol.proj.Projection({
   code: 'EPSG:32661',
   extent: ext32661

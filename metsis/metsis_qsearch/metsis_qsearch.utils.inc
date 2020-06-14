@@ -700,6 +700,14 @@ function msb_foo_validate($form, &$form_state) {
 
 }
 
+
+function message_modified_searchstring($initial_string) {
+  $local_items = ["mmd_metadata_status:\"active\" AND", "mmd_collection", "full_text", "mmd_personnel_role:Investigator AND mmd_personnel_name", "mmd_keywords_keyword", "mmd_personnel_organisation", "mmd_temporal_extent_start_date", "mmd_temporal_extent_end_date", "bbox", "mmd_platform_long_name", "mmd_instrument_mode", "mmd_instrument_polarisation","mmd_cloud_cover_value"];
+  $message_items = ["", "Collection", "Full text", "Investigator", "Keywords", "Institution", "Start Date", "End Date", "Bounding Box", "Platform", "Instrument Mode", "Polarisation", "Cloud Cover"];
+  $message_string = str_replace($local_items, $message_items, $initial_string);
+  return $message_string;
+}
+
 function adc_goto_basket() {
   global $user;
   global $metsis_conf;
