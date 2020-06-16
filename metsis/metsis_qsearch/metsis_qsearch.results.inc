@@ -584,9 +584,9 @@ function qsearch_get_ctable($form_state, $page_number) {
 
   <div id="map-res" class="map-res">
      <label style="font-size: medium;">Select Projection</label>
-     <input type="radio" id="4326" name="map-res-projection" value="EPSG:4326">WGS:84</input>
-     <input type="radio" id="32661" name="map-res-projection" value="EPSG:32661">UPS North</input>
-     <input type="radio" id="32761" name="map-res-projection" value="EPSG:32761">UPS South</input>
+     <input type="radio" id="EPSG:4326" name="map-res-projection" value="EPSG:4326">WGS:84</input>
+     <input type="radio" id="EPSG:32661" name="map-res-projection" value="EPSG:32661">UPS North</input>
+     <input type="radio" id="EPSG:32761" name="map-res-projection" value="EPSG:32761">UPS South</input>
      <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
   </div>
 EOM;

@@ -47,6 +47,8 @@ projObjectforCode = {
 
 var ch = document.getElementsByName('map-res-projection');
 
+document.getElementById(init_proj).checked = true;
+
 for (var i = ch.length; i--;) {
    ch[i].onchange = function change_projection() {
       var prj = this.value;
