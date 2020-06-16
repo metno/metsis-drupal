@@ -540,8 +540,17 @@ function adc_get_datasets_fields($solr_server, $solr_port, $solr_core, $metadata
 }
 
 function adc_get_datasets_fields_reverse_lookup($solr_server, $solr_port, $solr_core, $mmd_metadata_identifier, $fields_array, $start_row, $no_of_rows) {
+  $sort = '&sort=mmd_temporal_extent_start_date+desc';
   $fields = implode(',', $fields_array);
   $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_related_dataset:' . $mmd_metadata_identifier . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
+  //$url .= $sort;
+  /**
+   * test{
+   */
+  //http://157.249.176.182:8080/solr/adc-l2/select?q=*%3A*&sort=mmd_temporal_extent_start_date+desc&rows=300&fl=mmd_temporal_extent_start_date%2C+mmd_temporal_extent_end_date&wt=json&indent=true
+  /**
+   * test}
+   */
   $result = drupal_http_request($url);
   $json = $result->data;
   return json_decode($json, TRUE);

@@ -9,3 +9,4 @@ dependencies[] = metsis_lib
 dependencies[] = metsis_wms
 dependencies[] = metsis_basket
 
+dependencies[] = date_popup
