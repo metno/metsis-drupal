@@ -124,6 +124,10 @@
 #message-query {
   background-color: white;
   padding: 1em;
-  margin: 1em;
   overflow: hidden;
+}
+
+.simple-pagination {
+  display: flex;
+  justify-content: center;
 }

@@ -14,12 +14,17 @@ function q_results_tabular_form($form, &$form_state) {
   //  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
   //  $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
   //  $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
-  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
 
   $form['#validate'][] = 'adc_min_select_validate';
   $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
   $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
 
+  $form['pagination'] = [
+    '#markup' => $pager_markup,
+    '#prefix' => '<div id="number_of_pages_info_div">',
+    '#suffix' => '</div>',
+  ];
+  $form ['table'] = qsearch_get_ctable($form_state, $params['page']);
   //  $bts_markup = '<a class="adc-button" href="/';
   //  $bts_markup .= METSIS_QSEARCH_ENDPOINT;
   //  $bts_markup .= '/?quid=';
@@ -43,11 +48,6 @@ function q_results_tabular_form($form, &$form_state) {
   //  }
   $form['adc_buttons_wrapper'] = [
     '#prefix' => defined('ADC_FLOATING_BUTTONS') ? '<div  class="adc-floating-buttons">' : '<div  class="adc-buttons-wrapper">',
-    '#suffix' => '</div>',
-  ];
-  $form['adc_buttons_wrapper']['pagination'] = [
-    '#markup' => $pager_markup,
-    '#prefix' => '<div id="number_of_pages_info_div">',
     '#suffix' => '</div>',
   ];
   if (BASKET_ELEMENTS_VISIBLE) {
@@ -216,7 +216,9 @@ function qsearch_get_ctable($form_state, $page_number) {
     return;
   }
   if (!empty($solr_obj['response']['numFound'])) {
-    drupal_set_message("<b>" . t("Number of datasets found") . ": " . $solr_obj['response']['numFound'] . "</b>", 'status', FALSE);
+    //drupal_set_message("<b>" . t("Number of datasets found") . ": " . $solr_obj['response']['numFound'] . "</b>", 'status', FALSE);
+    drupal_set_message("<b>" . t("Showing ") . RESULTS_PER_PAGE . t(" out of ") . $solr_obj['response']['numFound'] . t(" datasets found </b>"), 'status', FALSE);
+
   }
   $metadata_div_counter = 0;
   $extracted_info = [];
@@ -579,7 +581,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     <div id="popup-map-res" class="ol-popup">
       <div id="popup-map-res-content"></div>
     </div>
-    <button type="button" class="adc-button" data-toggle="collapse" data-target="#message-query">Check your search fields</button>
+    <button type="button" class="adc-button" data-toggle="collapse" data-target="#message-query">Hide/Show search fields</button>
     <div id="message-query" class="collapse">$message_query</div>
 
   <div id="map-res" class="map-res">
