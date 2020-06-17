@@ -282,6 +282,9 @@ function adc_get_leveltwo_links($dataset_id) {
   if ($number_of_children > 0) {
     $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton" href="' . $elements_url . '" >' . ELEMENTS_BUTTON_TEXT . '..[' . $number_of_children . ']</a>' . '</div>';
     return $url;
+  }else{
+    $url = '';
+    return $url;
   }
 }
 
@@ -304,6 +307,11 @@ function msb_count_children($datasetID) {
 
 function get_data_access_markup($dataset_id, $data_access) {
   $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '">' . $dataset_id . '</a>' . '</div>';
+  return $url;
+}
+
+function get_data_access_markup_nt($dataset_id, $data_access) {
+  $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" target="_blank" href="' . $data_access . '">' . $dataset_id . '</a>' . '</div>';
   return $url;
 }
 
@@ -690,6 +698,14 @@ function msb_all_or_none_latlon_validate($form, &$form_state) {
 
 function msb_foo_validate($form, &$form_state) {
 
+}
+
+
+function message_modified_searchstring($initial_string) {
+  $local_items = ["mmd_metadata_status:\"active\" AND", "mmd_collection", "full_text", "mmd_personnel_role:Investigator AND mmd_personnel_name", "mmd_keywords_keyword", "mmd_personnel_organisation", "mmd_temporal_extent_start_date", "mmd_temporal_extent_end_date", "bbox", "mmd_platform_long_name", "mmd_instrument_mode", "mmd_instrument_polarisation","mmd_cloud_cover_value"];
+  $message_items = ["", "Collection", "Full text", "Investigator", "Keywords", "Institution", "Start Date", "End Date", "Bounding Box", "Platform", "Instrument Mode", "Polarisation", "Cloud Cover"];
+  $message_string = str_replace($local_items, $message_items, $initial_string);
+  return $message_string;
 }
 
 function adc_goto_basket() {

@@ -326,6 +326,15 @@ $metsis_conf['wms_restrict_layers'] = 0;
  * Exact string required by OL3 WMS client.
  */
 $metsis_conf['wms_product_select'] = "false";
+
+/**
+ * Pins in addition to polygon on results map
+ */
+$metsis_conf['pins_on_res_map'] = FALSE;
+/**
+ * Starting projection of results map
+ */
+$metsis_conf['init_proj_res_map'] = 'EPSG:32661';
 /**
  * Exact string required by OL3 WMS client.
  * Not setting this will default to 'north'

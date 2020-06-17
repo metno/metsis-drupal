@@ -222,6 +222,11 @@ function adc_get_button_markup($metadata_identifier, $button_uri) {
   return $url;
 }
 
+function adc_get_button_markup_nt($metadata_identifier, $button_uri) {
+  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton" target="_blank" href="' . $button_uri . '">' . $metadata_identifier . '</a>' . '</div>';
+  return $url;
+}
+
 function metsis_get_metadata_table($solr_core, $metadata_identifier) {
   global $metsis_conf;
   $metadata_sort_order = $metsis_conf['metadata_sort_order'];

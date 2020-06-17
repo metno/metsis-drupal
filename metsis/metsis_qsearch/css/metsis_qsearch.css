@@ -2,9 +2,11 @@
     float: left;
     width: 39%;
 }
-/*Lara*/
 .non-map-div .form-item{
-	margin-bottom: unset; 
+   margin-bottom: unset; 
+}
+.non-map-div .description{
+    display: none;
 }
 .map-div{
     float: left;
@@ -37,7 +39,6 @@
 .data-collection-period-div{
     width: 100%;
 }
-/*Lara*/
 #edit-data-collection-period input {
 	width: 100%;
 }
@@ -51,6 +52,7 @@ label[for="edit-finished-after"] {
 	width: 45%;
 	float: left;
 }	
+
 #edit-finished-after{
         width: 55%;
 }
@@ -58,13 +60,18 @@ label[for="edit-finished-before"] {
 	width: 45%;
 	float: left;
 }	
+label[for="edit-finished-before-datepicker-popup-0"] {
+	display: none;
+}	
+label[for="edit-finished-after-datepicker-popup-0"] {
+	display: none;
+}	
 #edit-finished-before{
     width: 55%;
 }
 .bounding-box-div{
     width: 100%;
 }
-/*Lara*/
 label[for="edit-0--2"] {
 	width: 45%;
 	display: inline-block;
