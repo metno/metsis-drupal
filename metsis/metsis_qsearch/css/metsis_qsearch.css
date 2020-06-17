@@ -2,7 +2,6 @@
     float: left;
     width: 39%;
 }
-/*Lara*/
 .non-map-div .form-item{
    margin-bottom: unset; 
 }
@@ -40,7 +39,6 @@
 .data-collection-period-div{
     width: 100%;
 }
-/*Lara*/
 #edit-data-collection-period input {
 	width: 100%;
 }
@@ -74,7 +72,6 @@ label[for="edit-finished-after-datepicker-popup-0"] {
 .bounding-box-div{
     width: 100%;
 }
-/*Lara*/
 label[for="edit-0--2"] {
 	width: 45%;
 	display: inline-block;

@@ -489,17 +489,32 @@ if (pins) {
 
 //Fit to extent of features
 //check if there are results
-//if(map.getLayers().getArray().length !== 1) {
-//   if (map.getLayers().getArray()[1].getSource().getFeatures().length != 0) {
-//      if (ol.extent.containsExtent(map.getView().calculateExtent(), map.getLayers().getArray()[2].getSource().getExtent())) {
-//         map.getView().fit(map.getLayers().getArray()[2].getSource().getExtent());
-//      }else{
-//         map.getView().fit(map.getView().calculateExtent());
-//      }
-//   }else{
-//         map.getView().fit(map.getView().calculateExtent());
-//   }
-//}
+if(map.getLayers().getArray().length !== 1) {
+   if (map.getLayers().getArray()[1].getSource().getFeatures().length != 0) {
+      if (pins){
+         if(ol.extent.containsExtent(map.getLayers().getArray()[1].getSource().getExtent(), map.getLayers().getArray()[2].getSource().getExtent())){
+	    var maxExt = map.getLayers().getArray()[1].getSource().getExtent(); 
+	 }else{
+	    var maxExt = map.getLayers().getArray()[2].getSource().getExtent(); 
+	 }
+         if (ol.extent.containsExtent(map.getView().getProjection().getExtent(), maxExt)) {
+            map.getView().fit(maxExt);
+            map.getView().setZoom(map.getView().getZoom() - 1);
+         }else{
+            map.getView().fit(map.getView().calculateExtent());
+         }
+      }else{
+         if (ol.extent.containsExtent(map.getView().getProjection().getExtent(), map.getLayers().getArray()[1].getSource().getExtent())) {
+            map.getView().fit(map.getLayers().getArray()[1].getSource().getExtent());
+            map.getView().setZoom(map.getView().getZoom() - 1);
+         }else{
+            map.getView().fit(map.getView().calculateExtent());
+         }
+      } 
+   }else{
+      map.getView().fit(map.getView().calculateExtent());
+   }
+}
 
 }
 

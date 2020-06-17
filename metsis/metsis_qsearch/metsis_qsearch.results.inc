@@ -217,7 +217,7 @@ function qsearch_get_ctable($form_state, $page_number) {
   }
   if (!empty($solr_obj['response']['numFound'])) {
     //drupal_set_message("<b>" . t("Number of datasets found") . ": " . $solr_obj['response']['numFound'] . "</b>", 'status', FALSE);
-    drupal_set_message("<b>" . t("Showing ") . RESULTS_PER_PAGE . t(" out of ") . $solr_obj['response']['numFound'] . t(" datasets found </b>"), 'status', FALSE);
+    drupal_set_message("<b>" . t("Showing ") . min(intval(RESULTS_PER_PAGE), $solr_obj['response']['numFound']) . t(" out of ") . $solr_obj['response']['numFound'] . t(" datasets found </b>"), 'status', FALSE);
 
   }
   $metadata_div_counter = 0;
@@ -507,7 +507,6 @@ function qsearch_get_ctable($form_state, $page_number) {
         ];
       }
     }
-//Lara
     $geographical_extent_north = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_north'];
     $geographical_extent_south = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_south'];
     $geographical_extent_east = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_east'];
@@ -555,7 +554,6 @@ function qsearch_get_ctable($form_state, $page_number) {
   }
 
 
-//Lara
   $path = drupal_get_path('module', 'metsis_qsearch');
   $ol6_path = libraries_get_path('openlayers6');
 
@@ -567,7 +565,6 @@ function qsearch_get_ctable($form_state, $page_number) {
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
 
 
-  //Lara send info to js
   drupal_json_encode($extracted_info);
 
   drupal_add_js(array('extracted_info' => $extracted_info,
