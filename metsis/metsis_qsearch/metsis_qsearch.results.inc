@@ -16,7 +16,10 @@ function q_results_tabular_form($form, &$form_state) {
   //  $form['pagination'] = array('#markup' => $pager_markup, '#prefix' => '<div id="number_of_pages_info_div">', '#suffix' => '</div>',);
 
   $form['#validate'][] = 'adc_min_select_validate';
-  $number_of_pages = $_SESSION['qsearch']['number_of_pages'];
+  //$number_of_pages = $_SESSION['qsearch']['number_of_pages'];
+  $number_results_per_page = RESULTS_PER_PAGE;
+  $number_results_found = q_get_num_res_found($_SESSION['qsearch']['initial_user_query']);
+  $number_of_pages = ceil($number_results_found / $number_results_per_page);
   $pager_markup = '<div class="pagination-holder clearfix"><div id="light-pagination" class="pagination light-theme simple-pagination"></div><input type="hidden" name="number_of_pages" value="' . $number_of_pages . '"></div>';
 
   $form['pagination'] = [
