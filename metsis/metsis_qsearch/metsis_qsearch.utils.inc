@@ -251,21 +251,29 @@ function adc_get_geographical_search_map() {
   drupal_add_js($ol6_path . '/build/ol.js');
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
  
-
   drupal_add_js(array('lon' => $search_map_center_lon,
                       'lat' => $search_map_center_lat,
-                      'zoom' => $search_map_init_zoom,
-                      'bbox' => '{topleft: {latId: "edit-bbox-top-left-lat", lonId: "edit-bbox-top-left-lon"},
-                              bottomright: {latId: "edit-bbox-bottom-right-lat", lonId: "edit-bbox-bottom-right-lon"}
-                             }'), 
+                      'zoom' => $search_map_init_zoom), 
                       'setting');
 
   $string = <<<EOM
         <div id="map-search" class="map-search">
-        <input type="radio" id="4326" name="map-search-projection" value="EPSG:4326">WGS:84</input>
-        <input type="radio" id="32661" name="map-search-projection" value="EPSG:32661">UPS North</input>
-        <input type="radio" id="32761" name="map-search-projection" value="EPSG:32761">UPS South</input>
-        <script type="text/javascript" src="$path_to_bundle"></script>
+           <input type="radio" id="EPSG:4326" name="map-search-projection" value="EPSG:4326">WGS:84</input>
+           <input type="radio" id="EPSG:32661" name="map-search-projection" value="EPSG:32661">UPS North</input>
+           <input type="radio" id="EPSG:32761" name="map-search-projection" value="EPSG:32761">UPS South</input>
+           <div id="droplayers">
+             <button type="button" onclick="document.getElementById('lrs').classList.toggle('show')" class="layers-button">Layers</button>
+             <div id="lrs" class="panel dropdown-lrs-content">
+                <ul id="lrslist">
+                <li class="addl"><input type="checkbox" value="europaveg">europaveg</li>
+                <li class="addl"><input type="checkbox" value="fylkesveg">fylkesveg</li>
+                <li class="addl"><input type="checkbox" value="riksveg">riksveg</li>
+                </ul>
+             </div>
+           </div>
+           <script type="text/javascript" src="$path_to_bundle"></script>
+           <br>
+           <div id="map-search-message">Click on the map to draw a selection box. Boxes in UPS are transfomed into 4-edges polygons</div>
         </div>
 EOM;
 //  $string = <<<EOM
