@@ -182,7 +182,7 @@ div.clear{
 }
 
 .layers-button {
-  background-color: #d5dde2;
+  background-color: rgba(0,60,136,.5);
   border: none;
   color: black;
   padding: 3px 16px;
