@@ -244,6 +244,7 @@ function adc_get_geographical_search_map() {
   $search_map_center_lat = $metsis_conf['search_map_center_lat'];
   $search_map_center_lon = $metsis_conf['search_map_center_lon'];
   $search_map_init_zoom = $metsis_conf['search_map_init_zoom'];
+  $additional_layers = $metsis_conf['additional_layers'];
   //$path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_wms') . '/js/bundle.js';
   $path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_qsearch') . '/js/metsis_search_map.js';
   $ol6_path = libraries_get_path('openlayers6');
@@ -253,7 +254,8 @@ function adc_get_geographical_search_map() {
  
   drupal_add_js(array('lon' => $search_map_center_lon,
                       'lat' => $search_map_center_lat,
-                      'zoom' => $search_map_init_zoom), 
+                      'zoom' => $search_map_init_zoom, 
+                      'additional_layers' => $additional_layers), 
                       'setting');
 
   $string = <<<EOM
@@ -266,8 +268,8 @@ function adc_get_geographical_search_map() {
              <div id="lrs" class="panel dropdown-lrs-content">
                 <ul id="lrslist">
                 <li class="addl"><input type="checkbox" value="europaveg">europaveg</li>
-                <li class="addl"><input type="checkbox" value="fylkesveg">fylkesveg</li>
                 <li class="addl"><input type="checkbox" value="riksveg">riksveg</li>
+                <li class="addl"><input type="checkbox" value="fylkesveg">fylkesveg</li>
                 </ul>
              </div>
            </div>

@@ -3,6 +3,7 @@ var lon = Drupal.settings.lon;
 var lat = Drupal.settings.lat;
 var defzoom = Drupal.settings.zoom;
 var init_proj = 'EPSG:4326';
+var additional_layers = Drupal.settings.additional_layers;
 
 // 32661
 proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
@@ -47,35 +48,33 @@ document.getElementById(init_proj).checked = true;
 for (var i = ch.length; i--;) {
    ch[i].onchange = function change_projection() {
       var prj = this.value;
-      if (map.getLayers().getArray().lenght !== 1){
-         if (map.getLayers().getArray().length > 2) {
-            map.getLayers().removeAt(2);
-            map.getLayers().removeAt(1,layer['draw']);
-         }else{
-            map.getLayers().removeAt(1,layer['draw']);
-         }
+      for (var j = map.getLayers().getArray().length; j >1; j--){
+         map.getLayers().removeAt(j-1);
       }
       if (prj == 'EPSG:32761') {
-        map.getLayers().removeAt(0,layer['baseN']);
-        map.getLayers().insertAt(0,layer['baseS']);
+         map.getLayers().removeAt(0,layer['baseN']);
+         map.getLayers().insertAt(0,layer['baseS']);
       }else{
-        map.getLayers().removeAt(0,layer['baseS']);
-        map.getLayers().insertAt(0,layer['baseN']);
+         map.getLayers().removeAt(0,layer['baseS']);
+         map.getLayers().insertAt(0,layer['baseN']);
       }
       map.setView(new ol.View({
                     zoom: defzoom,
                     minZoom: 0,
                     maxZoom: 12,
                     extent: projObjectforCode[prj].extent,
-                    center: ol.proj.transform(projObjectforCode[prj].center, 'EPSG:4326', projObjectforCode[prj].projection),
-                    projection: projObjectforCode[prj].projection,}))
+                    center: ol.proj.transform(projObjectforCode[prj].center, 'EPSG:4326', projObjectforCode[prj].projection['code_']),
+                    projection: projObjectforCode[prj].projection['code_']}))
 
       layer['baseN'].getSource().refresh();
       layer['baseS'].getSource().refresh();
-      layer['europaveg'].getSource().refresh();
-      layer['fylkesveg'].getSource().refresh();
-      build_draw(projObjectforCode[prj].projection);
-      addExtraLayers(prj);
+      if (additional_layers) {
+         layer['europaveg'].getSource().refresh();
+         layer['fylkesveg'].getSource().refresh();
+         layer['riksveg'].getSource().refresh();
+      }
+      build_draw(projObjectforCode[prj].projection['code_']);
+      addExtraLayers(projObjectforCode[prj].projection['code_']);
       }
 }
 
@@ -112,9 +111,9 @@ var map = new ol.Map({
                  zoom: defzoom, 
                  minZoom: 0,
                  maxZoom: 12,
-                 center: ol.proj.transform([lon,lat], 'EPSG:4326', projObjectforCode[init_proj].projection),
+                 center: ol.proj.transform([lon,lat], 'EPSG:4326', projObjectforCode[init_proj].projection['code_']),
                  extent: projObjectforCode[init_proj].extent,
-                 projection: projObjectforCode[init_proj].projection,
+                 projection: projObjectforCode[init_proj].projection['code_'],
    })
 });
 
@@ -239,7 +238,7 @@ function build_draw(proj) {
 
       drawingSource.addFeature(SquareFeature);
       //Fit to extent of features
-      if (ol.extent.containsExtent(map.getView().getProjection().getExtent(), map.getLayers().getArray()[1].getSource().getExtent())){
+      if (ol.extent.containsExtent(projObjectforCode[proj].extent, map.getLayers().getArray()[1].getSource().getExtent())){
          map.getView().fit(map.getLayers().getArray()[1].getSource().getExtent());
          map.getView().setZoom(map.getView().getZoom() - 1);
       }
@@ -254,9 +253,9 @@ function addExtraLayers(proj){
 
    document.getElementById("droplayers").style.display = "none";
 
-   if (proj == 'EPSG:4326' || proj == 'EPSG:32661'){
+   if (additional_layers && (proj == 'EPSG:4326' || proj == 'EPSG:32661')){
       $('#droplayers').appendTo(
-         $('.ol-overlaycontainer')
+         $('.ol-overlaycontainer-stopevent')
       );
       layer['europaveg']  = new ol.layer.Tile({
          title: 'europaveg',
@@ -267,16 +266,6 @@ function addExtraLayers(proj){
          })
       });
  
- 
-      layer['fylkesveg']  = new ol.layer.Tile({
-         title: 'fylkesveg',
-         source: new ol.source.TileWMS({
-             url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
-             params: {'LAYERS': 'fylkesveg', 'TRANSPARENT':'true', 'VERSION':'1.3.0','FORMAT':'image/png', 'CRS':proj},
-             crossOrigin: 'anonymous'
-         })
-      });
-
       layer['riksveg']  = new ol.layer.Tile({
          title: 'riksveg',
          displayInLayerSwitcher: true,
@@ -287,13 +276,30 @@ function addExtraLayers(proj){
          })
       });
 
+      layer['fylkesveg']  = new ol.layer.Tile({
+         title: 'fylkesveg',
+         source: new ol.source.TileWMS({
+             url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
+             params: {'LAYERS': 'fylkesveg', 'TRANSPARENT':'true', 'VERSION':'1.3.0','FORMAT':'image/png', 'CRS':proj},
+             crossOrigin: 'anonymous'
+         })
+      });
 
-     ald = document.getElementById("lrslist").children; //list of li
+
+     var ald = document.getElementById("lrslist").children; //list of li
      for (var i = ald.length; i--;) {
-        ald[i].onclick = function select_extralayer() {
-           //console.log(this.children[0].value);
-           selectedLayer = this.children[0].value;
+        if (ald[i].children[0].checked) { 
+           selectedLayer = ald[i].children[0].value;
            map.addLayer(layer[selectedLayer]);
+        }
+        ald[i].children[0].onclick = function select_extralayer() {
+           if (this.checked) { 
+              selectedLayer = this.value;
+              map.addLayer(layer[selectedLayer]);
+           }else{
+              selectedLayer = this.value;
+              map.removeLayer(layer[selectedLayer]);
+           }
       }}
  
       document.getElementById("droplayers").style.display = "inline";
