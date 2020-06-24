@@ -2,7 +2,7 @@
 
 
 /**
- * This modules provides a blocks with forms for plotting time series using
+ * This modules provides a blocks with forms for plotting using
  * METSIS web services that offer JS Bokeh ploting.
  */
 require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/metsis_ts_bokeh.conf';
@@ -24,10 +24,6 @@ $bokeh_js_options = [
   //    array('IE' => 'lte IE 9'),
   //  ),
 ];
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-1.4.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-widgets-1.4.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-tables-1.4.0.min.js', $bokeh_js_options);
-drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-1.4.0.min.js', $bokeh_js_options);
 /**
  * move to libs}
  */
@@ -117,5 +113,6 @@ function metsis_ts_bokeh_theme($existing, $type, $theme, $path) {
     'template' => 'metsis_ts_bokeh_plot_form',
     'path' => $module_path . '/theme/template/form/',
   ];
+
   return $items;
 }

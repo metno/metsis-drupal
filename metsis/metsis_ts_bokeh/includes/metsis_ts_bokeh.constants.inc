@@ -9,21 +9,15 @@
  */
 global $metsis;
 
-if (isset($metsis['ts_bokeh_init_node'])) {
-  define('TS_BOKEH_INIT_NODE', $metsis['ts_bokeh_init_node']);
-}
-else {
-  drupal_set_message('Module is not configured. Visit the module admin page.', 'warning');
-}
-if (isset($metsis['ts_bokeh_init_node'])) {
+if (isset($metsis['ts_bokeh_plot_node'])) {
   define('TS_BOKEH_PLOT_NODE', $metsis['ts_bokeh_plot_node']);
 }
 else {
-  drupal_set_message('Module is not configured. Visit the module admin page.', 'warning');
+  drupal_set_message('METSIS time series Bokeh module is not configured. Visit the module admin page.', 'warning');
 }
-//if (isset($metsis['ts_bokeh_plot_service'])) {
-//  define('TS_BOKEH_PLOT_SERVICE', $metsis['ts_bokeh_plot_service']);
-//}
-//else {
-//  drupal_set_message('Module is not configured. Visit the module admin page.', 'warning');
-//}
+if (isset($metsis['ts_bokeh_plot_service'])) {
+  define('TS_BOKEH_PLOT_SERVICE', $metsis['ts_bokeh_plot_service']);
+}
+else {
+  drupal_set_message('METSIS time series Bokeh module is not configured. Visit the module admin page.', 'warning');
+}
