@@ -549,13 +549,7 @@ function adc_get_datasets_fields_reverse_lookup($solr_server, $solr_port, $solr_
   $fields = implode(',', $fields_array);
   $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_related_dataset:' . $mmd_metadata_identifier . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
   //$url .= $sort;
-  /**
-   * test{
-   */
-  //http://157.249.176.182:8080/solr/adc-l2/select?q=*%3A*&sort=mmd_temporal_extent_start_date+desc&rows=300&fl=mmd_temporal_extent_start_date%2C+mmd_temporal_extent_end_date&wt=json&indent=true
-  /**
-   * test}
-   */
+
   $result = drupal_http_request($url);
   $json = $result->data;
   return json_decode($json, TRUE);
@@ -896,9 +890,64 @@ function adc_get_map_base_layer($top_left_lat, $bottom_right_lat, $tol = 1.0e-10
   }
 }
 
+function adc_get_protocol_url($solr_core, $protocol, $metadata_identifier) {
+  $url = [];
+  $dar = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, $solr_core, [$metadata_identifier], ['mmd_data_access_resource'], 0, 1);
+  foreach ($dar['response']['docs'][0]['mmd_data_access_resource'] as $elem) {
+    $parray = explode(':', $elem, 2);
+    if (trim($parray[0], '"') === $protocol) {
+      $uria = explode(',', $parray[1]);
+      array_push($url, trim($uria[0], '"'));
+    }
+  }
+  return $url[0];
+}
+
+function strip_dquotes($item) {
+  return trim($item, '"');
+}
+
+function bokeh_ydict_to_a($string) {
+  // hack to convert the string representation
+  // of Python dictionary returned by the Bokeh service
+  // will be replaced by PHP JSON decoder
+  $string = trim($string, "{");
+  $string = trim($string, "}");
+  $stringa = explode(':', $string);
+  $stringa[1] = trim($stringa[1], "[");
+  $stringa[1] = trim($stringa[1], "]");
+  $stringaa = explode(',', $stringa[1]);
+  $stringaa = array_map('strip_dquotes', $stringaa);
+  $variables[trim($stringa[0], '"')] = $stringaa;
+  return $variables;
+}
+
 /**
- * test{
+ * @param $key
+ * @param null $value
+ *
+ * @return mixed
  */
+
+//function lists_session($key, $value = NULL) {
+//  /**
+//   * save variable in session: lists_session('s_key', 'value');
+//   * retrieve the value: $myVar = lists_session('s_key')
+//   */
+//  static $storage;
+//  if ($value) {
+//    $storage[$key] = $value;
+//    $_SESSION['lists'][$key] = $value;
+//  }
+//  else {
+//    if (empty($storage[$key]) && isset($_SESSION['lists'][$key])) {
+//      $storage[$key] = $_SESSION['lists'][$key];
+//    }
+//  }
+//  return $storage[$key];
+//}
+
+
 //function metsis_get_session_var($name) {
 //  $name = session_id() . '__metsis__' . $name;
 //  return array_map('unserialize', db_query('SELECT name, value FROM {metsis_variable}')->fetchAllKeyed());
@@ -915,6 +964,4 @@ function adc_get_map_base_layer($top_left_lat, $bottom_right_lat, $tol = 1.0e-10
 //    ->condition('name', $name)
 //    ->execute();
 //}
-/**
- * test}
- */
+

@@ -195,21 +195,15 @@ function qsearch_get_ctable($form_state, $page_number) {
   if (RESULTS_KEYWORDS_VISIBLE) {
     $header['keywords'] = t('Keywords');
   }
-  if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
+  if (isset($metsis_conf['results_collection_visible']) AND $metsis_conf['results_collection_visible'] === TRUE) {
     $header['collection'] = t('Collection');
   }
   if (RESULTS_ABSTRACT_VISIBLE) {
     $header['abstract'] = t('Abstract');
   }
-  /**
-   * test{
-   */
   if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
     $header['collection_period'] = t('Collection period');
   }
-  /**
-   * test}
-   */
   if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
     $header['results_thumb_column_header'] = t(RESULTS_THUMB_COLUMN_HEADER);
   }
@@ -288,10 +282,10 @@ function qsearch_get_ctable($form_state, $page_number) {
       $fimex_link = "";
     }
     //if (DATASETNAME_VISIBLE) {
-      $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
+    $dataset_name = $doc[METADATA_PREFIX . 'metadata_identifier'];
     //}
     //if (RESULTS_INSTITUTIONS_VISIBLE) {
-      $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
+    $institutions = !empty($doc[METADATA_PREFIX . 'personnel_organisation'][0]) ? $doc[METADATA_PREFIX . 'personnel_organisation'][0] : ' ';
     //} //if (PLATFORM_LONG_NAME_VISIBLE) {
     if (RESULTS_PLATFORM_LONG_NAME_VISIBLE) {
       $platform_long_name = !empty($doc[METADATA_PREFIX . 'platform_long_name'][0]) ? $doc[METADATA_PREFIX . 'platform_long_name'][0] : ' ';
@@ -306,31 +300,31 @@ function qsearch_get_ctable($form_state, $page_number) {
       }
     }
     //if (TITLE_VISIBLE) {
-      $title = $doc[METADATA_PREFIX . 'title'][0];
+    $title = $doc[METADATA_PREFIX . 'title'][0];
     //}
     //if (PROJECT_VISIBLE) {
-      $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
+    $project = key_exists(METADATA_PREFIX . 'project_long_name', $doc) ? $doc[METADATA_PREFIX . 'project_long_name'] : "";
     //}
     //if (RESULTS_KEYWORDS_VISIBLE) {
-      $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
+    $keywords = adc_keywords_to_string($doc[METADATA_PREFIX . 'keywords_keyword']);
     //}
 
     //if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
-      if (isset($doc[METADATA_PREFIX . 'collection'])) {
-        $collection = $doc[METADATA_PREFIX . 'collection'][0];
-      }
-      else {
-        $collection = '';
-      }
+    if (isset($doc[METADATA_PREFIX . 'collection'])) {
+      $collection = $doc[METADATA_PREFIX . 'collection'][0];
+    }
+    else {
+      $collection = '';
+    }
     //}
 
     //if (RESULTS_ABSTRACT_VISIBLE) {
-      if (isset($doc[METADATA_PREFIX . 'abstract'])) {
-        $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
-      }
-      else {
-        $abstract = '';
-      }
+    if (isset($doc[METADATA_PREFIX . 'abstract'])) {
+      $abstract = $doc[METADATA_PREFIX . 'abstract'][0];
+    }
+    else {
+      $abstract = '';
+    }
     //}
     $temporal_extent_start_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_start_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_start_date'] : '';
     $temporal_extent_end_date = !empty($doc[METADATA_PREFIX . 'temporal_extent_end_date']) ? $doc[METADATA_PREFIX . 'temporal_extent_end_date'] : '';
@@ -345,18 +339,39 @@ function qsearch_get_ctable($form_state, $page_number) {
     $visualize_button = "";
     $ascii_button = "";
     $leveltwo_button = adc_get_leveltwo_links($doc[METADATA_PREFIX . 'metadata_identifier']);
-    if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
+    /**
+     * time series{
+     */
+
+    if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)) {
       $this_url = url(current_path(), [
         'absolute' => TRUE,
         'query' => drupal_get_query_parameters(),
       ]);
-      $visualize_url = "/" . TS_ENDPOINT . "?metadata_identifier=" . $doc[METADATA_PREFIX . 'metadata_identifier'];
-      $visualize_url .= "&calling_results_page=" . $this_url;
-      $ascii_url = "/" . CSV_ENDPOINT . "?metadata_identifier=" . $doc[METADATA_PREFIX . 'metadata_identifier'];
-      $ascii_url .= "&calling_results_page=" . $this_url;
-      $visualize_button = get_data_access_markup(TS_VISUALIZATION_BUTTON_TEXT, $visualize_url);
-      $ascii_button = get_data_access_markup(CSV_BUTTON_TEXT, $ascii_url);
+
+      if (isset($metsis_conf['ts_server_type']) && $metsis_conf['ts_server_type'] === 'pywps') {
+        $this_core = adc_get_solr_core([$doc[METADATA_PREFIX . 'metadata_identifier']])[$doc[METADATA_PREFIX . 'metadata_identifier']];
+        $visualize_url = "/" . TS_BOKEH_PLOT_NODE . "?opendap_urls=" . adc_get_protocol_url($this_core, 'OPeNDAP', $doc[METADATA_PREFIX . 'metadata_identifier']);
+        $visualize_url .= "&calling_results_page=" . $this_url;
+        $ascii_url = "/" . CSV_BOKEH_DOWNLOAD_NODE . "?opendap_urls=" . adc_get_protocol_url($this_core, 'OPeNDAP', $doc[METADATA_PREFIX . 'metadata_identifier']);
+        $ascii_url .= "&calling_results_page=" . $this_url;
+        $visualize_button = get_data_access_markup(TS_VISUALIZATION_BUTTON_TEXT, $visualize_url);
+        $ascii_button = get_data_access_markup(CSV_BUTTON_TEXT, $ascii_url);
+      }
+
+
+      if (isset($metsis_conf['ts_server_type']) && $metsis_conf['ts_server_type'] === 'zoo') {
+        $visualize_url = "/" . TS_ENDPOINT . "?metadata_identifier=" . $doc[METADATA_PREFIX . 'metadata_identifier'];
+        $visualize_url .= "&calling_results_page=" . $this_url;
+        $ascii_url = "/" . CSV_ENDPOINT . "?metadata_identifier=" . $doc[METADATA_PREFIX . 'metadata_identifier'];
+        $ascii_url .= "&calling_results_page=" . $this_url;
+        $visualize_button = get_data_access_markup(TS_VISUALIZATION_BUTTON_TEXT, $visualize_url);
+        $ascii_button = get_data_access_markup(CSV_BUTTON_TEXT, $ascii_url);
+      }
     }
+    /**
+     * time series}
+     */
     if (isset($doc[METADATA_PREFIX . 'related_information_resource'])) {
       $rir = adc_parse_related_information_resource($doc[METADATA_PREFIX . 'related_information_resource']);
       if (isset($rir['Dataset landing page']['uri'])) {
@@ -466,7 +481,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     if (RESULTS_ABSTRACT_VISIBLE) {
       $options[$dataset_name]['abstract'] = t($abstract);
     }
-    if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
+    if (isset($metsis_conf['results_collection_visible']) AND $metsis_conf['results_collection_visible'] === TRUE) {
       $options[$dataset_name]['collection'] = t($collection);
     }
     if (RESULTS_COLLECTION_PERIOD_VISIBLE) {
@@ -514,45 +529,68 @@ function qsearch_get_ctable($form_state, $page_number) {
     $geographical_extent_south = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_south'];
     $geographical_extent_east = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_east'];
     $geographical_extent_west = $doc[METADATA_PREFIX . 'geographic_extent_rectangle_west'];
-    $geographical_extent = array($geographical_extent_north,$geographical_extent_south,$geographical_extent_east,$geographical_extent_west);
-    $latlon = array(($geographical_extent_south+$geographical_extent_north)/2, ($geographical_extent_east+$geographical_extent_west)/2);
+    $geographical_extent = [
+      $geographical_extent_north,
+      $geographical_extent_south,
+      $geographical_extent_east,
+      $geographical_extent_west,
+    ];
+    $latlon = [
+      ($geographical_extent_south + $geographical_extent_north) / 2,
+      ($geographical_extent_east + $geographical_extent_west) / 2,
+    ];
     $address_o = isset($dar['"OPeNDAP"']) ? $dar['"OPeNDAP"'] : '';
     $address_w = isset($dar['"OGC WMS"']) ? $dar['"OGC WMS"'] : '';
     $address_h = isset($dar['"HTTP"']) ? $dar['"HTTP"'] : '';
     $address_od = isset($dar['"ODATA"']) ? $dar['"ODATA"'] : '';
-    $access_const =  isset($doc[METADATA_PREFIX . 'access_constraint']) ? $doc[METADATA_PREFIX . 'access_constraint'] : 'Unspecified';
-    $use_const =  isset($doc[METADATA_PREFIX . 'use_constraint'])? $doc[METADATA_PREFIX . 'use_constraint'] : 'Unspecified';
-    $isotopic = isset($doc[METADATA_PREFIX . 'iso_topic_category']) ? $doc[METADATA_PREFIX . 'iso_topic_category']  : '' ;
+    $access_const = isset($doc[METADATA_PREFIX . 'access_constraint']) ? $doc[METADATA_PREFIX . 'access_constraint'] : 'Unspecified';
+    $use_const = isset($doc[METADATA_PREFIX . 'use_constraint']) ? $doc[METADATA_PREFIX . 'use_constraint'] : 'Unspecified';
+    $isotopic = isset($doc[METADATA_PREFIX . 'iso_topic_category']) ? $doc[METADATA_PREFIX . 'iso_topic_category'] : '';
     //$keywords = isset($doc[METADATA_PREFIX . 'keywords_keyword'])? $doc[METADATA_PREFIX . 'keywords_keyword'] : '' ;
-    $activity = isset($doc[METADATA_PREFIX . 'activity_type']) ? $doc[METADATA_PREFIX . 'activity_type'] : '' ;
-    $ds_prod_status = isset($doc[METADATA_PREFIX . 'dataset_production_status']) ? $doc[METADATA_PREFIX . 'dataset_production_status'] : '' ;
-    $md_status = isset($doc[METADATA_PREFIX . 'metadata_status']) ? $doc[METADATA_PREFIX . 'metadata_status'] : '' ;
+    $activity = isset($doc[METADATA_PREFIX . 'activity_type']) ? $doc[METADATA_PREFIX . 'activity_type'] : '';
+    $ds_prod_status = isset($doc[METADATA_PREFIX . 'dataset_production_status']) ? $doc[METADATA_PREFIX . 'dataset_production_status'] : '';
+    $md_status = isset($doc[METADATA_PREFIX . 'metadata_status']) ? $doc[METADATA_PREFIX . 'metadata_status'] : '';
     $last_md_update = isset($doc[METADATA_PREFIX . 'last_metadata_update']) ? $doc[METADATA_PREFIX . 'last_metadata_update'] : '';
-    $dc_sh =  isset($doc[METADATA_PREFIX . 'data_center_data_center_name_short_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_short_name'] : '';
-    $dc_ln =  isset($doc[METADATA_PREFIX . 'data_center_data_center_name_long_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_long_name'] : '';
+    $dc_sh = isset($doc[METADATA_PREFIX . 'data_center_data_center_name_short_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_short_name'] : '';
+    $dc_ln = isset($doc[METADATA_PREFIX . 'data_center_data_center_name_long_name']) ? $doc[METADATA_PREFIX . 'data_center_data_center_name_long_name'] : '';
     $dc_url = isset($doc[METADATA_PREFIX . 'data_center_data_center_url']) ? $doc[METADATA_PREFIX . 'data_center_data_center_url'] : '';
-    $dc_cr =  isset($doc[METADATA_PREFIX . 'data_center_contact_role']) ? $doc[METADATA_PREFIX . 'data_center_contact_role'] : '';
-    $dc_cn =  isset($doc[METADATA_PREFIX . 'data_center_contact_name']) ? $doc[METADATA_PREFIX . 'data_center_contact_name'] : '';
-    $dc_ce =  isset($doc[METADATA_PREFIX . 'data_center_contact_email']) ? $doc[METADATA_PREFIX . 'data_center_contact_email'] : '';
+    $dc_cr = isset($doc[METADATA_PREFIX . 'data_center_contact_role']) ? $doc[METADATA_PREFIX . 'data_center_contact_role'] : '';
+    $dc_cn = isset($doc[METADATA_PREFIX . 'data_center_contact_name']) ? $doc[METADATA_PREFIX . 'data_center_contact_name'] : '';
+    $dc_ce = isset($doc[METADATA_PREFIX . 'data_center_contact_email']) ? $doc[METADATA_PREFIX . 'data_center_contact_email'] : '';
     $related_lp_url = isset($rir['Dataset landing page']['uri']) ? $rir['Dataset landing page']['uri'] : '';
     $personnel_name = isset($doc[METADATA_PREFIX . 'personnel_name'][0]) ? trim($doc[METADATA_PREFIX . 'personnel_name'][0]) : '';
 
-    $extracted_info[$metadata_div_counter] = array(array($address_o,$address_w,$address_h,$address_od,$netcdf_download,$odata_download), 
-                                                   $dataset_name, 
-                                                   $geographical_extent, 
-                                                   $latlon,
-                                                   $title, 
-                                                   $abstract,
-                                                   array($temporal_extent_start_date, $temporal_extent_end_date),
-                                                   array($mapthumb, $target_url),
-                                                   array($related_lp,$related_lp_url),
-                                                   array($isotopic, $keywords, $collection, $activity, $project),
-                                                   array($ds_prod_status, $md_status, $last_md_update),
-                                                   array($dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce),
-						   array($fimex_link, $visualize_button, $ascii_button, $leveltwo_button, $target_url),
-						   array($institutions, $personnel_name),
-                                                   array($access_const, $use_const),
-                                                   SOLR_CORE_PARENT);
+    $extracted_info[$metadata_div_counter] = [
+      [
+        $address_o,
+        $address_w,
+        $address_h,
+        $address_od,
+        $netcdf_download,
+        $odata_download,
+      ],
+      $dataset_name,
+      $geographical_extent,
+      $latlon,
+      $title,
+      $abstract,
+      [$temporal_extent_start_date, $temporal_extent_end_date],
+      [$mapthumb, $target_url],
+      [$related_lp, $related_lp_url],
+      [$isotopic, $keywords, $collection, $activity, $project],
+      [$ds_prod_status, $md_status, $last_md_update],
+      [$dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce],
+      [
+        $fimex_link,
+        $visualize_button,
+        $ascii_button,
+        $leveltwo_button,
+        $target_url,
+      ],
+      [$institutions, $personnel_name],
+      [$access_const, $use_const],
+      SOLR_CORE_PARENT,
+    ];
     $metadata_div_counter += 1;
   }
 
@@ -570,11 +608,13 @@ function qsearch_get_ctable($form_state, $page_number) {
 
   drupal_json_encode($extracted_info);
 
-  drupal_add_js(array('extracted_info' => $extracted_info,
-                      'pins' => $pins_on_res_map,
-                      'path' => $path,
-                      'site_name' => $base_url,
-                      'init_proj_res_map' => $init_proj_res_map,), 'setting');
+  drupal_add_js([
+    'extracted_info' => $extracted_info,
+    'pins' => $pins_on_res_map,
+    'path' => $path,
+    'site_name' => $base_url,
+    'init_proj_res_map' => $init_proj_res_map,
+  ], 'setting');
 
 
   $map_res_string = <<<EOM
@@ -593,10 +633,11 @@ function qsearch_get_ctable($form_state, $page_number) {
   </div>
 EOM;
 
-  $form['res_map'] = array('#prefix' => ' ',
-                           '#markup' => $map_res_string,
-                           '#suffix' => ' ',
-                           );
+  $form['res_map'] = [
+    '#prefix' => ' ',
+    '#markup' => $map_res_string,
+    '#suffix' => ' ',
+  ];
 
   if (BASKET_ELEMENTS_VISIBLE) {
     $form ['table'] = [
@@ -633,14 +674,15 @@ EOM;
   }
   $path = drupal_get_path('module', 'metsis_qsearch');
   $form['#attached'] = [
-    'css' => ['css' => [
-                       'type' => 'file',
-                       'data' => $path . '/css/simplePagination.css',
-                      ],
-              'css1' => [ 
-                       'type' => 'file',
-                       'data' => $path . '/css/metsis_res_map.css',
-                         ]
+    'css' => [
+      'css' => [
+        'type' => 'file',
+        'data' => $path . '/css/simplePagination.css',
+      ],
+      'css1' => [
+        'type' => 'file',
+        'data' => $path . '/css/metsis_res_map.css',
+      ],
     ],
     'js' => [
       'type' => 'file',

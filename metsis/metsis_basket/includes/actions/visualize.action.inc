@@ -17,6 +17,10 @@ function metsis_basket_visualize_action_info() {
 }
 
 function metsis_basket_visualize_action(&$node, $context) {
+  /**
+   * TODO add visualization using BOKEH.
+   * Check $metsis_conf['ts_server_type']
+   */
   $metadata_identifiers = [];
   foreach ($node as $n) {
     $metadata_identifiers[] = $n->metadata_identifier;

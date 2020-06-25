@@ -181,28 +181,28 @@ function metsis_qsearch_zero_form($form, &$form_state) {
       ],
     ];
 
-        $form['institutions']['chosen_institutions'] = [
-          '#type' => 'checkboxes',
-          '#options' => drupal_map_assoc(msb_get_institutions()),
-          '#default_value' => $institutions,
-          '#attributes' => [
-            'class' => ['institutions-list-checkboxes'],
-          ],
-        ];
+    $form['institutions']['chosen_institutions'] = [
+      '#type' => 'checkboxes',
+      '#options' => drupal_map_assoc(msb_get_institutions()),
+      '#default_value' => $institutions,
+      '#attributes' => [
+        'class' => ['institutions-list-checkboxes'],
+      ],
+    ];
     /**
      * test{
      */
-//    $form['institutions']['chosen_institutions'] = [
-//      '#type' => 'select',
-//      '#multiple' => TRUE,
-//      //'#maxlength' => 30,
-//      // '#size'=> 30,
-//      '#options' => drupal_map_assoc(msb_get_institutions()),
-//      '#default_value' => $institutions,
-//      '#attributes' => [
-//        'class' => ['institutions-list'],
-//      ],
-//    ];
+    //    $form['institutions']['chosen_institutions'] = [
+    //      '#type' => 'select',
+    //      '#multiple' => TRUE,
+    //      //'#maxlength' => 30,
+    //      // '#size'=> 30,
+    //      '#options' => drupal_map_assoc(msb_get_institutions()),
+    //      '#default_value' => $institutions,
+    //      '#attributes' => [
+    //        'class' => ['institutions-list'],
+    //      ],
+    //    ];
     /**
      * test}
      */

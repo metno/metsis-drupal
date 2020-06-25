@@ -289,8 +289,8 @@ function escapeRegExp(string) {
         defaultText: "Make a selection...",
         autoWidth: false
       });
-      $("#edit-institutions-chosen-institutions").change(function(){
-        alert("You selected: "+this.value+" from the MultiLineMultiselect plugin");
+      $("#edit-institutions-chosen-institutions").change(function () {
+        alert("You selected: " + this.value + " from the MultiLineMultiselect plugin");
       });
     }
   }
