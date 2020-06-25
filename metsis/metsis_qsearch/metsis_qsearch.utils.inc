@@ -275,7 +275,7 @@ function adc_get_geographical_search_map() {
            </div>
            <script type="text/javascript" src="$path_to_bundle"></script>
            <br>
-           <div id="map-search-message">Click on the map to draw a selection box. Boxes in UPS are transfomed into 4-edges polygons</div>
+           <div id="map-search-message">Click on the map to draw a selection box. Boxes in UPS are transfomed into 4-edge polygons</div>
         </div>
 EOM;
 //  $string = <<<EOM
