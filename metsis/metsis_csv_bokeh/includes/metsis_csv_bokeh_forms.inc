@@ -45,6 +45,7 @@ function metsis_csv_bokeh_download_form($form, &$form_state) {
   ];
   $form['od_variables_tabular']['selected_variables'] = [
     '#type' => 'tableselect',
+    '#required' => TRUE,
     '#header' => $header,
     '#options' => $options,
     '#attributes' => [

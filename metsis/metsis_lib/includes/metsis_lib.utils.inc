@@ -923,6 +923,38 @@ function bokeh_ydict_to_a($string) {
 }
 
 /**
+ * @param $title string
+ * @param $type Drupal node type
+ * @param $alias Drupal URL path alias
+ */
+
+function adc_create_node($title, $type, $alias) {
+  /**
+   * Drupal 7 function for creating nodes
+   * To be used for creating nodes needed by METSIS modules
+   * TODO : Drupal registry does not record the action properly. Pages are
+   * active and usable, but flagged as "not found"
+   */
+  if (drupal_valid_path($alias) == 1) {
+    return;
+  }
+  else {
+    global $user;
+    $node = new stdClass();
+    $node->title = $title;
+    $node->type = $type;
+    node_object_prepare($node);
+    $node->uid = $user->uid;
+    $node->status = 1;
+    $node->promote = 0;
+    $node = node_submit($node);
+    $node->path['alias'] = $alias;
+    node_save($node);
+    drupal_set_message($alias. " created.",'status');
+  }
+}
+
+/**
  * @param $key
  * @param null $value
  *

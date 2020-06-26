@@ -86,6 +86,7 @@ It is recommended that non core Drupal modules such METSIS and all third party m
                                       ├── metsis_basket
                                       ├── metsis_cache
                                       ├── metsis_csv
+                                      ├── metsis_csv_bokeh
                                       ├── metsis_elements
                                       ├── metsis_fimex
                                       ├── metsis_lib
@@ -349,6 +350,22 @@ image:csv-download-00.png[
 "CSV variable tabulation",width=87%,
 link="./images/csv-download-00.png"]
 
+=== metsis_csv_bokeh
+The CSV Bokeh module provides time series data downloads as ASCII comma-separated values (CSV) and netCDF (nc).
+
+Follow these steps to enable, configure and display the download page
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "bdownload")
+. In the "Blocks" admin page look for _METSIS CSV Bokeh download form_  and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
+
+The image below shows an example of the download form.
+
+image:csv-bokeh-00.png[
+"CSV variable tabulation",width=87%,
+link="./images/csv-bokeh-00.png"]
 
 === metsis_elements
 The elements module provides tabulation of level 2 data.
@@ -436,7 +453,7 @@ link="./images/qsearch-01.png"]
 
 === metsis_timeseries
 
-The timeseries module provides a form for configuring and creating time series plots using the back office Zoo WPS time series service. It assumes that time series data have the NetCDF Climate and Forecast (CF) link:http://cfconventions.org/cf-conventions/cf-conventions.html#_features_and_feature_types[featureType] set to "timeSeries". This module also provides the option of resampling the data by choosing every Nth data point.
+The timeseries module provides a form for configuring and creating time series plots using the back office Zoo WPS time series service. It assumes that time series data have the NetCDF Climate and Forecast (CF) link:http://cfconventions.org/cf-conventions/cf-conventions.html#_features_and_feature_types[featureType] set to "timeSeries" and that this is indexed in Solr. This module also provides the option of resampling the data by choosing every Nth data point.
 
 Follow these steps to enable, configure and display the time series plot configuration page
 
@@ -454,11 +471,26 @@ link="./images/time-series-00.png"]
 
 === metsis_ts_bokeh
 
-To be added when this module is in production.
+The ts bokeh module provides configuration and display for time series and profile plots produced with the link:https://ncapi.adc-ncplot.met.no[Bokeh plotting and download service].  It assumes that time series data have the NetCDF Climate and Forecast (CF) link:http://cfconventions.org/cf-conventions/cf-conventions.html#_features_and_feature_types[featureType] set to "timeSeries" or "profile" and that this is indexed in Solr.
+
+Follow these steps to enable, configure and display the time series plot configuration page
+
+. Enable the module if you've not already done so (see above)
+. Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "bplot")
+. In the "Blocks" admin page look for _METSIS time series Bokeh plot form_ and place it in the content region of your page
+. save your changes
+. Configure the block and limit its visibility to the page you created, using the node number or the alias (e.g. "bplot") for the page
+
+Image below shows an example of a time series plot form and a sample plot.
+
+image:time-series-bokeh-00.png[
+"Time series form",width=87%,
+link="./images/time-series-bokeh-00.png"]
+
 
 === metsis_wms
 
-The wms modules uses a using a bundled OpenLayers client to display data layers on a
+The wms modules uses a bundled OpenLayers client to display data layers on a
 base map layer. Install and enable the module. No other configuration is necessary.
 
 Image below shows an example of a map with data layers.
