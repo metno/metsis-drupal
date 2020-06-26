@@ -725,6 +725,20 @@ $metsis_conf['dar_ogc_wms_button_text'] = 'OGC WMS';
  * Sets the text displayed on the metadata link/button
  */
 $metsis_conf['solr_metadata_button_text'] = 'View metadata';
+/**
+ * Visualization
+ * Currently there are two services available:
+ * 1. static plotting of and CSV download of time series data using the zoo server
+ * 2. dynamic plotting using the pywps server
+ *
+ * You choose which service you wish to use by setting
+ * $metsis_conf['ts_server_type'] = 'zoo'; // to use the zoo server or
+ * $metsis_conf['ts_server_type'] = 'pywps'; // to use the pywps server
+ *
+ * One of these must be set.
+ */
+//$metsis_conf['ts_server_type'] = 'zoo';
+$metsis_conf['ts_server_type'] = 'pywps';
 
 /**
  * The Zoo WPS time series service server IP or FQDN
