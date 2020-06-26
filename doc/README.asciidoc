@@ -99,6 +99,10 @@ It is recommended that non core Drupal modules such METSIS and all third party m
 
 For further details on custom Drupal modules see link:https://www.drupal.org/docs/7/creating-custom-modules[__Creating custom modules__].
 
+== Required libraries
+
+Openlayers6 (https://github.com/openlayers/openlayers/releases/tag/v6.3.1) should be downloaded and installed in the libraries folder under the name "openlayers6". For multisite installation the libraries folder will be under <Drupal root>/sites/all/libraries. 
+
 == Site configuration
 
 We will assume the site to be configured is called [maroon]*mysite* and is contained under <Drupal root>/sites/[maroon]*mysite*.
