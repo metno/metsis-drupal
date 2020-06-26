@@ -101,7 +101,7 @@ For further details on custom Drupal modules see link:https://www.drupal.org/doc
 
 == Required libraries
 
-Openlayers6 (https://github.com/openlayers/openlayers/releases/tag/v6.3.1) should be downloaded and installed in the libraries folder under the name "openlayers6". For multisite installation the libraries folder will be under <Drupal root>/sites/all/libraries. 
+Openlayers6 (https://github.com/openlayers/openlayers/releases/tag/v6.3.1) should be downloaded and installed in the libraries folder under the name "openlayers6". For multisite installation the libraries folder will be under <Drupal root>/sites/all/libraries.
 
 == Site configuration
 
@@ -361,6 +361,8 @@ Follow these steps to enable, configure and display the download page
 
 . Enable the module if you've not already done so (see above)
 . Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "bdownload")
+. set the variable $metsis['csv_bokeh_download_node'] in the metsis_csv_bokeh.conf file.
+  This must be the node you created in previous step (e.g. "bdownload")
 . In the "Blocks" admin page look for _METSIS CSV Bokeh download form_  and place it in the content region of your page
 . save your changes
 . Configure the block and limit its visibility to the page you created, using the node number or the alias for the page
@@ -481,6 +483,8 @@ Follow these steps to enable, configure and display the time series plot configu
 
 . Enable the module if you've not already done so (see above)
 . Create a Drupal basic page and either note its Drupal node or give it a URL alias (e.g. "bplot")
+. set the variable $metsis['ts_bokeh_plot_node'] in the metsis_ts_bokeh.conf file.
+  This must be the node you created in previous step (e.g. "bplot")
 . In the "Blocks" admin page look for _METSIS time series Bokeh plot form_ and place it in the content region of your page
 . save your changes
 . Configure the block and limit its visibility to the page you created, using the node number or the alias (e.g. "bplot") for the page
