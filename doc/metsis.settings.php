@@ -336,6 +336,10 @@ $metsis_conf['pins_on_res_map'] = FALSE;
  */
 $metsis_conf['init_proj_res_map'] = 'EPSG:32661';
 /**
+ * Add control layers button for additional layers
+ */
+$metsis_conf['additional_layers'] = TRUE;
+/**
  * Exact string required by OL3 WMS client.
  * Not setting this will default to 'north'
  */

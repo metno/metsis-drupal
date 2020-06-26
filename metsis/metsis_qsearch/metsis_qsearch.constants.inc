@@ -79,6 +79,7 @@ define('RESULTS_DATE_DISPLAY_FORMAT', $metsis_conf['results_date_display_format'
 define('SEARCH_MAXIMUM_ROWS_TO_FETCH', $metsis_conf['search_maximum_rows_to_fetch']);
 define('PINS_ON_RES_MAP', $metsis_conf['pins_on_res_map']);
 define('INIT_PROJ_RES_MAP', $metsis_conf['init_proj_res_map']);
+define('ADDITIONAL_LAYERS', $metsis_conf['additional_layers']);
 if (isset($metsis_conf['search_max_metadata_age'])) {
   define('SEARCH_MAX_METADATA_AGE', $metsis_conf['search_max_metadata_age']);
 }

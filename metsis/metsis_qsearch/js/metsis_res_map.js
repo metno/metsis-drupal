@@ -400,10 +400,10 @@ function id_tooltip() {
 
         if (feature_ids[id].thumb !== '') {
           if (pins) {
-            content.innerHTML += feature_ids[id].title + "<br>" + feature_ids[id].thumb + "<br>";
+            content.innerHTML += '<button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-'+id+'">Show info: '+feature_ids[id].title+'</button>' + feature_ids[id].thumb+"<br>";
           }
           else {
-            content.innerHTML += feature_ids[id].id + "<br>" + feature_ids[id].thumb + "<br>";
+	    content.innerHTML += ' <button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-'+id+'">Show info: '+feature_ids[id].id+'</button>' + feature_ids[id].thumb+"<br>";
           }
         }
         tlpMapRes.innerHTML += markup;
