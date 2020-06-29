@@ -84,7 +84,9 @@ function elements_tabular_form($form, &$form_state) {
       $md_kv = adc_get_md_kv('l2', $mi);
       $dataset_name = adc_get_link_list(array($title_kv['href'], $md_kv['href']), array($title_kv['title'][0], $md_kv['display_text']));
     }
+
     if ($dar_http != '') {
+
       $dataset_name = adc_get_link_list(array($title_kv['href'], $dar_http, $md_kv['href'],), array($title_kv['title'][0], DAR_HTTP_BUTTON_TEXT, $md_kv['display_text'],));
     } if ($dar_opendap != '') {
       $dataset_name = adc_get_link_list(array($title_kv['href'], $dar_http, $dar_opendap, $md_kv['href'],), array($title_kv['title'][0], DAR_HTTP_BUTTON_TEXT, DAR_OPENDAP_BUTTON_TEXT, $md_kv['display_text'],));
