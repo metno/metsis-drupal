@@ -831,12 +831,13 @@ function metsis_fimex($form, &$form_state) {
     // '#access' => FALSE,
   ];
 
+  $calling_results_page = isset($_GET['calling_results_page']) ? check_plain($_GET['calling_results_page']) : '';
   /**
    * back button{
    */
   $form['back_to_search'] = [
     '#weight' => 14,
-    '#markup' => '<a href="#" class="adc-button adc-back">Back to results</a>',
+    '#markup' => '<a href="'.$calling_results_page.'" class="adc-button adc-back">Back to results</a>',
   ];
 
   /**

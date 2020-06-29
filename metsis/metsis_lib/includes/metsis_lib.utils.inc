@@ -350,6 +350,7 @@ function adc_get_metadata() {
 }
 
 function h_adc_get_metadata($metadata) {
+
   $rows = [];
   foreach ($metadata as $key => $value) {
     if ($key == METADATA_PREFIX . "data_access_resource") {
@@ -954,6 +955,13 @@ function adc_create_node($title, $type, $alias) {
   }
 }
 
+function adc_get_this_url(){
+  $this_url = url(current_path(), [
+    'absolute' => TRUE,
+    'query' => drupal_get_query_parameters(),
+  ]);
+  return $this_url;
+}
 /**
  * @param $key
  * @param null $value

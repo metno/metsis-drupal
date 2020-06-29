@@ -49,6 +49,7 @@ function q_results_tabular_form($form, &$form_state) {
   //    $ss_markup .= '</div>';
   //    $form['share_search'] = array('#weight' => 7, '#markup' => $ss_markup,);
   //  }
+
   $form['adc_buttons_wrapper'] = [
     '#prefix' => defined('ADC_FLOATING_BUTTONS') ? '<div  class="adc-floating-buttons">' : '<div  class="adc-buttons-wrapper">',
     '#suffix' => '</div>',
@@ -271,11 +272,12 @@ function qsearch_get_ctable($form_state, $page_number) {
 
 
     if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
-      if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
+      if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)){
+      //if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
         $fimex_link = "";
       }
       else {
-        $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT);
+        $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT,adc_get_this_url());
       }
     }
     else {
@@ -343,12 +345,9 @@ function qsearch_get_ctable($form_state, $page_number) {
      * time series{
      */
 
-    if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)) {
-      $this_url = url(current_path(), [
-        'absolute' => TRUE,
-        'query' => drupal_get_query_parameters(),
-      ]);
 
+    if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)) {
+      $this_url = adc_get_this_url();
       if (isset($metsis_conf['ts_server_type']) && $metsis_conf['ts_server_type'] === 'pywps') {
         $this_core = adc_get_solr_core([$doc[METADATA_PREFIX . 'metadata_identifier']])[$doc[METADATA_PREFIX . 'metadata_identifier']];
         $visualize_url = "/" . TS_BOKEH_PLOT_NODE . "?opendap_urls=" . adc_get_protocol_url($this_core, 'OPeNDAP', $doc[METADATA_PREFIX . 'metadata_identifier']);
@@ -372,6 +371,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     /**
      * time series}
      */
+
     if (isset($doc[METADATA_PREFIX . 'related_information_resource'])) {
       $rir = adc_parse_related_information_resource($doc[METADATA_PREFIX . 'related_information_resource']);
       if (isset($rir['Dataset landing page']['uri'])) {

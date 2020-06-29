@@ -251,11 +251,11 @@ function adc_get_geographical_search_map() {
   drupal_add_css($ol6_path . '/css/ol.css');
   drupal_add_js($ol6_path . '/build/ol.js');
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
- 
+
   drupal_add_js(array('lon' => $search_map_center_lon,
                       'lat' => $search_map_center_lat,
-                      'zoom' => $search_map_init_zoom, 
-                      'additional_layers' => $additional_layers), 
+                      'zoom' => $search_map_init_zoom,
+                      'additional_layers' => $additional_layers),
                       'setting');
 
   $string = <<<EOM
@@ -699,10 +699,10 @@ function msb_get_fields($solr_core, $dataset_id, $fields) {
   return json_decode($res['body'], TRUE);
 }
 
-function msb_get_fimex_link($dataset_id, $solr_core) {
+function msb_get_fimex_link($dataset_id, $solr_core,$calling_results_page) {
   $url = '';
   $url .= '<div class="botton-wrap">';
-  $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core . '" >Transform</a>';
+  $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core .'&calling_results_page='. $calling_results_page . '" >Transform</a>';
   $url .= '</div>';
   return $url;
 }

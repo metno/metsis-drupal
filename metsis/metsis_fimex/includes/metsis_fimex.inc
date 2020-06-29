@@ -87,6 +87,7 @@ function get_proj4_strings($name = "all") {
  */
 
 function adc_get_od_proj4($od_data) {
+
   //TODO. We fetch the the proj4 string from opendap stream to provide the
   //      default projection when given one agragated dataset,
   //      but we need to handle the case where there
