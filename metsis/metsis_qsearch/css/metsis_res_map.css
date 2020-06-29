@@ -132,3 +132,9 @@
   display: flex;
   justify-content: center;
 }
+
+.ts-plot-loader {
+  display: block;
+  margin: auto;
+}
+
