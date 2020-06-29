@@ -58,10 +58,10 @@ function metsis_ts_bokeh_help($path, $arg) {
  */
 function metsis_ts_bokeh_block_info() {
   $blocks = [];
-  $blocks['metsis_ts_bokeh_init_form'] = [
-    'info' => t('METSIS time series Bokeh init form'),
-    'cache' => DRUPAL_NO_CACHE,
-  ];
+//  $blocks['metsis_ts_bokeh_init_form'] = [
+//    'info' => t('METSIS time series Bokeh init form'),
+//    'cache' => DRUPAL_NO_CACHE,
+//  ];
   $blocks['metsis_ts_bokeh_plot_form'] = [
     'info' => t('METSIS time series Bokeh plot form'),
     'cache' => DRUPAL_NO_CACHE,
@@ -79,12 +79,12 @@ function metsis_ts_bokeh_block_info() {
 function metsis_ts_bokeh_block_view($delta = '') {
   $block = [];
   switch ($delta) {
-    case 'metsis_ts_bokeh_init_form':
-      if (user_access('access content')) {
-        $block['content'] = drupal_get_form('metsis_ts_bokeh_init_form');
-        return $block;
-      }
-      break;
+//    case 'metsis_ts_bokeh_init_form':
+//      if (user_access('access content')) {
+//        $block['content'] = drupal_get_form('metsis_ts_bokeh_init_form');
+//        return $block;
+//      }
+//      break;
     case 'metsis_ts_bokeh_plot_form':
       if (user_access('access content')) {
         $block['content'] = drupal_get_form('metsis_ts_bokeh_plot_form');
