@@ -318,16 +318,22 @@ function id_tooltip() {
       content.innerHTML = '';
       infoMapRes.innerHTML = '';
       for (var id in feature_ids) {
+        var id_stp = id; 
+        id_stp = id.replace(/\s/g, '-');
+        id_stp = id_stp.replace(/\./g, '-');
+        id_stp = id_stp.replace(/\:/g, '-');
+        id_stp = id_stp.replace(/\(/g, '-');
+        id_stp = id_stp.replace(/\)/g, '-');
         var markup = `
 <table class="map-res-elements">
 <tr>
 <td style="width:60%;">${feature_ids[id].url_lp}</td>
-<td style="width=20%"><button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-${id}">Additional Info</button></td>
+<td style="width=20%"><button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-${id_stp}">Additional Info</button></td>
 <td style="width=20%">${feature_ids[id].url_dln}</td>
 </tr>
 </table>
 
-<div id="md-more-${id}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
+<div id="md-more-${id_stp}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
 <table class="map-res-table-top">
   <tr>
   ${(feature_ids[id].thumb != '') ? '<td style="min-width:25%;">' + feature_ids[id].thumb + '</td>' : ''}<br>
@@ -337,8 +343,8 @@ function id_tooltip() {
       ${(feature_ids[id].institutions != ' ') ? '<strong>Institutions: </strong>' + feature_ids[id].institutions : ''}<br>
       ${(feature_ids[id].pi != '') ? '<strong>PI: </strong>' + feature_ids[id].pi : ''}<br>
       <table class="map-res-exp-buttons">
-      <tr><td><button data-parent="#map-res-acc-${id}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-full-${id}">Additional Metadata</button></td>
-      <td><button data-parent="#map-res-acc-${id}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-access-${id}">Data Access</button></td>
+      <tr><td><button data-parent="#map-res-acc-${id_stp}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-full-${id_stp}">Additional Metadata</button></td>
+      <td><button data-parent="#map-res-acc-${id_stp}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-access-${id_stp}">Data Access</button></td>
       <td>${feature_ids[id].url_dlo}</td>
       <td>${feature_ids[id].fimex}</td>
       <td>${feature_ids[id].visualize_ts}</td>
@@ -349,9 +355,9 @@ function id_tooltip() {
   </td></tr>
 </table>
 
-<div id="map-res-acc-${id}">
+<div id="map-res-acc-${id_stp}">
 <div class="panel map-res-panel">
-<div id="md-full-${id}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
+<div id="md-full-${id_stp}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
 <table class="map-res-table">
   <tr><td colspan="2" style="width:25%;"><strong>Metadata ID: </strong></td><td>${feature_ids[id].id}</td></tr>
   <tr><td colspan="2" style="width:25%;"><strong>Last metadata update: </strong></td><td>${feature_ids[id].last_md_update}</td></tr>
@@ -382,7 +388,7 @@ function id_tooltip() {
 </div>
 
 <div class="panel map-res-panel">
-<div id="md-access-${id}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
+<div id="md-access-${id_stp}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
 <table class="map-res-table">
   <tr><td style="width:15%;"><strong>HTTP access: </strong></td><td><a href="${feature_ids[id].url_h}">${feature_ids[id].url_h}</a></td></tr>
   <tr><td style="width:15%;"><strong>OPeNDAP access: </strong></td><td><a href="${feature_ids[id].url_o}.html">${feature_ids[id].url_o}</a></td></tr>
