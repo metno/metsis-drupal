@@ -267,17 +267,17 @@ function qsearch_get_ctable($form_state, $page_number) {
       $metadata_link = metsis_get_metadata_div(adc_get_solr_core([$doc['mmd_metadata_identifier']])[$doc['mmd_metadata_identifier']], $doc['mmd_metadata_identifier'], $metadata_div_counter);
     }
     else {
-      $metadata_link = msb_get_md_links('l1', $doc[METADATA_PREFIX . 'metadata_identifier']);
+      $metadata_link = msb_get_md_links('l1', $doc[METADATA_PREFIX . 'metadata_identifier'], adc_get_this_url());
     }
 
 
     if (h_adc_has_data_access_type($doc, "OPeNDAP") == 1) {
-      if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)){
-      //if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
+      if ((adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) || (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "profile") === 1)) {
+        //if (adc_has_feature_type($doc[METADATA_PREFIX . 'metadata_identifier'], "timeSeries") === 1) {
         $fimex_link = "";
       }
       else {
-        $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT,adc_get_this_url());
+        $fimex_link = msb_get_fimex_link($doc[METADATA_PREFIX . 'metadata_identifier'], SOLR_CORE_PARENT, adc_get_this_url());
       }
     }
     else {

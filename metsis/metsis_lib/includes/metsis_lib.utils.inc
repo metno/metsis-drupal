@@ -680,7 +680,7 @@ function adc_get_md_kv($solr_core_level, $dataset_id) {
   return $md_kv;
 }
 
-function msb_get_md_links($solr_core_level, $dataset_id) {
+function msb_get_md_links($solr_core_level, $dataset_id, $calling_results_page) {
   global $base_url;
   if (defined('SOLR_METADATA_BUTTON_TEXT')) {
     $solr_metadata_button_text = SOLR_METADATA_BUTTON_TEXT;
@@ -688,7 +688,7 @@ function msb_get_md_links($solr_core_level, $dataset_id) {
   else {
     $solr_metadata_button_text = "Metadata";
   }
-  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
+  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '&calling_results_page=' . $calling_results_page . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
   return $url;
 }
 
@@ -951,11 +951,11 @@ function adc_create_node($title, $type, $alias) {
     $node = node_submit($node);
     $node->path['alias'] = $alias;
     node_save($node);
-    drupal_set_message($alias. " created.",'status');
+    drupal_set_message($alias . " created.", 'status');
   }
 }
 
-function adc_get_this_url(){
+function adc_get_this_url() {
   $this_url = url(current_path(), [
     'absolute' => TRUE,
     'query' => drupal_get_query_parameters(),
