@@ -107,7 +107,7 @@ function adc_get_od_proj4($od_data) {
       }
     }
   }
-  if (isset($od_data['Int32'])) {
+  if (isset($od_data['Int32']['Attribute'])) {
     foreach ($od_data['Int32']['Attribute'] as $k => $v) {
 
       if ($od_data['Int32']['Attribute'][$k]['@attributes']['name'] == "proj4_string" || $od_data['Int32']['Attribute'][$k]['@attributes']['name'] == "proj4") {
