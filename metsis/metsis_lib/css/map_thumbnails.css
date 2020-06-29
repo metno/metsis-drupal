@@ -16,6 +16,12 @@
   top: 0px;
 
 }
+
+.thumbnail img {
+
+  max-height: 240px;
+
+}
 .base_image {
 
   z-index: 10;
