@@ -252,11 +252,13 @@ function adc_get_geographical_search_map() {
   drupal_add_js($ol6_path . '/build/ol.js');
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
 
-  drupal_add_js(array('lon' => $search_map_center_lon,
-                      'lat' => $search_map_center_lat,
-                      'zoom' => $search_map_init_zoom,
-                      'additional_layers' => $additional_layers),
-                      'setting');
+  drupal_add_js([
+    'lon' => $search_map_center_lon,
+    'lat' => $search_map_center_lat,
+    'zoom' => $search_map_init_zoom,
+    'additional_layers' => $additional_layers,
+  ],
+    'setting');
 
   $string = <<<EOM
         <div id="map-search" class="map-search">
@@ -278,28 +280,28 @@ function adc_get_geographical_search_map() {
            <div id="map-search-message">Click on the map to draw a selection box. Boxes in UPS are transfomed into 4-edge polygons</div>
         </div>
 EOM;
-//  $string = <<<EOM
-//        <div class="map container">
-//            <div id="map"></div>
-//        </div>
-//        <script type="text/javascript" src="$path_to_bundle"></script>
-//        <script type="text/javascript">
-//                  var sClient;
-//            jQuery(document).ready(function () {
-//                sClient = mapClient.search({
-//                    lon: $search_map_center_lon,
-//                    lat: $search_map_center_lat,
-//                    zoom: $search_map_init_zoom,
-//                    bbox: {
-//                        topleft: {latId: 'edit-bbox-top-left-lat', lonId: 'edit-bbox-top-left-lon'},
-//                        bottomright: {latId: 'edit-bbox-bottom-right-lat', lonId: 'edit-bbox-bottom-right-lon'}
-//                          }
-//                        }
-//                      );
-//               //console.log(sClient.polygon);
-//            });
-//        </script>
-//EOM;
+  //  $string = <<<EOM
+  //        <div class="map container">
+  //            <div id="map"></div>
+  //        </div>
+  //        <script type="text/javascript" src="$path_to_bundle"></script>
+  //        <script type="text/javascript">
+  //                  var sClient;
+  //            jQuery(document).ready(function () {
+  //                sClient = mapClient.search({
+  //                    lon: $search_map_center_lon,
+  //                    lat: $search_map_center_lat,
+  //                    zoom: $search_map_init_zoom,
+  //                    bbox: {
+  //                        topleft: {latId: 'edit-bbox-top-left-lat', lonId: 'edit-bbox-top-left-lon'},
+  //                        bottomright: {latId: 'edit-bbox-bottom-right-lat', lonId: 'edit-bbox-bottom-right-lon'}
+  //                          }
+  //                        }
+  //                      );
+  //               //console.log(sClient.polygon);
+  //            });
+  //        </script>
+  //EOM;
   return $string;
 }
 
@@ -699,10 +701,10 @@ function msb_get_fields($solr_core, $dataset_id, $fields) {
   return json_decode($res['body'], TRUE);
 }
 
-function msb_get_fimex_link($dataset_id, $solr_core,$calling_results_page) {
+function msb_get_fimex_link($dataset_id, $solr_core, $calling_results_page) {
   $url = '';
   $url .= '<div class="botton-wrap">';
-  $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core .'&calling_results_page='. $calling_results_page . '" >Transform</a>';
+  $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&solr_core=' . $solr_core . '&calling_results_page=' . $calling_results_page . '" >Transform</a>';
   $url .= '</div>';
   return $url;
 }

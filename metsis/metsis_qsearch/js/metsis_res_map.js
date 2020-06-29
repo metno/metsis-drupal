@@ -318,7 +318,7 @@ function id_tooltip() {
       content.innerHTML = '';
       infoMapRes.innerHTML = '';
       for (var id in feature_ids) {
-        var id_stp = id; 
+        var id_stp = id;
         id_stp = id.replace(/\s/g, '-');
         id_stp = id_stp.replace(/\./g, '-');
         id_stp = id_stp.replace(/\:/g, '-');
@@ -406,10 +406,10 @@ function id_tooltip() {
 
         if (feature_ids[id].thumb !== '') {
           if (pins) {
-            content.innerHTML += '<button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-'+id+'">Show info: '+feature_ids[id].title+'</button>' + feature_ids[id].thumb+"<br>";
+            content.innerHTML += '<button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-' + id + '">Show info: ' + feature_ids[id].title + '</button>' + feature_ids[id].thumb + "<br>";
           }
           else {
-	    content.innerHTML += ' <button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-'+id+'">Show info: '+feature_ids[id].id+'</button>' + feature_ids[id].thumb+"<br>";
+            content.innerHTML += ' <button type="button" class="adc-button" data-toggle="collapse" data-target="#md-more-' + id + '">Show info: ' + feature_ids[id].id + '</button>' + feature_ids[id].thumb + "<br>";
           }
         }
         tlpMapRes.innerHTML += markup;

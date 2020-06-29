@@ -837,7 +837,7 @@ function metsis_fimex($form, &$form_state) {
    */
   $form['back_to_search'] = [
     '#weight' => 14,
-    '#markup' => '<a href="'.$calling_results_page.'" class="adc-button adc-back">Back to results</a>',
+    '#markup' => '<a href="' . $calling_results_page . '" class="adc-button adc-back">Back to results</a>',
   ];
 
   /**
