@@ -21,6 +21,18 @@ drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.2.min.js', $bok
     })
 </script>
 <?php $calling_results_page = isset($_GET['calling_results_page']) ? check_plain($_GET['calling_results_page']) : ''; ?>
+
+<div class="vars-container">
+  <!--    <div class="fixed-width">-->
+  <?php //print render($form['x_axis']); ?><!--</div>-->
+  <div class="flex-width"><?php print render($form['y_axis']); ?></div>
+  <div
+    class="plot-submit"><?php print render($form['actions']['submit']); ?>
+  </div>
+  <div class="tsf5"><a href="<?php print($calling_results_page); ?>"
+                       class="adc-button"><?php print t('Back to results') ?></a>
+  </div>
+</div>
 <div class="row">
   <div class="plot-container">
     <div id="tsplot">
@@ -28,17 +40,7 @@ drupal_add_js('https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.2.min.js', $bok
       <?php $_SESSION['metsis_ts_bokeh'][session_id()]['metsis_ts_bokeh_plot_query'] = NULL; ?>
     </div>
   </div>
-  <div class="vars-container">
-    <!--    <div class="fixed-width">-->
-    <?php //print render($form['x_axis']); ?><!--</div>-->
-    <div class="flex-width"><?php print render($form['y_axis']); ?></div>
-    <div
-      class="plot-submit"><?php print render($form['actions']['submit']); ?></div>
-    <div class="tsf5"><a href="<?php print($calling_results_page); ?>"
-                         class="adc-button"><?php print t('Back to results') ?></a>
-    </div>
 
-  </div>
 
 </div>
 <!-- Render any remaining elements, such as hidden inputs (token, form_id, etc). -->
