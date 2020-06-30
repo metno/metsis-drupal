@@ -3,6 +3,7 @@
 .vars-container {
   font-family: Tahoma, Verdana, Segoe, sans-serif;
   display: flex;
+  align-items: center;
 }
 .fixed-width {
   width: 80px;

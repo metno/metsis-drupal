@@ -20,7 +20,9 @@
 .thumbnail img {
 
   max-height: 240px;
-
+  max-width: 100%;
+  border: 1px solid #ddd;
+  background: white;
 }
 .base_image {
 
