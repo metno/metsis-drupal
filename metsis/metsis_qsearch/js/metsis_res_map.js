@@ -347,7 +347,7 @@ function id_tooltip() {
       <td><button data-parent="#map-res-acc-${id_stp}" type="button" class="adc-button" data-toggle="collapse" style="margin-top: 2em;" data-target="#md-access-${id_stp}">Data Access</button></td>
       <td>${feature_ids[id].url_dlo}</td>
       <td>${feature_ids[id].fimex}</td>
-      <td><button type="button" class="adc-button"  style="display: ${(feature_ids[id].visualize_ts !== '') ? 'unset': 'none'};" data-toggle="collapse" data-target=\"#md-ts-${id_stp}\" onclick="fetch_ts_variables('${feature_ids[id].url_o}', 'md-ts-${id_stp}');">Visualize</button></td>
+      <td><button data-parent="#map-res-acc-${id_stp}" type="button" class="adc-button"  style="display: ${(feature_ids[id].visualize_ts !== '') ? 'unset': 'none'};" data-toggle="collapse" data-target=\"#md-ts-${id_stp}\" onclick="fetch_ts_variables('${feature_ids[id].url_o}', 'md-ts-${id_stp}');">Visualize</button></td>
       <td>${(feature_ids[id].visualize_thumb != ' ') ? '<a class="adc-button" href=' + feature_ids[id].thumb_url + '>Visualize</a>' : ''}</td>
       <td>${feature_ids[id].ascii_dl}</td>
       <td>${feature_ids[id].child}</td>
@@ -398,19 +398,21 @@ function id_tooltip() {
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-</div>
+<div class="panel map-res-panel">
 <div id="md-ts-${id_stp}" style="background-color:white; overflow-y: hidden; height: 0px" class="collapse">
 <select name="var_list" onchange="plot_ts('${feature_ids[id].url_o}','md-ts-${id_stp}');">
      <option>Choose a variable</option>
 </select>
-
 <input type="hidden" id="axis" value="y_axis" />
 <div name="tsplot" id="tsplot-${id}"></div>
 
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 </div>
 
 `;
