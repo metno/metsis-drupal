@@ -603,6 +603,10 @@ function qsearch_get_ctable($form_state, $page_number) {
   drupal_add_js($ol6_path . '/build/ol.js');
   drupal_add_js($ol6_path . '/apidoc/scripts/bootstrap.min.js');
   drupal_add_js('https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js', 'external');
+  drupal_add_js('https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js', 'external');
+  drupal_add_js('https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js', 'external');
+  drupal_add_js('https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js', 'external');
+
 
 
   drupal_json_encode($extracted_info);
