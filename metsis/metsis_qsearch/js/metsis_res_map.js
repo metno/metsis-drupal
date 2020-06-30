@@ -606,7 +606,7 @@ function plot_ts(url_o, md_ts_id) {
   let loader =  '<img class="ts-plot-loader" src="/'+path+'/icons/loader.gif">';
   document.getElementById(md_ts_id).children['tsplot'].innerHTML = loader;
   var variable = document.getElementById(md_ts_id).children['var_list'].value;
-  fetch('https://ncplot.epinux.com/ncplot/plot?get=plot&resource_url='+url_o+'&variable='+variable+'&axis='+document.getElementById("axis").value)
+  fetch('https://ncapi.adc-ncplot.met.no/ncplot/plot?get=plot&resource_url='+url_o+'&variable='+variable+'&axis='+document.getElementById("axis").value)
   .then(function (response) {
       return response.json();
   })
