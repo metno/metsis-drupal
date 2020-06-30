@@ -121,10 +121,11 @@
   margin-bottom: 0em;
 }
 
-#message-query {
+#messagequery {
   background-color: white;
   padding: 1em;
   overflow: hidden;
+  display: none;
 }
 
 .simple-pagination {

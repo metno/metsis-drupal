@@ -599,7 +599,6 @@ function qsearch_get_ctable($form_state, $page_number) {
   $ol6_path = libraries_get_path('openlayers6');
 
   drupal_add_css($ol6_path . '/css/ol.css');
-  drupal_add_css($ol6_path . '/apidoc/styles/bootstrap.min.css');
 
   drupal_add_js($ol6_path . '/build/ol.js');
   drupal_add_js($ol6_path . '/apidoc/scripts/bootstrap.min.js');
@@ -621,8 +620,8 @@ function qsearch_get_ctable($form_state, $page_number) {
     <div id="popup-map-res" class="ol-popup">
       <div id="popup-map-res-content"></div>
     </div>
-    <button type="button" class="adc-button" data-toggle="collapse" data-target="#message-query">Hide/Show search fields</button>
-    <div id="message-query" class="collapse">$message_query</div>
+    <button type="button" class="adc-button collapsible" >Hide/Show search fields</button>
+    <div id="messagequery">$message_query</div>
 
   <div id="map-res" class="map-res">
      <label style="font-size: medium;">Select Projection</label>
@@ -631,6 +630,24 @@ function qsearch_get_ctable($form_state, $page_number) {
      <input type="radio" id="EPSG:32761" name="map-res-projection" value="EPSG:32761">UPS South</input>
      <script type="text/javascript" src="/$path/js/metsis_res_map.js"></script>
   </div>
+
+  <script>
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var messagequery = document.getElementById("messagequery");
+      if (messagequery.style.display === "block") {
+        messagequery.style.display = "none";
+      } else {
+        messagequery.style.display = "block";
+      }
+    });
+  }
+</script>
+
 EOM;
 
   $form['res_map'] = [
