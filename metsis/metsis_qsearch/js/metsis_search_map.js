@@ -223,8 +223,7 @@ function build_draw(proj) {
     else if (bottomRight[0] > 180) {
       bottomRight[0] -= 360;
     }
-    //if (topLeft[0] < 0 && bottomRight[0] > 0) {
-    if ((topLeft[0] < 0 && topLeft[0] < -90) && (bottomRight[0] > 0 && bottomRight[0] > 90)) {
+    if (topLeft[0] < 0 && bottomRight[0] > 0 && bottomRight[0] - topLeft[0] > 180) {
       var topLeftCopy = topLeft[0];
       topLeft[0] = bottomRight[0];
       bottomRight[0] = topLeftCopy;
