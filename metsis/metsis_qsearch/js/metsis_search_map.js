@@ -2,7 +2,7 @@
 var lon = Drupal.settings.lon;
 var lat = Drupal.settings.lat;
 var defzoom = Drupal.settings.zoom;
-var init_proj = 'EPSG:4326';
+var init_proj = Drupal.settings.init_proj_map;
 var additional_layers = Drupal.settings.additional_layers;
 
 // 32661
@@ -223,7 +223,8 @@ function build_draw(proj) {
     else if (bottomRight[0] > 180) {
       bottomRight[0] -= 360;
     }
-    if (topLeft[0] < 0 && bottomRight[0] > 0) {
+    //if (topLeft[0] < 0 && bottomRight[0] > 0) {
+    if ((topLeft[0] < 0 && topLeft[0] < -90) && (bottomRight[0] > 0 && bottomRight[0] > 90)) {
       var topLeftCopy = topLeft[0];
       topLeft[0] = bottomRight[0];
       bottomRight[0] = topLeftCopy;

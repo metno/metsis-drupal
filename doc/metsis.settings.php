@@ -332,6 +332,10 @@ $metsis_conf['wms_product_select'] = "false";
  */
 $metsis_conf['pins_on_res_map'] = FALSE;
 /**
+ * Starting projection of search map
+ */
+$metsis_conf['init_proj_map'] = 'EPSG:32661';
+/**
  * Starting projection of results map
  */
 $metsis_conf['init_proj_res_map'] = 'EPSG:32661';
