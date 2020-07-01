@@ -244,6 +244,7 @@ function adc_get_geographical_search_map() {
   $search_map_center_lat = $metsis_conf['search_map_center_lat'];
   $search_map_center_lon = $metsis_conf['search_map_center_lon'];
   $search_map_init_zoom = $metsis_conf['search_map_init_zoom'];
+  $init_proj_map = $metsis_conf['init_proj_map'];
   $additional_layers = $metsis_conf['additional_layers'];
   //$path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_wms') . '/js/bundle.js';
   $path_to_bundle = $base_url . '/' . drupal_get_path('module', 'metsis_qsearch') . '/js/metsis_search_map.js';
@@ -256,6 +257,7 @@ function adc_get_geographical_search_map() {
     'lon' => $search_map_center_lon,
     'lat' => $search_map_center_lat,
     'zoom' => $search_map_init_zoom,
+    'init_proj_map' => $init_proj_map,
     'additional_layers' => $additional_layers,
   ],
     'setting');
