@@ -6,5 +6,8 @@ package = METSIS
 project = metsis
 
 dependencies[] = metsis_lib
+; adding cvl_visualization as a dependency even though it is not
+; this is just to upgrades a little quicker
+dependencies[] = cvl_visualization
 
 files[] = metsis_wms.constants.inc
