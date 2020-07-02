@@ -10,3 +10,4 @@ dependencies[] = metsis_wms
 dependencies[] = metsis_basket
 
 dependencies[] = date_popup
+dependencies[] = libraries
