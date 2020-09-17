@@ -4,10 +4,10 @@
 
 div.adc_hint {
   font-size: 90%;
-  color: red;
+  /*color: red;*/
 }
 span.adc_label {
-  color: red;
+  /*color: red;*/
 }
 span.adc_placeholder {
   color: red;
