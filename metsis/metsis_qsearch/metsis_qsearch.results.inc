@@ -313,7 +313,7 @@ function qsearch_get_ctable($form_state, $page_number) {
 
     //if (isset($metsis_conf['results_collection_visible'] ) AND $metsis_conf['results_collection_visible'] === TRUE) {
     if (isset($doc[METADATA_PREFIX . 'collection'])) {
-      $collection = $doc[METADATA_PREFIX . 'collection'][0];
+      $collection = $doc[METADATA_PREFIX . 'collection'];
     }
     else {
       $collection = '';
