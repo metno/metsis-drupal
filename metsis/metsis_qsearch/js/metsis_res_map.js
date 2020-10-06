@@ -275,6 +275,7 @@ function id_tooltip() {
         url_od: feature.get('url')[3],
         url_dln: feature.get('url')[4],
         url_dlo: feature.get('url')[5],
+        url_ftp: feature.get('url')[6],
         id: feature.get('id'),
         extent: feature.get('extent'),
         latlon: feature.get('latlon'),
@@ -367,10 +368,11 @@ function id_tooltip() {
   <tr><td colspan="2" style="width:25%;"><strong>Geographical extent (N,S,E,W): </strong></td><td>${feature_ids[id].extent}</td></tr>
   <tr><td colspan="2" style="width:25%;"><strong>Access constraint: </strong></td><td>${feature_ids[id].access_constraint}</td></tr>
   <tr><td colspan="2" style="width:25%;"><strong>Use constraint: </strong></td><td>${feature_ids[id].use_constraint}</td></tr>
-  <tr><td style="width:10%;" rowspan="4"><strong>Data Access</strong></td><td>HTTP access: </td><td><a href="${feature_ids[id].url_h}">${feature_ids[id].url_h}</a></td></tr>
+  <tr><td style="width:10%;" rowspan="5"><strong>Data Access</strong></td><td>HTTP access: </td><td><a href="${feature_ids[id].url_h}">${feature_ids[id].url_h}</a></td></tr>
   <tr><td>OPeNDAP access: </td><td><a href="${feature_ids[id].url_o}.html">${feature_ids[id].url_o}</a></td></tr>
   <tr><td>WMS access: </td><td><a href="${feature_ids[id].url_w}?SERVICE=WMS&REQUEST=GetCapabilities">${feature_ids[id].url_w}</a></td></tr>
   <tr><td>ODATA access: </td><td><a href="${feature_ids[id].url_od}">${feature_ids[id].url_od}</a></td></tr>
+  <tr><td>FTP access: </td><td><a href="${feature_ids[id].url_ftp}">${feature_ids[id].url_ftp}</a></td></tr>
   <tr><td style="width:10%;" rowspan="6"><strong>Data Center</strong></td><td>Short name: </td><td>${feature_ids[id].dc_sh}</td></tr>
   <tr><td>Long name: </td><td>${feature_ids[id].dc_ln}</td></tr>
   <tr><td>URL: </td><td><a href="${feature_ids[id].dc_url}">${feature_ids[id].dc_url}</a></td></tr>
@@ -394,6 +396,7 @@ function id_tooltip() {
   <tr><td style="width:15%;"><strong>OPeNDAP access: </strong></td><td><a href="${feature_ids[id].url_o}.html">${feature_ids[id].url_o}</a></td></tr>
   <tr><td style="width:15%;"><strong>WMS access: </strong></td><td><a href="${feature_ids[id].url_w}?SERVICE=WMS&REQUEST=GetCapabilities">${feature_ids[id].url_w}</a></td></tr>
   <tr><td style="width:15%;"><strong>ODATA access: </strong></td><td><a href="${feature_ids[id].url_od}">${feature_ids[id].url_od}</a></td></tr>
+  <tr><td style="width:15%;"><strong>FTP access: </strong></td><td><a href="${feature_ids[id].url_ftp}">${feature_ids[id].url_ftp}</a></td></tr>
 </table>
 </div>
 </div>
