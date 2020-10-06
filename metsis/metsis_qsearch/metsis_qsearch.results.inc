@@ -543,6 +543,7 @@ function qsearch_get_ctable($form_state, $page_number) {
     $address_w = isset($dar['"OGC WMS"']) ? $dar['"OGC WMS"'] : '';
     $address_h = isset($dar['"HTTP"']) ? $dar['"HTTP"'] : '';
     $address_od = isset($dar['"ODATA"']) ? $dar['"ODATA"'] : '';
+    $address_ftp = isset($dar['"FTP"']) ? $dar['"FTP"'] : '';
     $access_const = isset($doc[METADATA_PREFIX . 'access_constraint']) ? $doc[METADATA_PREFIX . 'access_constraint'] : 'Unspecified';
     $use_const = isset($doc[METADATA_PREFIX . 'use_constraint']) ? $doc[METADATA_PREFIX . 'use_constraint'] : 'Unspecified';
     $isotopic = isset($doc[METADATA_PREFIX . 'iso_topic_category']) ? $doc[METADATA_PREFIX . 'iso_topic_category'] : '';
@@ -568,6 +569,7 @@ function qsearch_get_ctable($form_state, $page_number) {
         $address_od,
         $netcdf_download,
         $odata_download,
+        $address_ftp,
       ],
       $dataset_name,
       $geographical_extent,
