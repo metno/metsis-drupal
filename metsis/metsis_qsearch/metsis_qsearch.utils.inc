@@ -464,16 +464,16 @@ function adc_get_chosen_dates($form_state) {
   $q = "";
   if (!empty($form_state['values']['finished_after']) && empty($form_state['values']['finished_before'])) {
     $finished_after = $form_state['values']['finished_after'];
-    $q = "mmd_temporal_extent_start_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]";
+    $q = "mmd_temporal_extent_end_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]";
   }
   if (empty($form_state['values']['finished_after']) && !empty($form_state['values']['finished_before'])) {
     $finished_before = $form_state['values']['finished_before'];
-    $q = "mmd_temporal_extent_end_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
+    $q = "mmd_temporal_extent_start_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
   }
   if (!empty($form_state['values']['finished_after']) && !empty($form_state['values']['finished_before'])) {
     $finished_after = $form_state['values']['finished_after'];
     $finished_before = $form_state['values']['finished_before'];
-    $q = "mmd_temporal_extent_start_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]" . " AND " . "mmd_temporal_extent_end_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
+    $q = "mmd_temporal_extent_end_date:[" . msb_get_iso8601_date_time_zone($finished_after) . " TO *]" . " AND " . "mmd_temporal_extent_start_date:[* TO " . msb_get_iso8601_date_time_zone($finished_before) . "]";
   }
   return $q;
 }
