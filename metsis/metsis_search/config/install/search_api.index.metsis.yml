@@ -68,6 +68,16 @@ field_settings:
     datasource_id: solr_document
     property_path: activity_type
     type: string
+  alternate_identifier:
+    label: 'Alternate identifier'
+    datasource_id: solr_document
+    property_path: alternate_identifier
+    type: string
+  alternate_identifier_type:
+    label: 'Alternate identifier type'
+    datasource_id: solr_document
+    property_path: alternate_identifier_type
+    type: string
   base_map:
     label: 'Base map'
     datasource_id: solr_document
@@ -133,10 +143,25 @@ field_settings:
     datasource_id: solr_document
     property_path: data_access_url_odata_desc
     type: string
+  data_access_url_ogc_wcs:
+    label: 'Data access url ogc wcs'
+    datasource_id: solr_document
+    property_path: data_access_url_ogc_wcs
+    type: string
+  data_access_url_ogc_wcs_desc:
+    label: 'Data access url ogc wcs desc'
+    datasource_id: solr_document
+    property_path: data_access_url_ogc_wcs_desc
+    type: string
   data_access_url_ogc_wfs:
     label: 'Data access url ogc wfs'
     datasource_id: solr_document
     property_path: data_access_url_ogc_wfs
+    type: string
+  data_access_url_ogc_wfs_desc:
+    label: 'Data access url ogc wfs desc'
+    datasource_id: solr_document
+    property_path: data_access_url_ogc_wfs_desc
     type: string
   data_access_url_ogc_wms:
     label: 'Data access url ogc wms'
@@ -183,6 +208,36 @@ field_settings:
     datasource_id: solr_document
     property_path: dataset_citation_author
     type: text
+  dataset_citation_doi:
+    label: 'Dataset citation doi'
+    datasource_id: solr_document
+    property_path: dataset_citation_doi
+    type: string
+  dataset_citation_edition:
+    label: 'Dataset citation edition'
+    datasource_id: solr_document
+    property_path: dataset_citation_edition
+    type: integer
+  dataset_citation_isbn:
+    label: 'Dataset citation isbn'
+    datasource_id: solr_document
+    property_path: dataset_citation_isbn
+    type: string
+  dataset_citation_issue:
+    label: 'Dataset citation issue'
+    datasource_id: solr_document
+    property_path: dataset_citation_issue
+    type: integer
+  dataset_citation_other:
+    label: 'Dataset citation other'
+    datasource_id: solr_document
+    property_path: dataset_citation_other
+    type: string
+  dataset_citation_pages:
+    label: 'Dataset citation pages'
+    datasource_id: solr_document
+    property_path: dataset_citation_pages
+    type: integer
   dataset_citation_publication_date:
     label: 'Dataset citation publication date'
     datasource_id: solr_document
@@ -208,6 +263,16 @@ field_settings:
     datasource_id: solr_document
     property_path: dataset_citation_title
     type: string
+  dataset_citation_url:
+    label: 'Dataset citation url'
+    datasource_id: solr_document
+    property_path: dataset_citation_url
+    type: string
+  dataset_citation_volume:
+    label: 'Dataset citation volume'
+    datasource_id: solr_document
+    property_path: dataset_citation_volume
+    type: integer
   dataset_language:
     label: 'Dataset language'
     datasource_id: solr_document
@@ -263,6 +328,11 @@ field_settings:
     datasource_id: solr_document
     property_path: geographic_extent_rectangle_south
     type: decimal
+  geographic_extent_rectangle_srs:
+    label: 'Geographic extent rectangle srsName'
+    datasource_id: solr_document
+    property_path: geographic_extent_rectangle_srsName
+    type: string
   geographic_extent_rectangle_west:
     label: 'Geographic extent_rectangle_west'
     datasource_id: solr_document
@@ -338,6 +408,51 @@ field_settings:
     datasource_id: solr_document
     property_path: last_metadata_update_datetime
     type: date
+  last_metadata_update_note:
+    label: 'Last metadata update note'
+    datasource_id: solr_document
+    property_path: last_metadata_update_note
+    type: text
+  last_metadata_update_type:
+    label: 'Last metadata update type'
+    datasource_id: solr_document
+    property_path: last_metadata_update_type
+    type: string
+  location_category:
+    label: 'Location category'
+    datasource_id: solr_document
+    property_path: location_category
+    type: string
+  location_detailed_location:
+    label: 'Location detailed location'
+    datasource_id: solr_document
+    property_path: location_detailed_location
+    type: string
+  location_subregion1:
+    label: 'Location subregion1'
+    datasource_id: solr_document
+    property_path: location_subregion1
+    type: string
+  location_subregion2:
+    label: 'Location subregion2'
+    datasource_id: solr_document
+    property_path: location_subregion2
+    type: string
+  location_subregion3:
+    label: 'Location subregion3'
+    datasource_id: solr_document
+    property_path: location_subregion3
+    type: string
+  location_type:
+    label: 'Location type'
+    datasource_id: solr_document
+    property_path: location_type
+    type: string
+  location_vocabulary:
+    label: 'Location vocabulary'
+    datasource_id: solr_document
+    property_path: location_vocabulary
+    type: string
   locs_geo_extent:
     label: 'Locs geo extent'
     datasource_id: solr_document
@@ -352,6 +467,51 @@ field_settings:
     label: 'Metadata status'
     datasource_id: solr_document
     property_path: metadata_status
+    type: string
+  mmd_file_name:
+    label: 'Mmd file name'
+    datasource_id: solr_document
+    property_path: mmd_file_name
+    type: string
+  mmd_file_path:
+    label: 'Mmd file path'
+    datasource_id: solr_document
+    property_path: mmd_file_path
+    type: string
+  mmd_repo_path:
+    label: 'Mmd repo path'
+    datasource_id: solr_document
+    property_path: mmd_repo_path
+    type: string
+  operational_status:
+    label: 'Operational status'
+    datasource_id: solr_document
+    property_path: operational_status
+    type: string
+  personnel_datacenter_address:
+    label: 'Personnel datacenter address'
+    datasource_id: solr_document
+    property_path: personnel_datacenter_address
+    type: string
+  personnel_datacenter_address_city:
+    label: 'Personnel datacenter address city'
+    datasource_id: solr_document
+    property_path: personnel_datacenter_address_city
+    type: string
+  personnel_datacenter_address_country:
+    label: 'Personnel datacenter address country'
+    datasource_id: solr_document
+    property_path: personnel_datacenter_address_country
+    type: string
+  personnel_datacenter_address_postal_code:
+    label: 'Personnel datacenter address postal code'
+    datasource_id: solr_document
+    property_path: personnel_datacenter_address_postal_code
+    type: string
+  personnel_datacenter_address_province_or_state:
+    label: 'Personnel datacenter address province or state'
+    datasource_id: solr_document
+    property_path: personnel_datacenter_address_province_or_state
     type: string
   personnel_datacenter_email:
     label: 'Personnel datacenter email'
@@ -388,10 +548,40 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_email
     type: string
+  personnel_investigator_address:
+    label: 'Personnel investigator address'
+    datasource_id: solr_document
+    property_path: personnel_investigator_address
+    type: string
+  personnel_investigator_address_city:
+    label: 'Personnel investigator address city'
+    datasource_id: solr_document
+    property_path: personnel_investigator_address_city
+    type: string
+  personnel_investigator_address_country:
+    label: 'Personnel investigator address country'
+    datasource_id: solr_document
+    property_path: personnel_investigator_address_country
+    type: string
+  personnel_investigator_address_postal_code:
+    label: 'Personnel investigator address postal code'
+    datasource_id: solr_document
+    property_path: personnel_investigator_address_postal_code
+    type: string
+  personnel_investigator_address_province_or_state:
+    label: 'Personnel investigator address province or state'
+    datasource_id: solr_document
+    property_path: personnel_investigator_address_province_or_state
+    type: string
   personnel_investigator_email:
     label: 'Personnel investigator email'
     datasource_id: solr_document
     property_path: personnel_investigator_email
+    type: string
+  personnel_investigator_fax:
+    label: 'Personnel investigator fax'
+    datasource_id: solr_document
+    property_path: personnel_investigator_fax
     type: string
   personnel_investigator_name:
     label: 'Personnel investigator name'
@@ -403,15 +593,50 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_investigator_organisation
     type: text
+  personnel_investigator_phone:
+    label: 'Personnel investigator phone'
+    datasource_id: solr_document
+    property_path: personnel_investigator_phone
+    type: string
   personnel_investigator_role:
     label: 'Personnel investigator role'
     datasource_id: solr_document
     property_path: personnel_investigator_role
     type: string
+  personnel_metadata_author_address:
+    label: 'Personnel metadata author address'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_address
+    type: string
+  personnel_metadata_author_address_city:
+    label: 'Personnel metadata author address city'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_address_city
+    type: string
+  personnel_metadata_author_address_country:
+    label: 'Personnel metadata author address country'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_address_country
+    type: string
+  personnel_metadata_author_address_postal_code:
+    label: 'Personnel metadata author address postal code'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_address_postal_code
+    type: string
+  personnel_metadata_author_address_province_or_state:
+    label: 'Personnel metadata author address province or state'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_address_province_or_state
+    type: string
   personnel_metadata_author_email:
     label: 'Personnel metadata author email'
     datasource_id: solr_document
     property_path: personnel_metadata_author_email
+    type: string
+  personnel_metadata_author_fax:
+    label: 'Personnel metadata author fax'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_fax
     type: string
   personnel_metadata_author_name:
     label: 'Personnel metadata author name'
@@ -423,6 +648,11 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_metadata_author_organisation
     type: text
+  personnel_metadata_author_phone:
+    label: 'Personnel metadata author phone'
+    datasource_id: solr_document
+    property_path: personnel_metadata_author_phone
+    type: string
   personnel_metadata_author_role:
     label: 'Personnel metadata author role'
     datasource_id: solr_document
@@ -443,10 +673,40 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_role
     type: string
+  personnel_technical_address:
+    label: 'Personnel technical address'
+    datasource_id: solr_document
+    property_path: personnel_technical_address
+    type: string
+  personnel_technical_address_city:
+    label: 'Personnel technical address city'
+    datasource_id: solr_document
+    property_path: personnel_technical_address_city
+    type: string
+  personnel_technical_address_country:
+    label: 'Personnel technical address country'
+    datasource_id: solr_document
+    property_path: personnel_technical_address_country
+    type: string
+  personnel_technical_address_postal_code:
+    label: 'Personnel technical address postal code'
+    datasource_id: solr_document
+    property_path: personnel_technical_address_postal_code
+    type: string
+  personnel_technical_address_province_or_state:
+    label: 'Personnel technical address province or state'
+    datasource_id: solr_document
+    property_path: personnel_technical_address_province_or_state
+    type: string
   personnel_technical_email:
     label: 'Personnel technical email'
     datasource_id: solr_document
     property_path: personnel_technical_email
+    type: string
+  personnel_technical_fax:
+    label: 'Personnel technical fax'
+    datasource_id: solr_document
+    property_path: personnel_technical_fax
     type: string
   personnel_technical_name:
     label: 'Personnel technical name'
@@ -458,6 +718,11 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_technical_organisation
     type: text
+  personnel_technical_phone:
+    label: 'Personnel technical phone'
+    datasource_id: solr_document
+    property_path: personnel_technical_phone
+    type: string
   personnel_technical_role:
     label: 'Personnel technical role'
     datasource_id: solr_document
@@ -467,6 +732,11 @@ field_settings:
     label: 'Platform ancillary cloud coverage'
     datasource_id: solr_document
     property_path: platform_ancillary_cloud_coverage
+    type: decimal
+  platform_ancillary_scene_coverage:
+    label: 'Platform ancillary scene coverage'
+    datasource_id: solr_document
+    property_path: platform_ancillary_scene_coverage
     type: decimal
   platform_instrument_long_name:
     label: 'Platform instrument long name'
@@ -488,6 +758,11 @@ field_settings:
     datasource_id: solr_document
     property_path: platform_instrument_product_type
     type: string
+  platform_instrument_resource:
+    label: 'Platform instrument resource'
+    datasource_id: solr_document
+    property_path: platform_instrument_resource
+    type: string
   platform_instrument_short_name:
     label: 'Platform instrument short name'
     datasource_id: solr_document
@@ -498,6 +773,21 @@ field_settings:
     datasource_id: solr_document
     property_path: platform_long_name
     type: string
+  platform_orbit_absolute:
+    label: 'Platform orbit absolute'
+    datasource_id: solr_document
+    property_path: platform_orbit_absolute
+    type: integer
+  platform_orbit_direction:
+    label: 'Platform orbit direction'
+    datasource_id: solr_document
+    property_path: platform_orbit_direction
+    type: string
+  platform_orbit_relative:
+    label: 'Platform orbit relative'
+    datasource_id: solr_document
+    property_path: platform_orbit_relative
+    type: integer
   platform_short_name:
     label: 'Platform short name'
     datasource_id: solr_document
@@ -533,6 +823,46 @@ field_settings:
     datasource_id: solr_document
     property_path: related_information_type
     type: string
+  related_url_data_management_plan:
+    label: 'Related url data management plan'
+    datasource_id: solr_document
+    property_path: related_url_data_management_plan
+    type: string
+  related_url_data_management_plan_desc:
+    label: 'Related url data management plan desc'
+    datasource_id: solr_document
+    property_path: related_url_data_management_plan_desc
+    type: string
+  related_url_data_paper:
+    label: 'Related url data paper'
+    datasource_id: solr_document
+    property_path: related_url_data_paper
+    type: string
+  related_url_data_paper_desc:
+    label: 'Related url data paper desc'
+    datasource_id: solr_document
+    property_path: related_url_data_paper_desc
+    type: string
+  related_url_ext_metadata:
+    label: 'Related url ext metadata'
+    datasource_id: solr_document
+    property_path: related_url_ext_metadata
+    type: string
+  related_url_ext_metadata_desc:
+    label: 'Related url ext metadata desc'
+    datasource_id: solr_document
+    property_path: related_url_ext_metadata_desc
+    type: string
+  related_url_home_page:
+    label: 'Related url home page'
+    datasource_id: solr_document
+    property_path: related_url_home_page
+    type: string
+  related_url_home_page_desc:
+    label: 'Related url home page desc'
+    datasource_id: solr_document
+    property_path: related_url_home_page_desc
+    type: string
   related_url_landing_page:
     label: 'Related url landing page'
     datasource_id: solr_document
@@ -542,6 +872,36 @@ field_settings:
     label: 'Related url landing page desc'
     datasource_id: solr_document
     property_path: related_url_landing_page_desc
+    type: string
+  related_url_obs_facility:
+    label: 'Related url obs facility'
+    datasource_id: solr_document
+    property_path: related_url_obs_facility
+    type: string
+  related_url_obs_facility_desc:
+    label: 'Related url obs facility desc'
+    datasource_id: solr_document
+    property_path: related_url_obs_facility_desc
+    type: string
+  related_url_other_documentation:
+    label: 'Related url other documentation'
+    datasource_id: solr_document
+    property_path: related_url_other_documentation
+    type: string
+  related_url_other_documentation_desc:
+    label: 'Related url other documentation desc'
+    datasource_id: solr_document
+    property_path: related_url_other_documentation_desc
+    type: string
+  related_url_scientific_publication:
+    label: 'Related url scientific publication'
+    datasource_id: solr_document
+    property_path: related_url_scientific_publication
+    type: string
+  related_url_scientific_publication_desc:
+    label: 'Related url scientific publication desc'
+    datasource_id: solr_document
+    property_path: related_url_scientific_publication_desc
     type: string
   related_url_user_guide:
     label: 'Related url user guide'
@@ -633,6 +993,41 @@ field_settings:
     datasource_id: solr_document
     property_path: start_date_year_month
     type: date
+  storage_information_file_checksum:
+    label: 'Storage information file checksum'
+    datasource_id: solr_document
+    property_path: storage_information_file_checksum
+    type: string
+  storage_information_file_checksum_type:
+    label: 'Storage information file checksum type'
+    datasource_id: solr_document
+    property_path: storage_information_file_checksum_type
+    type: string
+  storage_information_file_format:
+    label: 'Storage information file format'
+    datasource_id: solr_document
+    property_path: storage_information_file_format
+    type: string
+  storage_information_file_location:
+    label: 'Storage information file location'
+    datasource_id: solr_document
+    property_path: storage_information_file_location
+    type: string
+  storage_information_file_name:
+    label: 'Storage information file name'
+    datasource_id: solr_document
+    property_path: storage_information_file_name
+    type: string
+  storage_information_file_size:
+    label: 'Storage information file size'
+    datasource_id: solr_document
+    property_path: storage_information_file_size
+    type: string
+  storage_information_file_size_unit:
+    label: 'Storage information file size unit'
+    datasource_id: solr_document
+    property_path: storage_information_file_size_unit
+    type: string
   temporal_extent_end_date:
     label: 'Temporal extent_end date'
     datasource_id: solr_document
@@ -678,6 +1073,11 @@ field_settings:
     label: 'Use constraint_identifier'
     datasource_id: solr_document
     property_path: use_constraint_identifier
+    type: string
+  use_constraint_resource:
+    label: 'Use constraint resource'
+    datasource_id: solr_document
+    property_path: use_constraint_resource
     type: string
 datasource_settings:
   solr_document:
