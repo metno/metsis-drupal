@@ -1,14 +1,13 @@
 <?php
 
 global $metsis_conf;
-define('GLOBALS_CONF_SITE_NAME', $GLOBALS['conf']['site_name']);
+define('GLOBALS_CONF_SITE_NAME', \Drupal::config('system.site')->get('name'));
 if (isset($metsis_conf['drupal_site_name'])) {
   define('METSIS_CONF_DRUPAL_SITE_NAME', $metsis_conf['drupal_site_name']);
 }
 if (isset($metsis_conf['site_status'])) {
   define('SITE_STATUS', $metsis_conf['site_status']);
-}
-define('METADATA_PREFIX', $metsis_conf['metadata_prefix']);
+} define('METADATA_PREFIX', $metsis_conf['metadata_prefix']);
 if (isset($metsis_conf['search_default_metadata_status'])) {
   define('SEARCH_DEFAULT_METADATA_STATUS', $metsis_conf['search_default_metadata_status']);
 }
@@ -36,22 +35,9 @@ if (isset($metsis_conf['metsis_opendap_parser_service'])) {
 if (isset($metsis_conf['sort_by_time'])) {
   define('SORT_BY_TIME', $metsis_conf['sort_by_time']);
 }
-$metsis_conf['opendap_start_time_strings'] = [
-  'start_time',
-  'ACQUISITION_START_TIME',
-  'min_time',
-  'time_coverage_start',
-];
-$metsis_conf['opendap_stop_time_strings'] = [
-  'stop_time',
-  'ACQUISITION_STOP_TIME',
-  'max_time',
-  'time_coverage_end',
-];
+$metsis_conf['opendap_start_time_strings'] = ['start_time', 'ACQUISITION_START_TIME', 'min_time', 'time_coverage_start'];
+$metsis_conf['opendap_stop_time_strings'] = ['stop_time', 'ACQUISITION_STOP_TIME', 'max_time', 'time_coverage_end'];
 
 if (isset($metsis_conf['adc_floating_buttons']) && $metsis_conf['adc_floating_buttons'] === TRUE) {
   define('ADC_FLOATING_BUTTONS', $metsis_conf['adc_floating_buttons']);
-}
-if (isset($metsis_conf['debug']) && $metsis_conf['debug'] == 1) {
-  define('DEBUG', $metsis_conf['debug']);
 }

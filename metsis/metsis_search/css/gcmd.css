@@ -1,0 +1,33 @@
+div#gcmdblock {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div#gcmdblock ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+div#gcmdblock li {
+    list-style: none;
+    background-position: 0 1px;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
+div#gcmdblock a:hover {
+    text-decoration: underline;
+}
+ul.facet-isactive a {
+  display: none;
+}
+/*
+.facets-soft-limit-link {
+  display: none;
+}
+*/
+
+ul.facet-active a) {
+  display: none;
+}

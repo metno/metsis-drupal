@@ -1,0 +1,13 @@
+metsis_elements.elements_form:
+  path: '/child'
+  defaults:
+    _form: '\Drupal\metsis_elements\Form\MetsisElementsForm'
+    _title: 'Level 2 Datasets'
+    #string: ''
+  options:
+    query:
+      metadata_identifier: ""
+      calling_results_page: ""
+      page: ""
+  requirements:
+    _permission: 'access child datasets'

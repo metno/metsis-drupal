@@ -1,0 +1,6 @@
+name: 'METSIS CSV'
+description: 'Provides user configuration form for CSV data download.'
+core: 8.x
+package: METSIS
+type: module
+dependencies: {  }

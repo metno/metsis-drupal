@@ -1,0 +1,12 @@
+uuid: d4a04cfc-69b0-4a83-afdc-d63882a0ed72
+langcode: en
+status: true
+dependencies:
+  - metsis_search
+enforced:
+  module:
+    - metsis_search
+id: solr_format
+label: 'solr format'
+locked: false
+pattern: 'Y-m-d\TH:i:s\Z'

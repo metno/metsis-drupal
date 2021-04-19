@@ -1,0 +1,13 @@
+metsis_basket.metsis_basket_admin_settings_form:
+  title: 'METSIS Basket Admin Settings'
+  description: 'Configure the METSIS basket backend'
+  route_name: metsis_basket.metsis_basket_admin_settings_form
+  parent: metsis.group.admin
+  weight: 99
+
+metsis.group.admin:
+  title: 'METSIS'
+  route_name: system.admin_config_metsis
+  parent: system.admin_config
+  description: 'METSIS Configuration'
+  weight: -999

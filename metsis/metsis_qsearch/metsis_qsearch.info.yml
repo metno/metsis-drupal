@@ -1,0 +1,9 @@
+name: 'Metsis QSearch'
+type: module
+description: 'METSIS Metadata QSearch'
+core: 8.x
+package: 'METSIS'
+dependencies:
+  metsis_lib: 'drupal:metsis_lib'
+  metsis_basket: 'drupal:metsis_basket'
+#  search_api: 'drupal:metsis_wms'

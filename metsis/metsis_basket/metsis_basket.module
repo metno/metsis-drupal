@@ -1,13 +1,14 @@
 <?php
 
-require_once 'metsis_basket.constants.inc';
+//require_once 'metsis_basket.constants.inc';
 require_once 'metsis_basket.utils.inc';
-require_once 'metsis_basket.config.inc';
-
+//require_once 'metsis_basket.config.inc';
+global $metsis_conf;
+/*
 function metsis_basket_views_api() {
   return array('api' => 3, 'path' => drupal_get_path('module', 'metsis_basket') . '/includes/views',);
 }
-
+*/
 function metsis_basket_help($path, $arg) {
   switch ($path) {
     case 'admin/help#metsis_basket': $output = '<h3>' . t('About') . '</h3>';
@@ -18,41 +19,67 @@ function metsis_basket_help($path, $arg) {
   }
 }
 
+
+/*
 function metsis_basket_entity_info() {
   global $metsis_conf;
-  if ($metsis_conf['message']['visible'] === TRUE) {
-    drupal_set_message($metsis_conf['message']['under_construction'], 'warning');
-  } $info = [];
-  $info['metsis_basket'] = array('label' => t('metsis_basket'), 'base table' => 'metsis_basket', 'entity keys' => array('id' => 'iid', 'label' => 'title',), 'entity class' => 'Entity', 'controller class' => 'MetsisBasketController', 'module' => 'metsis_basket', 'uri callback' => 'metsis_basket_uri', 'fieldable' => TRUE,);
+/*  if ($metsis_conf['message']['visible'] === TRUE) {
+    \Drupal::messenger()->addWarning($metsis_conf['message']['under_construction']);
+
+  }
+  $info = [];
+  $info['metsis_basket'] = array(
+    'label' => t('metsis_basket'),
+    'base table' => 'metsis_basket',
+    'entity keys' => array(
+      'id' => 'iid',
+      'label' => 'title',
+    ),
+    'entity class' => 'Entity',
+    'controller class' => 'MetsisBasketController',
+    'module' => 'metsis_basket', 'uri callback' => 'metsis_basket_uri', 'fieldable' => TRUE,);
   return $info;
 }
+*/
 
-function metsis_basket_menu() {
+/*function metsis_basket_menu() {
   $items = array();
   $items['metsis_basket/%'] = array('title' => 'METSIS basket', 'page callback' => 'metsis_basket_listing', 'page arguments' => array(1), 'access callback' => array('user_is_logged_in'),);
   return $items;
 }
+*/
 
-function metsis_basket_listing($iid) {
-  $objects = entity_load('metsis_basket', array($iid));
+/*function metsis_basket_listing($iid) {
+  $objects = \Drupal::entityTypeManager()->getStorage('metsis_basket', array($iid));
   $mb = $objects[$iid];
-  drupal_set_title($mb->name);
+  // @FIXME
+// drupal_set_title() has been removed. There are now a few ways to set the title
+// dynamically, depending on the situation.
+//
+//
+// @see https://www.drupal.org/node/2067859
+// drupal_set_title($mb->name);
+
   $list = entity_view('metsis_basket', $objects, 'full');
   $output = array();
   foreach ($list as $mb) {
-    $output[] = drupal_render($mb);
+    $output[] = \Drupal::service("renderer")->render($mb);
   } return implode($output);
 }
-
+*/
+/*
 function metsis_metsis_views_bulk_operations_object_info() {
   $object_info = array('mytype' => array('type' => 'mytype', 'base_table' => 'metsis_metsis', 'load' => 'metsis_metsis_mytype_load', 'oid' => 'id', 'title' => 'title',),);
   return $object_info;
-}
+  }
+*/
 
+/*
 function metsis_basket_uri($metsis_basket) {
-  return array('path' => 'metsis_basket/' . $metsis_basket->iid,);
+  return array('path' => 'metsis/basket/' . $metsis_basket->iid,);
 }
-
+*/
+/*
 function metsis_basket_action_info() {
   $actions = array();
   $files = metsis_basket_load_action_includes();
@@ -64,7 +91,9 @@ function metsis_basket_action_info() {
     }
   } return $actions;
 }
+*/
 
+/*
 function metsis_basket_load_action_includes() {
   static $loaded = FALSE;
   $files = array('transform.action', 'delete.action', 'download_http.action', 'download_odata.action', 'visualize.action',);
@@ -74,3 +103,13 @@ function metsis_basket_load_action_includes() {
     } $loaded = TRUE;
   } return $files;
 }
+*/
+
+/**
+ * Implement hook_views_data()
+ */
+ /*
+ function metsis_basket_views_data() {
+  
+ }
+*/

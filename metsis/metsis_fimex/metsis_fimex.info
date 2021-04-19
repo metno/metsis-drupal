@@ -1,12 +1,12 @@
 name = METSIS fimex
 description = Provides access to transformation services using Fimex.
 version = 7.x-1.14
-core = 7.x
+core = 7.x 
 package = METSIS
 project = metsis
 
 dependencies[] = metsis_lib
-dependencies[] = metsis_qsearch
+
 dependencies[] = metsis_basket
 dependencies[] = metsis_wms
 

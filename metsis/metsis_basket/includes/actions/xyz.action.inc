@@ -11,7 +11,7 @@ function metsis_basket_xyz_my_custom_action_form() {
 }
 
 function metsis_basket_xyz_my_custom_action_submit($form, &$form_state) {
-  $personell_email = db_query('SELECT personell_email from {metsis_basket} WHERE metadata_identifier = :name', array(':name' => $form_state['values']['user']))->fetchField();
+  $personell_email = \Drupal::database()->query('SELECT personell_email from {metsis_basket} WHERE metadata_identifier = :name', array(':name' => $form_state['values']['user']))->fetchField();
   return array('uid' => $uid,);
 }
 
@@ -21,14 +21,14 @@ function metsis_basket_xyz_my_custom_action(&$entity, $context) {
   } if (!isset($context['uid'])) {
     return;
   } if (!empty($entity->field_users)) {
-    foreach ($entity->field_users[LANGUAGE_NONE] as $ref) {
+    foreach ($entity->field_users[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED] as $ref) {
       if ($ref['target_id'] === $context['uid']) {
         return;
       }
     }
   } $user = array('target_id' => $context['uid'],);
   if (!empty($entity->field_users)) {
-    $entity->field_users[LANGUAGE_NONE][] = $user;
+    $entity->field_users[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED][] = $user;
     return;
-  } $entity->field_users[LANGUAGE_NONE] = array($user);
+  } $entity->field_users[\Drupal\Core\Language\Language::LANGCODE_NOT_SPECIFIED] = array($user);
 }

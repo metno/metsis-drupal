@@ -1,0 +1,11 @@
+#services:
+#  exit_subscriber:
+#    class: Drupal\metsis_wms\EventSubscriber\ExitSubscriber
+#    tags:
+#      -
+#        name: event_subscriber
+#  init_subscriber:
+#    class: Drupal\metsis_wms\EventSubscriber\InitSubscriber
+#    tags:
+#      -
+#        name: event_subscriber

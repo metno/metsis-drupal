@@ -1,6 +1,6 @@
 <?php
-$calling_results_page = isset($_GET['calling_results_page']) ? check_plain($_GET['calling_results_page']) : '';
-$params = drupal_get_query_parameters();
+$calling_results_page = isset($_GET['calling_results_page']) ? \Drupal\Component\Utility\Html::escape($_GET['calling_results_page']) : '';
+$params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters();
 $parent = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_PARENT, array($params['metadata_identifier']), array(METADATA_PREFIX . 'title', METADATA_PREFIX . 'abstract'), 0, 1);
 ?>
 

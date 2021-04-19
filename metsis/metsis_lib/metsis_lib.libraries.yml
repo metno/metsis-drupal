@@ -1,0 +1,51 @@
+metsis_lib:
+  version: 1.x
+  css:
+    theme:
+      css/metsis_lib.css: {}
+
+tables:
+  version: 1.x
+  css:
+    theme:
+      css/tables.css: {}
+
+icons:
+  version: 1.x
+  css:
+    component:
+      css/contrib/icons.css: {}
+
+adc_buttons:
+  version: 1.x
+  css:
+    component:
+      css/adc-buttons.css: {}
+
+autocomplete:
+  version: 1.x
+  css:
+    theme:
+      css/autocomplete.css: {}
+
+map_thumbnails:
+  version: 1.x
+  css:
+    component:
+      css/map_thumbnails.css: {}
+
+popups:
+  version: 1.x
+  css:
+    component:
+      css/popups.css: {}
+
+utils:
+  version: 1.x
+  header: true
+  js:
+    js/custom/utils.js: {}
+    js/custom/metsis_utils.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

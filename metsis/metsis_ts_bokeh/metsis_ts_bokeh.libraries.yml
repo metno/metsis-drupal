@@ -1,0 +1,45 @@
+style:
+  version: 1.x
+  css:
+    layout:
+      css/metsis_ts_bokeh.css: {}
+
+bokeh_js:
+  remote: https://cdn.bokeh.org
+  version: 2.0.2
+  license:
+    name: BSD License
+    url: https://github.com/bokeh/demo.bokeh.org/blob/master/LICENSE.txt
+    gpl-compatible: false
+  js:
+    'https://cdn.bokeh.org/bokeh/release/bokeh-2.0.2.min.js': { type: external }
+
+bokeh_widgets:
+  remote: https://cdn.bokeh.org
+  version: 2.0.2
+  license:
+    name: BSD License
+    url: https://github.com/bokeh/demo.bokeh.org/blob/master/LICENSE.txt
+    gpl-compatible: false
+  js:
+    'https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.0.2.min.js': { type: external }
+
+bokeh_tables:
+  remote: https://cdn.bokeh.org
+  version: 2.0.2
+  license:
+    name: BSD License
+    url: https://github.com/bokeh/demo.bokeh.org/blob/master/LICENSE.txt
+    gpl-compatible: false
+  js:
+    'https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.0.2.min.js': { type: external }
+
+bokeh_api:
+  remote: https://cdn.bokeh.org
+  version: 2.0.2
+  license:
+    name: BSD License
+    url: https://github.com/bokeh/demo.bokeh.org/blob/master/LICENSE.txt
+    gpl-compatible: false
+  js:
+    'https://cdn.bokeh.org/bokeh/release/bokeh-api-2.0.2.min.js': { type: external }

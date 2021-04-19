@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.instrument_short_name
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: instrument
+theme: metsis
+region: sidebar_first
+weight: -9
+provider: null
+plugin: 'facet_block:instrument_short_name'
+settings:
+  id: 'facet_block:instrument_short_name'
+  label: Instrument
+  provider: facets
+  label_display: visible
+  block_id: instrument
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

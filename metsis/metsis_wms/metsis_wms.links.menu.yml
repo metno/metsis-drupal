@@ -1,0 +1,17 @@
+metsis_wms.get_custom_content:
+  route_name: metsis_wms.get_custom_content
+  title: 'METSIS OL3 WMS node'
+
+metsis_wms.admin_config_form:
+  title: 'METSIS WMS Configuration'
+  description: 'Configure METSIS WMS'
+  route_name: metsis_wms.admin_config_form
+  parent: metsis.group.admin
+  weight: 99
+
+metsis.group.admin:
+  title: 'METSIS'
+  route_name: system.admin_config_metsis
+  parent: system.admin_config
+  description: 'METSIS Configuration'
+  weight: -999

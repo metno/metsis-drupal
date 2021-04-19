@@ -1,5 +1,5 @@
 <?php
-
+/*
 global $metsis_conf;
 define('WMS_ENDPOINT', $metsis_conf['wms_endpoint']);
 
@@ -9,4 +9,4 @@ if (isset($metsis_conf['wms_which_base_layer'])) {
 }
 if(isset($metsis_conf['wms_overlay_border'])){
   define('WMS_OVERLAY_BORDER',$metsis_conf['wms_overlay_border']);
-}
+}*/

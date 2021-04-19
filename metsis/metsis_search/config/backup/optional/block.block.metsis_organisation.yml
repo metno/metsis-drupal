@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.organisation
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: metsis_organisation
+theme: metsis
+region: sidebar_second
+weight: -14
+provider: null
+plugin: 'facet_block:organisation'
+settings:
+  id: 'facet_block:organisation'
+  label: Organisation
+  provider: facets
+  label_display: visible
+  block_id: metsis_organisation
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

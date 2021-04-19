@@ -1,0 +1,36 @@
+metsis_ts_bokeh.forminit:
+  path: '/metsis/bokeh/init'
+  defaults:
+    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehInitForm'
+    _title: 'Metsis TS Bokeh Init'
+  requirements:
+    _permission: 'access metsis ts bokeh'
+
+metsis_ts_bokeh.formplot:
+  path: '/metsis/bokeh/plot'
+  defaults:
+    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehPlotForm'
+    _title: 'Metsis TS Bokeh Plot'
+  requirements:
+    _permission: 'access metsis ts bokeh'
+
+metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
+  path: '/admin/config/metsis/ts_bokeh'
+  defaults:
+    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehConfigurationForm'
+    _title: 'TS Bokeh Configuration Form'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+metsis.parent:
+  title: 'Metsis'
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

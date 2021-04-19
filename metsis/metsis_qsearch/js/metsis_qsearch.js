@@ -245,17 +245,17 @@ function escapeRegExp(string) {
 /**
  * copy search URL{
  */
-(function ($) {
+(function ($, Drupal) {
   Drupal.behaviors.metsisQSearchShareSearch = {
     //}anonymous function wrapper
-    attach: function () {
+    attach: function (context, settings) {
       $('#edit-share-results').on('click', function (event) {
-        $('.quid-share-string').toggle("slow");
+        $('.quid-share-string',context).once('quid-hare-string').toggle("slow");
       });
     }
     //anonymous function wrapper{
   };
-}(jQuery));
+}(jQuery, Drupal));
 /**
  * copy search URL}
  */
@@ -268,7 +268,8 @@ function escapeRegExp(string) {
     //}anonymous function wrapper
     attach: function () {
       $('.adc-button').on('click', function (event) {
-          var mid = $(this).attr('id');
+          //var mid = $(this).attr('id');
+          var mid = $(this).prop('id');
           var res = mid.match(/metadata-div/g);
           if (res.length > 0) {
             $(this).children().toggle();
@@ -289,8 +290,8 @@ function escapeRegExp(string) {
         defaultText: "Make a selection...",
         autoWidth: false
       });
-      $("#edit-institutions-chosen-institutions").change(function () {
-        alert("You selected: " + this.value + " from the MultiLineMultiselect plugin");
+      $("#edit-institutions-chosen-institutions").change(function(){
+        alert("You selected: "+this.value+" from the MultiLineMultiselect plugin");
       });
     }
   }

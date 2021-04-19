@@ -1,0 +1,30 @@
+name: 'Metsis Search'
+type: module
+description: 'METSIS Metadata Search'
+core: 8.x
+version: 8.x-2.0
+package: METSIS
+dependencies:
+  - search_api
+  - user
+  - views_fieldsets
+  - better_exposed_filters
+  - search_api_solr
+  - views
+  - search_api_autocomplete
+  - facets
+  - system
+  - metsis_search
+  - twig_tweak
+  - twig_views
+  - date_popup
+  - search_api_sorts
+  - blazy
+  - lazy
+  - metsis_lib
+  - metsis_wms
+  - metsis_ts_bokeh
+  - metsis_csv_bokeh
+  - back_to_top
+  - extlink
+  - fontawesome

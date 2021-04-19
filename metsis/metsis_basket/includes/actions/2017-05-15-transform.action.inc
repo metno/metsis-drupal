@@ -17,10 +17,10 @@ function transform_action_submit($form, &$form_state) {
 }
 
 function transform_metsis_db_datasets($table, $pkey_array) {
-  global $user;
+  $user = \Drupal::currentUser();
   $dataset_ids = [];
   foreach ($pkey_array as $pk) {
-    $results = db_select($table, 't')->condition('t.iid', $pk)->condition('t.uid', $user->uid)->fields('t', array('metadata_identifier'))->execute();
+    $results = \Drupal::database()->select($table, 't')->condition('t.iid', $pk)->condition('t.uid', $user->uid)->fields('t', array('metadata_identifier'))->execute();
     foreach ($results as $r) {
       $dataset_ids[] = $r->metadata_identifier;
     }

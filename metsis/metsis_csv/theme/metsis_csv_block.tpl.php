@@ -1,5 +1,5 @@
 <?php
-$calling_results_page = isset($_GET['calling_results_page']) ? check_plain($_GET['calling_results_page']) : '';
+$calling_results_page = isset($_GET['calling_results_page']) ? \Drupal\Component\Utility\Html::escape($_GET['calling_results_page']) : '';
 ?>
 <div class="csvwrapper">
     <div class="csvbox feedback">

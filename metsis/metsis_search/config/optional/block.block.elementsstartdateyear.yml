@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.elements_start_date_year
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+    - adc
+    - sios
+id: elementsstartdateyear
+theme: metsis
+region: sidebar_first
+weight: -6
+provider: null
+plugin: 'facet_block:elements_start_date_year'
+settings:
+  id: 'facet_block:elements_start_date_year'
+  label: 'Elements Start date year'
+  provider: facets
+  label_display: visible
+  block_id: elementsstartdateyear
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: false
+    context_mapping: {  }

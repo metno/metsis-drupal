@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.data_center
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: metsis_datacenter
+theme: metsis
+region: sidebar_second
+weight: -12
+provider: null
+plugin: 'facet_block:data_center'
+settings:
+  id: 'facet_block:data_center'
+  label: 'Data Center'
+  provider: facets
+  label_display: visible
+  block_id: metsis_datacenter
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

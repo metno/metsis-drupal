@@ -2,7 +2,7 @@
 
 function csv_config_form($form, &$form_state) {
   global $metsis_conf;
-  $metadata_identifier = isset($_GET['metadata_identifier']) ? check_plain($_GET['metadata_identifier']) : '';
+  $metadata_identifier = isset($_GET['metadata_identifier']) ? \Drupal\Component\Utility\Html::escape($_GET['metadata_identifier']) : '';
   if (defined('CSV_NPOINTS')) {
     $default_csv_npoints = CSV_NPOINTS;
   } $form = array();
@@ -44,7 +44,7 @@ function adc_csv_wps_query($server, $port, $service, $req_params) {
   $res = $con->get($service, $req_params);
   $res_body = hack_xml_namespace($res['body']);
   $res_body_xml = new SimpleXMLElement($res_body);
-  $jres_body = drupal_json_decode(drupal_json_encode($res_body_xml));
+  $jres_body = \Drupal\Component\Serialization\Json::decode(\Drupal\Component\Serialization\Json::encode($res_body_xml));
   return $jres_body;
 }
 

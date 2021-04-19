@@ -1,0 +1,113 @@
+.dataset {
+-webkit-box-shadow: 0px 0px 10px 6px rgba(49,65,95,0.22);
+box-shadow: 0px 0px 6px 6px rgba(49,65,95,0.22);
+background: #FAF8F8;
+}
+/*
+.numberOfResults {
+text-shadow: 2px 2px 4px rgba(26,121,54,0.2), 2px 2px 4px rgba(26,121,54,0.2);
+color: #FFFFFF;
+background: #10CF1B;
+}
+*/
+/*
+ * Order buttons inline and wrap in fieldset
+*/
+fieldset.datasetops {
+    display: flex;
+    flex-wrap: wrap;
+}
+/*
+* Remove bullets from facet checkboxes
+*/
+ul.js-facets-checkbox-links {
+  list-style-type: none;
+
+
+}
+
+.ui-dialog-off-canvas {
+  all: initial;
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgb(68, 68, 68);
+  background-image: none;
+  background-origin: padding-box;
+  background-position: 0% 0%;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-repeat: repeat;
+  background-size: auto;
+  box-sizing: border-box;
+  color: rgb(221, 221, 221);
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "liberation sans", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  overflow-wrap: break-word;
+  position: absolute;
+  right: 0px;
+  text-shadow: none;
+  top: 6px;
+  z-index: 500
+}
+/* TRYING TO FIX METADTA PREVIEW POPUP CSS PROBLEM
+#drupal-off-canvas :not(div), #drupal-off-canvas :not(svg *), #drupal-off-canvas ::after, #drupal-off-canvas ::before {
+  all: initial;
+  background-attachment: scroll;
+  background-clip: border-box;
+  background-color: rgb(68, 68, 68);
+  background-image: none;
+  background-origin: padding-box;
+  background-position: 0% 0%;
+  background-position-x: 0%;
+  background-position-y: 0%;
+  background-repeat: repeat;
+  background-size: auto;
+  box-sizing: border-box;
+  color: rgb(221, 221, 221);
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "liberation sans", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  overflow-wrap: break-word;
+  position: absolute;
+  right: 0px;
+  text-shadow: none;
+  top: 6px;
+  z-index: 500
+}
+*/
+/*
+ * Display checkbox labels inline for facets
+ * TODO: NOT WORKING
+
+  label {
+    display: inline-block;
+}
+*/
+/* Add marking of highlighted words */
+em strong {
+  background-color: #ffff00;
+}
+
+/* Do some show/hide  and styling on gcmd/keywords_facets */
+/*
+section#block-gcmdkeywords h2, li {
+  display: none;
+}
+section#block-gcmdkeywords li.is-active {
+  display: block;
+  flex-wrap: wrap;
+}
+*/
+a:hover {
+    text-decoration: underline;
+}
+
+.res-thumb {
+  width: 25%;
+}
+
+.license-icons {
+  margin-top: 5px;
+  margin-left: 2px;
+}

@@ -1,0 +1,12 @@
+name: 'METSIS lib'
+description: 'Provides library routines for METSIS modules.'
+core: 8.x
+version: 8.x-1.0
+package: METSIS
+dependencies:
+  - views
+  - datetime
+  - ctools
+  - token
+  - token_views_filter
+type: module

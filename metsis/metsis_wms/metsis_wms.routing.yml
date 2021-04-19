@@ -1,0 +1,70 @@
+metsis_wms.get_custom_content:
+  path: /metsis/map/wmscustom
+  defaults:
+  #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
+    _controller: '\Drupal\metsis_wms\Controller\DefaultController::get_custom_content'
+    _title: 'METSIS OL6 WMS custom content'
+  #    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
+  options:
+    query:
+      dataset: ""
+      solr_core: ""
+  requirements:
+    _permission: 'access wms'
+
+
+metsis_wms.wms:
+  path: /metsis/map/wms
+  defaults:
+#    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
+    _controller: '\Drupal\metsis_wms\Controller\DefaultController::getWmsMap'
+    _title: 'METSIS OL6 WMS'
+#    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
+  options:
+    query:
+      dataset: ""
+      solr_core: ""
+  requirements:
+    _permission: 'access wms'
+
+metsis_qsearch.map_getcap:
+  path: /metsis/map/getcap
+  defaults:
+    _title: 'GetCapabilities'
+    _controller: '\Drupal\metsis_wms\Controller\GetCapController::getCapDoc'
+  options:
+    query:
+      dataset: ""
+      REQUEST: ""
+  requirements:
+    _permission: 'access wms'
+
+metsis_qsearchmap_getcapfromurl:
+  path: /metsis/map/getcapfromurl
+  defaults:
+    _title: 'GetWMSCapabilitiesFromUrl'
+    _controller: '\Drupal\metsis_wms\Controller\GetCapController::getCapDocFromUrl'
+  options:
+    query:
+      url: ""
+  requirements:
+    _permission: 'access wms'
+
+metsis_wms.admin_config_form:
+  path: '/admin/config/metsis/wms'
+  defaults:
+    _form: '\Drupal\metsis_wms\Form\MetsisWmsConfigurationForm'
+    _title: 'METSIS WMS Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

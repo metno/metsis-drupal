@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Drupal Module Upgrader analysis report</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,700,600' rel='stylesheet' type='text/css' />
+    <style type="text/css">
+    <!--
+
+body {
+  width: 80%;
+  color: #343434;
+  margin: 1em auto;
+  font-family: 'Open Sans', Verdana, sans-serif;
+}
+
+details {
+  font-size: 18px;
+  line-height: 25px;
+  margin-bottom: 2em;
+  display: list-item;
+  list-style: none;
+}
+
+details summary {
+  padding: 1em;
+  margin-bottom: 1em;
+  display: list-item;
+  cursor: pointer;
+}
+
+details.error summary {
+  background-color: #ffd5d5;
+}
+
+details.warning summary {
+  background-color: #fff3bb;
+}
+
+a {
+  color: #095cb1;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+aside {
+  font-style: italic;
+  line-height: 20px;
+  font-size: 15px;
+}
+
+.group {
+  border: 1px solid #ececec;
+  padding: 1em;
+  display: block;
+}
+
+.group > summary {
+  padding: 0;
+  color: #c8c8c8;
+  margin-bottom: 0;;
+  font-weight: bold;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: list-item;
+}
+
+.group[open] > summary {
+  margin-bottom: 1em;
+}
+
+.group > details:last-child {
+  margin-bottom: 0;
+}
+
+    -->
+    </style>
+  </head>
+  <body>
+    <h1>Drupal Module Upgrader analysis report</h1>
+      <details open="true" class="group">
+      <summary></summary>
+          <details class="error">
+      <summary>Classes must be PSR-4 compliant.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2246699">PSR-4 compatible class loader in Drupal core</a></li>
+              </ul>
+      
+                      </details>
+    <details class="error">
+      <summary><code>drupal_goto()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2023537"><code>drupal_goto()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 11</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_goto</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_http_request()</code> has been replaced by Guzzle.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1862446">Guzzle HTTP client in Drupal core</a></li>
+                <li><a target="_blank" href="http://docs.guzzlephp.org/en/latest">Guzzle documentation</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 72</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 472</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 484</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 492</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 502</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 527</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 677</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_http_request</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_json_decode()</code> has moved into the Serialization component.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2219113"><code>drupal_json_decode()</code> moved into Serialization component</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 43</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 475</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_json_decode</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_json_encode()</code> has moved into the Serialization component.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2219113"><code>drupal_json_encode()</code> moved into Serialization component</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 43</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 475</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_json_encode</aside>    </details>
+    <details class="error">
+      <summary><code>l()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2346779"><code>l()</code> replaced by URL generation API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 54</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 66</li>
+            </ul>
+                  <aside>Flagged by _function_call:l</aside>    </details>
+    <details class="error">
+      <summary><code>theme()</code> has been renamed to <code>_theme()</code>, and should never be called directly.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2195739"><code>theme()</code> renamed to <code>_theme()</code> and should not be called directly</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 70</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 236</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 245</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 299</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 308</li>
+            </ul>
+                  <aside>Flagged by _function_call:theme</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_get_query_parameters()</code> has been replaced by the <code>UrlHelper</code> utility.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2079005"><code>drupal_get_query_parameters()</code> is now a method of <code>\Drupal\Component\Utility\UrlHelper</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 261</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 674</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_get_query_parameters</aside>    </details>
+    <details class="error">
+      <summary><code>variable_del()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 771</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 780</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_del</aside>    </details>
+    <details class="error">
+      <summary><code>variable_get()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 776</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_get</aside>    </details>
+    <details class="error">
+      <summary><code>variable_set()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 772</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_set</aside>    </details>
+    <details class="error">
+      <summary><code>watchdog()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2270941"><code>watchdog()</code> is deprecated</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 10</li>
+            </ul>
+                  <aside>Flagged by _function_call:watchdog</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_set_message()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2774931"><code>drupal_set_message()</code> moved into stream wrapper manager service.</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 29</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 9</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_set_message</aside>    </details>
+    <details class="error">
+      <summary><code>db_select()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2993033"><code>db_select()</code> is deprecated.</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 56</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/includes/metsis_lib.utils.inc, line 760</li>
+            </ul>
+                  <aside>Flagged by _function_call:db_select</aside>    </details>
+    <details class="warning">
+      <summary>Many common functions, shared variables, and constants have been renamed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2324935">The global theme variables have been replaced by an ActiveTheme object</a></li>
+              </ul>
+      
+                      </details>
+    <details class="error">
+      <summary>Module info files' <code>core</code> key must have a value of <code>8.x</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Info files must contain a <code>type</code> key.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#type"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Many common dependencies have moved into core.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Modules no longer declare classes in their info file.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#files"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary><code>hook_init()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2013014"><code>hook_init()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_lib/metsis_lib.module, line 5</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:init</aside>    </details>
+
+    </details>
+    </body>
+</html>

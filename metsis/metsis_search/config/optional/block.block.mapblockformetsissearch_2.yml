@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - metsis_search
+    - system
+  theme:
+    - metsis
+    - adc
+    - sios
+id: mapblockformetsissearch_2
+theme: metsis
+region: content
+weight: -16
+provider: null
+plugin: metsis_search_map_block
+settings:
+  id: metsis_search_map_block
+  label: 'Map Block for METSIS Search'
+  provider: metsis_search
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: "/node\r\n<front>"
+    negate: false
+    context_mapping: {  }

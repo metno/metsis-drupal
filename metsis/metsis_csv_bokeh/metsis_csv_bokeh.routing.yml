@@ -1,0 +1,29 @@
+metsis_csv_bokeh.download:
+  path: '/metsis/bokeh/csv'
+  defaults:
+    _form: '\Drupal\metsis_csv_bokeh\Form\MetsisCsvBokehDownloadForm'
+    _title: 'Metsis CSV Bokeh Download'
+  options:
+    query:
+      opendap_urls: ""
+  requirements:
+    _permission: 'access metsis csv bokeh'
+
+metsis_csv_bokeh.admin_settings_form:
+  path: '/admin/config/metsis/csv_bokeh'
+  defaults:
+    _form: '\Drupal\metsis_csv_bokeh\Form\MetsisCsvBokehConfigurationForm'
+    _title: 'CSV Bokeh Configuration Form'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

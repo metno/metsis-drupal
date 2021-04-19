@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.keywords
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: metsis_keywords
+theme: metsis
+region: sidebar_first
+weight: -6
+provider: null
+plugin: 'facet_block:keywords'
+settings:
+  id: 'facet_block:keywords'
+  label: Keywords
+  provider: facets
+  label_display: visible
+  block_id: metsis_keywords
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

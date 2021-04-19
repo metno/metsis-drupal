@@ -1,12 +1,15 @@
 <?php
+use \Drupal\metsis_lib\HttpConnection;
 
 function metsis_basket_insert($basket_object) {
   $cores_basket_object = adc_get_solr_core(array_keys($basket_object));
   global $metsis_conf;
-  if ($metsis_conf['authentication_required'] === 1) {
-    adc_require_login(drupal_get_destination(), $metsis_conf['authentication_default_message']);
-  } $user_id = (int) $GLOBALS['user']->uid;
-  $user_name = $GLOBALS['user']->name;
+
+  define(METADATA_PREFIX, \Drupal::config('metsis_basket.settings')->get('constants.metadata_prefix'));
+  define(MISSING_METADATA, \Drupal::config('metsis_basket.settings')->get('constants.missing_metadata'));
+
+  $user_id = (int) \Drupal::currentUser()->id();
+  $user_name = \Drupal::currentUser()->getAccountName();
   foreach ($basket_object as $dataset) {
     if (isset($dataset[METADATA_PREFIX . 'metadata_identifier'])) {
       $dataset_id = $dataset[METADATA_PREFIX . 'metadata_identifier'];
@@ -24,7 +27,7 @@ function metsis_basket_insert($basket_object) {
       $dataset_id = MISSING_METADATA;
     } $solr_id = isset($dataset['solr_id']) ? $dataset['solr_id'] : MISSING_METADATA;
     $_version_ = isset($dataset['_version_']) ? $dataset['_version_'] : MISSING_METADATA;
-    $last_metadata_update = isset($dataset[METADATA_PREFIX . 'last_metadata_update']) ? $dataset[METADATA_PREFIX . 'last_metadata_update'] : MISSING_METADATA;
+    $last_metadata_update = isset($dataset[METADATA_PREFIX . 'last_metadata_update']) ? $dataset[METADATA_PREFIX . 'last_metadata_update'] : "";
     $personell_email = isset($dataset[METADATA_PREFIX . 'personnel_email']) ? $dataset[METADATA_PREFIX . 'personnel_email'] : MISSING_METADATA;
     $platform_long_name = isset($dataset[METADATA_PREFIX . 'platform_long_name']) ? $dataset[METADATA_PREFIX . 'platform_long_name'] : MISSING_METADATA;
     $data_center_contact_name = isset($dataset[METADATA_PREFIX . 'data_center_contact_name']) ? $dataset[METADATA_PREFIX . 'data_center_contact_name'] : MISSING_METADATA;
@@ -37,10 +40,10 @@ function metsis_basket_insert($basket_object) {
     $platform_short_name = isset($dataset[METADATA_PREFIX . 'platform_short_name']) ? $dataset[METADATA_PREFIX . 'platform_short_name'] : MISSING_METADATA;
     $related_information_resource = isset($dataset[METADATA_PREFIX . 'related_information_resource']) ? $dataset[METADATA_PREFIX . 'related_information_resource'] : MISSING_METADATA;
     $project_long_name = isset($dataset[METADATA_PREFIX . 'project_long_name']) ? $dataset[METADATA_PREFIX . 'project_long_name'] : MISSING_METADATA;
-    $data_access_resource_HTTP = isset($dataset[METADATA_PREFIX . 'data_access_resource']['HTTP']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['HTTP']['url'] : MISSING_METADATA;
-    $data_access_resource_OPeNDAP = isset($dataset[METADATA_PREFIX . 'data_access_resource']['OPenDAP']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['OPenDAP']['url'] : MISSING_METADATA;
-    $data_access_resource_OGC_WMS = isset($dataset[METADATA_PREFIX . 'data_access_resource']['OGC_WMS']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['OGC_WMS']['url'] : MISSING_METADATA;
-    $data_access_resource_ODATA = isset($dataset[METADATA_PREFIX . 'data_access_resource']['ODATA']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['ODATA']['url'] : MISSING_METADATA;
+    $data_access_resource_http = isset($dataset[METADATA_PREFIX . 'data_access_resource']['HTTP']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['HTTP']['url'] : MISSING_METADATA;
+    $data_access_resource_opendap = isset($dataset[METADATA_PREFIX . 'data_access_resource']['OPenDAP']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['OPenDAP']['url'] : MISSING_METADATA;
+    $data_access_resource_ogc_wms = isset($dataset[METADATA_PREFIX . 'data_access_resource']['OGC_WMS']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['OGC_WMS']['url'] : MISSING_METADATA;
+    $data_access_resource_odata = isset($dataset[METADATA_PREFIX . 'data_access_resource']['ODATA']['url']) ? $dataset[METADATA_PREFIX . 'data_access_resource']['ODATA']['url'] : MISSING_METADATA;
     $dataset_production_status = isset($dataset[METADATA_PREFIX . 'dataset_production_status']) ? $dataset[METADATA_PREFIX . 'dataset_production_status'] : MISSING_METADATA;
     $access_constraint = isset($dataset[METADATA_PREFIX . 'access_constraint']) ? $dataset[METADATA_PREFIX . 'access_constraint'] : NOT_APPLICABLE_METADATA;
     $iso_topic_category = isset($dataset[METADATA_PREFIX . 'iso_topic_category']) ? $dataset[METADATA_PREFIX . 'iso_topic_category'] : MISSING_METADATA;
@@ -78,7 +81,9 @@ function metsis_basket_insert($basket_object) {
     $fields['solr_core'] = adc_get_solr_core(array($metadata_identifier))[$metadata_identifier];
     $fields['solr_id'] = $solr_id;
     $fields['_version_'] = $_version_;
-    $fields['last_metadata_update'] = adc_date_to_int($last_metadata_update);
+    if($last_metadata_update != "") {
+      $fields['last_metadata_update'] = adc_date_to_int($last_metadata_update);
+    }
     $fields['personell_email'] = $personell_email[0];
     $fields['platform_long_name'] = $platform_long_name[0];
     $fields['data_center_contact_name'] = $data_center_contact_name;
@@ -91,10 +96,10 @@ function metsis_basket_insert($basket_object) {
     $fields['platform_short_name'] = $platform_short_name[0];
     $fields['related_information_resource'] = $related_information_resource[0];
     $fields['project_long_name'] = $project_long_name[0];
-    $fields['data_access_resource_HTTP'] = $data_access_resource_HTTP;
-    $fields['data_access_resource_OPeNDAP'] = $data_access_resource_OPeNDAP;
-    $fields['data_access_resource_OGC_WMS'] = $data_access_resource_OGC_WMS;
-    $fields['data_access_resource_ODATA'] = $data_access_resource_ODATA;
+    $fields['data_access_resource_http'] = $data_access_resource_http;
+    $fields['data_access_resource_opendap'] = $data_access_resource_opendap;
+    $fields['data_access_resource_ogc_wms'] = $data_access_resource_ogc_wms;
+    $fields['data_access_resource_odata'] = $data_access_resource_odata;
     $fields['dataset_production_status'] = $dataset_production_status;
     $fields['access_constraint'] = $access_constraint;
     if ($iso_topic_category != MISSING_METADATA) {
@@ -107,7 +112,7 @@ function metsis_basket_insert($basket_object) {
     $fields['dataset_language'] = $dataset_language;
     $fields['data_center_contact_role'] = $data_center_contact_role;
     $fields['data_access_type'] = implode(",", $data_access_type);
-    $fields['project_short_name'] = $project_short_name;
+    $fields['project_short_name'] = $project_short_name[0]; //TODO: Check if this fix does not break anything
     $fields['abstract'] = implode(",", $abstract);
     $fields['activity_type'] = implode(",", $activity_type);
     $fields['keywords_keyword'] = implode(",", $keywords_keyword);
@@ -128,21 +133,21 @@ function metsis_basket_insert($basket_object) {
     $fields['personnel_name'] = $personnel_name[0];
     $fields['title'] = implode(",", $title);
     $fields['bbox'] = $bbox;
-    $query = db_insert('metsis_basket')->fields($fields)->execute();
+    //var_dump($fields);
+    $query = \Drupal::database()->insert('metsis_basket')->fields($fields)->execute();
   }
 }
 
 function get_user_item_count($user_id) {
-  $query = db_select('metsis_basket', 'm');
+  $query = \Drupal::database()->select('metsis_basket', 'm');
   $query->fields('m', array('iid'));
   $query->condition('m.uid', $user_id, '=');
-  $query->execute();
-  $result = $query->execute();
-  return $result->rowCount();
+  $results = $query->execute()->fetchAll();
+  return count($results);
 }
 
 function adc_get_basket_items($user_id, $field) {
-  $query = db_select('metsis_basket', 'm');
+  $query = \Drupal::database()->select('metsis_basket', 'm');
   $query->fields('m', array($field));
   $query->condition('m.uid', $user_id, '=');
   $query->execute();
@@ -151,13 +156,10 @@ function adc_get_basket_items($user_id, $field) {
 }
 
 function adc_basket_query($server, $port, $service, $req_params) {
-  $con = new HttpConnection($server, $port);
+  $con = new \Drupal\metsis_lib\HttpConnection($server, $port);
   $res = $con->get($service, $req_params);
-  if(DEBUG == 1) {
-    watchdog('METSIS basket connection', '<pre>' . print_r($con, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
-    watchdog('METSIS basket response', '<pre>' . print_r($res, TRUE) . '</pre>', [], WATCHDOG_DEBUG, NULL);
-  }
-  $res_body = new SimpleXMLElement($res['body']);
-  $jres_body = drupal_json_decode(drupal_json_encode($res_body));
+  //var_dump($res);
+  $res_body = new \SimpleXMLElement($res['body']);
+  $jres_body = \Drupal\Component\Serialization\Json::decode(\Drupal\Component\Serialization\Json::encode($res_body));
   return $jres_body;
 }

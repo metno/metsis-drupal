@@ -1,0 +1,7 @@
+name: 'METSIS qcache'
+description: 'Provides cache management for METSIS'
+core: 8.x
+package: METSIS
+dependencies:
+  metsis_lib: 'drupal:metsis_lib'
+type: module

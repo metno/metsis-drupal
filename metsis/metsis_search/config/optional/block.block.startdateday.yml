@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.start_date_day
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+    - adc
+    - sios
+id: startdateday
+theme: metsis
+region: sidebar_first
+weight: -14
+provider: null
+plugin: 'facet_block:start_date_day'
+settings:
+  id: 'facet_block:start_date_day'
+  label: 'Start date day'
+  provider: facets
+  label_display: '0'
+  block_id: startdateday
+visibility:
+  request_path:
+    id: request_path
+    pages: /metsis/search
+    negate: false
+    context_mapping: {  }

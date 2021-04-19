@@ -1,7 +1,7 @@
 <?php
 
 function metsis_qcache_install() {
-  watchdog('METSIS', "metsis_qcache.install creating tables: metsis_qcache, metsis_qcache_revision");
+  \Drupal::logger('METSIS')->notice("metsis_qcache.install creating tables: metsis_qcache, metsis_qcache_revision", []);
 }
 
 function metsis_qcache_schema() {

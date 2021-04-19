@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.organisation
+  module:
+    - facets
+  theme:
+    - bartik
+id: organisation
+theme: bartik
+region: sidebar_first
+weight: -9
+provider: null
+plugin: 'facet_block:organisation'
+settings:
+  id: 'facet_block:organisation'
+  label: Organisation
+  provider: facets
+  label_display: visible
+  block_id: organisation
+visibility: {  }

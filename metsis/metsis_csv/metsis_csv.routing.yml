@@ -1,0 +1,7 @@
+metsis_csv.csvform:
+  path: '/csv'
+  defaults:
+    _form: '\Drupal\metsis_csv\Form\MetsisCsvForm'
+    _title: 'Metsis CSV Form'
+  requirements:
+    _permission: 'access metsis csv'

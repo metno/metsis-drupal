@@ -6,10 +6,10 @@ function metsis_basket_delete_action_info() {
 }
 
 function metsis_basket_delete_action(&$node, $context) {
-  global $user;
+  $user = \Drupal::currentUser();
   $table = "metsis_basket";
   $records = array_keys($node);
   foreach ($records as $r) {
-    db_delete($table)->condition('iid', $r)->condition('uid', $user->uid)->execute();
+    \Drupal::database()->delete($table)->condition('iid', $r)->condition('uid', $user->uid)->execute();
   }
 }

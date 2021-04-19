@@ -10,17 +10,11 @@
 class HttpConnection {
 
   private $host;
-
   private $path;
-
   private $request;
-
   private $response = '';
-
   private $headers;
-
   private $response_body;
-
   private $response_headers;
 
   public function __construct($host, $port) {
@@ -29,10 +23,10 @@ class HttpConnection {
 
     $this->port = $port;
 
-    $this->headers = new HeaderList([], "\r\n");
+    $this->headers = new HeaderList(array(), "\r\n");
   }
 
-  public function get($path, $params = [], $headers = []) {
+  public function get($path, $params = array(), $headers = array()) {
 
     return $this->send($path, 'get', $params, $headers);
   }
@@ -54,11 +48,12 @@ class HttpConnection {
     return substr($query_string, 1);
   }
 
-  private function send($path, $method, $params = [], $headers = []) {
+  private function send($path, $method, $params = array(), $headers = array()) {
 
     $this->headers->add($headers);
 
     $params = self::serialize_params($params);
+
 
 
     $this->request = strtoupper($method) . " http://{$this->host}:{$this->port}{$path}?{$params} HTTP/1.0\r\n";
@@ -82,6 +77,7 @@ class HttpConnection {
     }
 
 
+
     return $this->parse_response();
   }
 
@@ -92,11 +88,7 @@ class HttpConnection {
     list($headers, $body) = explode("\n\n", $this->response, 2);
 
     $headers = new HeaderList($headers);
-    return [
-      'headers' => $headers->to_a(),
-      'body' => $body,
-      'code' => $headers->get_response_code(),
-    ];
+    return array('headers' => $headers->to_a(), 'body' => $body, 'code' => $headers->get_response_code());
   }
 
 }
@@ -107,12 +99,10 @@ class HttpConnection {
 class HeaderList {
 
   private $headers;
-
   private $response_code;
-
   private $linebreak;
 
-  public function __construct($headers = [], $linebreak = "\n") {
+  public function __construct($headers = array(), $linebreak = "\n") {
 
     $this->linebreak = $linebreak;
 
@@ -169,7 +159,7 @@ class HeaderList {
 
     $headers = explode($this->linebreak, $headers);
 
-    $this->headers = [];
+    $this->headers = array();
 
     if (preg_match('/^HTTP\/\d\.\d (\d{3})/', $headers[0], $matches)) {
 

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Drupal Module Upgrader analysis report</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,700,600' rel='stylesheet' type='text/css' />
+    <style type="text/css">
+    <!--
+
+body {
+  width: 80%;
+  color: #343434;
+  margin: 1em auto;
+  font-family: 'Open Sans', Verdana, sans-serif;
+}
+
+details {
+  font-size: 18px;
+  line-height: 25px;
+  margin-bottom: 2em;
+  display: list-item;
+  list-style: none;
+}
+
+details summary {
+  padding: 1em;
+  margin-bottom: 1em;
+  display: list-item;
+  cursor: pointer;
+}
+
+details.error summary {
+  background-color: #ffd5d5;
+}
+
+details.warning summary {
+  background-color: #fff3bb;
+}
+
+a {
+  color: #095cb1;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+aside {
+  font-style: italic;
+  line-height: 20px;
+  font-size: 15px;
+}
+
+.group {
+  border: 1px solid #ececec;
+  padding: 1em;
+  display: block;
+}
+
+.group > summary {
+  padding: 0;
+  color: #c8c8c8;
+  margin-bottom: 0;;
+  font-weight: bold;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: list-item;
+}
+
+.group[open] > summary {
+  margin-bottom: 1em;
+}
+
+.group > details:last-child {
+  margin-bottom: 0;
+}
+
+    -->
+    </style>
+  </head>
+  <body>
+    <h1>Drupal Module Upgrader analysis report</h1>
+      <details open="true" class="group">
+      <summary></summary>
+          <details class="error">
+      <summary>The signature of hook_form_alter() has changed in Drupal 8.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Form%21form.api.php/function/hook_form_alter/8"><code>hook_form_alter()</code> documentation</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 215</li>
+            </ul>
+                  <aside>Flagged by hook_form_alter</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_add_css()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2169605"><code>drupal_add_css()</code>, <code>drupal_add_js()</code> and <code>drupal_add_library()</code> removed in favor of <code>#attached</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2408597"><code>AssetResolverInterface</code> and <code>AttachedAssetsInterface</code> replace internal Asset API functions</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 11</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 12</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 13</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 14</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 15</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 16</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 17</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 18</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 19</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 20</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_add_css</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_add_js()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2169605"><code>drupal_add_css()</code>, <code>drupal_add_js()</code> and <code>drupal_add_library()</code> removed in favor of <code>#attached</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2408597"><code>AssetResolverInterface</code> and <code>AttachedAssetsInterface</code> replace internal Asset API functions</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 21</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 22</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 23</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 24</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_add_js</aside>    </details>
+    <details class="error">
+      <summary><code>conf_path()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2275139"><code>conf_path()</code> moved into <code>DrupalKernel</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.constants.inc, line 92</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 216</li>
+            </ul>
+                  <aside>Flagged by _function_call:conf_path</aside>    </details>
+    <details class="error">
+      <summary><code>current_path()</code> has been replaced by the <current> route.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2382211"><code>current_path()</code> replaced by the <current> route</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 190</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 295</li>
+            </ul>
+                  <aside>Flagged by _function_call:current_path</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_goto()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2023537"><code>drupal_goto()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 38</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 558</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 569</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 581</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_goto</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_map_assoc()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2207453"><code>drupal_map_assoc()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 163</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 176</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 190</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 240</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 248</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_map_assoc</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_render()</code> has been removed.</summary>
+
+      
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 76</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 426</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 430</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 433</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 437</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 441</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 445</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 448</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 452</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 456</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 459</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 462</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 463</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 465</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 469</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 470</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 477</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_render</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_get_form()</code> has moved into the FormBuilder service.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2121003">Form generation functions moved into FormBuilder service</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.misc.inc, line 4</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 75</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 7</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_get_form</aside>    </details>
+    <details class="error">
+      <summary><code>form_error()</code> is now a method of <code>FormStateInterface</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2121003">Form functions moved into <code>FormStateInterface</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 535</li>
+            </ul>
+                  <aside>Flagged by _function_call:form_error</aside>    </details>
+    <details class="error">
+      <summary><code>form_set_error()</code> is now a method of <code>FormStateInterface</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2121003">Form functions moved into <code>FormStateInterface</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 135</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 542</li>
+            </ul>
+                  <aside>Flagged by _function_call:form_set_error</aside>    </details>
+    <details class="error">
+      <summary><code>l()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2346779"><code>l()</code> replaced by URL generation API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 415</li>
+            </ul>
+                  <aside>Flagged by _function_call:l</aside>    </details>
+    <details class="error">
+      <summary><code>theme()</code> has been renamed to <code>_theme()</code>, and should never be called directly.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2195739"><code>theme()</code> renamed to <code>_theme()</code> and should not be called directly</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 93</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 125</li>
+            </ul>
+                  <aside>Flagged by _function_call:theme</aside>    </details>
+    <details class="error">
+      <summary><code>url()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2346779"><code>url()</code> replaced by URL generation API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 190</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 295</li>
+            </ul>
+                  <aside>Flagged by _function_call:url</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_get_query_parameters()</code> has been replaced by the <code>UrlHelper</code> utility.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2079005"><code>drupal_get_query_parameters()</code> is now a method of <code>\Drupal\Component\Utility\UrlHelper</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 140</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 190</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 13</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 295</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 5</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.forms.inc, line 416</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_get_query_parameters</aside>    </details>
+    <details class="error">
+      <summary><code>variable_del()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 450</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_del</aside>    </details>
+    <details class="error">
+      <summary><code>variable_get()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 216</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_get</aside>    </details>
+    <details class="error">
+      <summary><code>variable_set()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2183531">The Variable API has been removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 446</li>
+            </ul>
+                  <aside>Flagged by _function_call:variable_set</aside>    </details>
+    <details class="error">
+      <summary><code>drupal_set_message()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2774931"><code>drupal_set_message()</code> moved into stream wrapper manager service.</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 93</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 101</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 108</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 125</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 128</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.utils.inc, line 555</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.misc.inc, line 14</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 151</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 192</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 195</li>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.results.inc, line 224</li>
+            </ul>
+                  <aside>Flagged by _function_call:drupal_set_message</aside>    </details>
+    <details class="warning">
+      <summary>Many common functions, shared variables, and constants have been renamed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2324935">The global theme variables have been replaced by an ActiveTheme object</a></li>
+              </ul>
+      
+                      </details>
+    <details class="error">
+      <summary>Module info files' <code>core</code> key must have a value of <code>8.x</code>.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Info files must contain a <code>type</code> key.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708#type"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Many common dependencies have moved into core.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1935708"><code>.info</code> files are now <code>.info.yml</code> files</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.info</li>
+            </ul>
+                  <aside>Flagged by info</aside>    </details>
+    <details class="error">
+      <summary>Blocks are now plugins in the <code>MODULE\Plugin\Block</code> namespace.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1880620">Blocks are now plugins</a></li>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21modules%21block%21block.api.php/group/block_api/8">Drupal 8 Block API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 67</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:block_info</aside>    </details>
+    <details class="error">
+      <summary>Blocks are now plugins in the <code>MODULE\Plugin\Block</code> namespace.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1880620">Blocks are now plugins</a></li>
+                <li><a target="_blank" href="https://api.drupal.org/api/drupal/core%21modules%21block%21block.api.php/group/block_api/8">Drupal 8 Block API</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 72</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:block_view</aside>    </details>
+    <details class="error">
+      <summary><code>hook_init()</code> has been removed.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/2013014"><code>hook_init()</code> removed</a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 10</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:init</aside>    </details>
+    <details class="error">
+      <summary><code>hook_menu()</code> has been removed from Drupal 8.</summary>
+
+      
+            <h5>Documentation</h5>
+      <ul>
+                <li><a target="_blank" href="https://www.drupal.org/node/1800686">All functionality of <code>hook_menu()</code> replaced</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2177901">Dynamic routes are now defined in <code>MODULE.routing.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2119699">Page callbacks have been converted to controller classes</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2089605">Route naming convention</a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2165243">Contextual links are now plugins defined in <code>MODULE.links.contextual.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2007444">Local actions are now plugins defined in <code>MODULE.links.action.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2044515">Local tasks and now plugins defined in <code>MODULE.links.task.yml</code></a></li>
+                <li><a target="_blank" href="https://www.drupal.org/node/2228089">Menu links are now defined in <code>MODULE.links.menu.yml</code></a></li>
+              </ul>
+      
+            <h5>Files Affected</h5>
+      <ul>
+              <li>/home/osboxes/drupal8metsis/web/modules/metsis/metsis_qsearch/metsis_qsearch.module, line 56</li>
+            </ul>
+                  <aside>Flagged by _flag_hook:menu</aside>    </details>
+
+    </details>
+    </body>
+</html>

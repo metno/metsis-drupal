@@ -1,0 +1,20 @@
+metsis_csv_bokeh.admin_form:
+  title: 'METSIS CSV Bokeh Configuration'
+  description: 'Set the CSV server backend to be used'
+  route_name: metsis_csv_bokeh.admin_settings_form
+  parent: metsis.group.admin
+  weight: 99
+
+metsis_csv_bokeh.download:
+  title: 'METSIS CSV Bokeh'
+  description: 'Download CSV ASCII'
+  route_name: metsis_csv_bokeh.download
+  menu_name: main
+  weight: 0
+
+metsis.group.admin:
+  title: 'METSIS'
+  route_name: system.admin_config_metsis
+  parent: system.admin_config
+  description: 'METSIS Configuration'
+  weight: -999

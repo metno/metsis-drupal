@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.keywords
+  module:
+    - facets
+  theme:
+    - bartik
+id: keywords
+theme: bartik
+region: sidebar_second
+weight: -13
+provider: null
+plugin: 'facet_block:keywords'
+settings:
+  id: 'facet_block:keywords'
+  label: Keywords
+  provider: facets
+  label_display: visible
+  block_id: keywords
+visibility: {  }

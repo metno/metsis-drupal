@@ -1,0 +1,95 @@
+{#
+/**
+ * @file
+ * Theme override for main view template.
+ *
+ * Available variables:
+ * - attributes: Remaining HTML attributes for the element.
+ * - css_name: A CSS-safe version of the view name.
+ * - css_class: The user-specified classes names, if any.
+ * - header: The optional header.
+ * - footer: The optional footer.
+ * - rows: The results of the view query, if any.
+ * - empty: The content to display if there are no rows.
+ * - pager: The optional pager next/prev links to display.
+ * - exposed: Exposed widget form/info to display.
+ * - feed_icons: Optional feed icons to display.
+ * - more: An optional link to the next page of results.
+ * - title: Title of the view, only used when displaying in the admin preview.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the view title.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the view title.
+ * - attachment_before: An optional attachment view to be displayed before the
+ *   view content.
+ * - attachment_after: An optional attachment view to be displayed after the
+ *   view content.
+ * - dom_id: Unique id for every view being printed to give unique class for
+ *   Javascript.
+ *
+ * @see template_preprocess_views_view()
+ */
+#}
+{%
+  set classes = [
+    dom_id ? 'js-view-dom-id-' ~ dom_id,
+  ]
+%}
+<div{{ attributes.addClass(classes) }}>
+  {{ title_prefix }}
+  {{ title }}
+  {{ title_suffix }}
+
+  {% if header %}
+    <header>
+      {{ header }}
+    </header>
+  {% endif %}
+
+  {{ exposed }}
+  {{ attachment_before }}
+  <div id="popup-map-res" class="ol-popup">
+       <div id="popup-map-res-content"></div>
+     </div>
+     <button type="button" class="adc-button collapsible" >Hide/Show search fields</button>
+     <div id="messagequery">$message_query</div>
+   <div id="map-res" class="map-res">
+      <label style="display: inline-block;">Select Projection</label>
+      <input type="radio" id="EPSG:4326-res" name="map-res-projection" value="EPSG:4326">WGS:84</input>
+      <input type="radio" id="EPSG:32661-res" name="map-res-projection" value="EPSG:32661">UPS North</input>
+      <input type="radio" id="EPSG:32761-res" name="map-res-projection" value="EPSG:32761">UPS South</input>
+
+   </div>
+   <script>
+   var coll = document.getElementsByClassName("collapsible");
+   var i;
+   for (i = 0; i < coll.length; i++) {
+     coll[i].addEventListener("click", function() {
+       this.classList.toggle("active");
+       var messagequery = document.getElementById("messagequery");
+       if (messagequery.style.display === "block") {
+         messagequery.style.display = "none";
+       } else {
+         messagequery.style.display = "block";
+       }
+     });
+   }
+ </script>
+  {% if rows -%}
+    {{ rows }}
+  {% elseif empty -%}
+    {{ empty }}
+  {% endif %}
+  {{ pager }}
+
+  {{ attachment_after }}
+  {{ more }}
+
+  {% if footer %}
+    <footer>
+      {{ footer }}
+    </footer>
+  {% endif %}
+
+  {{ feed_icons }}
+</div>

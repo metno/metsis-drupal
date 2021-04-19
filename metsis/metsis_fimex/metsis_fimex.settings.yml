@@ -1,0 +1,18 @@
+fimex_server: '157.249.176.177'
+fimex_server_port: 80
+fimex_server_service: 'cgi-bin/pywps.cgi'
+transformation_server_getcapabilities: 'http://157.249.177.189/cgi-bin/pywps.cgi?service=wps&version=1.0.0&request=getCapabilities'
+transformation_exclude_variables: 'projection,Granules_Level_1C_Tile_ID_metadata,Level_1C_DataStrip_ID_metadata,Level_1C_User_Product_metadata,swathList'
+transformation_output_format_visible: 1
+transformation_warning_msg: 'Due to internal communication issues, the transformation service is sometimes not working. Please try your request two times. We are looking into solving the issue and apologize for any inconvenience this may cause.'
+transformation_message_visible: 1
+opendap_start_time_strings:
+  - 'start_time'
+  - 'ACQUISITION_START_TIME'
+  - 'min_time'
+  - 'time_coverage_start'
+opendap_stop_time_strings:
+  - 'stop_time'
+  - 'ACQUISITION_STOP_TIME'
+  - 'max_time'
+  - 'time_coverage_end'

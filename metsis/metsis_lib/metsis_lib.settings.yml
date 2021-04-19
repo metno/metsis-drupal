@@ -1,0 +1,3 @@
+metsis_opendap_parser_ip: '157.249.176.100'
+metsis_opendap_parser_port: 8080
+metsis_opendap_parser_service: '/ometa/ometa'

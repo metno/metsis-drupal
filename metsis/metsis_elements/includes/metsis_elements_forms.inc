@@ -3,7 +3,7 @@
 function elements_tabular_form($form, &$form_state) {
   global $metsis_conf;
   global $base_url;
-  $params = drupal_get_query_parameters();
+  $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters();
   metsis_set_session_var('calling_results_page', $params['calling_results_page']);
   $page_number = $params['page'];
   $metadata_identifier = $params['metadata_identifier'];
@@ -37,6 +37,7 @@ function elements_tabular_form($form, &$form_state) {
   if (defined('RESULTS_THUMB_COLUMN_HEADER')) {
     $header['results_thumb_column_header'] = t(RESULTS_THUMB_COLUMN_HEADER);
   }
+  $metadata_div_counter = 0;
   foreach (array_keys($rso) as $mi) {
     if (isset($rso[$mi][METADATA_PREFIX . 'data_access_resource'])) {
       $dar = adc_parse_data_access_resource($rso[$mi][METADATA_PREFIX . 'data_access_resource']);
@@ -59,7 +60,10 @@ function elements_tabular_form($form, &$form_state) {
     else {
       $dar_ogc_wms = '';
     }
-    $md_kv = adc_get_md_kv('l2', $mi);
+
+
+
+
     $title_kv = adc_get_child_title_kv($rso, $mi);
     if (isset($thumbnail_data_array[$mi])) {
       $thumbnail_data = $thumbnail_data_array[$mi];
@@ -69,7 +73,17 @@ function elements_tabular_form($form, &$form_state) {
     }
     $collection_period = trim($rso[$mi][METADATA_PREFIX . 'temporal_extent_start_date'] . ' to ' . $rso[$mi][METADATA_PREFIX . 'temporal_extent_end_date']);
     $personnel_name = trim($rso[$mi][METADATA_PREFIX . 'personnel_name'][0]);
-    $dataset_name = adc_get_link_list(array($title_kv['href'], $md_kv['href']), array($title_kv['title'][0], $md_kv['display_text']));
+    if (defined('SHOW_METADATA_INLINE') && SHOW_METADATA_INLINE === TRUE) {
+      $md_kv = array();
+      $md_kv['href'] = metsis_get_metadata_div(adc_get_solr_core(array($mi))[$mi], $mi, $metadata_div_counter);
+      $md_kv['display_text'] = defined('SOLR_METADATA_BUTTON_TEXT') ? t(SOLR_METADATA_BUTTON_TEXT) : t('Metadata');
+      $dataset_name = adc_get_link_list(array($title_kv['href']), array($title_kv['title'][0]));
+      $dataset_name .= $md_kv['href'];
+    }
+    else {
+      $md_kv = adc_get_md_kv('l2', $mi);
+      $dataset_name = adc_get_link_list(array($title_kv['href'], $md_kv['href']), array($title_kv['title'][0], $md_kv['display_text']));
+    }
     if ($dar_http != '') {
       $dataset_name = adc_get_link_list(array($title_kv['href'], $dar_http, $md_kv['href'],), array($title_kv['title'][0], DAR_HTTP_BUTTON_TEXT, $md_kv['display_text'],));
     } if ($dar_opendap != '') {
@@ -135,6 +149,7 @@ function elements_tabular_form($form, &$form_state) {
         'collection_period' => $collection_period,
       );
     }
+    $metadata_div_counter += 1;
   }
   $form['table'] = array(
     '#type' => 'tableselect',
@@ -144,7 +159,7 @@ function elements_tabular_form($form, &$form_state) {
   );
   $form['adc_buttons_wrapper'] = array(
     '#weight' => 30,
-    '#prefix' => '<div  class="adc-buttons-wrapper">',
+    '#prefix' => defined('ADC_FLOATING_BUTTONS') ? '<div  class="adc-floating-buttons">' : '<div  class="adc-buttons-wrapper">',
     '#suffix' => '</div>',
   );
   $form['adc_buttons_wrapper']['pagination'] = array(
@@ -185,7 +200,7 @@ function elements_tabular_form($form, &$form_state) {
       'data' => $path . '/js/jquery.simplePagination.js',
     ),
   );
-  global $user;
+  $user = \Drupal::currentUser();
   if (($user->uid) && get_user_item_count($user->uid) > 0) {
     $form['adc_buttons_wrapper']['goto_basket'] = array(
       '#weight' => 30,

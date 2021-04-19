@@ -1,0 +1,15 @@
+name: 'METSIS basket'
+description: 'Provides a user basket.'
+core: 8.x
+version: 8.x-1.0
+package: METSIS
+configure: metsis_basket.metsis_basket_admin_settings_form
+dependencies:
+  metsis_lib: 'drupal:metsis_lib'
+  views: 'drupal:views'
+  0: metsis_basket
+  1: facets
+  2: system
+  3: user
+  4: views_bulk_operations
+type: module

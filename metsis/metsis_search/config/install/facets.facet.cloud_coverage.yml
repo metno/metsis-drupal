@@ -1,0 +1,49 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.index.metsis
+    - views.view.metsis_search
+  module:
+    - search_api
+id: cloud_coverage
+name: 'Cloud Coverage'
+url_alias: cloud_coverage
+weight: 0
+min_count: 1
+show_only_one_result: true
+field_identifier: platform_ancillary_cloud_coverage
+facet_source_id: 'search_api:views_page__metsis_search__results'
+widget:
+  type: dropdown
+  config:
+    show_numbers: true
+    default_option_label: 'Cloud coverage %'
+query_operator: and
+use_hierarchy: false
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
+hard_limit: 0
+exclude: false
+only_visible_when_facet_source_is_visible: false
+processor_configs:
+  granularity_item:
+    processor_id: granularity_item
+    weights:
+      build: 35
+    settings:
+      granularity: 10
+      min_value: 0
+      max_value: 100
+      include_lower: false
+      include_upper: false
+      include_edges: false
+  url_processor_handler:
+    processor_id: url_processor_handler
+    weights:
+      pre_query: 50
+      build: -7
+    settings: {  }
+empty_behavior:
+  behavior: none
+show_title: false

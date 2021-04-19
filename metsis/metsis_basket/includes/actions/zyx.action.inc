@@ -16,8 +16,8 @@ function zyx_delete_action_submit($form, &$form_state) {
 }
 
 function zyx_del_db_records($table, $pkey_array) {
-  global $user;
+  $user = \Drupal::currentUser();
   foreach ($pkey_array as $pk) {
-    db_delete($table)->condition('iid', $pk)->condition('uid', $user->uid)->execute();
+    \Drupal::database()->delete($table)->condition('iid', $pk)->condition('uid', $user->uid)->execute();
   }
 }

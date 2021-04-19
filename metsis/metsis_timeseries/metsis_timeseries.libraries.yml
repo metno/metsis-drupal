@@ -1,0 +1,8 @@
+responsive:
+  version: 1.x
+  css:
+    component:
+      css/metsis_timeseries_responsive.css: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

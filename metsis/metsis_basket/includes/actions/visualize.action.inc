@@ -17,10 +17,6 @@ function metsis_basket_visualize_action_info() {
 }
 
 function metsis_basket_visualize_action(&$node, $context) {
-  /**
-   * TODO add visualization using BOKEH.
-   * Check $metsis_conf['ts_server_type']
-   */
   $metadata_identifiers = [];
   foreach ($node as $n) {
     $metadata_identifiers[] = $n->metadata_identifier;
@@ -34,7 +30,7 @@ function metsis_basket_visualize_action(&$node, $context) {
     ],
   ];
   if (count($metadata_identifiers > 1)) {
-    drupal_set_message('Time series plotting for basket items is not fully implemented.', 'warning');
+    //\Drupal::messenger()->addWarning('Time series plotting for basket items is not fully implemented.');
   }
   if (adc_has_feature_type($metadata_identifiers[0], 'timeSeries') === 1) {
     $options['query']['metadata_identifier'] = $metadata_identifiers[0];

@@ -1,0 +1,196 @@
+.non-map-div {
+  float: left;
+  width: 39%;
+}
+.non-map-div .description {
+  display: none;
+}
+#map-search {
+  width: 100%;
+  height: 460px;
+}
+.map-div {
+  float: left;
+  width: 59%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  margin-left: .5em;
+}
+.non-map-div fieldset {
+  margin: unset;
+}
+.full-text-search-div {
+  width: 100%;
+}
+#edit-chosen-full-text-search {
+  width: 100%;
+}
+.investigator-div {
+  width: 100%;
+}
+#edit-chosen-investigator {
+  width: 100%;
+}
+.topics-and-variables-div {
+  width: 100%;
+}
+#edit-chosen-topics-and-variables-a {
+  width: 100%;
+}
+.operational-status-div {
+  width: 100%;
+}
+.institutions-div {
+  width: 100%;
+}
+.data-collection-period-div {
+  width: 100%;
+}
+#edit-data-collection-period input {
+  width: 100%;
+}
+.form-item.form-item-finished-after {
+  width: 100%;
+}
+.form-item.form-item-finished-before {
+  width: 100%;
+}
+label[for="edit-finished-after"] {
+  width: 45%;
+  float: left;
+}
+
+#edit-finished-after {
+  width: 55%;
+}
+label[for="edit-finished-before"] {
+  width: 45%;
+  float: left;
+}
+label[for="edit-finished-before-datepicker-popup-0"] {
+  display: none;
+}
+label[for="edit-finished-after-datepicker-popup-0"] {
+  display: none;
+}
+#edit-finished-before {
+  width: 55%;
+}
+.bounding-box-div {
+  width: 100%;
+}
+label[for="edit-0--2"] {
+  width: 45%;
+  display: inline-block;
+}
+label[for="edit-bbox-top-left-lat"] {
+  width: 45%;
+  display: inline-block;
+}
+label[for="edit-bbox-bottom-right-lon"] {
+  width: 45%;
+  display: inline-block;
+}
+label[for="edit-bbox-bottom-right-lat"] {
+  width: 45%;
+  display: inline-block;
+}
+.form-item-bbox-top-left-lon {
+  width: 50%;
+  display: inline-block;
+}
+#edit-bbox-top-left-lon {
+  width: 100%;
+}
+#edit-bbox-top-left-lat {
+  width: 50%;
+}
+#edit-bbox-bottom-right-lon {
+  width: 50%;
+}
+#edit-bbox-bottom-right-lat {
+  width: 50%;
+}
+.geographical-search-div {
+  width: 100%;
+}
+
+.form-action-div {
+  width: 100%;
+}
+
+div.clear {
+  clear: both;
+}
+
+.geographical-search-fieldset {
+  border: none;
+}
+
+.product_type_details {
+  margin-left: 50px;
+}
+.map_base_layer-div {
+  background-color: #912d2b;
+}
+/*label {
+
+    padding:10px;
+    margin:0 0 10px;
+    display:block;
+}*/
+
+/*label:hover {
+ background:#eee;
+ cursor:pointer;
+}*/
+
+/*div {
+     border: 1px solid black;
+    width: 200px;
+    height: 200px;
+}*/
+
+.form-item-zzplatform-long-name-zzchosen-platform-long-name-sentinel-2a {
+  display: none;
+}
+.form-item-zzplatform-long-name-zzchosen-platform-long-name-sentinel-2b-option2-option1 {
+  background-color: red;
+}
+
+#droplayers {
+  position: absolute;
+  right: .5em;
+  top: 2em;
+}
+
+.dropdown-lrs-content {
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 0 1em 0 0;
+  margin: 0;
+  border: 4px solid #eee;
+  border-radius: 4px;
+  background-color: white;
+  display: none;
+  max-height: 100%;
+  overflow-y: auto;
+  opacity: 80%;
+}
+
+.show {
+  display: block;
+}
+
+.layers-button {
+  background-color: rgba(0, 60, 136, .5);
+  border: none;
+  color: black;
+  padding: 3px 16px;
+  text-align: left;
+  text-decoration: none;
+  font-size: 11px;
+  margin: 2px 1px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; //Safari
+  transition-duration: 0.4s;
+  border-radius: 6px;
+}

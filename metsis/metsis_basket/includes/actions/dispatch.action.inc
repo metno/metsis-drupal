@@ -27,7 +27,7 @@ function get_data_access_resource($table, $records, $resource) {
     case "odata": $data_access_resource = $data_access_resource . "_odata";
       break;
   } foreach ($records as $record) {
-    $query = db_select($table, 't');
+    $query = \Drupal::database()->select($table, 't');
     $query->condition('t.iid', $record, '=')->fields('t', array($data_access_resource));
     $result = $query->execute();
     foreach ($result as $r) {
@@ -37,7 +37,7 @@ function get_data_access_resource($table, $records, $resource) {
 }
 
 function create_order($uris) {
-  global $user;
+  $user = \Drupal::currentUser();
   global $base_url;
   global $metsis_conf;
   $req_params = array('userId' => $user->name, 'email' => $user->mail, 'site' => $metsis_conf['drupal_site_data_center_desc'] ? $metsis_conf['drupal_site_data_center_desc'] : $base_url, 'format' => $metsis_conf['default_data_archive_format'] ? $metsis_conf['default_data_archive_format'] : "tgz", 'uri' => implode(";", $uris),);
@@ -45,6 +45,6 @@ function create_order($uris) {
 }
 
 function dispatch_action_submit() {
-  drupal_set_message("dispatched", 'status');
+  \Drupal::messenger()->addStatus("dispatched");
   $form_state['redirect'] = array('https://xyz.metsis.met.no');
 }

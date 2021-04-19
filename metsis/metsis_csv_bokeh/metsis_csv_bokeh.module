@@ -1,5 +1,7 @@
 <?php
 
+require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.utils.inc';
+/*
 require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/metsis_csv_bokeh.conf';
 require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.constants.inc';
 require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.utils.inc';
@@ -8,12 +10,14 @@ require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_c
 function metsis_csv_bokeh_init() {
   drupal_add_css(drupal_get_path('module', 'metsis_csv_bokeh') . '/css/metsis_csv_bokeh.css');
 }
+*/
 
+/*
 $bokeh_js_options = [
   'type' => 'external',
   'weight' => -100,
 ];
-
+*/
 /**
  * Implements hook_help()
  *
@@ -24,7 +28,7 @@ $bokeh_js_options = [
  */
 function metsis_csv_bokeh_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#metsis_csv_bokeh':
+    case 'help.page.metsis_csv_bokeh':
       $output = '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('This METSIS module provides blocks for configuring and downloading
                             time series data as ASCII CSV using the METSIS web services.
@@ -43,6 +47,7 @@ function metsis_csv_bokeh_help($path, $arg) {
  *
  * @return array
  */
+ /*
 function metsis_csv_bokeh_block_info() {
   $blocks = [];
   $blocks['metsis_csv_bokeh_download_form'] = [
@@ -51,7 +56,7 @@ function metsis_csv_bokeh_block_info() {
   ];
   return $blocks;
 }
-
+*/
 /**
  * Implements hook_block_view().
  *
@@ -59,6 +64,8 @@ function metsis_csv_bokeh_block_info() {
  *
  * @return array
  */
+
+ /*
 function metsis_csv_bokeh_block_view($delta = '') {
   $block = [];
   switch ($delta) {
@@ -71,7 +78,7 @@ function metsis_csv_bokeh_block_view($delta = '') {
   }
   return $block;
 }
-
+*/
 /**
  * Implements hook_theme().
  *
@@ -83,6 +90,7 @@ function metsis_csv_bokeh_block_view($delta = '') {
  * @return string
  *
  */
+ /*
 function metsis_csv_bokeh_theme($existing, $type, $theme, $path) {
   $module_path = drupal_get_path('module', 'metsis_csv_bokeh');
   $items['metsis_csv_bokeh_download_form'] = [
@@ -93,3 +101,4 @@ function metsis_csv_bokeh_theme($existing, $type, $theme, $path) {
 
   return $items;
 }
+*/

@@ -1,0 +1,6 @@
+#services:
+#  init_subscriber:
+#    class: Drupal\metsis_fimex\EventSubscriber\InitSubscriber
+#    tags:
+#      -
+#        name: event_subscriber

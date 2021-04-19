@@ -1,0 +1,159 @@
+wms_ol6:
+  version: 1.0
+  css:
+    component:
+      /libraries/openlayers-6.5.0/ol.css: {}
+#      /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.css: {}
+      /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
+    theme:
+#      css/metsis_qsearch.css: {}
+      css/metsis_wms.css: {}
+  js:
+    #js/bundle.js: {}
+    #https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js: { type: external}
+    #https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js: { type: external}
+    #https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js: { type: external}
+    #/libraries/openlayers6/build/ol.js: {}
+    #/libraries/openlayers6/apidoc/scripts/bootstrap.min.js: {}
+    /libraries/proj4js-2.6.3/dist/proj4.js: {}
+    /libraries/openlayers-6.5.0/ol.js: {}
+#    /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.js: {}
+    /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
+    #https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
+    #js/metsis_search_map_block.js: {}
+    js/metsis_wms.js: {}
+  dependencies:
+    - core/jquery
+    - jquery_ui/core
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
+    - core/drupal.ajax
+    - core/drupal.dialog
+    - core/drupal.dialog.ajax
+    - jquery_ui_slider/slider
+#    - bootstrap_library/bootstrap
+
+replace.css:
+  version: 1.x
+#  header: true
+  css:
+    theme:
+      js/jquery_update/replace/ui/themes/base/minified/jquery.ui.core.min.css: {}
+      js/jquery_update/replace/ui/themes/base/minified/jquery.ui.theme.min.css: {}
+
+replace.jquery_min:
+  version: 1.10.2
+#  header: TRUE
+  js:
+    js/jquery_update/replace/jquery/1.10/jquery.min.js: { weight: -20 }
+
+replace.jquery_core:
+  version: 1.10.2
+#  header: TRUE
+  js:
+    js/jquery_update/replace/ui/ui/minified/jquery.ui.core.min.js: { weight: -20 }
+
+replace.jquery_bbq:
+  version: 1.2.1
+#  header: TRUE
+  js:
+    js/jquery_update/replace/misc/1.9/jquery.ba-bbq.min.js: { weight: -20 }
+
+replace.misc_overlay:
+  version: 1.0
+  #header: TRUE
+  js:
+    js/jquery_update/replace/misc/1.9/overlay-parent.js: { weight: -20 }
+  dependencies:
+    - core/jquery
+    - core/drupal
+  libraries-override:
+    core/jquery: metsis_wms/jquery
+    core/jquery.ui: metsis_wms/jquery.ui
+    core/drupal: metsis_wms/drupal
+
+
+replace.jquery_cookie:
+  version: 67fb34f6a866c40d0570
+#  header: TRUE
+  js:
+    js/jquery_update/replace/ui/external/jquery.cookie.js: { weight: -20 }
+
+drupal:
+  version: 1.2.0
+  header: TRUE
+  js:
+    js/misc/drupal.js: {}
+
+jquery:
+  version: 1.12.1
+  header: true
+  remote:  https://code.jquery.com/
+  version: "1.12.0"
+  license:
+    name: MIT
+    url:   https://code.jquery.com//LICENSE.txt
+    gpl-compatible: true
+  js:
+    https://code.jquery.com/jquery-1.12.1.min.js: { external: true, weight: -2 }
+jquery.ui:
+  version: 1.12.1
+  header: true
+  remote:  https://code.jquery.com/
+  version: "1.12.0"
+  license:
+    name: MIT
+    url:   https://code.jquery.com//LICENSE.txt
+    gpl-compatible: true
+  js:
+    https://code.jquery.com/ui/1.12.1/jquery-ui.min.js: { external: true, weight: -2 }
+
+jquery.cycle:
+  version: 1.x
+  header: TRUE
+  js:
+    https://malsup.github.io/jquery.cycle.all.js: { external: true }
+
+bundle:
+  version: 1.x
+##  header: true
+  css:
+    theme:
+      css/style.min.css: {}
+      css/map.css: {}
+  js:
+    js/bundle.js: { weight: -2 }
+#    js/getWMS.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/drupal
+#    - openlayers/openlayers
+  libraries-override:
+    core/jquery: metsis_wms/jquery
+    core/jquery.ui: metsis_wms/jquery.ui
+    core/drupal: metsis_wms/drupal
+dropdown:
+  version: 1.2.2
+  js:
+    js/misc/jquery.dropdown.js: {}
+wmsmap:
+  version: 1.x
+  #footer: true
+  css:
+    theme:
+      css/mapstyle.css: {}
+  js:
+#    js/wmsMap.js: {}
+     js/wmsSlider.js: { weight: -2 }
+  dependencies:
+    - core/jquery
+    - core/jquery.ui
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
+
+  libraries-override:
+    core/jquery: metsis_wms/jquery
+    core/jquery.ui: metsis_wms/jquery.ui

@@ -1,0 +1,4 @@
+responsive:
+  css:
+    theme:
+      css/metsis_elements_responsive.css: {}

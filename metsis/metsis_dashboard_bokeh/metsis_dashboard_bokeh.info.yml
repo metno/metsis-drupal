@@ -1,0 +1,7 @@
+name: 'METSIS Dashboard Bokeh'
+description: 'Display dashboard with product operations'
+core: 8.x
+package: METSIS
+type: module
+configure:
+dependencies: {  }

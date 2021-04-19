@@ -109,7 +109,7 @@ nav {
   overflow-x: scroll;
 }
 
-#edit-institutions-chosen-institutions {
-  height: 100px;
-  overflow: auto;
-}
+#edit-institutions-chosen-institutions  {
+    height:100px;
+    overflow:auto;
+    }

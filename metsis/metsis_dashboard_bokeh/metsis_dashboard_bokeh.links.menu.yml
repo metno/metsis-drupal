@@ -1,0 +1,13 @@
+dashboard_bokeh.admin_settings_form:
+  title: 'METSIS Dashboard Bokeh Configuration'
+  description: 'Set the endpoint URI for Bokeh Dashboard App|'
+  route_name: dashboard_bokeh.admin_settings_form
+  parent: metsis.group.admin
+  weight: 99
+
+metsis.group.admin:
+  title: 'METSIS'
+  route_name: system.admin_config_metsis
+  parent: system.admin_config
+  description: 'METSIS Configuration'
+  weight: -999

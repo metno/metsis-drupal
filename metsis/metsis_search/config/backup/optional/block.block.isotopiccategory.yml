@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.isottopic_category
+  module:
+    - facets
+  theme:
+    - bartik
+id: isotopiccategory
+theme: bartik
+region: sidebar_second
+weight: -14
+provider: null
+plugin: 'facet_block:isottopic_category'
+settings:
+  id: 'facet_block:isottopic_category'
+  label: 'Iso Topic Category'
+  provider: facets
+  label_display: visible
+  block_id: isotopiccategory
+visibility: {  }

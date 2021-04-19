@@ -1,0 +1,30 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.start_date_month
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+    - adc
+    - sios
+id: startdatemonth
+theme: metsis
+region: sidebar_first
+weight: -15
+provider: null
+plugin: 'facet_block:start_date_month'
+settings:
+  id: 'facet_block:start_date_month'
+  label: 'Start date month'
+  provider: facets
+  label_display: '0'
+  block_id: startdatemonth
+visibility:
+  request_path:
+    id: request_path
+    pages: /metsis/search
+    negate: false
+    context_mapping: {  }

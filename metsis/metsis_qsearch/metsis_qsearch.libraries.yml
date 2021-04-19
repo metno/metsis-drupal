@@ -1,0 +1,46 @@
+qsearch:
+  version: 1.x
+  header: true
+  css:
+    theme:
+      css/metsis_qsearch.css: {}
+  js:
+    js/metsis_qsearch.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+
+qsearch.results:
+  version: 1.x
+  css:
+    theme:
+      css/simplePagination.css: {}
+  js:
+    js/jquery.simplePagination.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+qsearch.misc:
+  version: 1.x
+  css:
+    theme:
+      css/metsis_qsearch_misc.css: {}
+
+qstyles:
+  version: 1.x
+  css:
+    theme:
+      css/qstyles.css: {}
+
+pagination:
+  version: 1.x
+  header: true
+  css:
+    theme:
+      css/simplePagination.css: {}
+  js:
+    js/jquery.simplePagination.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal

@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: solr_format
+label: 'solr format'
+locked: false
+pattern: 'Y-m-d\TH:i:s\Z'

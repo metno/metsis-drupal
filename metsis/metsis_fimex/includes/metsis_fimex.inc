@@ -1,4 +1,10 @@
 <?php
+use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use GuzzleHttp\Exception\RequestException;
+use Drupal\Core\Url;
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Render\Markup;
 
 // this has to be made more generic
 // to allow fetching other properties
@@ -87,7 +93,6 @@ function get_proj4_strings($name = "all") {
  */
 
 function adc_get_od_proj4($od_data) {
-
   //TODO. We fetch the the proj4 string from opendap stream to provide the
   //      default projection when given one agragated dataset,
   //      but we need to handle the case where there
@@ -107,7 +112,7 @@ function adc_get_od_proj4($od_data) {
       }
     }
   }
-  if (isset($od_data['Int32']['Attribute'])) {
+  if (isset($od_data['Int32'])) {
     foreach ($od_data['Int32']['Attribute'] as $k => $v) {
 
       if ($od_data['Int32']['Attribute'][$k]['@attributes']['name'] == "proj4_string" || $od_data['Int32']['Attribute'][$k]['@attributes']['name'] == "proj4") {
@@ -137,17 +142,50 @@ function adc_get_od_proj4($od_data) {
  * adc_get_od_data($opendap_ddx){
  */
 function adc_get_od_data($opendap_ddx) {
-
-  $ddx = drupal_http_request($opendap_ddx);
-  if ($ddx->code == '200') {
-    $od_data = new SimpleXMLElement($ddx->data);
-    return drupal_json_decode(drupal_json_encode($od_data));
+ $ddx = null;
+  try {
+    $ddx = \Drupal::httpClient()->get($opendap_ddx);
+    //var_dump($ddx);
+    //$ddx = drupal_http_request($opendap_ddx);
+    if ($ddx->getStatusCode() == '200') {
+      $od_data = new SimpleXMLElement($ddx->getBody());
+      return Json::decode(Json::encode($od_data));
+    }
   }
-  else {
+  catch (RequestException $e) {
     //todo refactor
-    drupal_set_message("Failed to fetch (OPeNDAP) data from data server", 'error');
-    drupal_goto('metadata_search');
+  /*  $ddx = null;
+     try {
+       $ddx = \Drupal::httpClient()->get($opendap_ddx);
+       var_dump($ddx);
+       //$ddx = drupal_http_request($opendap_ddx);
+       if ($ddx->getStatusCode() == '200') {
+         $od_data = new SimpleXMLElement($ddx->getBody());
+         return Json::decode(Json::encode($od_data));
+       }
+     }
+     catch (RequestException $e) {
+       //todo refactor
+       \Drupal::messenger()->addError("Failed to fetch (OPeNDAP) data from data server");
+       //drupal_set_message();
+         $request = \Drupal::request();
+         $referer = $request->headers->get('referer');
+         return new RedirectResponse($referer);
+         //$response = newRedirectResponse(Url::fromRoute('metsis_qsearch.metsis_qsearch_form'));
+         //$response->send();
+     } */
+    \Drupal::messenger()->addError("Failed to fetch (OPeNDAP) data from data server");
+    //drupal_set_message();
+      $request = \Drupal::request();
+      $referer = $request->headers->get('referer');
+      $response =  new RedirectResponse($referer);
+      return $response->send();
+      //$response = newRedirectResponse(Url::fromRoute('metsis_qsearch.metsis_qsearch_form'));
+      //$response->send();
   }
+
+
+
   return;
 }
 
@@ -185,7 +223,7 @@ function adc_get_od_temporal_extent($jod_data) {
 
     if (defined('SITE_STATUS')) {
       if (SITE_STATUS === 'dev' || SITE_STATUS === 'test') {
-        drupal_set_message("Could not find all \"temporal extent\" data", 'warning');
+          \Drupal::messenger()->addWarning("Could not find all \"temporal extent\" data", 'warning');
       }
     }
   }
@@ -204,20 +242,24 @@ function adc_get_od_temporal_extent($jod_data) {
 function adc_set_message($receipt) {
   $message = "";
   $message .= "Thank you for requesting data from ";
-  $message .= "!site";
+  $message .= "<strong>" .  $receipt['site'] ."</strong>";
   $message .= ".";
   $message .= " ";
   $message .= "An e-mail will be sent to";
   $message .= " ";
-  $message .= "!email";
+  $message .= "<strong>" .  $receipt['email'] . "</strong>";
   $message .= " ";
   $message .= "when your order is ready";
   $message .= ".";
+  //\Drupal::messenger()->addMessage($message, ['@email' => $receipt['email'], '@site' => $receipt['site'] ]);
+
+  \Drupal::messenger()->addMessage(Markup::create($message));
+ /*
   drupal_set_message(t($message, [
       '!site' => '<strong>' . $receipt['site'] . '</strong>',
       '!email' => '<strong>' . $receipt['email'] . '</strong>',
     ]
-  ), 'status', FALSE);
+  ), 'status', FALSE);*/
 }
 
 /*

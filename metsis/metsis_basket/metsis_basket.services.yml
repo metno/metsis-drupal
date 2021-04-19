@@ -1,0 +1,7 @@
+services:
+  logger.channel.metsis_basket:
+    parent: logger.channel_base
+    arguments: ['metsis_basket']
+  metsis_basket.basketservice:
+    class: Drupal\metsis_basket\MetsisBasketService
+    arguments: []

@@ -1,0 +1,31 @@
+metsis_fimex.fimexform:
+  path: '/metsis/fimex'
+  defaults:
+    _form: '\Drupal\metsis_fimex\Form\MetsisFimexForm'
+    _title: 'Metsis Transformation service form'
+  options:
+    query:
+      dataset_id: ""
+#      calling_results_page: ""
+#      referer: ""
+  requirements:
+    _permission: 'access transformation service'
+
+metsis_fimex.admin_config_form:
+  path: '/admin/config/metsis/fimex'
+  defaults:
+    _form: '\Drupal\metsis_fimex\Form\MetsisFimexConfigurationForm'
+    _title: 'METSIS Fimex Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

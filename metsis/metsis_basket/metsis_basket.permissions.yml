@@ -1,0 +1,5 @@
+access metsis basket:
+  title: 'Access to Metsis Basket Service'
+access metsis basket items:
+  title: 'Access to Metsis Basket Items'
+  description: 'View Basket Items'

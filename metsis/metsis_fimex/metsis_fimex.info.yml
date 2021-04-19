@@ -1,0 +1,9 @@
+name: 'METSIS fimex'
+description: 'Provides access to transformation services using Fimex.'
+core: 8.x
+package: METSIS
+dependencies:
+  metsis_lib: 'drupal:metsis_lib'
+#  metsis_basket: 'drupal:metsis_basket'
+  metsis_wms: 'metsis_wms:metsis_wms'
+type: module

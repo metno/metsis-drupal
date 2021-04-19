@@ -1,0 +1,5 @@
+basket_view:
+  version: 1.x
+  css:
+    component:
+      css/basket.css: {}

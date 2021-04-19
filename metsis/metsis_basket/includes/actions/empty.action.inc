@@ -20,8 +20,8 @@ function empty_action_submit($form, &$form_state) {
 }
 
 function empty_metsis_db_records($table) {
-  global $user;
-  db_delete($table)->condition('uid', $user->uid)->execute();
+  $user = \Drupal::currentUser();
+  \Drupal::database()->delete($table)->condition('uid', $user->uid)->execute();
 }
 
 function empty_action_form_alter($from, $form_state, $form_id) {

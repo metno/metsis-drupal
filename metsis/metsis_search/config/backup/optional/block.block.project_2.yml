@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.project
+  module:
+    - facets
+  theme:
+    - metsis_w3css_theme
+id: project_2
+theme: metsis_w3css_theme
+region: sidebar_second
+weight: -10
+provider: null
+plugin: 'facet_block:project'
+settings:
+  id: 'facet_block:project'
+  label: Project
+  provider: facets
+  label_display: visible
+  block_id: project_2
+visibility: {  }

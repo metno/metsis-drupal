@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.keywords_level2
+  module:
+    - facets
+  theme:
+    - metsis
+id: keywordslevel2
+theme: metsis
+region: breadcrumb
+weight: 0
+provider: null
+plugin: 'facet_block:keywords_level2'
+settings:
+  id: 'facet_block:keywords_level2'
+  label: 'Keywords level2'
+  provider: facets
+  label_display: '0'
+  block_id: keywordslevel2
+visibility: {  }

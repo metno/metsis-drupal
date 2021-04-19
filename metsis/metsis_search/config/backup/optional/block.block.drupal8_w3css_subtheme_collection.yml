@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.collection
+  module:
+    - facets
+  theme:
+    - metsis_w3css_subtheme
+id: metsis_w3css_subtheme_collection
+theme: metsis_w3css_subtheme
+region: sidebar_first
+weight: -11
+provider: null
+plugin: 'facet_block:collection'
+settings:
+  id: 'facet_block:collection'
+  label: Collection
+  provider: facets
+  label_display: visible
+  block_id: collection
+visibility: {  }

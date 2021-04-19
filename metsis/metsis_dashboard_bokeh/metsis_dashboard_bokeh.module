@@ -1,0 +1,8 @@
+<?php
+function metsis_dashboard_bokeh_help($path, $arg) {
+  switch ($path) {
+    case "help.page.metsis_dashboard_bokeh":
+      return t("Module for bokeh dashboard");
+      break;
+  }
+}

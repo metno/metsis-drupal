@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.project
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: metsis_project
+theme: metsis
+region: sidebar_second
+weight: -15
+provider: null
+plugin: 'facet_block:project'
+settings:
+  id: 'facet_block:project'
+  label: Project
+  provider: facets
+  label_display: visible
+  block_id: metsis_project
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

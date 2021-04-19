@@ -1,6 +1,6 @@
-.map-res {
-  background-color: white;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+.map-res{
+    background-color: white; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
 .map-res .ol-viewport {
@@ -8,10 +8,10 @@
 }
 
 #map-res-popup {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  height: 200px;
-  background: white;
-  overflow: auto;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    height: 200px; 
+    background: white; 
+    overflow: auto;
 }
 
 .map-res-thumb-pop {
@@ -36,7 +36,7 @@
   text-align: center;
 }
 
-.map-res-table-top tbody {
+.map-res-table-top tbody{
   border: unset;
 }
 .map-res-table-top td {
@@ -88,21 +88,22 @@
   font-size: small;
   padding: 0.2em;
   background: white;
-  width: 100%;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width:100%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   overflow-wrap: anywhere;
 }
 
 #tlp-map-res {
   margin-top: 1em;
   margin-bottom: 1em;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0,0,0,0.2);
   font-size: 14px;
-  width: 100%;
+  width:100%;
+  padding: 5px;
 }
 
-#popup-map-res {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+#popup-map-res{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
   max-width: 23em;
   height: 23em;
   background: white;
@@ -120,20 +121,13 @@
   margin-bottom: 0em;
 }
 
-#messagequery {
+#message-query {
   background-color: white;
   padding: 1em;
   overflow: hidden;
-  display: none;
 }
 
 .simple-pagination {
   display: flex;
   justify-content: center;
 }
-
-.ts-plot-loader {
-  display: block;
-  margin: auto;
-}
-

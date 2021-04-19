@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.end_date
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: enddate
+theme: metsis
+region: sidebar_first
+weight: -11
+provider: null
+plugin: 'facet_block:end_date'
+settings:
+  id: 'facet_block:end_date'
+  label: 'End date'
+  provider: facets
+  label_display: visible
+  block_id: enddate
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

@@ -1,0 +1,6 @@
+name: 'METSIS ELEMENTS'
+description: 'Provides tabular form for level 2 datasets.'
+core: 8.x
+package: METSIS
+type: module
+dependencies: {  }

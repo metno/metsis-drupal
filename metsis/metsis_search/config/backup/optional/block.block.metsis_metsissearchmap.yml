@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - metsis_search
+    - system
+  theme:
+    - metsis
+id: metsis_metsissearchmap
+theme: metsis
+region: content
+weight: -9
+provider: null
+plugin: metsis_search_map
+settings:
+  id: metsis_search_map
+  label: 'METSIS Search Map'
+  provider: metsis_search
+  label_display: '0'
+visibility:
+  request_path:
+    id: request_path
+    pages: "/metsis/search\r\n/metsis/elements/*"
+    negate: false
+    context_mapping: {  }

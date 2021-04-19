@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - metsis_basket
+  theme:
+    - metsis
+    - adc
+    - sios
+id: metsis_metsisbasketblock
+theme: metsis
+region: sidebar_first
+weight: -20
+provider: null
+plugin: metsis_basket_block
+settings:
+  id: metsis_basket_block
+  label: 'METSIS Basket Block'
+  provider: metsis_basket
+  label_display: '0'
+visibility: {  }

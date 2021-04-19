@@ -1,4 +1,4 @@
-/*
+/* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -33,38 +33,37 @@
  */
 
 /**
- * prefer anonymous functions since these are more easily ported to other
- * applications
+ * prefer anonymous functions since these are more easily ported to other applications
  */
 (function ($) {
-  //
-  $(document).ready(function () {
     //
-    function getChildren($row) {
-      var children = [];
-      while ($row.next().hasClass('dataset-row odd')) {
-        children.push($row.next());
-        $row = $row.next();
-      }
-      return children;
-    }
+    $(document).ready(function () {
+        //
+        function getChildren($row) {
+            var children = [];
+            while ($row.next().hasClass('dataset-row odd')) {
+                children.push($row.next());
+                $row = $row.next();
+            }
+            return children;
+        }
 
-    $('.even').on('click', function () {
+        $('.even').on('click', function () {
 
-      var children = getChildren($(this));
-      $.each(children, function () {
-        $(this).toggle();
-      });
-    });
+            var children = getChildren($(this));
+            $.each(children, function () {
+                $(this).toggle();
+            });
+        });
+        //
+    })
     //
-  })
-  //
 })(jQuery);
 
 
 /*
  jQuery(document).ready(function () {
-
+ 
  function getChildren($row) {
  var children = [];
  while ($row.next().hasClass('dataset-row odd')) {
@@ -73,9 +72,9 @@
  }
  return children;
  }
-
+ 
  jQuery('.even').on('click', function () {
-
+ 
  var children = getChildren(jQuery(this));
  jQuery.each(children, function () {
  jQuery(this).toggle();
@@ -89,89 +88,89 @@
  */
 /*
  <html>
-
+ 
  <head>
  <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
  <script type="text/javascript">
  $(document).ready(function() {
-
+ 
  function getChildren($row) {
  var children = [];
  while($row.next().hasClass('child girl')) {
  children.push($row.next());
  $row = $row.next();
- }
+ }            
  return children;
- }
-
+ }        
+ 
  $('.parent').on('click', function() {
-
+ 
  var children = getChildren($(this));
  $.each(children, function() {
  $(this).toggle();
  })
  });
-
+ 
  })
-
-
-
+ 
+ 
+ 
  </script>
  </head>
-
+ 
  <body>
  <!--Write your code here-->
-
+ 
  <table id="mytable">
  <tbody>
  <tr class="parent">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child girl">
  <td>Cash and Equivalents</td>
  <td>this is</td>
  <td>child girl</td>
-
+ 
  </tr>
  <tr class="child">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="parent">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
-
+ 
  <tr class="child">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="parent">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child">
  <td>Cash and Equivalents</td>
@@ -185,9 +184,9 @@
  </tr>
  </tbody>
  </table>
-
+ 
  </body>
-
+ 
  </html>
  */
 
@@ -202,24 +201,24 @@
 
 /*
  $(document).ready(function() {
-
+ 
  function getChildren($row) {
  var children = [], level = $row.attr('data-level');
  while($row.next().attr('data-level') > level) {
  children.push($row.next());
  $row = $row.next();
- }
+ }            
  return children;
- }
-
+ }        
+ 
  $('.parent').on('click', function() {
-
+ 
  var children = getChildren($(this));
  $.each(children, function() {
  $(this).toggle();
  })
  });
-
+ 
  })
  */
 /*
@@ -229,50 +228,50 @@
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="parent" data-level="1">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child" data-level="2">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child" data-level="2">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child" data-level="2">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="parent" data-level="1">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
-
+ 
  <tr class="child" data-level="2">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="parent" data-level="1">
  <td>Cash and Equivalents</td>
  <td>000,000</td>
  <td>000,000</td>
-
+ 
  </tr>
  <tr class="child" data-level="2">
  <td>Cash and Equivalents</td>

@@ -1,0 +1,51 @@
+dashboard:
+  path: /metsis/bokeh/dashboard
+  defaults:
+    _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::build
+    _title: "Bokeh Dashboard"
+  options:
+    query:
+  requirements:
+    _permission: 'access bokeh dashboard'
+
+dashboard.testpost:
+  path: /metsis/bokeh/dashboard/post
+  defaults:
+    _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::post_datasource
+    _title: "Bokeh Dashboard"
+  options:
+    query:
+  requirements:
+    _permission: 'access bokeh dashboard'
+
+#basket.add:
+#  path: '/metsis/basket/add/{metaid}'
+#  defaults:
+#    _title: 'Add item to Basket'
+#    _controller: '\Drupal\metsis_dashboard_bokeh\Controller\BasketBokehController::add'
+#  options:
+#    query:
+#      datasource: ""
+#  requirements:
+#    _permission: 'add basket items'
+
+dashboard_bokeh.admin_settings_form:
+  path: '/admin/config/metsis/dashboard_bokeh'
+  defaults:
+    _form: '\Drupal\metsis_dashboard_bokeh\Form\DashboardBokehConfigurationForm'
+    _title: 'Dashboard Bokeh Configuration Form'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+metsis.parent:
+  title: 'Metsis'
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'

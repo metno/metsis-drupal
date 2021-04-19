@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.gcmd_keywords
+  module:
+    - facets
+  theme:
+    - metsis
+id: gcmdkeywords
+theme: metsis
+region: breadcrumb
+weight: 0
+provider: null
+plugin: 'facet_block:gcmd_keywords'
+settings:
+  id: 'facet_block:gcmd_keywords'
+  label: 'GCMD Keywords'
+  provider: facets
+  label_display: visible
+  block_id: gcmdkeywords
+visibility: {  }

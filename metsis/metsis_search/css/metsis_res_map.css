@@ -1,0 +1,757 @@
+/* The main block for the result map */
+#block-metsissearchmap {
+  padding: 0 !important;
+}
+
+/* Define the main search map div. This can be toggeled
+in fullscreen by openlayers fullScreenControl */
+.search-map {
+  clear: both;
+  margin-top: 0px;
+  width: 100%;
+}
+
+.map-res:-webkit-full-screen {
+  height: 100%;
+  margin: 0;
+}
+
+.map-res:-ms-fullscreen {
+  height: 100%;
+}
+
+.map-res:fullscreen {
+  height: 100%;
+}
+
+.map-res:fullscreen {
+  height: 100%;
+}
+
+/* The top panel styling */
+.map-top-panel {
+  margin-top: 0px;
+  width: 100%;
+}
+
+.mapcontainer {
+/*  clear: both; */
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.ol-viewport {
+  box-sizing: border-box;
+  color: rgb(63, 81, 81);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 18px;
+  outline-color: rgb(63, 81, 81);
+  outline-style: none;
+  outline-width: 0px;
+  overflow-wrap: break-word;
+  position: relative;
+  user-select: none
+}
+
+.mapcontainer:fullscreen {
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+/* The main div to put the openlayers map canvas */
+.map-res {
+  width: 100%;
+  float: left;
+  height: 450px; /* 450px */
+  border-top: 1px;
+  border-bottom: 1px;
+  border-left: 0;
+  border-right: 0;
+  border-style: dotted;
+  border-color: #BEBEBE;
+  transition: 0.3s;
+  margin-bottom: 1px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0;
+}
+
+/* Sidepanel style and layout */
+.map-sidepanel {
+  width: 0;
+  height: 450px;
+/*  min-height: 100%; */
+  float: right;
+
+  overflow-y: scroll;
+  /* Stay on top */
+  background: #98C6CC;
+  /* Disable horizontal scroll */
+  /* Place content 60px from the top */
+  transition: 0.3s;
+  margin-bottom: 5px;
+
+  /*display: none; */
+  /* 0.5 second transition effect to slide in the sidepanel */
+}
+
+.sidepanel-closed {
+  width: 30%;
+}
+
+.sidepanel-open {
+  width: 30%
+}
+
+.sidepanel-open:fullscreen {
+  width: 20%
+}
+
+/* Sidepanel title */
+.map-sidepanel-title {
+  width: 100%;
+  font-size: 1.2em;
+  color: #ffffff;
+  display: block;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+/* The sidepanel links */
+.map-sidepanel a {
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: inline;
+  transition: 0.3s;
+}
+
+.map-sidepanel:-webkit-full-screen {
+  height: 100%;
+  width: 20%;
+  margin: 0;
+}
+
+.map-sidepanel:-ms-fullscreen {
+  height: 100%;
+  width: 20%;
+}
+
+.map-sidepanel:fullscreen {
+  height: 100%;
+  width: 20%;
+}
+
+/* When you mouse over the navigation links, change their color */
+.map-sidepanel a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.map-sidepanel .map-closebtn {
+  color: #FFFFFF;
+}
+
+.map-closebtn-wrapper {
+  float left;
+  padding: 5px;
+}
+
+/* The bottom panel for text and other information */
+.bottom-map-panel {
+  clear: both;
+  width: 100%;
+  margin-bottom: 5px;
+  margin-top: 0px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: white;
+  color: black;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.bottom-map-panel:fullscreen {
+  background-color: white;
+  color: black;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+/* Style the button that is used to open the sidepanel */
+.map-openbtn-wrapper {
+  left: 0.5em;
+  top: 6.8em;
+  z-index: 2;
+}
+
+.map-openbtn-wrapper:fullscreen {
+  left: 0.5em;
+  top: 8.8em;
+  position: absolute;
+  z-index: 1000;
+}
+
+.map-openbtn-wrapper:-webkit-full-screen {
+  left: 0.5em;
+  top: 8.8em;
+  position: absolute;
+  z-index: 1000;
+}
+
+.map-openbtn-wrapper:-moz-full-screen {
+  left: 0.5em;
+  top: 8.8em;
+  position: absolute;
+  z-index: 1000;
+}
+
+.map-openbtn-wrapper:-ms-full-screen {
+  left: 0.5em;
+  top: 8.8em;
+  position: absolute;
+  z-index: 1000;
+}
+
+/* OL Specfic styling */
+.map-res .ol-rotate {
+  top: 3em;
+}
+
+/* Opacity sliders */
+.hideOpacity .layerswitcher-opacity {
+  display: none;
+}
+
+.hideOpacity .ol-layerswitcher .layerup {
+  height: 1.5em;
+}
+
+.showPercent .layerSwitcher .ol-layerswitcher .layerswitcher-opacity-label {
+  display: block;
+}
+
+.ol-header>div {
+  width: 100%;
+}
+
+.toggleVisibility {
+  padding-left: 1.6em;
+  cursor: pointer;
+  border-bottom: 2px solid #369;
+  margin-bottom: 0.5em;
+}
+
+.toggleVisibility:before {
+  background-color: #fff;
+  border: 2px solid #369;
+  box-sizing: border-box;
+  content: "";
+  display: block;
+  height: 1.2em;
+  left: 0.1em;
+  margin: 0;
+  position: absolute;
+  width: 1.2em;
+}
+
+.toggleVisibility.show:before {
+  background: #369;
+}
+
+.ol-layerswitcher .panel {
+  font-size: 0.8em;
+}
+
+.layerSwitcher {
+  margin-left: 5px;
+}
+
+/* Fullscreen control */
+/*.ol-full-screen {
+  background-color: rgba(255, 255, 255, 0.4);
+border-bottom-left-radius: 4px;
+border-bottom-right-radius: 4px;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+box-sizing: border-box;
+color: rgb(63, 81, 81);
+font-family: Helvetica, Arial, sans-serif;
+font-size: 15px;
+line-height: 18px;
+overflow-wrap: break-word;
+padding-bottom: 2px;
+padding-left: 2px;
+padding-right: 2px;
+padding-top: 2px;
+position: absolute;
+right: unset !important;
+top: 0.5em;
+left: unset !important;
+user-select: none
+}
+*/
+/** Timeslider controls */
+#animatedWmsControls {
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+}
+#map-timeslider-id {
+  margin-left: 16px;
+  margin-right: 26px;
+
+}
+
+.controls {
+  margin-top: 10px;
+  text-align: center;
+}
+ .progress-container {
+  width:100%;
+  height: 15px;
+}
+ #progress {
+  position: relative;
+  height: 15px;
+  background: -webkit-linear-gradient(left, #dcdcdc 0%, #7593b9 100%);
+  width: 0%;
+  max-width: 100%;
+  transition: width 250ms;
+}
+/*
+i.icon.backward {
+  content: &#xf100;
+}
+i.icon.forward {
+  content: &#xf101;
+}
+
+i.icon.backward:before{
+  content: &#xf100;
+}
+i.icon.fast.backward:before {
+  content: &#xf100;
+}
+
+i.icon.step.backward:before {
+  content: &#xf100;
+}
+i.icon.step.forward:before {
+  content: &#xf101;
+}
+i.icon.fast.forward:before {
+  content: &#xf101;
+}
+
+i.icon.forward:before {
+  content: &#xf101;
+}
+*/
+.controls button, .ui.label {
+  font-weight: bolder;
+  text-decoration: none;
+  text-align: center
+}
+
+.timeButton {
+  background-color: #008CBA;
+  /* Green */
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.2em;
+
+
+}
+#time {
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  color: black;
+  border-radius: 1em;
+
+}
+.elevationButton {
+  background-color: #008CBA;
+  /* Green */
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.2em;
+
+
+}
+#elevation {
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  color: black;
+  border-radius: 1em;
+
+}
+.timeControlWrapper {
+}
+
+
+.controls {
+  margin-top: 10px;
+  text-align: center
+}
+
+.controls button span {
+  padding: .6rem .2rem .5rem .6rem
+}
+
+.controls button:focus {
+  outline: 0
+}
+
+div.ui-slider span.ui-slider-handle {
+  background: #eee;
+  height: 26px;
+  width: 13.8em;
+  margin-top: 0;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  line-height: 26px;
+  text-align: center;
+  color: #848282;
+  font-size: 13px;
+  cursor: pointer
+}
+
+.ui.label {
+  background-color: #008CBA;
+  color: #fff;
+
+}
+
+/*
+.ol-overviewmap .ol-overviewmap-map {
+  border: 1px solid #7b98bc;
+  height: 150px;
+  margin: 0px;
+  width: 150px;
+  display: inline;
+}
+
+.ol-overviewmap .ol-overviewmap-map, .ol-overviewmap button {}
+*/
+.ol-mouse-position {
+  margin-right: 36px;
+}
+
+.ol-popup {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #cccccc;
+  bottom: 12px;
+  left: -50px;
+  min-width: 280px;
+  max-width: 350px;
+  overflow: scroll;
+}
+
+.ol-popup:after, .ol-popup:before {
+  top: 100%;
+  border: solid transparent;
+  content: " ";
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ol-popup:after {
+  border-top-color: white;
+  border-width: 10px;
+  left: 48px;
+  margin-left: -10px;
+}
+
+.ol-popup:before {
+  border-top-color: #cccccc;
+  border-width: 11px;
+  left: 48px;
+  margin-left: -11px;
+}
+
+.ol-popup-closer {
+  text-decoration: none;
+  position: absolute;
+  top: 2px;
+  right: 8px;
+}
+
+.ol-popup-closer:after {
+  content: "✖";
+  position: fixed;
+}
+
+.ol-geocoder.gcd-gl-container {
+  top: 10.275em;
+}
+/*
+.popup-content {
+  overflow: scroll;
+}
+*/
+.ol-scale-line {
+  margin-left: 36px;
+}
+
+.ol-overviewmap-map {
+  margin-bottom: 24px !important;
+}
+
+.layer-switcher.shown {
+  max-height: 250px;
+}
+
+.bokeh-map-ts-plot {
+  margin: 16px;
+  display: none;
+}
+
+.map-ts-header {
+  display: none;
+}
+
+.popup-selected-product {
+  display: none;
+}
+
+#map-slider-id {
+  width: 200px;
+  margin: 5px;
+}
+
+.current-bbox-select {
+  margin-left: 2px;
+}
+
+#map-res-popup {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  height: 200px;
+  background: white;
+  overflow: auto;
+}
+
+.map-res-thumb-pop {
+  left: 1em !important;
+  bottom: 2em !important;
+  top: unset !important;
+  transform: unset !important;
+}
+
+.map-res-table table {
+  border: none !important;
+  vertical-align: middle;
+}
+
+.map-res-table td {
+  font-size: 14px;
+  vertical-align: middle;
+  padding: 5px;
+}
+
+.map-res-table td:first-child {
+  text-align: center;
+}
+
+.map-res-table-top tbody {
+  border: unset;
+}
+
+.map-res-table-top td {
+  font-size: 14px;
+  vertical-align: middle;
+  padding: 5px;
+  border: unset !important;
+  line-height: 1.5;
+}
+
+.map-res-exp-buttons {
+  font-size: 14px;
+  border: unset !important;
+}
+
+.map-res-exp-buttons td {
+  font-size: 14px;
+  vertical-align: bottom;
+}
+
+.map-res-elements tr td {
+  font-size: 12px;
+  vertical-align: middle;
+  border: none;
+  min-width: 20%;
+}
+
+.map-res-button {
+  background-color: #fafafa;
+  color: #333;
+  display: inline-block;
+  margin: 0.5em;
+  padding: 0.5em;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.map-res-thumb {
+  border: 0.1em solid black;
+  margin: 0.3em;
+}
+
+#tlphov-map-res {
+  font-size: small;
+  padding: 0.2em;
+  background: white;
+  width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  overflow-wrap: anywhere;
+}
+
+#tlp-map-res {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: rgba(0, 0, 0, 0.2);
+  font-size: 14px;
+  width: 100%;
+}
+
+#popup-map-res {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  max-width: 23em;
+  height: 23em;
+  background: white;
+  overflow: auto;
+}
+
+#popup-map-res-content {
+  font-weight: bold;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.map-res-panel {
+  margin-bottom: 0em;
+}
+
+#messagequery {
+  background-color: white;
+  padding: 1em;
+  overflow: hidden;
+  display: none;
+}
+
+.simple-pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.ts-plot-loader {
+  display: block;
+  margin: auto;
+}
+
+/* Updats for new map js script */
+.proj-label {
+  display: inline-block;
+  padding-left: 0px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.proj-wrapper {
+  display: inline-block;
+  padding-left: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.basemap-label {
+  display: inline-block;
+  padding-left: 0px;
+  padding-right: 5px;
+  text-align: left;
+}
+
+.basemap-wrapper {
+  display: inline-block;
+  padding-left: 0px;
+  margin-top: 16px;
+  margin-bottom: 5px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0px;
+}
+
+.addl {
+  list-style-type: none;
+}
+
+button#vizAllButton {
+  display: none;
+}
+
+/** Additional layers styling **/
+#droplayers {
+  position: absolute;
+  right: .5em;
+  top: 2em;
+}
+
+.dropdown-lrs-content {
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 0 1em 0 0;
+  margin: 0;
+  border: 4px solid #eee;
+  border-radius: 4px;
+  background-color: white;
+  display: none;
+  max-height: 100%;
+  overflow-y: auto;
+  opacity: 80%;
+}
+
+.show {
+  display: block;
+}
+
+.layers-button {
+  background-color: rgba(0, 60, 136, .5);
+  border: none;
+  color: black;
+  padding: 3px 16px;
+  text-align: left;
+  text-decoration: none;
+  font-size: 11px;
+  margin: 2px 1px;
+  cursor: pointer;
+  -webkit-transition-duration: 0.4s; //Safari
+  transition-duration: 0.4s;
+  border-radius: 6px;
+}

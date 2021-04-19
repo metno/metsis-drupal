@@ -2,7 +2,7 @@
 
 function ts_config_form($form, &$form_state) {
   global $metsis_conf;
-  $metadata_identifier = isset($_GET['metadata_identifier']) ? check_plain($_GET['metadata_identifier']) : '';
+  $metadata_identifier = isset($_GET['metadata_identifier']) ? \Drupal\Component\Utility\Html::escape($_GET['metadata_identifier']) : '';
   $form = array();
   $odv_standard_names = adc_get_odv_standard_names(adc_get_odv_object(adc_get_od_variables($metadata_identifier, SOLR_CORE_PARENT)['data']['findAllVariables']), $metsis_conf['ts_exclude_variables']);
   ksort($odv_standard_names);

@@ -1,0 +1,21 @@
+metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
+  title: 'METSIS Timeseries Bokeh Configuration'
+  description: 'Set the timeseries server backend to be used'
+  route_name: metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form
+  parent: metsis.group.admin
+  weight: 99
+
+metsis_ts_bokeh.init_form:
+  title: 'METSIS TS Bokeh'
+  description: 'View Timeseries Bokeh Plot'
+  route_name: metsis_ts_bokeh.forminit
+  menu_name: main
+  parent: main
+  weight: 0
+
+metsis.group.admin:
+  title: 'METSIS'
+  route_name: system.admin_config_metsis
+  parent: system.admin_config
+  description: 'METSIS Configuration'
+  weight: -999

@@ -3,11 +3,8 @@
 class XmlElement {
 
   var $name;
-
   var $attributes;
-
   var $content;
-
   var $children;
 
   function xml_to_object($xml) {
@@ -17,8 +14,8 @@ class XmlElement {
     xml_parse_into_struct($parser, $xml, $tags);
     xml_parser_free($parser);
 
-    $elements = [];  // the currently filling [child] XmlElement array
-    $stack = [];
+    $elements = array();  // the currently filling [child] XmlElement array
+    $stack = array();
     foreach ($tags as $tag) {
       $index = count($elements);
       if ($tag['type'] == "complete" || $tag['type'] == "open") {
@@ -27,7 +24,7 @@ class XmlElement {
         $elements[$index]->attributes = $tag['attributes'];
         $elements[$index]->content = $tag['value'];
         if ($tag['type'] == "open") {  // push
-          $elements[$index]->children = [];
+          $elements[$index]->children = array();
           $stack[count($stack)] = &$elements;
           $elements = &$elements[$index]->children;
         }

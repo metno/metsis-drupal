@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.publisher
+  module:
+    - facets
+  theme:
+    - metsis_w3css_theme
+id: publisher_2
+theme: metsis_w3css_theme
+region: sidebar_first
+weight: -8
+provider: null
+plugin: 'facet_block:publisher'
+settings:
+  id: 'facet_block:publisher'
+  label: Publisher
+  provider: facets
+  label_display: visible
+  block_id: publisher_2
+visibility: {  }

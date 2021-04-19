@@ -1,0 +1,88 @@
+metsis_search.map:
+  path: /metsis/search/map
+  defaults:
+    _controller: \Drupal\metsis_search\Controller\MapSearchController::setBoundingBox
+    _title: "Ajax Callback for SearchMap BoundingBox"
+  options:
+    query:
+      tllat: ""
+      tllon: ""
+      brlat: ""
+      brlon: ""
+      proj: ""
+  requirements:
+    _permission: 'access metsis search'
+
+metsis_search.place:
+  path: /metsis/search/place
+  defaults:
+    _controller: \Drupal\metsis_search\Controller\MapSearchController::setPlace
+    _title: "Ajax Callback for SearchMap Place BoundingBox"
+  options:
+    query:
+      tllat: ""
+      tllon: ""
+      brlat: ""
+      brlon: ""
+      proj: ""
+  requirements:
+    _permission: 'access metsis search'
+
+metsis_search.reset:
+  path: /metsis/search/reset
+  defaults:
+    _controller: \Drupal\metsis_search\Controller\MapSearchController::reset
+    _title: "Callback for SearchMap Reset BoundingBox and search"
+  requirements:
+    _permission: 'access metsis search'
+
+metsis_search.map_proj:
+  path: /metsis/search/map/projection
+  defaults:
+    _controller: \Drupal\metsis_search\Controller\MapSearchController::setProjection
+    _title: "Ajax Callback for SearchMap projection"
+  options:
+    query:
+      proj: ""
+  requirements:
+    _permission: 'access metsis search'
+
+metsis_search.children_count:
+  path: /metsis/elements/count
+  defaults:
+    _controller: \Drupal\metsis_search\Controller\MetsisSearchController::getChildrenCount
+    _title: "Ajax Search Reset callback"
+  options:
+    query:
+      metadata_identifier: ""
+  requirements:
+    _permission: 'access metsis search'
+
+metsis_search.admin_config_form:
+  path: '/admin/config/metsis/search'
+  defaults:
+    _form: '\Drupal\metsis_search\Form\MetsisSearchConfigurationForm'
+    _title: 'METSIS Search Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'
+
+
+#For testing the search map form. TO BE REMOVED
+#metsis_search.map_search_form:
+#  path: '/metsis/search_map'
+#  defaults:
+#    _form: '\Drupal\metsis_search\Form\MetsisMapSearchForm'
+#    _title: 'METSIS Search Map'
+#  requirements:
+#    _permission: 'access content'

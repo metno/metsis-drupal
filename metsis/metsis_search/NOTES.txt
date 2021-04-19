@@ -1,0 +1,15 @@
+# Special html used for fields in metsis search views
+-----------------------------------------------------
+
+* Timeseries plot button special field:
+{% if  data_access_url_opendap %}
+  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}
+<div id="viusalise-ts" class="viusalise-ts">
+  <a class="adc-button adc-sbutton use-ajax"
+  data-dialog-options="{&quot;width&quot;:800, &quot;height&quot;:800,  &quot;draggable&quot;:true}"
+    data-dialog-type="dialog"
+
+href="/metsis/bokeh/plot?opendap_urls={{ data_access_url_opendap }}" >Visualise TimeSeries</a>
+</div>
+  {% endif %}
+{% endif %}

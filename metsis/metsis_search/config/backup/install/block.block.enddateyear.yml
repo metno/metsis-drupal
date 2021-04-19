@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.end_date_year
+  module:
+    - facets
+  theme:
+    - bartik
+id: startdatemonth
+theme: bartik
+region: sidebar_first
+weight: -4
+provider: null
+plugin: 'facet_block:end_date_year'
+settings:
+  id: 'facet_block:end_date_year'
+  label: 'End date year'
+  provider: facets
+  label_display: visible
+  block_id: enddateyear
+visibility: {  }

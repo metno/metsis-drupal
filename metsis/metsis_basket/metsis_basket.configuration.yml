@@ -1,0 +1,4 @@
+metsis_basket_server: basket.metsis.met.no
+metsis_basket_server_port: '8080'
+metsis_basket_server_service: /basketService
+metsis_basket_endpoint: basket

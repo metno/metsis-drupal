@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.isottopic_category
+  module:
+    - facets
+    - system
+  theme:
+    - metsis
+id: metsis_isotopiccategory
+theme: metsis
+region: sidebar_first
+weight: -7
+provider: null
+plugin: 'facet_block:isottopic_category'
+settings:
+  id: 'facet_block:isottopic_category'
+  label: 'Iso Topic Category'
+  provider: facets
+  label_display: visible
+  block_id: metsis_isotopiccategory
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

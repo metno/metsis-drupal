@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.collection
+  module:
+    - facets
+  theme:
+    - bartik
+id: collection
+theme: bartik
+region: sidebar_first
+weight: -11
+provider: null
+plugin: 'facet_block:collection'
+settings:
+  id: 'facet_block:collection'
+  label: Collection
+  provider: facets
+  label_display: visible
+  block_id: collection
+visibility: {  }

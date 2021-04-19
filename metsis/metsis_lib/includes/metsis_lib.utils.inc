@@ -1,41 +1,60 @@
 <?php
 
+use \Drupal\metsis_lib\HttpConnection;
+use \Drupal\metsis_lib\HeaderList;
+use \Drupal\metsis_lib\XmlElement;
+
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Render\HtmlEscapedText;
+use Drupal\Core\Render\Markup;
+//use Drupal\filter\Render\FilteredMarkup;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\ServerException;
+
+
+/**
+ * Add constants for module to work without metsis_qsearch
+  */
+global $metsis_conf;
+//define('SOLR_SERVER_IP', $metsis_conf['solr_server_ip']);
+//define('SOLR_SERVER_PORT', $metsis_conf['solr_server_port']);
+
+//Include the constants file
 include_once drupal_get_path('module', 'metsis_lib') . '/includes/metsis_lib.constants.inc';
-include_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.constants.inc';
+//include_once drupal_get_path('module', 'metsis_qsearch') . '/metsis_qsearch.constants.inc';
 
 function adc_require_login($calling_uri, $message) {
-  global $user;
-  if (!user_is_logged_in()) {
-    drupal_set_message("<b>" . t($message) . "</b>", 'warning');
+  $user = \Drupal::currentUser();
+  if (!\Drupal::currentUser()->isAuthenticated()) {
+    \Drupal::messenger()->addWarning("<b>" . t($message) . "</b>");
     $dest = drupal_get_destination();
-    drupal_goto('user/login', ['query' => $calling_uri]);
+    //drupal_goto('user/login', array('query' => $calling_uri));
+    return new RedirectResponse(\Drupal\Core\Url::fromRoute('user.login'));
   }
 }
 
-function in_array_r($needle, $haystack, $strict = TRUE) {
+function in_array_r($needle, $haystack, $strict = true) {
   foreach ($haystack as $value) {
-    if (($strict ? $value === $needle : $value == $needle) || (is_array($value) && in_array_r($needle, $value, $strict))) {
+    if (( $strict ? $value === $needle : $value == $needle ) || ( is_array($value) && in_array_r($needle, $value, $strict))) {
       return $needle;
     }
-  }
-  return FALSE;
+  } return false;
 }
 
-function array_search_recursive($needle, $haystack, $strict = FALSE, $path = []) {
+function array_search_recursive($needle, $haystack, $strict = false, $path = array()) {
   if (!is_array($haystack)) {
-    return FALSE;
-  }
-  foreach ($haystack as $key => $val) {
+    return false;
+  } foreach ($haystack as $key => $val) {
     if (is_array($val) && $subPath = array_search_recursive($needle, $val, $strict, $path)) {
-      $path = array_merge($path, [$key], $subPath);
+      $path = array_merge($path, array($key), $subPath);
       return $path;
     }
     elseif ((!$strict && $val == $needle) || ($strict && $val === $needle)) {
       $path[] = $key;
       return $path;
     }
-  }
-  return FALSE;
+  } return false;
 }
 
 function adc_get_netcdf_variable_value($key, $od_url) {
@@ -43,29 +62,27 @@ function adc_get_netcdf_variable_value($key, $od_url) {
   $od_url = "http://thredds.met.no/thredds/dodsC/osisaf/met.no/ice/emis/2014/08/ice_emis_sh_stere-100_ssmis_201408261200.nc";
   $output = shell_exec("ncdump -x $od_url");
   $xml = new SimpleXMLElement($output);
-  $json = drupal_json_decode(drupal_json_encode($xml));
+  $json = \Drupal\Component\Serialization\Json::decode(\Drupal\Component\Serialization\Json::encode($xml));
   $key_path = array_search_recursive($key, $json);
   $key_size = count($key_path);
   $fully_qualified_key = "";
   for ($i = 0; $i < $key_size - 1; $i++) {
     $fully_qualified_key .= "[" . $key_path[$i] . "]";
-  }
-  $fully_qualified_value = '$json' . $fully_qualified_key . "['value']";
+  } $fully_qualified_value = '$json' . $fully_qualified_key . "['value']";
   $fully_qualified_value = (array) $fully_qualified_value;
 }
 
 function get_metsis_db_records($table, $pkey_array, $fields_array) {
   $records = [];
   foreach ($pkey_array as $pk) {
-    $query = db_select($table, 't');
+    $query = \Drupal::database()->select($table, 't');
     $query->fields('t', $fields_array);
     $query->condition('iid', $pk);
     $result = $query->execute()->fetch();
     foreach ($fields_array as $f) {
       $records[$pk][$f] = $result->$f;
     }
-  }
-  return $records;
+  } return $records;
 }
 
 function get_metsis_date($date_string, $format) {
@@ -74,30 +91,36 @@ function get_metsis_date($date_string, $format) {
 }
 
 function adc_get_wms_get_capabilities($uri) {
-  $result = drupal_http_request($uri);
-  $data = $result->data;
+  $client = \Drupal::httpClient();
+    $request = $client->createRequest(array('GET', $uri));
+  try {
+    $response = $client->get($uri);
+    $data = $response->getBody();
+  }
+  catch (RequestException $e) {
+    watchdog_exception('metsis_lib', $e);
+  }
+  $data = $request->ge;
   $xml = simplexml_load_string($data);
   $json = json_encode($xml);
   $array = json_decode($json, TRUE);
   return json_decode($json, TRUE);
 }
 
-function breadcrumb($tree, $needle, &$result = []) {
-  $result = [];
+function breadcrumb($tree, $needle, &$result = array()) {
+  $result = array();
   if (is_array($tree)) {
     foreach ($tree as $node) {
       if ($node['title'] == $needle) {
         $result[] = $node['title'];
         echo '1-';
-        return TRUE;
+        return true;
       }
-      else {
-        if (!empty($node['nodes'])) {
-          if (breadcrumb($node['nodes'], $needle, $result)) {
-            echo '2-';
-            $result[] = $node['title'];
-            return TRUE;
-          }
+      else if (!empty($node['nodes'])) {
+        if (breadcrumb($node['nodes'], $needle, $result)) {
+          echo '2-';
+          $result[] = $node['title'];
+          return true;
         }
       }
     }
@@ -106,22 +129,16 @@ function breadcrumb($tree, $needle, &$result = []) {
     if ($tree == $needle) {
       echo '3-';
       $result[] = $tree;
-      return TRUE;
+      return true;
     }
-  }
-  return FALSE;
+  } return false;
 }
 
 function adc_get_metadata_item($solr_core, $metadata_identifier, $metadata_item) {
   global $metsis_conf;
-  $con = new HttpConnection($metsis_conf['solr_server_ip'], $metsis_conf['solr_server_port']);
-  $res = $con->get('/solr/' . $solr_core . '/select', [
-    "q" => $metsis_conf['metadata_prefix'] . "metadata_identifier:" . '"' . $metadata_identifier . '"',
-    "fl" => $metadata_item,
-    "wt" => "json",
-    "indent" => "true",
-  ]);
-  $body = json_decode($res['body'], TRUE);
+  $con = new \Drupal\metsis_lib\HttpConnection($metsis_conf['solr_server_ip'], $metsis_conf['solr_server_port']);
+  $res = $con->get('/solr/' . $solr_core . '/select', array("q" => $metsis_conf['metadata_prefix'] . "metadata_identifier:" . '"' . $metadata_identifier . '"', "fl" => $metadata_item, "wt" => "json", "indent" => "true"));
+  $body = json_decode($res['body'], true);
   return $body['response']['docs'];
 }
 
@@ -136,15 +153,21 @@ function adc_get_data_access_resource($solr_core, $metadata_identifier) {
         $protocol = str_replace('"', '', $la[0]);
         $ma = explode(',', $la[1], 2);
         $uri = str_replace('"', '', $ma[0]);
-        $na = explode(':', $ma[1], 2);
+        // Test to aviod array offset waring
+        if( isset($ma[1])) {
+          $na = explode(':', $ma[1], 2);
+        }
+        else {
+          $na = explode(':', $ma[0], 2);
+        }
+        //var_dump($na);
         $description_name = str_replace('"', '', $na[0]);
         $description_value = str_replace('"', '', $na[1]);
         $my_data_access_resource[$protocol]['uri'] = $uri;
         $my_data_access_resource[$protocol][$description_name] = $description_value;
       }
     }
-  }
-  return ($my_data_access_resource);
+  } return($my_data_access_resource);
 }
 
 function adc_parse_data_access_resource($data_access_resource) {
@@ -156,33 +179,25 @@ function adc_parse_data_access_resource($data_access_resource) {
     $protocol = str_replace('"', '', $pu[0]);
     $dar[$protocol]['uri'] = str_replace('"', '', $pu[1]);
     $dar[$protocol]['description'] = str_replace('"', '', $dt[1]);
-  }
-  return ($dar);
+  } return($dar);
 }
 
 function adc_has_feature_type($metadata_identifier, $ft) {
   $feature_type = adc_get_feature_type($metadata_identifier);
   if ($feature_type === $ft) {
     return 1;
-  }
-  return 0;
+  } return 0;
 }
 
 function adc_get_feature_type($metadata_identifier) {
-  $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
-  $res = $con->get('/solr/' . SOLR_CORE_CONFIG . '/select', [
-    "q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $metadata_identifier . '"',
-    "fl" => "feature_type",
-    "wt" => "json",
-    "indent" => "true",
-  ]);
-  $body = json_decode($res['body'], TRUE);
+  $con = new \Drupal\metsis_lib\HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+  $res = $con->get('/solr/' . SOLR_CORE_CONFIG . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $metadata_identifier . '"', "fl" => "feature_type", "wt" => "json", "indent" => "true"));
+  $body = json_decode($res['body'], true);
   if ($body['response']['numFound'] > 0) {
     if (isset($body['response']['docs'][0]['feature_type'])) {
       return $body['response']['docs'][0]['feature_type'];
     }
-  }
-  return 0;
+  } return 0;
 }
 
 function adc_get_collections($collections) {
@@ -213,8 +228,7 @@ function adc_parse_related_information_resource($rir) {
     $description_value = str_replace('"', '', $na[1]);
     $related_information_resource[$protocol]['uri'] = $uri;
     $related_information_resource[$protocol][$description_name] = $description_value;
-  }
-  return $related_information_resource;
+  } return $related_information_resource;
 }
 
 function adc_get_button_markup($metadata_identifier, $button_uri) {
@@ -222,21 +236,12 @@ function adc_get_button_markup($metadata_identifier, $button_uri) {
   return $url;
 }
 
-function adc_get_button_markup_nt($metadata_identifier, $button_uri) {
-  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton" target="_blank" href="' . $button_uri . '">' . $metadata_identifier . '</a>' . '</div>';
-  return $url;
-}
-
 function metsis_get_metadata_table($solr_core, $metadata_identifier) {
   global $metsis_conf;
   $metadata_sort_order = $metsis_conf['metadata_sort_order'];
-  $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
-  $res = $con->get('/solr/' . $solr_core . '/select', [
-    "q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $metadata_identifier . '"',
-    "wt" => "json",
-    "indent" => "true",
-  ]);
-  $body = json_decode($res['body'], TRUE);
+  $con = new \Drupal\metsis_lib\HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
+  $res = $con->get('/solr/' . $solr_core . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $metadata_identifier . '"', "wt" => "json", "indent" => "true"));
+  $body = json_decode($res['body'], true);
   if (array_filter($body['response']['docs'][0])) {
     $metadata = array_filter($body['response']['docs'][0]);
     if (isset($metadata[METADATA_PREFIX . 'cloud_cover_value'])) {
@@ -244,9 +249,9 @@ function metsis_get_metadata_table($solr_core, $metadata_identifier) {
     }
     $zmetadata = array_intersect_key($metadata, array_flip($metsis_conf['metadata_visible']));
     $metadata = $zmetadata;
-    $header = ['Metadata key', 'Metadata value'];
-    $top_array = [];
-    $bottom_array = [];
+    $header = array('Metadata key', 'Metadata value');
+    $top_array = array();
+    $bottom_array = array();
     foreach ($metadata as $k => $v) {
       if (in_array($k, $metadata_sort_order)) {
         $top_array[$k] = $v;
@@ -255,7 +260,7 @@ function metsis_get_metadata_table($solr_core, $metadata_identifier) {
         $bottom_array[$k] = $v;
       }
     }
-    $sorted_top_array = [];
+    $sorted_top_array = array();
     foreach (array_values($metadata_sort_order) as $key) {
       if (key_exists($key, $top_array)) {
         $sorted_top_array[$key] = $top_array[$key];
@@ -265,20 +270,26 @@ function metsis_get_metadata_table($solr_core, $metadata_identifier) {
     $top_rows = h_adc_get_metadata($sorted_top_array);
     $bottom_rows = h_adc_get_metadata($bottom_array);
     $rows = array_merge($top_rows, $bottom_rows);
-    $metadata_table = theme('table', [
-        'header' => $header,
-        'rows' => $rows,
-        'attributes' => [
-          'class' => [
-            'ext_data_souce',
-          ],
-        ],
-      ]
+
+    $metadata_table = array(
+       '#type' => 'table',
+       '#header' => $header,
+       '#rows' => $rows,
+       '#attributes' => array(
+         'class' => array(
+           'ext_data_souce'),
+         ),
+
     );
-    return theme('metadata_inline', ['metadata_table' => $metadata_table]);
+    $markup = drupal_render($metadata_table);
+    $metadata_inline = array(
+      '#theme' => 'metadata_table'
+    );
+    $markup .= drupal_render($metadata_inline);
+    return $markup;
+
   }
 }
-
 function metsis_get_metadata_div($solr_core, $metadata_identifier, $metadata_div_counter) {
   $button_text = defined('SOLR_METADATA_BUTTON_TEXT') ? t(SOLR_METADATA_BUTTON_TEXT) : t(Metadata);
   $metadata = '<div id="metadata-div-' . $metadata_div_counter;
@@ -289,11 +300,11 @@ function metsis_get_metadata_div($solr_core, $metadata_identifier, $metadata_div
 
   return $metadata;
 }
-
 function adc_get_metadata() {
   global $metsis_conf;
   $metadata_sort_order = $metsis_conf['metadata_sort_order'];
-  $page_inputs = drupal_get_query_parameters();
+  $query_params = \Drupal::request()->query->all();
+  $page_inputs = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_params);
   $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
   if ($page_inputs['core'] == 'l1') {
     $core = SOLR_CORE_PARENT;
@@ -301,12 +312,8 @@ function adc_get_metadata() {
   if ($page_inputs['core'] == 'l2') {
     $core = SOLR_CORE_CHILD;
   }
-  $res = $con->get('/solr/' . $core . '/select', [
-    "q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $page_inputs['datasetID'] . '"',
-    "wt" => "json",
-    "indent" => "true",
-  ]);
-  $body = json_decode($res['body'], TRUE);
+  $res = $con->get('/solr/' . $core . '/select', array("q" => METADATA_PREFIX . "metadata_identifier:" . '"' . $page_inputs['datasetID'] . '"', "wt" => "json", "indent" => "true"));
+  $body = json_decode($res['body'], true);
   if (array_filter($body['response']['docs'][0])) {
     $metadata = array_filter($body['response']['docs'][0]);
     if (isset($metadata[METADATA_PREFIX . 'cloud_cover_value'])) {
@@ -314,9 +321,9 @@ function adc_get_metadata() {
     }
     $zmetadata = array_intersect_key($metadata, array_flip($metsis_conf['metadata_visible']));
     $metadata = $zmetadata;
-    $header = ['Metadata key', 'Metadata value'];
-    $top_array = [];
-    $bottom_array = [];
+    $header = array('Metadata key', 'Metadata value');
+    $top_array = array();
+    $bottom_array = array();
     foreach ($metadata as $k => $v) {
       if (in_array($k, $metadata_sort_order)) {
         $top_array[$k] = $v;
@@ -325,7 +332,7 @@ function adc_get_metadata() {
         $bottom_array[$k] = $v;
       }
     }
-    $sorted_top_array = [];
+    $sorted_top_array = array();
     foreach (array_values($metadata_sort_order) as $key) {
       if (key_exists($key, $top_array)) {
         $sorted_top_array[$key] = $top_array[$key];
@@ -335,29 +342,51 @@ function adc_get_metadata() {
     $top_rows = h_adc_get_metadata($sorted_top_array);
     $bottom_rows = h_adc_get_metadata($bottom_array);
     $rows = array_merge($top_rows, $bottom_rows);
-    $metadata_table = theme('table', [
-        'header' => $header,
-        'rows' => $rows,
-        'attributes' => [
-          'class' => [
-            'ext_data_souce',
-          ],
-        ],
-      ]
-    );
-    return theme('metadata', ['metadata_table' => $metadata_table]);
+    // @FIXME
+    //var_dump($rows);
+    $metadata_table = array(
+      '#type' => 'table',
+      '#header' => $header,
+      '#rows' => $rows,
+      '#attributes' => array(
+        'class' => array(
+          'ext_data_souce'),
+        ),
+      );
+    $markup = $metadata_table;
+    //$markup = \Drupal::service('renderer')->render($metadata_table);
+    //$metadata = array(
+    //  '#theme' => 'metadata_table'
+    //);
+    //$markup .= $metadata;
+    //$markup .= \Drupal::service('renderer')->render($metadata);
+// @see https://www.drupal.org/node/2195739
+    return $markup;
+
   }
 }
 
+/**
+ * Build the rows for metadata information render array.
+ *
+ * FIXME: URLS and other HTML formatting get escaped when rendered.
+ * need to add  code like new FormattableMarkup('<a class=@key href=@value>@value</a>', ['@value' => $value, '@key' => $key]);
+ */
 function h_adc_get_metadata($metadata) {
+  $rows = array();
 
-  $rows = [];
   foreach ($metadata as $key => $value) {
+
     if ($key == METADATA_PREFIX . "data_access_resource") {
       foreach ($value as $k => $v) {
         $la = explode(":", $v, 2);
         $ma = explode(",", $la[1]);
-        $na = explode(":", $ma[1]);
+        if(isset($ma[1])) {
+          $na = explode(":", $ma[1]);
+        }
+        else {
+          $na = explode(":", $ma[0]);
+        }
         $protocol = str_replace('"', '', $la[0]);
         switch ($protocol) {
           case "OPeNDAP";
@@ -366,48 +395,49 @@ function h_adc_get_metadata($metadata) {
           case "OGC WMS";
             $url_ext = "?SERVICE=WMS&REQUEST=GetCapabilities";
             break;
-          default:
-            $url_ext = "";
+          default: $url_ext = "";
             break;
         }
-        $value[$k] = $protocol . ': <a class="' . $key . '" href="' . str_replace('"', '', $ma[0]) . $url_ext . '">' . $ma[0] . '</a>';
+        $href_url = str_replace('"', '', $ma[0]) . $url_ext;
+        //var_dump($href_url);
+        $res_string =  $protocol . ': ';
+        //var_dump($res_string);
+        $url = rtrim((string) $ma[0],"?");
+        $link_markup = new FormattableMarkup('<a class="@key" href="@hrefurl">@url</a>',
+        [ '@hrefurl' => $href_url, '@url' => $url, '@key' => $key]);
+        //var_dump($link_markup);
+        $value[$k] = $res_string . (string) $link_markup;
       }
-    }
-    if ($key == METADATA_PREFIX . "related_information_resource") {
+    } if ($key == METADATA_PREFIX . "related_information_resource") {
       foreach ($value as $k => $v) {
         $la = explode(":", $v, 2);
         $ma = explode(",", $la[1]);
         $na = explode(":", $ma[1]);
         $protocol = str_replace('"', '', $la[0]);
         switch ($protocol) {
-          default:
-            $url_ext = "";
+          default: $url_ext = "";
             break;
-        }
-        $value[$k] = $protocol . ': <a class="' . $key . '" href="' . str_replace('"', '', $ma[0]) . $url_ext . '">' . $ma[0] . '</a>';
+        } $value[$k] = $protocol . ':' . (string) new FormattableMarkup('<a class="@key" href="@value1">@value2</a>',
+        [ '@value1' => str_replace('"', '', $ma[0]) . $url_ext, '@value2' => $ma[0], '@key' => $key]);
       }
-    }
-    if ($key == METADATA_PREFIX . "data_center_data_center_url") {
-      $value = '<a class="' . $key . '" href=' . $value . '>' . $value . '</a>';
-    }
-    if ($key == METADATA_PREFIX . "data_center_contact_email") {
-      $value = '<a class="' . $key . '" href=mailto:' . $value . '>' . $value . '</a>';
-    }
-    if ($key == METADATA_PREFIX . "personnel_email") {
-      $value = '<a class="' . $key . '" href=mailto:' . $value[0] . '>' . $value[0] . '</a>';
-    }
-    if (is_array($value)) {
-      $value = implode("<br>", $value);
-    }
-    $pattern[0] = "/" . METADATA_PREFIX . "/";
+    } if ($key == METADATA_PREFIX . "data_center_data_center_url") {
+      //$value = '<a class="' . $key . '" href=' . $value . '>' . $value . '</a>';
+        $value =  new FormattableMarkup('<a class=@key href=@value>@value</a>', ['@value' => $value, '@key' => $key]);
+    } if ($key == METADATA_PREFIX . "data_center_contact_email") {
+      $value = new FormattableMarkup('<a class=@key href=mailto:@value>@value</a>', ['@value' => $value, '@key' => $key]);
+    } if ($key == METADATA_PREFIX . "personnel_email") {
+      $value = new FormattableMarkup('<a class=@key href=mailto:@value>@value</a>', ['@value' => $value[0], '@key' => $key]);
+    } if (is_array($value)) {
+      $value = Markup::create(implode('<br>', $value));
+      //$value = implode(new FormattableMarkup('@br', ['@br' => '<br/>']), $value);
+    } $pattern[0] = "/" . METADATA_PREFIX . "/";
     $pattern[1] = "/_/";
     $replacement[0] = "";
     $replacement[1] = " ";
     $key = preg_replace($pattern, $replacement, $key);
-    $row = [strtoupper($key), $value];
+    $row = array(strtoupper($key), $value);
     $rows[] = $row;
-  }
-  return $rows;
+  } return $rows;
 }
 
 function h_adc_has_data_access_resource($solr_doc) {
@@ -450,8 +480,8 @@ function adc_get_od_global_attributes($metadata_identifier, $collection_core) {
                     }
                }';
   $con = new HttpConnection(METSIS_OPENDAP_PARSER_IP, METSIS_OPENDAP_PARSER_PORT);
-  $res = $con->get(METSIS_OPENDAP_PARSER_SERVICE, ["query" => $odquery,]);
-  $jres = json_decode($res['body'], TRUE);
+  $res = $con->get(METSIS_OPENDAP_PARSER_SERVICE, array("query" => $odquery,));
+  $jres = json_decode($res['body'], true);
   return $jres;
 }
 
@@ -467,19 +497,18 @@ function adc_get_od_variables($metadata_identifier, $collection_core) {
                     }
                }';
   $con = new HttpConnection(METSIS_OPENDAP_PARSER_IP, METSIS_OPENDAP_PARSER_PORT);
-  $res = $con->get(METSIS_OPENDAP_PARSER_SERVICE, ["query" => $odquery,]);
-  $jres = json_decode($res['body'], TRUE);
+  $res = $con->get(METSIS_OPENDAP_PARSER_SERVICE, array("query" => $odquery,));
+  $jres = json_decode($res['body'], true);
   return $jres;
 }
 
 function adc_get_od_ga($od_global_attributes_array, $attribute_name) {
-  $this_odga = [];
+  $this_odga = array();
   foreach ($od_global_attributes_array as $odgaa) {
     if ($odgaa['name'] == $attribute_name) {
       $this_odga[trim($odgaa['name'])] = $odgaa['value'];
     }
-  }
-  return $this_odga;
+  } return $this_odga;
 }
 
 function adc_get_odv_standard_names($odv_object, $exclude_vars_array) {
@@ -488,16 +517,14 @@ function adc_get_odv_standard_names($odv_object, $exclude_vars_array) {
     if (key_exists('standard_name', $odvo)) {
       if (in_array(trim($odvo['standard_name']), $exclude_vars_array)) {
         continue;
-      }
-      $odv_standard_names[$odvo['standard_name']] = $odvo['standard_name'];
+      } $odv_standard_names[$odvo['standard_name']] = $odvo['standard_name'];
     }
-  }
-  return $odv_standard_names;
+  } return $odv_standard_names;
 }
 
 function adc_get_odv_object($opendap_variables) {
   global $metsis_conf;
-  $odv_object = [];
+  $odv_object = array();
   foreach ($opendap_variables as $odv) {
     $vn = trim($odv['name']);
     $odv_object[$vn] = $vn;
@@ -507,17 +534,13 @@ function adc_get_odv_object($opendap_variables) {
       $odvav = trim($odva['value']);
       if ($odva['name'] == 'long_name') {
         $kvpairs[$odvan] = $odvav;
-      }
-      if ($odva['name'] == 'standard_name') {
+      } if ($odva['name'] == 'standard_name') {
         $kvpairs[$odvan] = $odvav;
-      }
-      if ($odva['name'] == 'units') {
+      } if ($odva['name'] == 'units') {
         $kvpairs[$odvan] = $odvav;
-      }
-      $odv_object[$vn] = $kvpairs;
+      } $odv_object[$vn] = $kvpairs;
     }
-  }
-  return $odv_object;
+  } return $odv_object;
 }
 
 function adcwps_query($protocol, $server, $service_path, $built_query) {
@@ -528,10 +551,51 @@ function adcwps_query($protocol, $server, $service_path, $built_query) {
   $url .= $service_path;
   $url .= '?';
   $url .= $built_query;
-  $res = drupal_http_request($url);
-  $data = hack_xml_namespace($res->data);
+  // @FIXME
+  $options = [
+    'headers' => [
+      'Accept' => 'application/xml',
+      ],
+    ];
+  //var_dump($url);
+  //$options .= $built_query;
+  $client = \Drupal::httpClient();
+  //$request = $client->request('GET', $url);
+  $res = NULL;
+  try {
+    $response = $client->get($url); //, $options);
+    // Expected result.
+    // getBody() returns an instance of Psr\Http\Message\StreamInterface.
+    // @see http://docs.guzzlephp.org/en/latest/psr7.html#body
+    if($response->getStatusCode() == '200') {
+      $res = $response->getBody();
+    }
+    else {
+      \Drupal::messenger()->addError("Failed to convert dataset to CSV format");
+      //drupal_set_message();
+        $request = \Drupal::request();
+        $referer = $request->headers->get('referer');
+        $response =  new RedirectResponse($referer);
+        return $response->send();
+    }
+  }
+  catch (RequestException | ServerException $e) {
+    watchdog_exception('metsis_lib', $e);
+    \Drupal::messenger()->addError("Failed to convert dataset to CSV format");
+    //drupal_set_message();
+      $request = \Drupal::request();
+      $referer = $request->headers->get('referer');
+      $response =  new RedirectResponse($referer);
+      return $response->send();
+
+  }
+
+  //var_dump($res);
+  $data = hack_xml_namespace($res);
+  //var_dump($data);
   $xmldata = new SimpleXMLElement($data);
-  $jsondata = drupal_json_decode(drupal_json_encode($xmldata));
+  $jsondata = \Drupal\Component\Serialization\Json::decode(\Drupal\Component\Serialization\Json::encode($xmldata));
+  //var_dump($jsondata);
   return $jsondata;
 }
 
@@ -540,20 +604,41 @@ function adc_get_datasets_fields($solr_server, $solr_port, $solr_core, $metadata
   $metadata_identifiers = implode('" OR "', $metadata_identifier_array);
   $metadata_identifiers = urlencode('("' . $metadata_identifiers . '")');
   $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_metadata_identifier:' . $metadata_identifiers . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
-  $result = drupal_http_request($url);
-  $json = $result->data;
-  return json_decode($json, TRUE);
+  \Drupal::logger('metsis_lib')->debug("URL  is: " . $url);
+  $client = \Drupal::httpClient();
+  $request = $client->get($url, ['timeout' =>  600]);
+  $res = NULL;
+  try {
+    $response = $client->get($url);
+    // Expected result.
+    // getBody() returns an instance of Psr\Http\Message\StreamInterface.
+    // @see http://docs.guzzlephp.org/en/latest/psr7.html#body
+    $res = $response->getBody();
+  }
+  catch (RequestException $e) {
+    watchdog_exception('metsis_lib', $e);
+  }
+
+  return json_decode($res, TRUE);
 }
 
 function adc_get_datasets_fields_reverse_lookup($solr_server, $solr_port, $solr_core, $mmd_metadata_identifier, $fields_array, $start_row, $no_of_rows) {
-  $sort = '&sort=mmd_temporal_extent_start_date+desc';
   $fields = implode(',', $fields_array);
   $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_related_dataset:' . $mmd_metadata_identifier . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
-  //$url .= $sort;
-
-  $result = drupal_http_request($url);
-  $json = $result->data;
-  return json_decode($json, TRUE);
+  $client = \Drupal::httpClient();
+  //$request = $client->createRequest(array('GET', $url));
+  $res = NULL;
+  try {
+    $response = $client->get($url);
+    // Expected result.
+    // getBody() returns an instance of Psr\Http\Message\StreamInterface.
+    // @see http://docs.guzzlephp.org/en/latest/psr7.html#body
+    $res = $response->getBody();
+  }
+  catch (RequestException $e) {
+    watchdog_exception('metsis_lib', $e);
+  }
+  return json_decode($res, TRUE);
 }
 
 function adc_get_datasets_fields_mikey($solr_server, $solr_port, $solr_core, $metadata_identifier_array, $fields_array, $start_row, $no_of_rows) {
@@ -561,13 +646,24 @@ function adc_get_datasets_fields_mikey($solr_server, $solr_port, $solr_core, $me
   $metadata_identifiers = implode('" OR "', $metadata_identifier_array);
   $metadata_identifiers = urlencode('("' . $metadata_identifiers . '")');
   $url = 'http://' . $solr_server . ':' . $solr_port . '/solr/' . $solr_core . '/select?q=mmd_metadata_identifier:' . $metadata_identifiers . '&fl=' . $fields . '&start=' . $start_row . '&rows=' . $no_of_rows . '&wt=json';
-  $result = drupal_http_request($url);
-  $json = $result->data;
-  return json_decode($json, TRUE);
+  $client = \Drupal::httpClient();
+  $request = $client->createRequest(array('GET', $url));
+  $res = NULL;
+  try {
+    $response = $client->get($url);
+    // Expected result.
+    // getBody() returns an instance of Psr\Http\Message\StreamInterface.
+    // @see http://docs.guzzlephp.org/en/latest/psr7.html#body
+    $res = $response->getBody();
+  }
+  catch (RequestException $e) {
+    watchdog_exception('metsis_lib', $e);
+  }
+  return json_decode($res, TRUE);
 }
 
 function msb_get_institutions() {
-  $obj = msb_get_docs_fields_cond([METADATA_PREFIX . 'personnel_organisation'], 'mmd_collection:' . COLLECTIONS);
+  $obj = msb_get_docs_fields_cond(array(METADATA_PREFIX . 'personnel_organisation'), 'mmd_collection:' . COLLECTIONS);
   $checkboxes = [];
   foreach ($obj['response']['docs'] as $doc) {
     if (count($doc) > 0) {
@@ -584,11 +680,23 @@ function msb_facet_get_collections() {
   global $metsis_conf;
   if (isset($metsis_conf['collections'])) {
     $collections_to_display = array_map('trim', explode(',', $metsis_conf['collections']));
-  }
-  $checkboxes = [];
+  } $checkboxes = [];
   $url = 'http://' . SOLR_SERVER_IP . ':' . SOLR_SERVER_PORT . '/solr/' . SOLR_CORE_PARENT . '/select?q=*:*&rows=1&wt=json&facet=true&facet.field=mmd_collection';
-  $results = drupal_http_request($url);
-  $json = json_decode($results->data);
+  $client = \Drupal::httpClient();
+  //$request = $client->createRequest('GET', $url, []);
+  $res = NULL;
+  try {
+    $response = $client->get($url);
+    // Expected result.
+    // getBody() returns an instance of Psr\Http\Message\StreamInterface.
+    // @see http://docs.guzzlephp.org/en/latest/psr7.html#body
+    $res = $response->getBody();
+  }
+  catch (RequestException $e) {
+    watchdog_exception('metsis_lib', $e);
+  }
+
+  $json = json_decode($res);
   while ($current = current($json->facet_counts->facet_fields->mmd_collection)) {
     $cstring = (string) $current . '  (' . (string) next($json->facet_counts->facet_fields->mmd_collection) . ')';
     if (isset($collections_to_display)) {
@@ -598,27 +706,24 @@ function msb_facet_get_collections() {
     }
     else {
       $checkboxes[] = $cstring;
-    }
-    $current = next($json->facet_counts->facet_fields->mmd_collection);
-  }
-  return $checkboxes;
+    } $current = next($json->facet_counts->facet_fields->mmd_collection);
+  } return $checkboxes;
 }
 
 function msb_get_chosen_institutions($form_state) {
   $q = "";
   if (INSTITUTIONS_VISIBLE) {
-    $chosen_institutions = array_filter($form_state['values']['institutions']['chosen_institutions']);
+    $chosen_institutions = array_filter($form_state->getValue('institutions')['chosen_institutions']);
     if (!empty($chosen_institutions)) {
       $q = "mmd_personnel_organisation:(\"" . implode("\" OR \"", $chosen_institutions) . "\")";
     }
-  }
-  return $q;
+  } return $q;
 }
 
 function msb_get_chosen_collections($form_state) {
   $q = "";
   if (COLLECTIONS_VISIBLE) {
-    $chosen_collections = array_filter($form_state['values']['collections']['chosen_collections']);
+    $chosen_collections = array_filter($form_state->getValue('collections')['chosen_collections']);
     if (!empty($chosen_collections)) {
       $stripped_cc = [];
       foreach ($chosen_collections as $cc) {
@@ -626,8 +731,7 @@ function msb_get_chosen_collections($form_state) {
       };
       $q = "mmd_collection:(\"" . implode("\" OR \"", $stripped_cc) . "\")";
     }
-  }
-  return $q;
+  } return $q;
 }
 
 function adc_get_link_list($href_array, $display_text_array) {
@@ -643,8 +747,7 @@ function adc_get_link_list($href_array, $display_text_array) {
     else {
       $div .= '<li><a class="adc-button adc-sbutton" href="' . $a[0] . '">' . $a[1] . '</a></li>';
     }
-  }
-  $div .= '</ul>';
+  } $div .= '</ul>';
   $div .= '</div>';
   return $div;
 }
@@ -662,8 +765,7 @@ function adc_get_rir_dar_kv($metadata_identifier, $solr_array) {
     $description_value = str_replace('"', '', $na[1]);
     $this_kv[$protocol]['uri'] = $uri;
     $this_kv[$protocol][$description_name] = $description_value;
-  }
-  return ($this_kv);
+  } return($this_kv);
 }
 
 function adc_get_md_kv($solr_core_level, $dataset_id) {
@@ -674,13 +776,12 @@ function adc_get_md_kv($solr_core_level, $dataset_id) {
   }
   else {
     $solr_metadata_button_text = "Metadata";
-  }
-  $md_kv['href'] = $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id;
+  } $md_kv['href'] = $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id;
   $md_kv['display_text'] = $solr_metadata_button_text;
   return $md_kv;
 }
 
-function msb_get_md_links($solr_core_level, $dataset_id, $calling_results_page) {
+function msb_get_md_links($solr_core_level, $dataset_id) {
   global $base_url;
   if (defined('SOLR_METADATA_BUTTON_TEXT')) {
     $solr_metadata_button_text = SOLR_METADATA_BUTTON_TEXT;
@@ -688,7 +789,7 @@ function msb_get_md_links($solr_core_level, $dataset_id, $calling_results_page) 
   else {
     $solr_metadata_button_text = "Metadata";
   }
-  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '&calling_results_page=' . $calling_results_page . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
+  $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $base_url . '/metsis/display/metadata/?core=' . $solr_core_level . '&datasetID=' . $dataset_id . '" >' . $solr_metadata_button_text . '</a>' . '</div>';
   return $url;
 }
 
@@ -710,8 +811,7 @@ function adc_get_title_kv($solr_obj, $metadata_identifier) {
         $title_kv['href'] = "";
       }
     }
-  }
-  return ($title_kv);
+  } return($title_kv);
 }
 
 function adc_get_thumbnail_kv($solr_obj, $metadata_identifier) {
@@ -721,44 +821,24 @@ function adc_get_thumbnail_kv($solr_obj, $metadata_identifier) {
     if ($so['mmd_metadata_identifier'] == $metadata_identifier) {
       if (isset($so['feature_type'])) {
         $thumbnail_kv['feature_type'] = $so['feature_type'];
-      }
-      $thumbnail_kv['thumbnail_data'] = $so['thumbnail_data'];
+      } $thumbnail_kv['thumbnail_data'] = $so['thumbnail_data'];
       $thumbnail_kv['display_text'] = '<img src="' . $so['thumbnail_data'] . '"';
     }
-  }
-  return ($thumbnail_kv);
+  } return($thumbnail_kv);
 }
 
 function msb_get_docs_fields($fields) {
   $fl = implode(",", $fields);
   $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
-  $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', [
-    "q" => "*:*",
-    "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH,
-    "wt" => "json",
-    "fl" => "$fl",
-  ]);
-  return json_decode($res['body'], TRUE);
+  $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', array("q" => "*:*", "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH, "wt" => "json", "fl" => "$fl",));
+  return json_decode($res['body'], true);
 }
 
 function msb_get_docs_fields_cond($fields, $condition) {
   $fl = implode(",", $fields);
   $con = new HttpConnection(SOLR_SERVER_IP, SOLR_SERVER_PORT);
-  $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', [
-    "q" => $condition,
-    "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH,
-    "wt" => "json",
-    "fl" => "$fl",
-  ]);
-  return json_decode($res['body'], TRUE);
-}
-
-function getCapDoc() {
-  $query = drupal_get_query_parameters();
-  if (count($query) > 0) {
-    $url = $query['dataset'] . '&REQUEST=' . $query['REQUEST'];
-    print drupal_http_request($url)->data;
-  }
+  $res = $con->get('/solr/' . SOLR_CORE_PARENT . '/select', array("q" => $condition, "rows" => SEARCH_MAXIMUM_ROWS_TO_FETCH, "wt" => "json", "fl" => "$fl",));
+  return json_decode($res['body'], true);
 }
 
 function adc_array_to_solror($trimmed_array) {
@@ -770,8 +850,8 @@ function adc_array_to_solror($trimmed_array) {
 
 function adc_get_solr_core($metadata_identifier_array) {
   $data = [];
-  $found_in_parent_core = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_PARENT, $metadata_identifier_array, [METADATA_PREFIX . 'metadata_identifier'], 0, 1000000);
-  $found_in_child_core = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_CHILD, $metadata_identifier_array, [METADATA_PREFIX . 'metadata_identifier'], 0, 1000000);
+  $found_in_parent_core = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_PARENT, $metadata_identifier_array, array(METADATA_PREFIX . 'metadata_identifier'), 0, 1000000);
+  $found_in_child_core = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, SOLR_CORE_CHILD, $metadata_identifier_array, array(METADATA_PREFIX . 'metadata_identifier'), 0, 1000000);
   foreach ($metadata_identifier_array as $mi) {
     if (isset($found_in_parent_core['response']['docs'])) {
       foreach ($found_in_parent_core['response']['docs'] as $doc) {
@@ -779,33 +859,26 @@ function adc_get_solr_core($metadata_identifier_array) {
           $data[$mi] = SOLR_CORE_PARENT;
         }
       }
-    }
-    if (isset($found_in_child_core['response']['docs'])) {
+    } if (isset($found_in_child_core['response']['docs'])) {
       foreach ($found_in_child_core['response']['docs'] as $doc) {
         if ($doc[METADATA_PREFIX . 'metadata_identifier'] == $mi) {
           $data[$mi] = SOLR_CORE_CHILD;
         }
       }
     }
-  }
-  return $data;
+  } return $data;
 }
 
 function adc_has_related_dataset($solr_core, $metadata_identifier_array) {
   $has_related_dataset = [];
-  $rd_check = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, $solr_core, $metadata_identifier_array, [
-    METADATA_PREFIX . 'metadata_identifier',
-    METADATA_PREFIX . 'related_dataset',
-    METADATA_PREFIX . 'title',
-  ], 0, 1000000);
+  $rd_check = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, $solr_core, $metadata_identifier_array, array(METADATA_PREFIX . 'metadata_identifier', METADATA_PREFIX . 'related_dataset', METADATA_PREFIX . 'title'), 0, 1000000);
   foreach ($rd_check['response']['docs'] as $doc) {
     if (isset($doc[METADATA_PREFIX . 'related_dataset'])) {
       if (count($doc[METADATA_PREFIX . 'related_dataset']) > 0) {
         $has_related_dataset[$doc[METADATA_PREFIX . 'metadata_identifier']] = $doc[METADATA_PREFIX . 'title'];
       }
     }
-  }
-  return $has_related_dataset;
+  } return $has_related_dataset;
 }
 
 function msb_concat_data_access_resource($data_access_resource_array) {
@@ -852,10 +925,7 @@ function msb_concat_data_access_resource($data_access_resource_array) {
 }
 
 function adc_get_core_name_from_basket($metadata_identifier) {
-  $result = db_select('metsis_basket', 'mb')
-    ->fields('mb', ['solr_core'])
-    ->execute()
-    ->fetchAll();
+  $result = \Drupal::database()->select('metsis_basket', 'mb')->fields('mb', ['solr_core'])->execute()->fetchAll();
   return $result;
 }
 
@@ -866,16 +936,23 @@ function test00() {
 
 function metsis_set_session_var($name, $value) {
   $name = session_id() . '__metsis__' . $name;
-  variable_del($name);
-  variable_set($name, $value);
+  $tempstore = \Drupal::service('tempstore.private')->get('metsis');
+  $tempstore->delete($name);
+  $tempstore->set($name, $value);
 }
 
 function metsis_get_session_var($name) {
-  return variable_get(session_id() . '__metsis__' . $name);
+    $name = session_id() . '__metsis__' . $name;
+    $tempstore = \Drupal::service('tempstore.private')->get('metsis');
+    return $tempstore->get($name, $value);
+
 }
 
 function metsis_del_session_var($name) {
-  variable_del(session_id() . '__metsis__' . $name);
+  $name = session_id() . '__metsis__' . $name;
+  $tempstore = \Drupal::service('tempstore.private')->get('metsis');
+  $tempstore->delete($name);
+
 }
 
 function adc_get_map_base_layer($top_left_lat, $bottom_right_lat, $tol = 1.0e-10) {
@@ -891,103 +968,9 @@ function adc_get_map_base_layer($top_left_lat, $bottom_right_lat, $tol = 1.0e-10
   }
 }
 
-function adc_get_protocol_url($solr_core, $protocol, $metadata_identifier) {
-  $url = [];
-  $dar = adc_get_datasets_fields(SOLR_SERVER_IP, SOLR_SERVER_PORT, $solr_core, [$metadata_identifier], ['mmd_data_access_resource'], 0, 1);
-  foreach ($dar['response']['docs'][0]['mmd_data_access_resource'] as $elem) {
-    $parray = explode(':', $elem, 2);
-    if (trim($parray[0], '"') === $protocol) {
-      $uria = explode(',', $parray[1]);
-      array_push($url, trim($uria[0], '"'));
-    }
-  }
-  return $url[0];
-}
-
-function strip_dquotes($item) {
-  return trim($item, '"');
-}
-
-function bokeh_ydict_to_a($string) {
-  // hack to convert the string representation
-  // of Python dictionary returned by the Bokeh service
-  // will be replaced by PHP JSON decoder
-  $string = trim($string, "{");
-  $string = trim($string, "}");
-  $stringa = explode(':', $string);
-  $stringa[1] = trim($stringa[1], "[");
-  $stringa[1] = trim($stringa[1], "]");
-  $stringaa = explode(',', $stringa[1]);
-  $stringaa = array_map('strip_dquotes', $stringaa);
-  $variables[trim($stringa[0], '"')] = $stringaa;
-  return $variables;
-}
-
 /**
- * @param $title string
- * @param $type Drupal node type
- * @param $alias Drupal URL path alias
+ * test{
  */
-
-function adc_create_node($title, $type, $alias) {
-  /**
-   * Drupal 7 function for creating nodes
-   * To be used for creating nodes needed by METSIS modules
-   * TODO : Drupal registry does not record the action properly. Pages are
-   * active and usable, but flagged as "not found"
-   */
-  if (drupal_valid_path($alias) == 1) {
-    return;
-  }
-  else {
-    global $user;
-    $node = new stdClass();
-    $node->title = $title;
-    $node->type = $type;
-    node_object_prepare($node);
-    $node->uid = $user->uid;
-    $node->status = 1;
-    $node->promote = 0;
-    $node = node_submit($node);
-    $node->path['alias'] = $alias;
-    node_save($node);
-    drupal_set_message($alias . " created.", 'status');
-  }
-}
-
-function adc_get_this_url() {
-  $this_url = url(current_path(), [
-    'absolute' => TRUE,
-    'query' => drupal_get_query_parameters(),
-  ]);
-  return $this_url;
-}
-/**
- * @param $key
- * @param null $value
- *
- * @return mixed
- */
-
-//function lists_session($key, $value = NULL) {
-//  /**
-//   * save variable in session: lists_session('s_key', 'value');
-//   * retrieve the value: $myVar = lists_session('s_key')
-//   */
-//  static $storage;
-//  if ($value) {
-//    $storage[$key] = $value;
-//    $_SESSION['lists'][$key] = $value;
-//  }
-//  else {
-//    if (empty($storage[$key]) && isset($_SESSION['lists'][$key])) {
-//      $storage[$key] = $_SESSION['lists'][$key];
-//    }
-//  }
-//  return $storage[$key];
-//}
-
-
 //function metsis_get_session_var($name) {
 //  $name = session_id() . '__metsis__' . $name;
 //  return array_map('unserialize', db_query('SELECT name, value FROM {metsis_variable}')->fetchAllKeyed());
@@ -1004,4 +987,6 @@ function adc_get_this_url() {
 //    ->condition('name', $name)
 //    ->execute();
 //}
-
+/**
+ * test}
+ */

@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - metsis_search
+    - system
+  theme:
+    - metsis
+    - adc
+    - sios
+id: gcmdkeywordsblock
+theme: metsis
+region: breadcrumb
+weight: -20
+provider: null
+plugin: metsis_gcmd_block
+settings:
+  id: metsis_gcmd_block
+  label: 'GCMD Keywords'
+  provider: metsis_search
+  label_display: visible
+visibility:
+  request_path:
+    id: request_path
+    pages: "/metsis/search\r\n"
+    negate: false
+    context_mapping: {  }

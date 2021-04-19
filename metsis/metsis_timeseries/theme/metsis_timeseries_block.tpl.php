@@ -4,7 +4,7 @@ if (isset($form['results']['#value'])) {
   $plot_url = '"<img src="' . $form['results']['#value'][0][0] . '"></img>"';
 }
 
-$params = drupal_get_query_parameters();
+$params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters();
 //$calling_results_page = isset($_GET['calling_results_page']) ? check_plain($_GET['calling_results_page']) : '';
 $calling_results_page = isset($params['calling_results_page']) ? $params['calling_results_page'] : '';
 ?>

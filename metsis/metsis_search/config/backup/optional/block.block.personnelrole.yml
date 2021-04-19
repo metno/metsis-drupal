@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - facets.facet.personnel_role
+  module:
+    - facets
+  theme:
+    - bartik
+id: personnelrole
+theme: bartik
+region: sidebar_second
+weight: -15
+provider: null
+plugin: 'facet_block:personnel_role'
+settings:
+  id: 'facet_block:personnel_role'
+  label: 'Personnel Role'
+  provider: facets
+  label_display: visible
+  block_id: personnelrole
+visibility: {  }

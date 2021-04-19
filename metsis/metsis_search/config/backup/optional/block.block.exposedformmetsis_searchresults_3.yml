@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.metsis_search
+  module:
+    - system
+    - views
+  theme:
+    - metsis
+id: exposedformmetsis_searchresults_3
+theme: metsis
+region: sidebar_first
+weight: -17
+provider: null
+plugin: 'views_exposed_filter_block:metsis_search-results'
+settings:
+  id: 'views_exposed_filter_block:metsis_search-results'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+visibility:
+  request_path:
+    id: request_path
+    pages: '/metsis/elements/*'
+    negate: true
+    context_mapping: {  }

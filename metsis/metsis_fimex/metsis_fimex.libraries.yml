@@ -1,0 +1,7 @@
+fimex:
+  version: 1.x
+  css:
+    component:
+      css/metsis_fimex.css: {}
+  js:
+    js/metsis_fimex.js: {}
