@@ -1,7 +1,7 @@
 metsis_search.map:
-  path: /metsis/search/map
+  path: '/metsis/search/map'
   defaults:
-    _controller: \Drupal\metsis_search\Controller\MapSearchController::setBoundingBox
+    _controller: '\Drupal\metsis_search\Controller\MapSearchController::setBoundingBox'
     _title: "Ajax Callback for SearchMap BoundingBox"
   options:
     query:
@@ -14,9 +14,9 @@ metsis_search.map:
     _permission: 'access metsis search'
 
 metsis_search.place:
-  path: /metsis/search/place
+  path: '/metsis/search/place'
   defaults:
-    _controller: \Drupal\metsis_search\Controller\MapSearchController::setPlace
+    _controller: '\Drupal\metsis_search\Controller\MapSearchController::setPlace'
     _title: "Ajax Callback for SearchMap Place BoundingBox"
   options:
     query:
@@ -29,17 +29,17 @@ metsis_search.place:
     _permission: 'access metsis search'
 
 metsis_search.reset:
-  path: /metsis/search/reset
+  path: '/metsis/search/reset'
   defaults:
-    _controller: \Drupal\metsis_search\Controller\MapSearchController::reset
+    _controller: '\Drupal\metsis_search\Controller\MapSearchController::reset'
     _title: "Callback for SearchMap Reset BoundingBox and search"
   requirements:
     _permission: 'access metsis search'
 
 metsis_search.map_proj:
-  path: /metsis/search/map/projection
+  path: '/metsis/search/map/projection'
   defaults:
-    _controller: \Drupal\metsis_search\Controller\MapSearchController::setProjection
+    _controller: '\Drupal\metsis_search\Controller\MapSearchController::setProjection'
     _title: "Ajax Callback for SearchMap projection"
   options:
     query:
@@ -48,9 +48,9 @@ metsis_search.map_proj:
     _permission: 'access metsis search'
 
 metsis_search.children_count:
-  path: /metsis/elements/count
+  path: '/metsis/elements/count'
   defaults:
-    _controller: \Drupal\metsis_search\Controller\MetsisSearchController::getChildrenCount
+    _controller: '\Drupal\metsis_search\Controller\MetsisSearchController::getChildrenCount'
     _title: "Ajax Search Reset callback"
   options:
     query:
