@@ -750,7 +750,7 @@ console.log("Start of metsis search map script:");
         /** END Layerswitrcher sidebar control */
 
         /***** Initialize the map *****************/
-        console.log("Creating the map");
+        console.log("Creating the map with projection: " + selected_proj);
 
         function createMap() {
           return new ol.Map({

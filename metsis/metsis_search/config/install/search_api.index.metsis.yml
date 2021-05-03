@@ -403,11 +403,21 @@ field_settings:
     datasource_id: solr_document
     property_path: keywords_level7
     type: string
+  last_metadata_update:
+    label: 'Last metadata update'
+    datasource_id: solr_document
+    property_path: last_metadata_update
+    type: date
   last_metadata_update_datetime:
     label: 'Last metadata update_datetime'
     datasource_id: solr_document
     property_path: last_metadata_update_datetime
     type: date
+  last_metadata_update_history:
+    label: 'Last metadata update history'
+    datasource_id: solr_document
+    property_path: last_metadata_update_history
+    type: string
   last_metadata_update_note:
     label: 'Last metadata update note'
     datasource_id: solr_document

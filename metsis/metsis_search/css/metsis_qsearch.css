@@ -5,7 +5,13 @@
 .non-map-div .description {
   display: none;
 }
+/*
 #map-search {
+  width: 100%;
+  height: 460px;
+}*/
+
+#metmap {
   width: 100%;
   height: 460px;
 }

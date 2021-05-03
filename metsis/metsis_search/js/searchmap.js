@@ -19,8 +19,18 @@
     var base_layer_wms_south = drupalSettings.metsis_search.base_layer_wms_south;
     var projections = drupalSettings.metsis_search.projections;
     var layers_list = drupalSettings.metsis_search.layers_list;
+    var selected_proj = drupalSettings.metsis_search.proj;
 
     console.log("Start of searchmap.js script: "+additional_layers);
+    console.log("Init projection: " + init_proj);
+    console.log("Selected projection: " + selected_proj);
+    //Set current selected projection to initial projection if not altered by user $session
+    if (selected_proj == null) {
+      var selected_proj = init_proj;
+      var proj = init_proj;
+    } else {
+      var proj = selected_proj;
+    }
     // Create the projections input boxes
     for (var key in projections) {
       var value = projections[key];
@@ -161,7 +171,7 @@
       }
     };
 
-
+/*
     var ch = document.getElementsByName('map-search-projection');
 
     document.getElementById(init_proj).checked = true;
@@ -199,6 +209,64 @@
         addExtraLayers(projObjectforCode[prj].projection['code_']);
       }
     }
+*/
+/** Register event listner when Projection is changed.
+ * Rebuild pins and polygons and update map view */
+var ch = document.getElementsByName('map-res-projection');
+if (selected_proj != null) {
+  document.getElementById(selected_proj).checked = true;
+} else {
+  document.getElementById(init_proj).checked = true;
+}
+//document.getElementById(init_proj).checked = true;
+for (var i = ch.length; i--;) {
+  ch[i].onchange = function change_projection() {
+    prj = this.value;
+    proj = prj;
+    selected_proj = proj;
+    console.log("change projection event: " + prj);
+
+
+    //Update session information with user selected projection
+    /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
+    var myurl = '/metsis/search/map/projection?&proj=' + selected_proj;
+    console.log('calling controller url: ' + myurl);
+    data = Drupal.ajax({
+      url: myurl,
+      async: false
+    }).execute();
+
+    //Do something after ajax call are complete
+    $(document).ajaxComplete(function(event, xhr, settings) {
+      console.log('ajax complete:' + drupalSettings.metsis_search.proj);
+     selected_proj = drupalSettings.metsis_search_map_block.proj;
+     console.log("Selected proj after projection ajax call: " + selected_proj);
+    });
+
+
+    //Remove pins ans polygons
+    console.log("Remove pins and polygons layers");
+    //featureLayersGroup.getLayers().clear();
+
+
+    console.log("Update view to new selected projection: " + prj);
+    //console.log("Features extent: " + featuresExtent);
+    map.setView(new ol.View({
+      //center: ol.extent.getCenter(featuresExtent),
+      //center: ol.proj.transform([lon, lat], 'EPSG:4326', projObjectforCode[init_proj].projection),
+      //extent: projObjectforCode[prj].extent,
+      //projection: projObjectforCode[prj].projection,
+      zoom: defzoom,
+      center: ol.proj.transform([lon, lat], 'EPSG:4326', projObjectforCode[prj].projection['code_']),
+      extent: projObjectforCode[prj].extent,
+      projection: projObjectforCode[prj].projection['code_'],
+      //projection: prj,
+    }));
+  map.getView().setZoom(map.getView().getZoom());
+  }
+
+}
+
 
     // Define all layers
     var layer = {};
@@ -235,9 +303,79 @@
       })
     });
 
+    /**
+     * Define different basemaps layers to choose from here.
+     * Using layergroups and radio selection
+     */
+
+    const osmStandard = new ol.layer.Tile({
+      title: 'OSMStandard',
+      baseLayer: true,
+      visible: true,
+      source: new ol.source.OSM({}),
+    });
+
+    const osmHumanitarian = new ol.layer.Tile({
+      title: 'OSMHumanitarian',
+      baseLayer: true,
+      visible: false,
+      source: new ol.source.OSM({
+        url: 'https://{a-c}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+        crossOrigin: 'anonymous',
+      }),
+    });
+    const yandex = new ol.layer.Tile({
+      title: "Yandex",
+      baseLayer: true,
+      visible: false,
+      source: new ol.source.XYZ({
+        url: 'https://sat0{1-4}.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}',
+        maxZoom: 15,
+        transition: 0,
+        //opaque: true,
+        attributions: '© Yandex',
+        crossOrigin: 'anonymous',
+      }),
+    });
+
+    const esriSatellite = new ol.layer.Tile({
+      title: "ESRI",
+      baseLayer: true,
+      visible: false,
+      source: new ol.source.XYZ({
+        attributions: ['Powered by Esri',
+          'Source: Esri, DigitalGlobe, GeoEye, Earthstar Geographics, CNES/Airbus DS, USDA, USGS, AeroGRID, IGN, and the GIS User Community'
+        ],
+        attributionsCollapsible: false,
+        url: 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        maxZoom: 23,
+        crossOrigin: 'anonymous',
+      }),
+    });
+
+    const stamenTerrain = new ol.layer.Tile({
+      title: "stamenTerrain",
+      baseLayer: true,
+      visible: false,
+      source: new ol.source.XYZ({
+        attributions: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
+        url: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
+        crossOrigin: 'anonymous',
+      }),
+    });
+
+    //Create a layergroup to hold the different basemaps
+    const baseLayerGroup = new ol.layer.Group({
+      title: 'Base Layers',
+      //openInLayerSwitcher: true,
+      layers: [
+        osmStandard
+      ],
+    });
+
     var map = new ol.Map({
-      target: 'map-search',
-      layers: [layer['baseN']],
+      target: 'metmap',
+      layers: baseLayerGroup,
       view: new ol.View({
         zoom: defzoom,
         minZoom: 0,
@@ -258,7 +396,7 @@
     map.addControl(mousePositionControl);
 
 
-    function build_draw(proj) {
+    function build_draw(selected_proj) {
 
       // Add drawing vector source
       var drawingSource = new ol.source.Vector({
@@ -352,11 +490,13 @@
         //jQuery(brlon).attr('value', bottomRight[0]);
 
 
-        var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0];
+        var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0]  + '&proj=' + selected_proj;
         console.log('calling controller url: ' + myurl);
-        $.ajax({
-          url: myurl
-        });
+        Drupal.ajax({
+          url: myurl,
+          async: false
+        }).execute();
+        //});
         console.log('finished');
       });
 

@@ -41,14 +41,15 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
     //$bboxFilter = $tempstore->get('bboxFilter');
     $session = \Drupal::request()->getSession();
     $bboxFilter = $session->get('bboxFilter');
-    //$tllat = "";
-    //$tllon = "";
-    //$brlat = "";
-    //$brlon = "";
+    $tllat = "";
+    $tllon = "";
+    $brlat = "";
+    $brlon = "";
     $proj = $session->get('proj');
+    \Drupal::logger('metsis_search:mapBlock')->debug('current mapblock session projection: ' . $proj);
 
     if ($bboxFilter != null) {
-      $ttlat = $session->get('tllat');
+      $tllat = $session->get('tllat');
       $tllon = $session->get('tllon');
       $brlat = $session->get('brlat');
       $brlon = $session->get('brlon');
@@ -76,7 +77,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
     $map_layers_list =  $config->get('map_layers');
     $map_pins = $config->get('map_pins_b');
     $map_filter = $config->get('map_bbox_filter');
-    
+
 
     //Get the extracted info from tempstore
     //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
@@ -85,14 +86,14 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
     if($proj != null) { $map_init_proj = $proj; }
 
     $build['search-map'] = [
-      '#prefix' => '<p><div id="map-search" class="map-search">',
-      '#suffix' => '</div></p>'
+      '#prefix' => '<p><div id="map-search" class="w3-border map-search">',
+      '#suffix' => '</div>'
     ];
     // search-map wrapper
     $build['search-map']['panel'] = [
       '#prefix' => '<div id="panel" class="panel">',
       '#markup' => $map_search_text,
-      '#suffix' => '</div>'
+      '#suffix' => '</div><br>'
     ];
     $build['search-map']['panel']['layers'] = [
       '#type' => 'markup',
@@ -102,7 +103,13 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
     //Message to be displayed under the map
     $build['search-map']['projection'] = [
       '#type' => 'markup',
-      '#markup' => '<div class="proj-wrapper"><label class="proj-label">Select Projection</label></div>',
+      '#markup' => '<div class="proj-wrapper"><label class="proj-label"><strong>Select Projection</strong></label><br></div>',
+      '#allowed_tags' => ['div','label'],
+    ];
+
+    $build['map-div'] = [
+      '#type' => 'markup',
+      '#markup' => '<div id="metmap" class="metmap"></div>',
       '#allowed_tags' => ['div','label'],
     ];
     $build['suffix'] = [
@@ -139,6 +146,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
           'tllon' => $tllon,
           'brlon' => $brlon,
           'brlat' => $brlat,
+          'proj' => $proj,
         ],
       ],
 

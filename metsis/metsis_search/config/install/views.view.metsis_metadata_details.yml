@@ -3,8 +3,12 @@ status: true
 dependencies:
   config:
     - search_api.index.metsis
+    - user.role.administrator
+    - user.role.anonymous
+    - user.role.authenticated
   module:
     - search_api
+    - user
     - views_fieldsets
 id: metsis_metadata_details
 label: 'Metsis Metadata Details'
@@ -21,8 +25,12 @@ display:
     position: 0
     display_options:
       access:
-        type: none
-        options: {  }
+        type: role
+        options:
+          role:
+            anonymous: anonymous
+            authenticated: authenticated
+            administrator: administrator
       cache:
         type: tag
         options: {  }
@@ -273,9 +281,9 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
-          hide_alter_empty: false
+          hide_alter_empty: true
           plugin_id: custom
         data_center_long_name:
           id: data_center_long_name
@@ -322,7 +330,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -481,7 +489,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -590,7 +598,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -699,7 +707,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -756,11 +764,12 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
-            - last_metadata_update_datetime
-            - last_metadata_update_type
-            - last_metadata_update_note
             - metadata_identifier
+            - alternate_identifier_type
+            - alternate_identifier
             - metadata_status
+            - last_metadata_update
+            - last_metadata_update_history
             - operational_status
             - access_constraint
             - use_constraint_resource
@@ -771,165 +780,6 @@ display:
           collapsible: 1
           collapsed: 0
           plugin_id: fieldset
-        last_metadata_update_datetime:
-          id: last_metadata_update_datetime
-          table: search_api_index_metsis
-          field: last_metadata_update_datetime
-          relationship: none
-          group_type: group
-          admin_label: 'Last metadata update'
-          label: 'Last metadata update'
-          exclude: false
-          alter:
-            alter_text: true
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''solr_format'') }} '
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
-        last_metadata_update_type:
-          id: last_metadata_update_type
-          table: search_api_index_metsis
-          field: last_metadata_update_type
-          relationship: none
-          group_type: group
-          admin_label: 'last metadata update type'
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
-        last_metadata_update_note:
-          id: last_metadata_update_note
-          table: search_api_index_metsis
-          field: last_metadata_update_note
-          relationship: none
-          group_type: group
-          admin_label: 'last metadata update note'
-          label: ''
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
         metadata_identifier:
           id: metadata_identifier
           table: search_api_index_metsis
@@ -975,12 +825,118 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        alternate_identifier_type:
+          id: alternate_identifier_type
+          table: search_api_index_metsis
+          field: alternate_identifier_type
+          relationship: none
+          group_type: group
+          admin_label: 'alternate identifier type'
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
           multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        alternate_identifier:
+          id: alternate_identifier
+          table: search_api_index_metsis
+          field: alternate_identifier
+          relationship: none
+          group_type: group
+          admin_label: 'alternate identifier'
+          label: 'Alternate identifier'
+          exclude: false
+          alter:
+            alter_text: true
+            text: '{{ alternate_identifier_type }} - {{ alternate_identifier }} '
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: ol
           multi_separator: ', '
           plugin_id: search_api
         metadata_status:
@@ -1028,12 +984,118 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        last_metadata_update:
+          id: last_metadata_update
+          table: search_api_index_metsis
+          field: last_metadata_update
+          relationship: none
+          group_type: group
+          admin_label: 'last metadata update timestamp'
+          label: 'Last metadata update'
+          exclude: false
+          alter:
+            alter_text: true
+            text: '{{last_metadata_update | date(''U'') | format_date(''solr_format'') }} '
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
           multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        last_metadata_update_history:
+          id: last_metadata_update_history
+          table: search_api_index_metsis
+          field: last_metadata_update_history
+          relationship: none
+          group_type: group
+          admin_label: 'last metadata update history'
+          label: 'Last metadata update history'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: ol
           multi_separator: ', '
           plugin_id: search_api
         operational_status:
@@ -1081,7 +1143,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1187,7 +1249,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1366,7 +1428,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1419,7 +1481,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1472,7 +1534,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1525,7 +1587,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1578,7 +1640,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1631,7 +1693,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1684,7 +1746,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1737,7 +1799,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1790,7 +1852,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1843,7 +1905,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1896,7 +1958,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -1949,7 +2011,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2002,7 +2064,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2055,7 +2117,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2108,7 +2170,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2161,7 +2223,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2214,7 +2276,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2267,7 +2329,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2707,7 +2769,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           set_precision: false
@@ -2769,7 +2831,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           set_precision: false
@@ -2777,7 +2839,7 @@ display:
           decimal: .
           separator: ','
           format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
+          format_plural_string: !!binary Aw==
           prefix: ''
           suffix: ''
           link_to_item: false
@@ -2831,7 +2893,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           set_precision: false
@@ -2839,7 +2901,7 @@ display:
           decimal: .
           separator: ','
           format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
+          format_plural_string: !!binary Aw==
           prefix: ''
           suffix: ''
           link_to_item: false
@@ -2893,7 +2955,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           set_precision: false
@@ -2901,7 +2963,7 @@ display:
           decimal: .
           separator: ','
           format_plural: false
-          format_plural_string: !!binary MQNAY291bnQ=
+          format_plural_string: !!binary Aw==
           prefix: ''
           suffix: ''
           link_to_item: false
@@ -2955,7 +3017,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -2971,7 +3033,7 @@ display:
           group_type: group
           admin_label: 'dataset citation isbn'
           label: ISBN
-          exclude: true
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -3008,7 +3070,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3061,7 +3123,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3114,7 +3176,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3709,7 +3771,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3827,7 +3889,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3880,7 +3942,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3933,7 +3995,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -3986,7 +4048,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4039,7 +4101,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4092,7 +4154,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4145,7 +4207,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4198,7 +4260,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4251,7 +4313,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -4304,7 +4366,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -7790,7 +7852,7 @@ display:
             alter_text: false
             text: ''
             make_link: true
-            path: '{{ data_access_url_opendap }}'
+            path: '{{ data_access_url_opendap ~ ''.html''}}'
             absolute: false
             external: true
             replace_spaces: false
@@ -8521,6 +8583,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
+        - user.roles
       tags:
         - 'config:search_api.index.metsis'
   page_1:
@@ -8540,5 +8603,6 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
+        - user.roles
       tags:
         - 'config:search_api.index.metsis'
