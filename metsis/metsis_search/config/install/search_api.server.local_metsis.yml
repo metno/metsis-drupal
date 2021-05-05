@@ -47,6 +47,7 @@ backend_config:
     commit_within: 1000
     solr_version: '8'
     http_method: AUTO
+    skip_schema_check: false
     jmx: false
     solr_install_dir: ''
   disabled_field_types: {  }
@@ -61,7 +62,7 @@ backend_config:
   index_single_documents_fallback_count: 10
   retrieve_data: true
   highlight_data: true
-  skip_schema_check: true
+  fallback_multiple: false
   server_prefix: ''
   domain: generic
   environment: default

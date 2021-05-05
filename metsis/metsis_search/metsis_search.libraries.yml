@@ -32,9 +32,11 @@ ts_plot:
 search_map:
   version: 1.0
   css:
+    component:
+      /libraries/openlayers6/css/ol.css: {}
     theme:
       css/metsis_qsearch.css: {}
-      /libraries/openlayers6/css/ol.css: {}
+
   js:
     #js/bundle.js: {}
     /libraries/openlayers6/build/ol.js: {}
@@ -75,7 +77,7 @@ search_map_block:
     /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
     #https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
     #js/metsis_search_map_block.js: {}
-    https://unpkg.com/ol-geocoder:  { type: external }
+    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external }
     js/metsis_res_map.js: {}
   dependencies:
     - core/jquery

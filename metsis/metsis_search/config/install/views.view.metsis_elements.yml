@@ -1231,7 +1231,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\">Show extended metadata</a>"
+            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\">Metadata</a>"
             make_link: false
             path: ''
             absolute: false

@@ -183,4 +183,8 @@ dmypy.json
 #Ignore contrib and metno
 contrib/
 metno/
+
+#Ignore other folders
+media_migration/
+sios_fix/
 # End of https://www.gitignore.io/api/python,drupal7,netbeans
