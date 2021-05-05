@@ -83,13 +83,14 @@ in fullscreen by openlayers fullScreenControl */
 /* Sidepanel style and layout */
 .map-sidepanel {
   width: 0;
-  height: 450px;
+  /*height: 450px;*/
+  height: 50em;
 /*  min-height: 100%; */
   float: right;
 
   overflow-y: scroll;
   /* Stay on top */
-  background: #98C6CC;
+  /*background: #98C6CC;*/
   /* Disable horizontal scroll */
   /* Place content 60px from the top */
   transition: 0.3s;
@@ -115,7 +116,7 @@ in fullscreen by openlayers fullScreenControl */
 .map-sidepanel-title {
   width: 100%;
   font-size: 1.2em;
-  color: #ffffff;
+  /*color: #ffffff;*/
   display: block;
   margin-bottom: 5px;
   text-align: center;
@@ -153,7 +154,7 @@ in fullscreen by openlayers fullScreenControl */
 
 /* Position and style the close button (top right corner) */
 .map-sidepanel .map-closebtn {
-  color: #FFFFFF;
+  /*color: #FFFFFF;*/
 }
 
 .map-closebtn-wrapper {
