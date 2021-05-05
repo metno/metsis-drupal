@@ -798,6 +798,11 @@ field_settings:
     datasource_id: solr_document
     property_path: platform_orbit_relative
     type: integer
+  platform_resource:
+    label: 'Platform resource'
+    datasource_id: solr_document
+    property_path: platform_resource
+    type: string
   platform_short_name:
     label: 'Platform short name'
     datasource_id: solr_document

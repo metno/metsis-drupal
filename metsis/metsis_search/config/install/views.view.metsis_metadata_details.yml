@@ -931,8 +931,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
-          empty_zero: false
+          hide_empty: true
+          empty_zero: true
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -1090,7 +1090,7 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
@@ -5781,15 +5781,15 @@ display:
           multi_type: separator
           multi_separator: ', '
           plugin_id: search_api
-        platform_short_name:
-          id: platform_short_name
-          table: search_api_index_metsis
-          field: platform_short_name
+        fieldset_4:
+          id: fieldset_4
+          table: views
+          field: fieldset
           relationship: none
           group_type: group
-          admin_label: 'platform short name'
+          admin_label: Platform
           label: ''
-          exclude: true
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -5821,19 +5821,29 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: false
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
-          empty_zero: true
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
+          fields:
+            - platform_long_name
+            - platform_resource
+            - platform_short_name
+            - platform_orbit_absolute
+            - platform_orbit_direction
+            - platform_orbit_relative
+            - platform_ancillary_cloud_coverage
+            - platform_ancillary_scene_coverage
+          wrapper: details
+          legend: Platform
+          classes: ''
+          collapsible: 1
+          collapsed: 0
+          plugin_id: fieldset
         platform_long_name:
           id: platform_long_name
           table: search_api_index_metsis
@@ -5887,13 +5897,420 @@ display:
           multi_type: separator
           multi_separator: ', '
           plugin_id: search_api
-        fieldset_4:
-          id: fieldset_4
+        platform_resource:
+          id: platform_resource
+          table: search_api_index_metsis
+          field: platform_resource
+          relationship: none
+          group_type: group
+          admin_label: 'Platform name and resource link'
+          label: Name
+          exclude: false
+          alter:
+            alter_text: true
+            text: '<a href="{{ platform_resource }}">{{ platform_long_name }}</a>'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        platform_short_name:
+          id: platform_short_name
+          table: search_api_index_metsis
+          field: platform_short_name
+          relationship: none
+          group_type: group
+          admin_label: 'platform short name'
+          label: 'Short name'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: true
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        platform_orbit_absolute:
+          id: platform_orbit_absolute
+          table: search_api_index_metsis
+          field: platform_orbit_absolute
+          relationship: none
+          group_type: group
+          admin_label: 'Orbit absolute'
+          label: 'Orbit absolute'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          set_precision: false
+          precision: 0
+          decimal: .
+          separator: ','
+          format_plural: false
+          format_plural_string: !!binary Aw==
+          prefix: ''
+          suffix: ''
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          format_plural_values: {  }
+          plugin_id: search_api_numeric
+        platform_orbit_direction:
+          id: platform_orbit_direction
+          table: search_api_index_metsis
+          field: platform_orbit_direction
+          relationship: none
+          group_type: group
+          admin_label: 'Orbit direction'
+          label: 'Orbit direction'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        platform_orbit_relative:
+          id: platform_orbit_relative
+          table: search_api_index_metsis
+          field: platform_orbit_relative
+          relationship: none
+          group_type: group
+          admin_label: 'Orbit relative'
+          label: 'Orbit relative'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          set_precision: false
+          precision: 0
+          decimal: .
+          separator: ','
+          format_plural: false
+          format_plural_string: !!binary MQNAY291bnQ=
+          prefix: ''
+          suffix: ''
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          format_plural_values: {  }
+          plugin_id: search_api_numeric
+        platform_ancillary_cloud_coverage:
+          id: platform_ancillary_cloud_coverage
+          table: search_api_index_metsis
+          field: platform_ancillary_cloud_coverage
+          relationship: none
+          group_type: group
+          admin_label: 'platform ancillary cloud coverage'
+          label: 'Cloud coverage'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
+          set_precision: false
+          precision: 0
+          decimal: .
+          separator: ','
+          format_plural: false
+          format_plural_string: !!binary Aw==
+          prefix: ''
+          suffix: ''
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          format_plural_values: {  }
+          plugin_id: search_api_numeric
+        platform_ancillary_scene_coverage:
+          id: platform_ancillary_scene_coverage
+          table: search_api_index_metsis
+          field: platform_ancillary_scene_coverage
+          relationship: none
+          group_type: group
+          admin_label: 'platform ancillary scene coverage'
+          label: 'Scene coverage'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          set_precision: false
+          precision: 0
+          decimal: .
+          separator: ','
+          format_plural: false
+          format_plural_string: !!binary Aw==
+          prefix: ''
+          suffix: ''
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          format_plural_values: {  }
+          plugin_id: search_api_numeric
+        fieldset_16:
+          id: fieldset_16
           table: views
           field: fieldset
           relationship: none
           group_type: group
-          admin_label: Platform
+          admin_label: Instrument
           label: ''
           exclude: false
           alter:
@@ -5941,10 +6358,8 @@ display:
             - platform_instrument_mode
             - platform_instrument_polarisation
             - platform_instrument_product_type
-            - platform_ancillary_cloud_coverage
-            - platform_ancillary_scene_coverage
           wrapper: details
-          legend: 'Platform: {{ platform_long_name }} ({{ platform_short_name }})'
+          legend: Instrument
           classes: ''
           collapsible: 1
           collapsed: 0
@@ -6214,130 +6629,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           plugin_id: search_api
-        platform_ancillary_cloud_coverage:
-          id: platform_ancillary_cloud_coverage
-          table: search_api_index_metsis
-          field: platform_ancillary_cloud_coverage
-          relationship: none
-          group_type: group
-          admin_label: 'platform ancillary cloud coverage'
-          label: 'Cloud coverage'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: true
-          empty_zero: false
-          hide_alter_empty: true
-          set_precision: false
-          precision: 0
-          decimal: .
-          separator: ','
-          format_plural: false
-          format_plural_string: !!binary Aw==
-          prefix: ''
-          suffix: ''
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          format_plural_values: {  }
-          plugin_id: search_api_numeric
-        platform_ancillary_scene_coverage:
-          id: platform_ancillary_scene_coverage
-          table: search_api_index_metsis
-          field: platform_ancillary_scene_coverage
-          relationship: none
-          group_type: group
-          admin_label: 'platform ancillary scene coverage'
-          label: 'Scene coverage'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          set_precision: false
-          precision: 0
-          decimal: .
-          separator: ','
-          format_plural: false
-          format_plural_string: !!binary Aw==
-          prefix: ''
-          suffix: ''
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          format_plural_values: {  }
-          plugin_id: search_api_numeric
         fieldset_5:
           id: fieldset_5
           table: views
@@ -7958,7 +8249,7 @@ display:
             alter_text: false
             text: ''
             make_link: true
-            path: '{{ data_access_url_ogc_wms }}'
+            path: '{{ data_access_url_ogc_wms  ~  ''?SERVICE=WMS&REQUEST=GetCapabilities'' }}'
             absolute: false
             external: true
             replace_spaces: false
