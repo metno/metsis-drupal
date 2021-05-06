@@ -52,7 +52,8 @@ in fullscreen by openlayers fullScreenControl */
   outline-width: 0px;
   overflow-wrap: break-word;
   position: relative;
-  user-select: none
+  user-select: none;
+  background-color: #aad3df;
 }
 
 .mapcontainer:fullscreen {
