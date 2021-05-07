@@ -41,7 +41,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         $session = \Drupal::request()->getSession();
         $bboxFilter = $session->get('bboxFilter');
         $proj = $session->get('proj');
-
+        \Drupal::logger('metsis_search:metsis_search_map')->debug('current session projection: ' . $proj);
         //Extract info from request object:
         $request = \Drupal::request();
         $searchUri = $request->getRequestUri();

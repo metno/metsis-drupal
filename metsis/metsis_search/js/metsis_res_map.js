@@ -379,9 +379,13 @@ console.log("Start of metsis search map script:");
             }));
             console.log("Rebuild pins and polygons features with projection: " + prj);
             featuresExtent = buildFeatures(projObjectforCode[prj].projection);
+
+            //If wms layers a
+
             //Zoom to new extent
             map.getView().fit(featuresExtent);
             map.getView().setZoom(map.getView().getZoom() - 0.3);
+              progress_bar()
           }
 
         }
@@ -788,7 +792,7 @@ console.log("Start of metsis search map script:");
           map.getLayers().forEach(function(layer, index, array) {
             if (layer.get('title') === 'WMS Layers') {
               layer.getLayers().forEach(function(layer,index, array) {
-                //if(layer.getLayers().getArray().length > 0 ) {
+                if(layer.getLayers().getArray().length > 0 ) {
                 layer.getLayers().forEach(function(layer,index, array) {
                 //for all tiles that are done loading update the progress bar
                 layer.getSource().on('tileloadend', function() {
@@ -808,7 +812,7 @@ console.log("Start of metsis search map script:");
                   ++tilesPending;
                 });
               });
-          /*  }
+            }
             else {
               layer.getSource().on('tileloadend', function() {
                 tilesLoaded += 1;
@@ -826,7 +830,7 @@ console.log("Start of metsis search map script:");
               layer.getSource().on('tileloadstart', function() {
                 ++tilesPending;
               });
-            } */
+            }
             });
           }
           });
@@ -1311,6 +1315,7 @@ console.log("Start of metsis search map script:");
                 map.getView().fit(geom.getExtent());
                 //map.getView().fit(wmsLayer.getExtent())
                 map.getView().setZoom(map.getView().getZoom());
+                  progress_bar()
               }
             };
 
@@ -1644,7 +1649,7 @@ console.log("Start of metsis search map script:");
             var sentinel2Layers = ['true_color_vegetation', 'false_color_vegetation', 'false_color_glacier', 'false_color_glacier', 'opaque_clouds', 'cirrus_clouds'];
 
             var layer_name = 'Composites';
-            if (id.includes("S2")) {
+            if (wmsResource.includes("S2")) {
               layer_name = 'true_color_vegetation';
             }
             else if (wms_layers[0] == "Amplitude VV polarisation") {
@@ -1653,6 +1658,9 @@ console.log("Start of metsis search map script:");
             else {
               layer_name =  'amplitude_hh';
             }
+            var wmsUrl = wmsResource;
+            wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
+            wmsUrl = wmsUrl.split("?")[0];
             wmsLayerGroup.getLayers().push(
               new ol.layer.Tile({
                 title: title,
@@ -1664,7 +1672,7 @@ console.log("Start of metsis search map script:");
                 //styles: ls[i].Style,
                 source: new ol.source.TileWMS(({
                   projection: selected_proj,
-                  url: wmsResource,
+                  url: wmsUrl,
                   reprojectionErrorThreshold: 0.1,
                   params: {
                     'LAYERS': layer_name,
@@ -1686,6 +1694,7 @@ console.log("Start of metsis search map script:");
             map.getView().fit(geom.getExtent());
             //map.getView().fit(wmsLayer.getExtent())
             map.getView().setZoom(map.getView().getZoom());
+              progress_bar()
           }
         }
 
@@ -1899,7 +1908,7 @@ console.log("Start of metsis search map script:");
 
               /*If we have sentinel prducts, assume no timedimension and standard layer name Composites.
                call the simple visualiseWmsLayer function */
-              if (isSentinelProduct(id, sentinelStrings)) {
+              if (isSentinelProduct(wmsResource, sentinelStrings)) {
                 visualiseWmsLayer(wmsResource, id, title, feature_ids[id].geom, wmsLayer);
                 //getWmsLayers2(wmsResource, title, feature_ids[id].geom)
               }
@@ -1994,7 +2003,7 @@ console.log("Start of metsis search map script:");
                     //$('.ol-popup').hide();
                     popUpOverlay.setPosition(undefined);
                     //visualiseWmsLayer(wmsResource,id,title, geom)
-                    if (isSentinelProduct(id, sentinelStrings)) {
+                    if (isSentinelProduct(wmsResource, sentinelStrings)) {
                       visualiseWmsLayer(wmsResource, selected_id, title, feature_ids[selected_id].geom, feature_ids[id].wms_layer)
                     }
                     /* Else we call function that add all layers and timedimensions */
@@ -2450,7 +2459,7 @@ map.addControl(geocoder);
           wms = extracted_info[i][0][1];
           wmslayer = extracted_info[i][17];
           //if(debug) {console.log("id: "+id+ ",wms:" +wms)};
-          if (wms != null && wms != "" && isSentinelProduct(id, ['S1B', 'S1A', 'S2B', 'S2A'])) {
+          if (wms != null && wms != "" && isSentinelProduct(wms, ['S1B', 'S1A', 'S2B', 'S2A'])) {
             wmsProducts.push(id);
             wmsProductLayers.push(wms);
             if(wmslayer != null) {
@@ -2480,6 +2489,10 @@ map.addControl(geocoder);
               if(debug){console.log(i + " - " + wmsProducts[i]);}
               if(debug){console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]);}
               //alert(wmsProducts[i]);
+
+              var wmsUrl = wmsProductLayers[i];
+              wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
+              wmsUrl = wmsUrl.split("?")[0];
               var myGroup = new ol.layer.Group({
                 title: wmsProducts[i],
               });
@@ -2500,7 +2513,7 @@ map.addControl(geocoder);
                   visible: true,
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
-                    url: wmsProductLayers[i],
+                    url: wmsUrl,
                     projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
@@ -2521,7 +2534,7 @@ map.addControl(geocoder);
                   visible: false,
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
-                    url: wmsProductLayers[i],
+                    url: wmsUrl,
                     projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
