@@ -878,8 +878,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
-          empty_zero: false
+          hide_empty: true
+          empty_zero: true
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -3362,7 +3362,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'investigator email'
-          label: 'Email:'
+          label: Email
           exclude: false
           alter:
             alter_text: false
@@ -5942,8 +5942,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
-          empty_zero: false
+          hide_empty: true
+          empty_zero: true
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -5990,7 +5990,7 @@ display:
           element_class: ''
           element_label_type: strong
           element_label_class: ''
-          element_label_colon: false
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -6353,8 +6353,8 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
-            - platform_instrument_short_name
             - platform_instrument_long_name
+            - platform_instrument_short_name
             - platform_instrument_mode
             - platform_instrument_polarisation
             - platform_instrument_product_type
@@ -6364,59 +6364,6 @@ display:
           collapsible: 1
           collapsed: 0
           plugin_id: fieldset
-        platform_instrument_short_name:
-          id: platform_instrument_short_name
-          table: search_api_index_metsis
-          field: platform_instrument_short_name
-          relationship: none
-          group_type: group
-          admin_label: 'paltform instrument short name'
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_long_name:
           id: platform_instrument_long_name
           table: search_api_index_metsis
@@ -6424,10 +6371,10 @@ display:
           relationship: none
           group_type: group
           admin_label: 'paltform instrument long name'
-          label: Instrument
+          label: Name
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{ platform_instrument_long_name }} ({{ platform_instrument_short_name }} )'
             make_link: false
             path: ''
@@ -6463,6 +6410,59 @@ display:
           element_default_classes: true
           empty: ''
           hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
+        platform_instrument_short_name:
+          id: platform_instrument_short_name
+          table: search_api_index_metsis
+          field: platform_instrument_short_name
+          relationship: none
+          group_type: group
+          admin_label: 'paltform instrument short name'
+          label: 'Short name'
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
