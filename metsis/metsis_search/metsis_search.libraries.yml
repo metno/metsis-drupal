@@ -108,3 +108,8 @@ gcmd:
       css/gcmd.css: {}
   js:
     js/gcmd.js: {}
+
+export:
+  version: 1.0
+  js:
+    js/export.js: {}
