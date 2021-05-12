@@ -493,6 +493,11 @@ field_settings:
     datasource_id: solr_document
     property_path: mmd_repo_path
     type: string
+  mmd_xml_file:
+    label: 'Mmd xml file'
+    datasource_id: solr_document
+    property_path: mmd_xml_file
+    type: solr_string_storage
   operational_status:
     label: 'Operational status'
     datasource_id: solr_document
