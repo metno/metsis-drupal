@@ -5830,6 +5830,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
+            - platform_resource_1
             - platform_long_name
             - platform_resource
             - platform_short_name
@@ -5908,7 +5909,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a href="{{ platform_resource }}">{{ platform_long_name }}</a>'
+            text: "{% if platform_resource %}\r\n<a href=\"{{ platform_resource }}\">{{ platform_long_name }}</a>\r\n{% else %}\r\n{{ platform_long_name }}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -6353,6 +6354,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
+            - platform_instrument_resource
             - platform_instrument_long_name
             - platform_instrument_short_name
             - platform_instrument_mode
@@ -6364,6 +6366,59 @@ display:
           collapsible: 1
           collapsed: 0
           plugin_id: fieldset
+        platform_instrument_resource:
+          id: platform_instrument_resource
+          table: search_api_index_metsis
+          field: platform_instrument_resource
+          relationship: none
+          group_type: group
+          admin_label: 'platform instrument resource'
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          plugin_id: search_api
         platform_instrument_long_name:
           id: platform_instrument_long_name
           table: search_api_index_metsis
@@ -6374,8 +6429,8 @@ display:
           label: Name
           exclude: false
           alter:
-            alter_text: false
-            text: '{{ platform_instrument_long_name }} ({{ platform_instrument_short_name }} )'
+            alter_text: true
+            text: "{% if platform_instrument_resource %}\r\n<a href=\"{{ platform_instrument_resource }}\">{{ platform_instrument_long_name }}</a>\r\n{% else %}\r\n{{ platform_instrument_long_name }}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -6409,8 +6464,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
-          empty_zero: false
+          hide_empty: true
+          empty_zero: true
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -6425,7 +6480,7 @@ display:
           group_type: group
           admin_label: 'paltform instrument short name'
           label: 'Short name'
-          exclude: true
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -6457,7 +6512,7 @@ display:
           element_class: ''
           element_label_type: strong
           element_label_class: ''
-          element_label_colon: false
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
