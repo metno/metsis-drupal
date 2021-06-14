@@ -1094,6 +1094,11 @@ field_settings:
     datasource_id: solr_document
     property_path: use_constraint_identifier
     type: string
+  use_constraint_license_text:
+    label: 'Use constraint license text'
+    datasource_id: solr_document
+    property_path: use_constraint_license_text
+    type: string
   use_constraint_resource:
     label: 'Use constraint resource'
     datasource_id: solr_document
