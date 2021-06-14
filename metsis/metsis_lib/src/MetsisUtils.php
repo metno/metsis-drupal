@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  *
  * @file
  * Contains \Drupal\metsis_lib\SearchUtils
  *
  * utility functions for metsis_lib
  *
- **/
+ */
 namespace Drupal\metsis_lib;
 
 use \Drupal\metsis_lib\HttpConnection;

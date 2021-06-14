@@ -25,12 +25,16 @@
    $('.visualise-ts-div').once().each(function() {
      var opendap_url = $('#opendap-url',this).text();
      var id =  $('#opendap-id',this).text();
+
+     console.log('Got timeseries id: ' + id);
      $('#ts-plot-button', this).once().each(function (){
 
 
 
    $(this).click(function () {
              console.log("calling ts-plot with url: "+opendap_url);
+             //id = id.replace('.', '_');
+             console.log('Width  timeseries ID: ' + id);
              if ( $('#ts-plot-'+id).html().length > 0 || $('#bokeh-ts-plot-'+id).find('.ts-vars').html().length > 0) {
                $('#ts-plot-'+id).empty();
                $('#bokeh-ts-plot-'+id).find('.ts-vars').empty();

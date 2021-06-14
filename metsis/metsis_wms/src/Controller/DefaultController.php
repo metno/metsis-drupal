@@ -1,4 +1,5 @@
-<?php /**
+<?php
+/**
  * @file
  * Contains \Drupal\metsis_wms\Controller\DefaultController.
  */

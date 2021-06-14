@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  *
  * @file
  * Contains \Drupal\metsis_search\MetsisSearchConfigurationForm
  *
  * Form for Landing Page Creator Admin Configuration
  *
- **/
+ */
 namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Form\ConfigFormBase;

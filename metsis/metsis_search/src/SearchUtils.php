@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  *
  * @file
  * Contains \Drupal\metsis_search\SearchUtils
  *
  * utility functions for metsis_search
  *
- **/
+ */
 namespace Drupal\metsis_search;
 
 use Solarium\QueryType\Select\Query\Query;
@@ -258,7 +258,7 @@ class SearchUtils
              * time series{
              */
              $feature_type = isset($fields['feature_type']) ? $fields['feature_type'] : 'NA';
-            
+
             $server_type = $config->get('ts_server_type');
             if (isset($fields['feature_type']) && isset($fields['data_access_url_opendap'])) {
                 $feature_type = $fields['feature_type'];

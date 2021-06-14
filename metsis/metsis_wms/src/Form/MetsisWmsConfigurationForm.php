@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  *
  * @file
  * Contains \Drupal\metsis_wms\MetsisWmsConfigurationForm
  *
  * Form for Landing Page Creator Admin Configuration
  *
- **/
+ */
 namespace Drupal\metsis_wms\Form;
 
 use Drupal\Core\Form\ConfigFormBase;

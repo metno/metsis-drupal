@@ -1,12 +1,12 @@
 <?php
-/*
+/**
  *
  * @file
  * Contains \Drupal\metsis_ts_bokeh\Form\MetsisTsBokehConfigurationForm
  *
  * Form for Metsis TS Bokeh Admin Configuration
  *
- **/
+ */
 namespace Drupal\metsis_ts_bokeh\Form;
 
 use Drupal\Core\Form\ConfigFormBase;

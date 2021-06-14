@@ -319,6 +319,16 @@ console.log("Start of wms map script:");
             //featuresExtent = buildFeatures(projObjectforCode[prj].projection);
             //Zoom to new extent
             //map.getView().fit(featuresExtent);
+/*            wmsLayerGroup.getLayers().forEach( function (el, idx, arr) {
+              console.log(el);
+              el.getLayers().forEach( function (el, idx, arr) {
+                console.log(el);
+                el.getLayers().forEach( function (el, idx, arr) {
+                  console.log(el);
+              el.getSource().refresh();
+            )};
+            });
+            });*/
             map.getView().setZoom(map.getView().getZoom());
           }
 

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * @file
  * Contains \Drupal\metsis_search\Plugin\Block\MapBlock
  *
