@@ -3,7 +3,6 @@ status: true
 dependencies:
   config:
     - search_api.index.metsis
-    - system.menu.main
     - user.role.administrator
     - user.role.anonymous
     - user.role.authenticated
@@ -2295,11 +2294,11 @@ display:
           geocluster_enabled: false
           geocluster_options: {  }
         views_merge_rows: {  }
-        metatag_display_extender: {  }
         library_in_views_display_extender: {  }
+        metatag_display_extender: {  }
       path: metsis/search
       menu:
-        type: normal
+        type: none
         title: 'Metsis Search'
         description: 'Search Metadata'
         expanded: false

@@ -18,7 +18,7 @@
 
 downloadBase64File(xml, 'mmd_export.xml')
       )
-      console.log("End of searchmap.js script");
+      console.log("End of export.js script");
 
   });
 },

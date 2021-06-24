@@ -63,6 +63,9 @@ class DefaultController extends ControllerBase {
       $pywps_service = $config->get('pywps_service');
       $map_wms_layers_skip = explode(',', $config->get('map_wms_layers_skip'));
 
+      $session = \Drupal::request()->getSession();
+      $proj = $session->get('proj');
+
       $markup = 'No Data Found!';
       $webMapServers = [];
       \Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
@@ -70,6 +73,7 @@ class DefaultController extends ControllerBase {
           $datasets = explode(",", $query['dataset']);
           $fields = [
             "id",
+            "title",
             "data_access_url_ogc_wms",
             "data_access_wms_layers",
             "metadata_identifier",
@@ -137,6 +141,7 @@ class DefaultController extends ControllerBase {
                         $geographical_extent_west,
                       ];
             $wms_data[$mi]['geom'] = $geographical_extent;
+            $wms_data[$mi]['title'] = $fields['title'];
           }
          else {
             \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
@@ -380,7 +385,7 @@ class DefaultController extends ControllerBase {
 
       //Set the cache for this form
       $build['#cache'] = [
-        //'max-age' => 0,
+        'max-age' => 0,
        //'tags' =>$this->getCacheTags(),
         'contexts' => [
         //  'route',
@@ -409,6 +414,7 @@ class DefaultController extends ControllerBase {
         'pywps_service' => $pywps_service,
         'wms_layers_skip' => $map_wms_layers_skip,
         'wms_data' => $wms_data,
+        'selected_proj' => $proj,
         ],
       ],
     ];

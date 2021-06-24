@@ -344,7 +344,7 @@ console.log("Start of metsis search map script:");
           ch[i].onchange = function change_projection() {
             prj = this.value;
             proj = prj;
-            selected_proj = proj;
+            selected_proj = prj;
             console.log("change projection event: " + prj);
 
 
@@ -352,17 +352,17 @@ console.log("Start of metsis search map script:");
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
             var myurl = '/metsis/search/map/projection?&proj=' + selected_proj;
             console.log('calling controller url: ' + myurl);
-            data = Drupal.ajax({
+            let data = Drupal.ajax({
               url: myurl,
-              async: false
+              async: true
             }).execute();
 
             //Do something after ajax call are complete
-            $(document).ajaxComplete(function(event, xhr, settings) {
-              console.log('ajax complete:' + drupalSettings.metsis_search_map_block.proj);
-             selected_proj = drupalSettings.metsis_search_map_block.proj;
+            //$(document).ajaxComplete(function(event, xhr, settings) {
+            //  console.log('ajax complete:' + drupalSettings.metsis_search_map_block.proj);
+            // selected_proj = drupalSettings.metsis_search_map_block.proj;
 
-            });
+            //});
 
 
             //Remove pins ans polygons
@@ -371,12 +371,15 @@ console.log("Start of metsis search map script:");
 
 
             console.log("Update view to new selected projection: " + prj);
+            console.log(projObjectforCode[prj].projection);
             console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
+              minZoom: 0,
+              maxZoom: 23,
               center: ol.extent.getCenter(featuresExtent),
               extent: projObjectforCode[prj].extent,
-              projection: projObjectforCode[prj].projection,
-              //projection: prj,
+              //projection: projObjectforCode[prj].projection,
+              projection: selected_proj,
             }));
             console.log("Rebuild pins and polygons features with projection: " + prj);
             featuresExtent = buildFeatures(projObjectforCode[prj].projection);
@@ -386,6 +389,20 @@ console.log("Start of metsis search map script:");
             //Zoom to new extent
             map.getView().fit(featuresExtent);
             map.getView().setZoom(map.getView().getZoom() - 0.3);
+            wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
+              if ( layer instanceof ol.layer.Tile ) {
+                layer.getSource().updateParams({'CRS': selected_proj});
+                layer.getSource().refresh();
+              }
+              else {
+                layer.getLayers().forEach(function(layer,index, array) {
+                  if ( layer instanceof ol.layer.Tile ) {
+                    layer.getSource().updateParams({'CRS': selected_proj});
+                    layer.getSource().refresh();
+                  }
+            });
+          }
+        });
               progress_bar()
           }
 
@@ -791,13 +808,16 @@ console.log("Start of metsis search map script:");
           var tilesPending = 0;
           //load all S1 and S2 entries
           map.getLayers().forEach(function(layer, index, array) {
-            if (layer.get('title') === 'WMS Layers') {
+
+            if (layer.get('title') === 'WMS Layers' &&  layer instanceof ol.layer.Group) {
+              console.log( layer instanceof ol.layer.Group);
               layer.getLayers().forEach(function(layer,index, array) {
                 //console.log(array.length);
                 //console.log(Object.getPrototypeOf(layer));
-                if(layer.length > 0 ) {
+                if( layer instanceof ol.layer.Group ) {
                 layer.getLayers().forEach(function(layer,index, array) {
                 //for all tiles that are done loading update the progress bar
+                //layer.getSource().refresh();
                 layer.getSource().on('tileloadend', function() {
                   tilesLoaded += 1;
                   var percentage = Math.round(tilesLoaded / tilesPending * 100);
@@ -910,7 +930,7 @@ console.log("Start of metsis search map script:");
           map.getView().setCenter(ol.extent.getCenter(featuresExtent));
           //map.getView().fit(featuresExtent);
           map.getView().setZoom(map.getView().getZoom());
-          console.log(map.getLayers()[0]);
+        //  console.log(map.getLayers()[0]);
         }
 
 
@@ -1289,7 +1309,7 @@ console.log("Start of metsis search map script:");
                           source: new ol.source.TileWMS(({
                             url: wmsUrl,
                             reprojectionErrorThreshold: 0.1,
-                            projection: selected_proj,
+                            //projection: selected_proj,
                             params: {
                               'LAYERS': ls[i].Name,
                               'VERSION': result.version,
@@ -1487,7 +1507,7 @@ console.log("Start of metsis search map script:");
                         source: new ol.source.TileWMS(({
                           url: wmsUrl,
                           reprojectionErrorThreshold: 0.1,
-                          projection: selected_proj,
+                          //projection: selected_proj,
                           params: {
                             'LAYERS': ls[i].Name,
                             'VERSION': result.version,
@@ -1641,11 +1661,11 @@ console.log("Start of metsis search map script:");
         function visualiseWmsLayer(wmsResource, id, title, geom, wms_layers) {
           //Check WMS product:
           if (wmsResource != null && wmsResource != "") {
-            console.log("Got WMS product: " + id);
-
+            console.log("Got Sentinel WMS product: " + id);
+            console.log("Default wms layer: " + wms_layers);
             //TODO: Do more stuff here with the WMS product
             //var wmsLayers = getWmsLayers(wmsResource, title);
-            //console.log(wmsLayers);
+
             //wmsResource = wmsResource.replace(/(^\w+:|^)\/\//, '//');
             //console.log("New wmsResource url: " + wmsResource);
             var sentinel1Layers = ['Composites'];
@@ -1655,26 +1675,39 @@ console.log("Start of metsis search map script:");
             if (wmsResource.includes("S2")) {
               layer_name = 'true_color_vegetation';
             }
-            else if (wms_layers[0] == "Amplitude VV polarisation") {
+            else if (wms_layers === "Amplitude HH polarisation") {
+               layer_name = 'amplitude_hh';
+            }
+            else if (wms_layers === "Amplitude HV polarisation") {
+               layer_name = 'amplitude_hv';
+            }
+            else if (wms_layers === "Amplitude VV polarisation") {
                layer_name = 'amplitude_vv';
             }
+            else if (wms_layers === "Amplitude VH polarisation") {
+               layer_name = 'amplitude_vh';
+            }
+            else if (wms_layers === "True Color Vegetation Composite") {
+               layer_name = 'true_color_vegetation';
+            }
             else {
-              layer_name =  'amplitude_hh';
+              layer_name =  'Composites';
             }
             var wmsUrl = wmsResource;
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
             wmsUrl = wmsUrl.split("?")[0];
+            console.log("Using layer: " + layer_name);
             wmsLayerGroup.getLayers().push(
               new ol.layer.Tile({
                 title: title,
                 visible: true,
-                extent: geom.getExtent(),
+                //extent: geom.getExtent(),
                 //keepVisible: false,
                 //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
                 //dimensions: getTimeDimensions(),
                 //styles: ls[i].Style,
                 source: new ol.source.TileWMS(({
-                  projection: selected_proj,
+                  //projection: selected_proj,
                   url: wmsUrl,
                   reprojectionErrorThreshold: 0.1,
                   params: {
@@ -1912,11 +1945,13 @@ console.log("Start of metsis search map script:");
               /*If we have sentinel prducts, assume no timedimension and standard layer name Composites.
                call the simple visualiseWmsLayer function */
               if (isSentinelProduct(wmsResource, sentinelStrings)) {
+                console.log("Creating wms layers for sentinel products");
                 visualiseWmsLayer(wmsResource, id, title, feature_ids[id].geom, wmsLayer);
                 //getWmsLayers2(wmsResource, title, feature_ids[id].geom)
               }
               /* Else we call function that add all layers and timedimensions */
               else {
+                console.log("Creating wms layers for general products");
                 getWmsLayers2(wmsResource, title, feature_ids[id].geom, wmsLayer)
               }
 
@@ -2459,11 +2494,12 @@ map.addControl(geocoder);
         var wmsLayersFromMmd = []
         for (var i = 0; i < extracted_info.length; i++) {
           id = extracted_info[i][1];
+          title = extracted_info[i][4];
           wms = extracted_info[i][0][1];
           wmslayer = extracted_info[i][17];
           //if(debug) {console.log("id: "+id+ ",wms:" +wms)};
           if (wms != null && wms != "" && isSentinelProduct(wms, ['S1B', 'S1A', 'S2B', 'S2A'])) {
-            wmsProducts.push(id);
+            wmsProducts.push(title);
             wmsProductLayers.push(wms);
             if(wmslayer != null) {
               wmsLayersFromMmd.push(wmslayer);
@@ -2503,15 +2539,24 @@ map.addControl(geocoder);
               if (wmsLayersFromMmd[i] == "True Color Vegetation Composite") {
                 layer_name = 'true_color_vegetation';
               }
-              else if (wmsProducts[i].includes("S2")) {
-                layer_name = 'true_color_vegetation';
-              }
-              else if (wmsLayersFromMmd[i] == "Amplitude VV polarisation") {
-                 layer_name = 'amplitude_vv';
-              }
-              else {
-                layer_name =  'amplitude_hh';
-              }
+                else if (wmsLayersFromMmd[i] == "Amplitude HH polarisation") {
+                   layer_name = 'amplitude_hh';
+                }
+                else if (wmsLayersFromMmd[i] == "Amplitude HV polarisation") {
+                   layer_name = 'amplitude_hv';
+                }
+                else if (wmsLayersFromMmd[i] == "Amplitude VV polarisation") {
+                   layer_name = 'amplitude_vv';
+                }
+                else if (wmsLayersFromMmd[i] == "Amplitude VH polarisation") {
+                   layer_name = 'amplitude_vh';
+                }
+                else if (wmsLayersFromMmd[i] == "True Color Vegetation Composite") {
+                   layer_name = 'true_color_vegetation';
+                }
+                else {
+                  layer_name =  'Composites';
+                }
               myGroup.getLayers().push(
                 //map.addLayer(
                 new ol.layer.Tile({
@@ -2520,12 +2565,12 @@ map.addControl(geocoder);
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
                     url: wmsUrl,
-                    projection: selected_proj,
+                    //projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
                       'LAYERS': layer_name,
-                      //'LAYERS': 'WMS',
-                      //'FORMAT': 'image/jpeg',
+                      'VERSION': '1.3.0',
+                      'FORMAT': 'image/png',
                       'TILE': true,
                       'TRANSPARENT': true,
                     },
@@ -2541,12 +2586,12 @@ map.addControl(geocoder);
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
                     url: wmsUrl,
-                    projection: selected_proj,
+                    //projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
                       'LAYERS': 'Composites',
-                      //'LAYERS': 'WMS',
-                      //'FORMAT': 'image/jpeg',
+                      'VERSION': '1.3.0',
+                      'FORMAT': 'image/png',
                       'TILE': true,
                       'TRANSPARENT': true,
                     },

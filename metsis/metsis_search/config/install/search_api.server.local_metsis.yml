@@ -36,10 +36,10 @@ backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: 157.249.178.165
+    host: 157.249.74.44
     port: 8983
     path: /
-    core: adc-d8-dev
+    core: adc
     timeout: 20
     index_timeout: 10
     optimize_timeout: 10

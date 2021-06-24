@@ -32,7 +32,7 @@ class MetsisExportController extends ControllerBase {
       $connector = $backend->getSolrConnector();
 
       $solarium_query = $connector->getSelectQuery();
-      $solarium_query->setQuery('id:'.$data);
+      $solarium_query->setQuery('id:'. $data);
       //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
       $solarium_query->setRows(1);
       $fields[] = 'id';
@@ -81,7 +81,7 @@ class MetsisExportController extends ControllerBase {
    // By setting these 2 header options, the browser will see the URL
    // used by this Controller to return a CSV file called "article-report.csv".
    $response->headers->set('Content-Type', 'text/xml');
-   $response->headers->set('Content-Disposition', 'attachment; filename="mmd_export.xml"');
+   $response->headers->set('Content-Disposition', 'attachment; filename="'. $fields['id'].'_mmd.xml"');
 
    // This line physically adds the CSV data we created
    $response->setContent(base64_decode($mmd));

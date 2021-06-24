@@ -31,6 +31,7 @@ console.log("Start of wms map script:");
         var pywpsUrl = drupalSettings.metsis_wms_map.pywps_service;
         var wms_layers_skip = drupalSettings.metsis_wms_map.wms_layers_skip;
         var wms_data =  drupalSettings.metsis_wms_map.wms_data;
+        var selected_proj = drupalSettings.metsis_wms_map.selected_proj;
         // Some debugging
         var debug = true;
         if (debug) {
@@ -38,6 +39,7 @@ console.log("Start of wms map script:");
           console.log('show additional layers: ' + additional_layers);
           console.log('init proj: ' + init_proj);
           console.log('initial map zoom: ' + mapZoom);
+          console.log('current selected proj: ' + selected_proj);
           console.log("WMS Layers to skip: ");
           console.log(wms_layers_skip);
 
@@ -49,81 +51,13 @@ console.log("Start of wms map script:");
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
         var proj = null;
-        var selected_proj = null;
+        //var selected_proj = null;
         if (selected_proj == null) {
           selected_proj = init_proj;
           proj = init_proj;
+          console.log("Set selected proj to: " + selected_proj);
         }
-        // Create the  map baselayer input boxses
-        /*        $('.basemap-wrapper').append(
-                  $(document.createElement('input')).prop({
-                    key: 'OSMStandard',
-                    name: 'baseLayerRadioButton',
-                    value: 'OSMStandard',
-                    type: 'radio',
-                    checked: true
-                  }) //.attr("checked", "")
-                ).append(
-                  $(document.createElement('label')).prop({
-                    class: "basemap-labels",
-                    for: 'OSMStandard'
-                  }).html('OSMStandard')
-                );
-                $('.basemap-wrapper').append(
-                  $(document.createElement('input')).prop({
-                    key: 'OSMHumanitarian',
-                    name: 'baseLayerRadioButton',
-                    value: 'OSMHumanitarian',
-                    type: 'radio',
-                  })
-                ).append(
-                  $(document.createElement('label')).prop({
-                    class: "basemap-labels",
-                    for: 'OSMHumanitarian'
-                  }).html('OSMHumanitarian')
-                );
 
-                $('.basemap-wrapper').append(
-                  $(document.createElement('input')).prop({
-                    key: 'stamenTerrain',
-                    name: 'baseLayerRadioButton',
-                    value: 'stamenTerrain',
-                    type: 'radio',
-                  })
-                ).append(
-                  $(document.createElement('label')).prop({
-                    class: "basemap-labels",
-                    for: 'stamenTerrain'
-                  }).html('StamenTerrain')
-                );
-                $('.basemap-wrapper').append(
-                  $(document.createElement('input')).prop({
-                    key: 'ESRI',
-                    name: 'baseLayerRadioButton',
-                    value: 'ESRI',
-                    type: 'radio',
-                  })
-                ).append(
-                  $(document.createElement('label')).prop({
-                    class: "basemap-labels",
-                    for: 'ESRI'
-                  }).html('ESRI Satellite')
-                );
-
-                // Do some styling
-                $('.basemap-labels').css({
-                  "display": "inline-block",
-                  "font-weight": "normal",
-                  //"padding-left": "0px",
-                  "padding-right": "10px",
-                  "vertical-align": "middle"
-                });
-                $('.basemap-wrapper').css({
-                  "padding-left": "0px",
-                  "padding-right": "0px",
-                  "vertical-align": "middle"
-                });
-        */
         // Create the projections input boxes
         for (var key in projections) {
           var value = projections[key];
@@ -226,7 +160,7 @@ console.log("Start of wms map script:");
         //console.log(proj4);
         // two projections will be possible
         // 32661
-        proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
+        proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
         ol.proj.proj4.register(proj4);
         var ext32661 = [-6e+06, -3e+06, 9e+06, 6e+06];
         var center32661 = [0, 80];
@@ -300,36 +234,40 @@ console.log("Start of wms map script:");
           ch[i].onchange = function change_projection() {
             prj = this.value;
             proj = prj;
-            selected_proj = proj;
-            console.log("change projection event: " + prj);
+            selected_proj = this.value;
+            console.log("change projection event: " + selected_proj);
 
 
 
 
-            console.log("Update view to new selected projection: " + prj);
+            console.log("Update view to new selected projection: " + selected_proj);
             //console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
               //center: ol.extent.getCenter(featuresExtent),
-              //center: projObjectforCode[prj].center,
-              extent: projObjectforCode[prj].extent,
-              projection: projObjectforCode[prj].projection,
-              //projection: prj,
+              zoom: 3,
+              //minZoom: 0,
+              //maxZoom: 23,
+              center: projObjectforCode[selected_proj].center,
+              extent: projObjectforCode[selected_proj].extent,
+              projection: projObjectforCode[selected_proj].projection,
+              //projection: selected_proj,
             }));
-            //console.log("Rebuild pins and polygons features with projection: " + prj);
-            //featuresExtent = buildFeatures(projObjectforCode[prj].projection);
-            //Zoom to new extent
-            //map.getView().fit(featuresExtent);
-/*            wmsLayerGroup.getLayers().forEach( function (el, idx, arr) {
-              console.log(el);
-              el.getLayers().forEach( function (el, idx, arr) {
-                console.log(el);
-                el.getLayers().forEach( function (el, idx, arr) {
-                  console.log(el);
-              el.getSource().refresh();
-            )};
+
+    /*        map.getView().setZoom(map.getView().getZoom());
+            wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
+              if ( layer instanceof ol.layer.Tile ) {
+                layer.getSource().refresh();
+              }
+              else {
+                layer.getLayers().forEach(function(layer,index, array) {
+                  if ( layer instanceof ol.layer.Tile ) {
+                    layer.getSource().refresh();
+                  }
             });
-            });*/
-            map.getView().setZoom(map.getView().getZoom());
+          }
+        });*/
+        //progress_bar()
+        map.getView().setZoom(map.getView().getZoom());
           }
 
         }
@@ -695,7 +633,7 @@ console.log("Start of wms map script:");
         /** END Layerswitrcher sidebar control */
 
         /***** Initialize the map *****************/
-        console.log("Creating the map");
+        console.log("Creating the map with projection: " + selected_proj);
 
         function createMap() {
           return new ol.Map({
@@ -705,7 +643,7 @@ console.log("Start of wms map script:");
             //controls: ol.control.defaults().extend([fullScreenControl]),
             //layers: [baseLayerGroup,featureLayersGroup],
             layers: [baseLayerGroup, wmsLayerGroup],
-            overlays: [overlayh, popUpOverlay],
+            //overlays: [overlayh, popUpOverlay],
             view: new ol.View({
               zoom: 2,
               minZoom: 0,
@@ -728,11 +666,16 @@ console.log("Start of wms map script:");
           var tilesPending = 0;
           //load all S1 and S2 entries
           map.getLayers().forEach(function(layer, index, array) {
-            if (layer.get('title') === 'WMS Layers') {
+
+            if (layer.get('title') === 'WMS Layers' &&  layer instanceof ol.layer.Group) {
+              console.log( layer instanceof ol.layer.Group);
               layer.getLayers().forEach(function(layer,index, array) {
-                //if(layer.getLayers().getArray().length > 0 ) {
+                //console.log(array.length);
+                //console.log(Object.getPrototypeOf(layer));
+                if( layer instanceof ol.layer.Group ) {
                 layer.getLayers().forEach(function(layer,index, array) {
                 //for all tiles that are done loading update the progress bar
+                //layer.getSource().refresh();
                 layer.getSource().on('tileloadend', function() {
                   tilesLoaded += 1;
                   var percentage = Math.round(tilesLoaded / tilesPending * 100);
@@ -750,7 +693,7 @@ console.log("Start of wms map script:");
                   ++tilesPending;
                 });
               });
-          /*  }
+            }
             else {
               layer.getSource().on('tileloadend', function() {
                 tilesLoaded += 1;
@@ -768,7 +711,7 @@ console.log("Start of wms map script:");
               layer.getSource().on('tileloadstart', function() {
                 ++tilesPending;
               });
-            } */
+            }
             });
           }
           });
@@ -841,7 +784,7 @@ console.log("Start of wms map script:");
           //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
           //map.getView().fit(featuresExtent);
           map.getView().setZoom(map.getView().getZoom());
-          console.log(map.getLayers()[0]);
+          //console.log(map.getLayers()[0]);
         }
 
 
@@ -1109,7 +1052,7 @@ console.log("Start of wms map script:");
                           source: new ol.source.TileWMS(({
                             url: wmsUrl,
                             reprojectionErrorThreshold: 0.1,
-                            projection: selected_proj,
+                            //projection: selected_proj,
                             params: {
                               'LAYERS': ls[i].Name,
                               'VERSION': result.version,
@@ -1458,38 +1401,53 @@ console.log("Start of wms map script:");
         function visualiseWmsLayer(wmsResource, id, title, geom, wms_layers) {
           //Check WMS product:
           if (wmsResource != null && wmsResource != "") {
-            console.log("Got WMS product: " + id);
-
+            console.log("Default wms layer: " + wms_layers);
             //TODO: Do more stuff here with the WMS product
             //var wmsLayers = getWmsLayers(wmsResource, title);
-            //console.log(wmsLayers);
+
             //wmsResource = wmsResource.replace(/(^\w+:|^)\/\//, '//');
             //console.log("New wmsResource url: " + wmsResource);
             var sentinel1Layers = ['Composites'];
             var sentinel2Layers = ['true_color_vegetation', 'false_color_vegetation', 'false_color_glacier', 'false_color_glacier', 'opaque_clouds', 'cirrus_clouds'];
 
             var layer_name = 'Composites';
-            if (id.includes("S2")) {
+            if (wmsResource.includes("S2")) {
               layer_name = 'true_color_vegetation';
             }
-            else if (wms_layers[0] == "Amplitude VV polarisation") {
+            else if (wms_layers === "Amplitude HH polarisation") {
+               layer_name = 'amplitude_hh';
+            }
+            else if (wms_layers === "Amplitude HV polarisation") {
+               layer_name = 'amplitude_hv';
+            }
+            else if (wms_layers === "Amplitude VV polarisation") {
                layer_name = 'amplitude_vv';
             }
-            else {
-              layer_name =  'amplitude_hh';
+            else if (wms_layers === "Amplitude VH polarisation") {
+               layer_name = 'amplitude_vh';
             }
+            else if (wms_layers === "True Color Vegetation Composite") {
+               layer_name = 'true_color_vegetation';
+            }
+            else {
+              layer_name =  'Composites';
+            }
+            var wmsUrl = wmsResource;
+            wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
+            wmsUrl = wmsUrl.split("?")[0];
+            console.log("Using layer: " + layer_name);
             wmsLayerGroup.getLayers().push(
               new ol.layer.Tile({
                 title: title,
                 visible: true,
-                extent: geom.getExtent(),
+                //extent: geom.getExtent(),
                 //keepVisible: false,
                 //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
                 //dimensions: getTimeDimensions(),
                 //styles: ls[i].Style,
                 source: new ol.source.TileWMS(({
-                  projection: selected_proj,
-                  url: wmsResource,
+                  //projection: selected_proj,
+                  url: wmsUrl,
                   reprojectionErrorThreshold: 0.1,
                   params: {
                     'LAYERS': layer_name,
@@ -1724,12 +1682,12 @@ console.log("Start of wms map script:");
               /*If we have sentinel prducts, assume no timedimension and standard layer name Composites.
                call the simple visualiseWmsLayer function */
               if (isSentinelProduct(id, sentinelStrings)) {
-                visualiseWmsLayer(wmsResource, id, title, feature_ids[id].geom, wmsLayer);
+                //visualiseWmsLayer(wmsResource, id, title, feature_ids[id].geom, wmsLayer);
                 //getWmsLayers2(wmsResource, title, feature_ids[id].geom)
               }
               /* Else we call function that add all layers and timedimensions */
               else {
-                getWmsLayers2(wmsResource, title, feature_ids[id].geom, wmsLayer)
+                //getWmsLayers2(wmsResource, title, feature_ids[id].geom, wmsLayer)
               }
 
             }
@@ -1819,11 +1777,11 @@ console.log("Start of wms map script:");
                     popUpOverlay.setPosition(undefined);
                     //visualiseWmsLayer(wmsResource,id,title, geom)
                     if (isSentinelProduct(id, sentinelStrings)) {
-                      visualiseWmsLayer(wmsResource, selected_id, title, feature_ids[selected_id].geom, feature_ids[id].wms_layer)
+                      //visualiseWmsLayer(wmsResource, selected_id, title, feature_ids[selected_id].geom, feature_ids[id].wms_layer)
                     }
                     /* Else we call function that add all layers and timedimensions */
                     else {
-                      getWmsLayers2(wmsResource, title, feature_ids[selected_id].geom, feature_ids[id].wms_layer)
+                      //getWmsLayers2(wmsResource, title, feature_ids[selected_id].geom, feature_ids[id].wms_layer)
                     }
                   });
 
@@ -2137,13 +2095,13 @@ console.log("Start of wms map script:");
 
         //Map reset button:
             $('#resetMapButton').on("click", function(e) {
-              wmsLayerGroup.getLayers().clear();
-              featureLayersGroup.getLayers().clear();
+              //wmsLayerGroup.getLayers().clear();
+              //featureLayersGroup.getLayers().clear();
 
-              featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
-              featureLayersGroup.setVisible(true);
-              map.getView().setCenter(ol.extent.getCenter(featuresExtent));
-              map.getView().fit(featuresExtent);
+              //featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
+              //featureLayersGroup.setVisible(true);
+              //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
+              //map.getView().fit(featuresExtent);
               map.getView().setZoom(map.getView().getZoom() - 0.3);
             });
 
@@ -2173,6 +2131,7 @@ console.log("Start of wms map script:");
         //LOOP WMS ARRAY
         var wmsUrls = [];
         var layers =[];
+        var titles = [];
         var ids = [];
         var geoms = [];
         Object.keys(wms_data).forEach(key=>{
@@ -2186,12 +2145,12 @@ console.log("Start of wms map script:");
                wmsUrls.push(wmsUrl);
             }
             if(key2 === 'layers') {
-              console.log(`${key2} : ${wms_data[key][key2]}`);
+              //console.log(`${key2} : ${wms_data[key][key2]}`);
               var layer = wms_data[key][key2];
               layers.push(layer);
             }
             if(key2 === 'geom') {
-              console.log(`${key2} : ${wms_data[key][key2]}`);
+              //console.log(`${key2} : ${wms_data[key][key2]}`);
               var bbox = wms_data[key][key2];
               box_tl = ol.proj.transform([bbox[3], bbox[0]], 'EPSG:4326', selected_proj);
               box_tr = ol.proj.transform([bbox[2], bbox[0]], 'EPSG:4326', selected_proj);
@@ -2202,6 +2161,10 @@ console.log("Start of wms map script:");
               ]);
               geoms.push(geom);
             }
+           if(key2 === 'title') {
+             var title = wms_data[key][key2];
+             titles.push(title);
+           }
 
           });
         });
@@ -2211,10 +2174,11 @@ console.log("Start of wms map script:");
         console.log(layers);
         for (let i = 0; i < ids.length; i++) {
           console.log(ids[i]);
-          console.log(wmsUrls[i][0]);
-          console.log(layers[i]);
-          console.log(geoms[i]);
-          getWmsLayers2(wmsUrls[i][0], ids[i], geoms[i], layers[i])
+          console.log(wmsUrls[i]);
+          //console.log(layers[i]);
+          //console.log(geoms[i]);
+          getWmsLayers2(wmsUrls[i][0], titles[i], geoms[i], layers[i]);
+          //  map.getView().setZoom(map.getView().getZoom());
         }
         // If we have wms datasets in map, show the visualise all button
         //list of olWMALayers to be added and rendered
@@ -2232,17 +2196,29 @@ console.log("Start of wms map script:");
               if(debug){console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]);}
               //alert(wmsProducts[i]);
               var myGroup = new ol.layer.Group({
-                title: wmsProducts[i],
+                title: titles[i],
               });
               var layer_name = 'Composites';
-              if (wmsProducts[i].includes("S2")) {
+              if (wmsResource.includes("S2")) {
                 layer_name = 'true_color_vegetation';
               }
-              else if (wmsLayersFromMmd[i] == "Amplitude VV polarisation") {
+              else if (wmsLayersFromMmd[i] === "Amplitude HH polarisation") {
+                 layer_name = 'amplitude_hh';
+              }
+              else if (wmsLayersFromMmd[i] === "Amplitude HV polarisation") {
+                 layer_name = 'amplitude_hv';
+              }
+              else if (wmsLayersFromMmd[i] === "Amplitude VV polarisation") {
                  layer_name = 'amplitude_vv';
               }
+              else if (wmsLayersFromMmd[i] === "Amplitude VH polarisation") {
+                 layer_name = 'amplitude_vh';
+              }
+              else if (wmsLayersFromMmd[i] === "True Color Vegetation Composite") {
+                 layer_name = 'true_color_vegetation';
+              }
               else {
-                layer_name =  'amplitude_hh';
+                layer_name =  'Composites';
               }
               myGroup.getLayers().push(
                 //map.addLayer(
@@ -2252,7 +2228,7 @@ console.log("Start of wms map script:");
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
                     url: wmsProductLayers[i],
-                    projection: selected_proj,
+                    //projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
                       'LAYERS': layer_name,
@@ -2273,7 +2249,7 @@ console.log("Start of wms map script:");
                   //projection: selected_proj,
                   source: new ol.source.TileWMS(({
                     url: wmsProductLayers[i],
-                    projection: selected_proj,
+                    //projection: selected_proj,
                     reprojectionErrorThreshold: 0.1,
                     params: {
                       'LAYERS': 'Composites',
