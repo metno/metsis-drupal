@@ -14,6 +14,7 @@
           var metaid = $(this).data("id");
           var isParent = $(this).attr("isparent");
           var myurl = '/metsis/elements/count?metadata_identifier='+metaid;
+          console.log(metaid);
           console.log(isParent);
           console.log(myurl);
           if(isParent == "True") {
@@ -21,7 +22,7 @@
             Drupal.ajax({ url: myurl}).execute();
           //console.log(response);
           }
-        
+
 
           });
         },

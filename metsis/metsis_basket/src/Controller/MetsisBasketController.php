@@ -170,7 +170,7 @@ class MetsisBasketController extends ControllerBase  {
     // This user is anonymous.
     $response = new AjaxResponse();
     $response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a href="/user/login">log in</a>', ['type' => 'error']));
-
+    return $response;
   }
 
   }
