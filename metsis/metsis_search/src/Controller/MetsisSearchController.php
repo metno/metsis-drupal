@@ -57,13 +57,13 @@ class MetsisSearchController extends ControllerBase {
       // An array of documents. Can also iterate directly on $result.
       //$documents = $result->getDocuments();
 
-
+        \Drupal::logger('metsis_search')->debug('Got ' . $found . ' children for dataset ' . $id);
       $response = new AjaxResponse();
       if ($found > 0 ) {
-        $selector = '#metachildlink';
+        $selector = '.childlink[reference="' . $id . '"]';
         //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
         $markup = 'Child data..['. $found .']';
-          \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
+        //  \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
         $response->addCommand(new HtmlCommand($selector,$markup));
       }
       /*

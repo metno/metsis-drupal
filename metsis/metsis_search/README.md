@@ -19,3 +19,10 @@ The Metsis Search module for Drupal 8 are based on the contributed modules, sear
 ## Facets
 Facets for search are provided by the facets module. Facets are tied to a specific search view. Configured
 facets are blocks that can be placed in regions on search page.
+
+
+## TODO
+* Find a way to add "Back to parent search" on child search view.
+* Clean up code (remove unused code, not used configuration etc)
+* Update this documentation with endpoints etc.
+* Integrate result map with children (elements) view.

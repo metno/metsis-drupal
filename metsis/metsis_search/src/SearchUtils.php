@@ -154,10 +154,10 @@ class SearchUtils
 
 
 
-            $geographical_extent_north = $fields['geographic_extent_rectangle_north'];
-            $geographical_extent_south = $fields['geographic_extent_rectangle_south'];
-            $geographical_extent_east = $fields['geographic_extent_rectangle_east'];
-            $geographical_extent_west = $fields['geographic_extent_rectangle_west'];
+            $geographical_extent_north = isset($fields['geographic_extent_rectangle_north']) ? $fields['geographic_extent_rectangle_north'] : 1;
+            $geographical_extent_south = isset($fields['geographic_extent_rectangle_south']) ? $fields['geographic_extent_rectangle_north'] : 1;
+            $geographical_extent_east = isset($fields['geographic_extent_rectangle_east']) ? $fields['geographic_extent_rectangle_north'] : 1;
+            $geographical_extent_west = isset($fields['geographic_extent_rectangle_west']) ? $fields['geographic_extent_rectangle_north'] : 1;
             $geographical_extent = [
                       $geographical_extent_north,
                       $geographical_extent_south,
@@ -228,6 +228,7 @@ class SearchUtils
             } else {
                 $related_lp = $fields['title'];
             }
+            $keywords = "";
             if(isset($fields['keywords_keyword'])) {
               $keywords = SearchUtils::keywords_to_string($fields['keywords_keyword']);
           }
