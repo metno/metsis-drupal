@@ -100,6 +100,9 @@ class MetsisBasketController extends ControllerBase  {
 
   public function add($metaid) {
     \Drupal::logger('metsis_basket')->debug("Calling add to basket function");
+    if (\Drupal::currentUser()->isAuthenticated()) {
+      // This user is logged in.
+
     $user_id = (int) \Drupal::currentUser()->id();
     $user_name = \Drupal::currentUser()->getAccountName();
 
@@ -163,6 +166,13 @@ class MetsisBasketController extends ControllerBase  {
     //$response->addCommand(new MessageCommand("Dataset added to basket:  " . $metaid));
 
     return $response;
+  } else {
+    // This user is anonymous.
+    $response = new AjaxResponse();
+    $response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a href="/user/login">log in</a>', ['type' => 'error']));
+
+  }
+
   }
 
   public static  function get_user_item_count($user_id) {
