@@ -367,7 +367,7 @@ display:
             html: false
           element_type: ''
           element_class: ''
-          element_label_type: ''
+          element_label_type: strong
           element_label_class: ''
           element_label_colon: true
           element_wrapper_type: ''
@@ -552,7 +552,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a href={{ related_url_landing_page }}>\r\n{% if related_url_landing_page_desc  %}\r\n{{ related_url_landing_page_desc }}\r\n{% else %}\r\nLanding page\r\n{%endif %}\r\n</a>  "
+            text: "<a href={{ related_url_landing_page }}>\r\n{% if related_url_landing_page_desc  %}\r\n{{ related_url_landing_page_desc }}\r\n{% else %}\r\n{{ related_url_landing_page }}\r\n{%endif %}\r\n</a>  "
             make_link: false
             path: ''
             absolute: false
@@ -1731,7 +1731,20 @@ display:
       filters: {  }
       sorts: {  }
       title: 'Parent Metadata Details'
-      header: {  }
+      header:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          tokenize: false
+          content:
+            value: '<h2> Parent Dataset</h2>'
+            format: basic_html
+          plugin_id: text
       footer: {  }
       empty: {  }
       relationships: {  }
