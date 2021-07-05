@@ -44,7 +44,7 @@ class MetsisBasketDeleteAction extends ViewsBulkOperationsActionBase {
               $new_ids =  array_values($ids);
             };
         }
-       $tempstore->get('basket_items', $new_ids);
+       $tempstore->set('basket_items', $new_ids);
        return $this->t('Basket Item Deleted');
      }
     // Don't return anything for a default completion message, otherwise return translatable markup.

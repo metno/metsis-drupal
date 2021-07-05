@@ -8923,6 +8923,7 @@ display:
           plugin_id: search_api
       display_extenders: {  }
       show_admin_links: false
+      css_class: metadataDetails
     cache_metadata:
       max-age: -1
       contexts:
@@ -8938,11 +8939,11 @@ display:
     position: 1
     display_options:
       display_extenders:
-        library_in_views_display_extender: {  }
         geocluster_views_display_extender:
           geocluster_enabled: false
           geocluster_options: {  }
         views_merge_rows: {  }
+        library_in_views_display_extender: {  }
       path: metsis/metadata
     cache_metadata:
       max-age: -1
