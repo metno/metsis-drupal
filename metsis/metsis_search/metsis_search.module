@@ -350,11 +350,13 @@ function metsis_search_search_api_solr_search_results_alter(
     \Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
     $search_path = $request->getPathInfo();
     $pattern1 = '/metsis\/search/i';
-    $pattern2 =  '/metsis\/elements/i';
+    //$pattern2 =  '/metsis\/elements/i';
 
     //Only alter the solr-query if the search-path contains the word metsis.
     // This is to aviod solr query to be cahnged for normal site search
-    if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
+    //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
+    if (preg_match($pattern1, $search_path)) {
+
     $extracted_info = SearchUtils::getExtractedInfo($result);
 
     //$gcmd_facet = SearchUtils::processGcmdFacet($result);

@@ -59,6 +59,8 @@ console.log("Start of metsis search map script:");
           console.log('initial map zoom: ' + mapZoom);
           console.log("WMS Layers to skip: ");
           console.log(wms_layers_skip);
+          console.log("Extracted info: ");
+          //console.log(extracted_info);
 
         }
 
