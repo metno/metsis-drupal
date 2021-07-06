@@ -19,7 +19,7 @@ use Drupal\Core\Ajax\HtmlCommand;
 class MetsisSearchController extends ControllerBase {
 
     /**
-    * Ajax callback to get the count of children datasets for a parent dataset 
+    * Ajax callback to get the count of children datasets for a parent dataset
     */
     public function getChildrenCount() {
       $query_from_request = \Drupal::request()->query->all();
@@ -39,6 +39,8 @@ class MetsisSearchController extends ControllerBase {
       //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
       $solarium_query->setRows(1);
       $solarium_query->setFields('id');
+      $solarium_query->createFilterQuery('children')->setQuery('isChild:true');
+
 
       $result = $connector->execute($solarium_query);
 
@@ -55,13 +57,13 @@ class MetsisSearchController extends ControllerBase {
       // An array of documents. Can also iterate directly on $result.
       //$documents = $result->getDocuments();
 
-
+        \Drupal::logger('metsis_search')->debug('Got ' . $found . ' children for dataset ' . $id);
       $response = new AjaxResponse();
       if ($found > 0 ) {
-        $selector = '#metachildlink';
+        $selector = '.childlink[reference="' . $id . '"]';
         //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
         $markup = 'Child data..['. $found .']';
-          \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
+        //  \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
         $response->addCommand(new HtmlCommand($selector,$markup));
       }
       /*

@@ -50,7 +50,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     $collections =  SearchUtils::getCollections();
     //dpm($collections);
     $form['collections'] = [
-      '#title' => t('Select which collections to include in search'),
+      '#title' => t('Select which collections to include in search (if none are selected, all collections will be included in the search)'),
       '#type' => 'select',
       //'#header' => ['Collection'],
       '#options' => $collections,

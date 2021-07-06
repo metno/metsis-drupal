@@ -185,6 +185,32 @@ function metsis_search_views_data_alter(array &$data)
     //}
 }
 
+/**
+ * Implements hook_preprocess_HOOK() for views-view-fields.html.twig.
+ */
+/**function metsis_search_preprocess_views_view_fields(&$variables)
+{
+    \Drupal::logger('metsis_search')->debug("executing views field hook");
+  $view = $variables['view'];
+  $curr_display = $view->current_display;
+  $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  $fields = $variables['fields'];
+
+  if($view->id() == 'metsis_metadata_details') {
+    if($curr_display == 'page_1') {
+
+      foreach ($fields as $key_f => $field) {
+        if(isset($field->class) && $field->class == 'fieldset') {
+          $variables['fields'][$key_f]->wrapper_element = '';
+          $variables['fields'][$key_f]->element_type = '';
+        }
+      }
+
+    }
+  }
+}
+*/
+
 function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInterface $solarium_query, \Drupal\search_api\Query\QueryInterface $query)
 {
       \Drupal::cache()->invalidate('metsis_search_map');
@@ -323,11 +349,14 @@ function metsis_search_search_api_solr_search_results_alter(
   \Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
     \Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
     $search_path = $request->getPathInfo();
-    $pattern = '/metsis/i';
+    $pattern1 = '/metsis\/search/i';
+    //$pattern2 =  '/metsis\/elements/i';
 
     //Only alter the solr-query if the search-path contains the word metsis.
     // This is to aviod solr query to be cahnged for normal site search
-    if (preg_match($pattern, $search_path)) {
+    //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
+    if (preg_match($pattern1, $search_path)) {
+
     $extracted_info = SearchUtils::getExtractedInfo($result);
 
     //$gcmd_facet = SearchUtils::processGcmdFacet($result);
