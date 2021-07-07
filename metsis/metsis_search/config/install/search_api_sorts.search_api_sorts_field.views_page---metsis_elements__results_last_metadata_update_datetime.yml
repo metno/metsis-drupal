@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+id: views_page---metsis_elements__results_last_metadata_update_datetime
+display_id: views_page---metsis_elements__results
+field_identifier: last_metadata_update_datetime
+default_sort: false
+default_order: desc
+label: 'Last metadata update'
+weight: 0

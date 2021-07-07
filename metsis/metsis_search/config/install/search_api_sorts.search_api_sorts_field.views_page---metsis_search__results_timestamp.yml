@@ -9,5 +9,5 @@ display_id: views_page---metsis_search__results
 field_identifier: timestamp
 default_sort: false
 default_order: desc
-label: Timestamp
+label: 'Last indexed'
 weight: 0

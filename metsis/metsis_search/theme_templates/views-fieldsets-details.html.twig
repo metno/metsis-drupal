@@ -1,0 +1,10 @@
+{% if attributes.hasClass('collapsed') %}
+<details {{ attributes }} >
+{% else %} 
+<details {{ attributes }} open="open">
+{% endif %}
+  {% if legend %}
+    <summary>{{ legend }}</summary>
+  {% endif %}
+  {% include 'views-view-fields.html.twig' %}
+</details>

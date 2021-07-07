@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+id: views_page---metsis_elements__results_timestamp
+display_id: views_page---metsis_elements__results
+field_identifier: timestamp
+default_sort: false
+default_order: desc
+label: 'Last indexed'
+weight: 0
