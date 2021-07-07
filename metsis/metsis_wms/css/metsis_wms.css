@@ -169,7 +169,7 @@ in fullscreen by openlayers fullScreenControl */
   width: 100%;
   margin-bottom: 5px;
   margin-top: 0px;
-  margin-left: 10px;
+  /*margin-left: 10px;*/
   margin-right: 10px;
   background-color: white;
   color: black;
