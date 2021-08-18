@@ -1,8 +1,0 @@
-metsis_qsearch.olmws:
-  route_name: metsis_qsearch.wms
-  title: 'METSIS OL3 WMS'
-metsis_qsearch.metadata_search:
-  route_name: metsis_qsearch.metsis_qsearch_form
-  title: 'Metadata Search'
-  menu_name: main
-  description: ' Search Metadata'
