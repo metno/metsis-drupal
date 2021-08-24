@@ -368,6 +368,8 @@ function metsis_search_search_api_solr_search_results_alter(
     $session->set('extracted_info', $extracted_info);
     $session->set('back_to_search', $referer);
 }
+//var_dump(count($extracted_info));
+//var_dump($extracted_info);
 }
 
 /*

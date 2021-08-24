@@ -180,7 +180,7 @@ class SearchUtils
             $address_od = isset($fields['data_access_url_opendap']) ? $fields['data_access_url_opendap'][0] : '';
             $access_const = isset($fields['ss_access']) ? $fields['ss_access'] : 'Unspecified';
             $use_const = isset($fields['use_constraint']) ? $fields['use_constraint'] : 'Unspecified';
-            $isotopic = isset($fields['iso_topic_category']) ? $fields['iso_topic_category'] : '';
+            //$isotopic = isset($fields['iso_topic_category']) ? $fields['iso_topic_category'] : '';
             //$keywords = isset($doc['keywords_keyword'])? $fields['keywords_keyword'] : '' ;
             $activity = isset($fields['activity_type']) ? $fields['activity_type'] : '';
             $ds_prod_status = isset($fields['dataset_production_status']) ? $fields['dataset_production_status'] : '';
@@ -211,7 +211,7 @@ class SearchUtils
 
             $mapthumb = "";
             if (isset($fields['thumbnail_data'])) {
-                $mapthumb = SearchUtils::get_map_thumb_divs($fields['thumbnail_data'], $fields['metadata_identifier']);
+                //$mapthumb = SearchUtils::get_map_thumb_divs($fields['thumbnail_data'], $fields['metadata_identifier']);
             }
             $target_url = '';
             if(isset($fields['data_access_url_ogc_wms'])) {
@@ -233,9 +233,11 @@ class SearchUtils
             } else {
                 $related_lp = $fields['title'];
             }
+            $isotopic = "";
             $keywords = "";
             if(isset($fields['keywords_keyword'])) {
-              $keywords = SearchUtils::keywords_to_string($fields['keywords_keyword']);
+              //$keywords = SearchUtils::keywords_to_string($fields['keywords_keyword']);
+                $keywords = '';
           }
             if (isset($fields['collection'])) {
                 $collection =$fields['collection'];
@@ -248,7 +250,7 @@ class SearchUtils
                 if (($fields['feature_type'] === "timeSeries") || ($fields['feature_type'] === "profile")) {
                     $fimex_link = "";
                 } else {
-                    $fimex_link = SearchUtils::get_fimex_link($fields['metadata_identifier'], $referer);
+                    //$fimex_link = SearchUtils::get_fimex_link($fields['metadata_identifier'], $referer);
                 }
             } else {
                 $fimex_link = "";
@@ -258,13 +260,14 @@ class SearchUtils
             $ascii_button = "";
             $leveltwo_button = "";
             if (isset($fields['isParent']) && ($fields['isParent'] == true)) {
-                $leveltwo_button = SearchUtils::get_leveltwo_links($fields['metadata_identifier'], $fields['isParent']);
+                //$leveltwo_button = SearchUtils::get_leveltwo_links($fields['metadata_identifier'], $fields['isParent']);
             }
             /**
              * time series{
              */
              $feature_type = isset($fields['feature_type']) ? $fields['feature_type'] : 'NA';
-
+             $visualize_button = '';
+             $ascii_button = '';
             $server_type = $config->get('ts_server_type');
             if (isset($fields['feature_type']) && isset($fields['data_access_url_opendap'])) {
                 $feature_type = $fields['feature_type'];
@@ -274,8 +277,8 @@ class SearchUtils
                         $visualize_url .= "&calling_results_page=" . $referer;
                         $ascii_url = "/metsis/bokeh/csv?opendap_urls=" .  $fields['data_access_url_opendap'][0];
                         $ascii_url .= "&calling_results_page=" . $referer;
-                        $visualize_button = SearchUtils::get_data_access_markup($config->get('ts_button_text'), $visualize_url);
-                        $ascii_button = SearchUtils::get_data_access_markup($config->get('csv_button_text'), $ascii_url);
+                        //$visualize_button = SearchUtils::get_data_access_markup($config->get('ts_button_text'), $visualize_url);
+                        //$ascii_button = SearchUtils::get_data_access_markup($config->get('csv_button_text'), $ascii_url);
                     }
 
 
@@ -284,8 +287,8 @@ class SearchUtils
                         $visualize_url .= "&calling_results_page=" . $referer;
                         $ascii_url = "/metsis/csv?metadata_identifier=" .  $fields['metadata_identifier'];
                         $ascii_url .= "&calling_results_page=" . $referer;
-                        $visualize_button = SearchUtils::get_data_access_markup($config->get('ts_button_text'), $visualize_url);
-                        $ascii_button = SearchUtils::get_data_access_markup($config->get('csv_button_text'), $ascii_url);
+                        //$visualize_button = SearchUtils::get_data_access_markup($config->get('ts_button_text'), $visualize_url);
+                        //$ascii_button = SearchUtils::get_data_access_markup($config->get('csv_button_text'), $ascii_url);
                     }
                 }
             }
