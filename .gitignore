@@ -187,4 +187,5 @@ metno/
 #Ignore other folders
 media_migration/
 sios_fix/
+nordatanet/
 # End of https://www.gitignore.io/api/python,drupal7,netbeans
