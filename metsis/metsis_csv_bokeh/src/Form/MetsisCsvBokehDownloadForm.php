@@ -73,7 +73,7 @@ class MetsisCsvBokehDownloadForm extends FormBase {
    //TODO: Change this to save whole array when multiple urls are supported
    $tempstore->set('metsis_csv_bokeh_data_uri', $opendap_urls[0]);
 
-   $bokeh_plot_vars = adc_get_ts_bokeh_plot_vars($tempstore->get('metsis_csv_bokeh_data_uri'));
+   $bokeh_plot_vars = adc_get_cvs_bokeh_plot_vars($tempstore->get('metsis_csv_bokeh_data_uri'));
    if (isset($bokeh_plot_vars['y_axis'])) {
      $odv_object = $bokeh_plot_vars['y_axis'];
    }
