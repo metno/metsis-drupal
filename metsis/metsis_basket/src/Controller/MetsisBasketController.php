@@ -169,7 +169,9 @@ class MetsisBasketController extends ControllerBase  {
   } else {
     // This user is anonymous.
     $response = new AjaxResponse();
-    $response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
+    //$response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
+    $response->addCommand(new HtmlCommand('.bokeh-ts-plot[reference="' .$metaid .'"]','<div class="w3-panel w3-leftbar w3-border-red w3-pale-red w3-padding-16"><span> You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a></span></div>'));
+
     return $response;
   }
 
