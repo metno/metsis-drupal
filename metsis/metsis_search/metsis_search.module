@@ -35,6 +35,35 @@ function metsis_search_help($route_name, RouteMatchInterface $route_match)
 }
 
 /**
+* Implements hook_views_pre_view().
+*
+* Add back to search link on children (elements) view
+*/
+
+function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
+  //Get the current request object.
+  $request = \Drupal::request();
+  $referer = $request->headers->get('referer');
+  $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span>';
+
+  if ($view->id() == 'metsis_elements' && $display_id === 'results') {
+    $options = array(
+      'id' => 'area_text_custom',
+      'table' => 'views',
+      'field' => 'area_text_custom',
+      'relationship' => 'none',
+      'group_type' => 'none',
+      'admin_label' => '',
+      'empty' => TRUE,
+      'tokenize' => FALSE,
+      'content' => $new_value,
+      'plugin_id' => 'text_custom',
+    );
+    $view->setHandler('results', 'header', 'area_text_custom', $options);
+  }
+}
+
+/**
 * Implements hook_views_pre_render().
 *
 * Adding  our custom css to the search view
@@ -47,6 +76,10 @@ function metsis_search_views_pre_render(ViewExecutable $view)
     // Get the config
     $config = \Drupal::config('metsis_search.settings');
     $pywps_service = $config->get('pywps_service');
+
+    //Get the current request object.
+    $request = \Drupal::request();
+    $referer = $request->headers->get('referer');
 
     if (isset($view) && ($view->storage->id() == 'metsis_search')) {
         $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
@@ -76,6 +109,15 @@ function metsis_search_views_pre_render(ViewExecutable $view)
           'pywps_service' => $pywps_service,
           'module_path' => $module_path
         ];
+
+        //Add back to parent search button.
+        //$view->header['area']->options['alter']['text'] = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
+        //var_dump($view->header);
+      //  $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
+      //  $view->display['results']->handler->handlers['header']
+      //      ['area']->options['content'] = $new_value;
+
+
     }
 }
 
