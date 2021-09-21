@@ -1,127 +1,21 @@
 <?php
-use Drupal\Core\Render\Markup;
-use Symfony\Component\HttpFoundation\Request;
-require_once 'metsis_wms.constants.inc';
 
+use Drupal\Core\Routing\RouteMatchInterface;
+/**
+ * Implements hook_help().
+ */
+function metsis_wms_help($route_name, RouteMatchInterface $route_match)
+{
+    switch ($route_name) {
+    // Main module help for the metsis_search module.
+    /** TODO: Read help from module's README.md */
+    case 'help.page.metsis_wms':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('WMS Visualization for METSIS') . '</p>';
+      return $output;
 
-function metsis_wms_init() {
-
-}
-
-function metsis_wms_menu() {
-  $items['metsis_wms'] = [
-    'title' => 'METSIS OL3 WMS node',
-    'page callback' => 'get_custom_content',
-    'access arguments' => ['access content'],
-  ];
-  return $items;
-}
-
-function get_custom_content() {
-  $datasetURL = filter_input(INPUT_GET, "datasetURL");
-  $content = '<div class="map container"><div id="map"></div><div id="lyr-switcher"></div>' . '<div id="proj-container"></div><div id="timeslider-container"></div></div>' . '<div id="wmsURL" class="element-hidden">' . $datasetURL . '</div>';
-  return $content;
-}
-
-function metsis_wms_exit() {
-
-}
-
-function metsis_wms_node() {
-  global $user;
-  $values = [
-    'type' => 'page',
-    'uid' => $user->uid,
-    'status' => 1,
-    'comment' => 1,
-    'promote' => 0,
-  ];
-  $entity = entity_create('node', $values);
-  $ewrapper = entity_metadata_wrapper('node', $entity);
-  $ewrapper->title->set('YOUR TITLE');
-  $my_body_content = '<div id="map">this should be the map</div>A bunch of text about things that interest me';
-  $ewrapper->body->set(['value' => $my_body_content]);
-  $ewrapper->body->summary->set('Things that interest me');
-  $my_date = new DateTime('January 1, 2017');
-  $entity->field_my_date[LANGUAGE_NONE][0] = [
-    'value' => date_format($my_date, 'Y-m-d'),
-    'timezone' => 'UTC',
-    'timezone_db' => 'UTC',
-  ];
-  $ewrapper->save();
-}
-
-function wms_client_node($node_title) {
-  global $user;
-  $WMSNode = new stdClass();
-  $WMSNode->type = 'page';
-  node_object_prepare($WMSNode);
-  $WMSNode->uid = $user->uid;
-  $WMSNode->name = $user->name;
-  $WMSNode->title = $node_title;
-  $WMSNode->language = 'en';
-  $WMSNode->body[$WMSNode->language][0]['value'] = 'Your value';
-  $WMSNode->body[$WMSNode->language][0]['summary'] = 'Your summary';
-  $WMSNode->body[$WMSNode->language][0]['format'] = 'filtered_html';
-  $WMSNode->menu = [
-    'enabled' => 1,
-    'mlid' => 0,
-    'module' => 'menu',
-    'hidden' => 0,
-    'has_children' => 0,
-    'customized' => 0,
-    'options' => [],
-    'expanded' => 0,
-    'parent_depth_limit' => 8,
-    'link_title' => 'WMS',
-    'description' => 'OL3 WMS client container',
-    'parent' => 'main-menu:0',
-    'weight' => 0,
-    'plid' => 0,
-    'menu_name' => 'main-menu',
-  ];
-  $WMSNode->path['alias'] = 'Your Alias';
-  $WMSNode->comment = 0;
-  $WMSNode->status = 1;
-  $WMSNode->promote = 0;
-  $WMSNode->revision = 0;
-  $WMSNode->changed = $_SERVER['REQUEST_TIME'];
-  $WMSNode->created = $_SERVER['REQUEST_TIME'];
-  node_submit($WMSNode);
-  node_save($WMSNode);
-  drupal_set_message("Node with nid " . $WMSNode->nid . " saved!\n");
-}
-
-function node_exists($node_title) {
-  $query = "SELECT n.title FROM node n WHERE n.title = '" . $node_title . "' ";
-  $result = db_query($query);
-  if (!$result->rowCount()) {
-    return FALSE;
+    default:
   }
-  else {
-    return TRUE;
-  }
-}
-
-function get_markup() {
-  $string = <<<EOM
-              <div class="map container">
-            <div id="map"></div>
-            <div id="lyr-switcher"></div>
-            <div id="proj-container"></div>
-            <div id="timeslider-container"></div>
-        </div>
-
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var wmsClient = new wmsc({"wmsUrl":"http://thredds.met.no/thredds/wms/cryoclim/met.no/osisaf-nh-agg?SERVICE=WMS&REQUEST=GetCapabilities"}).init();
-            });
-        </script>
-EOM;
-  return $string;
-}
-
-function h_get_wms_ol_js($args_array) {
 
 }
