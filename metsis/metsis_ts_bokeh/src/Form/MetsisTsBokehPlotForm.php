@@ -55,7 +55,7 @@ class MetsisTsBokehPlotForm extends FormBase {
    $session = \Drupal::request()->getSession();
   //$data_uri = $session->get('metsis_ts_bokeh')->get('data_uri');
   //$items = $session->get('items');
-  \Drupal::logger('metsis_ts_bokeh')->debug('buildForm: yaxis form_state is: ' . $form_state->getValue('y_axis'));
+  //\Drupal::logger('metsis_ts_bokeh')->debug('buildForm: yaxis form_state is: ' . $form_state->getValue('y_axis'));
   $isinit = $session->get('isinit');
 
 // Get the request referer for go back button

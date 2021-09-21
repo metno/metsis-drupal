@@ -6,10 +6,18 @@ metsis_ts_bokeh.forminit:
   requirements:
     _permission: 'access metsis ts bokeh'
 
-metsis_ts_bokeh.formplot:
+#metsis_ts_bokeh.formplot:
+#  path: '/metsis/bokeh/plot'
+#  defaults:
+#    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehPlotForm'
+#    _title: 'Metsis TS Bokeh Plot'
+#  requirements:
+#    _permission: 'access metsis ts bokeh'
+
+metsis_ts_bokeh.plot:
   path: '/metsis/bokeh/plot'
   defaults:
-    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehPlotForm'
+    _controller: '\Drupal\metsis_ts_bokeh\Controller\MetsisTsBokehController::content'
     _title: 'Metsis TS Bokeh Plot'
   requirements:
     _permission: 'access metsis ts bokeh'

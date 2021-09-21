@@ -48,7 +48,7 @@ class MetsisTsBokehInitForm extends FormBase {
      */
     $session = \Drupal::request()->getSession();
     $session->remove('data_uri');
-    $session->remove('yaxis');
+    //$session->remove('yaxis');
     $session->remove('isinit');
     /*
      * Add helper variable to check for init
@@ -100,6 +100,6 @@ class MetsisTsBokehInitForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $session = \Drupal::request()->getSession();
     $session->set('data_uri', $form_state->getValue('data_uri'));
-    $form_state->setRedirect('metsis_ts_bokeh.formplot');
+    $form_state->setRedirect('metsis_ts_bokeh.plot');
   }
 }
