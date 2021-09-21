@@ -1,23 +1,5 @@
 <?php
 
-require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.utils.inc';
-/*
-require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/metsis_csv_bokeh.conf';
-require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.constants.inc';
-require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh.utils.inc';
-require_once drupal_get_path('module', 'metsis_csv_bokeh') . '/includes/metsis_csv_bokeh_forms.inc';
-
-function metsis_csv_bokeh_init() {
-  drupal_add_css(drupal_get_path('module', 'metsis_csv_bokeh') . '/css/metsis_csv_bokeh.css');
-}
-*/
-
-/*
-$bokeh_js_options = [
-  'type' => 'external',
-  'weight' => -100,
-];
-*/
 /**
  * Implements hook_help()
  *
@@ -42,63 +24,3 @@ function metsis_csv_bokeh_help($path, $arg) {
   }
 }
 
-/**
- * Implements hook_block_info().
- *
- * @return array
- */
- /*
-function metsis_csv_bokeh_block_info() {
-  $blocks = [];
-  $blocks['metsis_csv_bokeh_download_form'] = [
-    'info' => t('METSIS CSV Bokeh download form'),
-    'cache' => DRUPAL_NO_CACHE,
-  ];
-  return $blocks;
-}
-*/
-/**
- * Implements hook_block_view().
- *
- * @param string $delta
- *
- * @return array
- */
-
- /*
-function metsis_csv_bokeh_block_view($delta = '') {
-  $block = [];
-  switch ($delta) {
-    case 'metsis_csv_bokeh_download_form':
-      if (user_access('access content')) {
-        $block['content'] = drupal_get_form('metsis_csv_bokeh_download_form');
-        return $block;
-      }
-      break;
-  }
-  return $block;
-}
-*/
-/**
- * Implements hook_theme().
- *
- * @param type $existing
- * @param type $type
- * @param type $theme
- * @param type $path
- *
- * @return string
- *
- */
- /*
-function metsis_csv_bokeh_theme($existing, $type, $theme, $path) {
-  $module_path = drupal_get_path('module', 'metsis_csv_bokeh');
-  $items['metsis_csv_bokeh_download_form'] = [
-    'render element' => 'form',
-    'template' => 'metsis_csv_bokeh_download_form',
-    'path' => $module_path . '/theme/template/form/',
-  ];
-
-  return $items;
-}
-*/
