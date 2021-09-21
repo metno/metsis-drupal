@@ -1,8 +1,0 @@
-responsive:
-  version: 1.x
-  css:
-    component:
-      css/metsis_csv_responsive.css: {}
-#  dependencies:
-#    - core/jquery
-#    - core/drupal

@@ -1,6 +1,0 @@
-services:
-  init_subscriber:
-    class: Drupal\metsis_csv\EventSubscriber\InitSubscriber
-    tags:
-      -
-        name: event_subscriber

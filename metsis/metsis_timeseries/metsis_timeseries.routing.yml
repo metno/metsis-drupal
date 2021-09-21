@@ -1,7 +1,0 @@
-metsis_timseries.tsform:
-  path: '/ts'
-  defaults:
-    _form: '\Drupal\metsis_timeseries\Form\MetsisTsForm'
-    _title: 'Metsis Timeseries Plot Form'
-  requirements:
-    _permission: 'plot metsis timeseries'

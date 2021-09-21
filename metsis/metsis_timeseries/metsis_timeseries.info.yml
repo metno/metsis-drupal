@@ -1,8 +1,0 @@
-name: 'METSIS Time series'
-description: 'Provides user configuration form for time series.'
-core: 8.x
-package: METSIS
-type: module
-dependencies:
-  metsis_lib: 'drupal:metsis_lib'
-  metsis_basket: 'drupal:metsis_basket'
