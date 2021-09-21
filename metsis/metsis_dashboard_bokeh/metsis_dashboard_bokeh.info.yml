@@ -1,7 +1,8 @@
 name: 'METSIS Dashboard Bokeh'
 description: 'Display dashboard with product operations'
-core: 8.x
+core_version_requirement: ^8.8 || ^9
+version: 2.0.1
 package: METSIS
 type: module
-configure:
+configure: dashboard_bokeh.admin_settings_form
 dependencies: {  }

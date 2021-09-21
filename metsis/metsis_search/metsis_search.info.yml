@@ -1,8 +1,8 @@
 name: 'Metsis Search'
 type: module
 description: 'METSIS Metadata Search'
-core: 8.x
-version: 8.x-2.0
+core_version_requirement: ^8.8 || ^9
+version: 2.0.1
 package: METSIS
 dependencies:
   - search_api
