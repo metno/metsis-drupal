@@ -7,12 +7,12 @@ use Drupal\Core\Routing\RouteMatchInterface;
 /**
  * Implements hook_help().
  */
-function metsis_wms_help($route_name, RouteMatchInterface $route_match)
+function metsis_lib_help($route_name, RouteMatchInterface $route_match)
 {
     switch ($route_name) {
     // Main module help for the metsis_search module.
     /** TODO: Read help from module's README.md */
-    case 'help.page.metsis_wms':
+    case 'help.page.metsis_lib':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Library module for METSIS') . '</p>';
@@ -20,4 +20,5 @@ function metsis_wms_help($route_name, RouteMatchInterface $route_match)
 
     default:
 
+}
 }
