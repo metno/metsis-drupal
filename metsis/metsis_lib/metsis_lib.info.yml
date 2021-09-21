@@ -1,7 +1,7 @@
 name: 'METSIS lib'
 description: 'Provides library routines for METSIS modules.'
-core: 8.x
-version: 8.x-1.0
+core_version_requirement: ^8.8 || ^9
+version: 2.0.1
 package: METSIS
 dependencies:
   - views
