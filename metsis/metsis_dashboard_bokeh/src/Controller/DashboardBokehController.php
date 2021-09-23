@@ -47,7 +47,7 @@ class DashboardBokehController extends ControllerBase {
       /**
        * FIXME: This IF-caluse is for testing only. Should be removed for prod
        */
-      if($resources == NULL) { $resources = explode(',', $resources_test); }
+      //if($resources == NULL) { $resources = explode(',', $resources_test); }
 
       $markup = $this->getDashboard($backend_uri, $resources);
       \Drupal::logger('metsis_dashboard_bokeh_get')->debug(t("@markup", ['@markup' => $markup ] ) );
@@ -193,11 +193,7 @@ class DashboardBokehController extends ControllerBase {
             $build['content']['dashboard-wrapper'] = [
               '#type' => 'markup',
               '#markup' => '<div id="bokeh-dashboard" class="dashboard">',
-              '#attached' => [
-                'library' => [
-                  'metsis_dashboard_bokeh/dashboard',
-                ],
-              ],
+            
             ];
       $build['content']['dashboard-wrapper']['dashboard'] = [
         '#type' => 'markup',
@@ -211,7 +207,7 @@ class DashboardBokehController extends ControllerBase {
       //Add bokeh libraries
       $build['#attached'] = [
         'library' => [
-        //  'metsis_dashboard_bokeh/dashboard',
+          'metsis_dashboard_bokeh/dashboard',
         ],
       ];
       return $build;

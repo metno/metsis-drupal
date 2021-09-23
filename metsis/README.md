@@ -4,6 +4,7 @@
 # Todo:
 - Replace tempstore with session variables where most logical
 - Make all url-paths using the routing names
-- Clean up unused files and code
+- Clean up unused files and code (Started)
 - Document submodules
-- Render module help from README.md
+- Prepare for drupal 9 (Started) 
+- Remove deprecated module config form elements.

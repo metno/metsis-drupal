@@ -48,6 +48,7 @@ class MetsisTsBokehController extends ControllerBase {
  $json_data['email'] = \Drupal::currentUser()->getEmail();
  $json_data['project'] = 'METSIS';
 
+  \Drupal::logger('metsis_ts_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
 
  $markup = "<h2> Ooops Something went wrong!!</h2> Contact Administraor or see logs";
  try {
@@ -134,11 +135,6 @@ class MetsisTsBokehController extends ControllerBase {
        $build['content']['dashboard-wrapper'] = [
          '#type' => 'markup',
          '#markup' => '<div id="bokeh-dashboard" class="dashboard">',
-         '#attached' => [
-           'library' => [
-             'metsis_dashboard_bokeh/dashboard',
-           ],
-         ],
        ];
  $build['content']['dashboard-wrapper']['dashboard'] = [
    '#type' => 'markup',
@@ -151,9 +147,13 @@ class MetsisTsBokehController extends ControllerBase {
 
  //Add bokeh libraries
  $build['#attached'] = [
-   'library' => [
-   //  'metsis_dashboard_bokeh/dashboard',
-   ],
+     'library' => [
+       'metsis_ts_bokeh/style',
+       'metsis_ts_bokeh/bokeh_js',
+       'metsis_ts_bokeh/bokeh_widgets',
+       'metsis_ts_bokeh/bokeh_tables',
+       'metsis_ts_bokeh/bokeh_api',
+     ],
  ];
  return $build;
 
