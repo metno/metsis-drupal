@@ -6,6 +6,7 @@ use Drupal\views_bulk_operations\Action\ViewsBulkOperationsActionBase;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\File\Url;
 
 /**
  * Action description.
@@ -66,7 +67,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
       $output = print_r($options,1);
       \Drupal::logger('metsis_basket')->debug("TS Endpoint is: " . $ts_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling single visualization service with options: " . $output);
-      $url = \Drupal::url('metsis_timseries.tsform', $options['query']);
+      $url = Url::fromRoute('metsis_timseries.tsform', $options['query']);
       //$response = new RedirectResponse('metsis_timseries.tsform', $options);
       $response = new RedirectResponse($url);
       return $response->send();
@@ -77,7 +78,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
       $output = print_r($options,1);
       \Drupal::logger('metsis_basket')->debug("WMS Endpoint is: " . $wms_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling single visualization service with options: " . $output);
-      $url = \Drupal::url('metsis_qsearch.wms', $options['query']);
+      $url = Url::fromRoute('metsis_qsearch.wms', $options['query']);
       //$response = new RedirectResponse('metsis_qsearch.wms', $options);
       $response = new RedirectResponse($url);
       //return new RedirectResponse('metsis_qsearch.wms', $options);
@@ -126,7 +127,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
       \Drupal::logger('metsis_basket')->debug("TS Endpoint is: " . $ts_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling multiple visualization service with options: " . $output);
       //var_dump($options);
-      $url = \Drupal::url('metsis_timseries.tsform', $options['query']);
+      $url = Url::fromRoute('metsis_timseries.tsform', $options['query']);
       //$response = new RedirectResponse('metsis_timseries.tsform', $options);
       $response = new RedirectResponse($url);
       return $response->send();
@@ -137,7 +138,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
       $output = print_r($options,1);
       \Drupal::logger('metsis_basket')->debug("WMS Endpoint is: " . $wms_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling multiple visualization service with options: " . $output);
-      $url = \Drupal::url('metsis_qsearch.wms', $options['query']);
+      $url = Url::fromRoute('metsis_qsearch.wms', $options['query']);
       //$response = new RedirectResponse('metsis_qsearch.wms', $options);
       $response = new RedirectResponse($url);
       return $response->send();

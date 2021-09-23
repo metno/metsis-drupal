@@ -6,6 +6,7 @@ use Drupal\views_bulk_operations\Action\ViewsBulkOperationsActionBase;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\File\Url;
 
 /**
  * Action description.
@@ -55,7 +56,7 @@ class MetsisBasketTransformAction extends ViewsBulkOperationsActionBase {
     \Drupal::logger('metsis_basket')->debug("Calling transformation service with options: " . $output);
     // Don't return anything for a default completion message, otherwise return translatable markup.
     //return $this->t('Basket Item Deleted');
-    $url = \Drupal::url('metsis_fimex.fimexform', $options);
+    $url = Url::fromRoute('metsis_fimex.fimexform', $options);
     $response = new RedirectResponse($url);
     return $response->send();
 
@@ -79,7 +80,7 @@ class MetsisBasketTransformAction extends ViewsBulkOperationsActionBase {
     /*
     * TODO: Call transformation endpoint width $options
     */
-    $url = \Drupal::url('metsis_fimex.fimexform', $options);
+    $url = Url::fromRoute('metsis_fimex.fimexform', $options);
     //return $metadata_identifiers;
     $response = new RedirectResponse($url);
     return $response->send();
