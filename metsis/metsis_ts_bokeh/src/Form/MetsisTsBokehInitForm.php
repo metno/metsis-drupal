@@ -47,15 +47,10 @@ class MetsisTsBokehInitForm extends FormBase {
      * Clean up tempstore
      */
     $session = \Drupal::request()->getSession();
-    $session->remove('data_uri');
-    //$session->remove('yaxis');
-    $session->remove('isinit');
-    /*
-     * Add helper variable to check for init
-     */
-    $session->set('isinit', true);
-
-
+    if($session->has('data_uri')) {
+      $session->remove('data_uri');
+  }
+    
     /*
      * Display error message if backend url configuration is not set
      */

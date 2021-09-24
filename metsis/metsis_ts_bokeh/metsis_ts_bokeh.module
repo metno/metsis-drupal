@@ -3,7 +3,6 @@
  * This modules provides a blocks with forms for plotting time series using
  * METSIS web services that offer JS Bokeh ploting.
  */
-require_once drupal_get_path('module', 'metsis_ts_bokeh') . '/includes/metsis_ts_bokeh.utils.inc';
 
 
 /*

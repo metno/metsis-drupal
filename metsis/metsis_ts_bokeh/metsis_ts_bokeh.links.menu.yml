@@ -6,7 +6,7 @@ metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
   weight: 99
 
 metsis_ts_bokeh.init_form:
-  title: 'METSIS TS Bokeh'
+  title: 'METSIS Timeseries Plot'
   description: 'View Timeseries Bokeh Plot'
   route_name: metsis_ts_bokeh.forminit
   menu_name: main
