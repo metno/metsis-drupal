@@ -1,8 +1,16 @@
-metsis_ts_bokeh.forminit:
+metsis_ts_bokeh.form:
   path: '/metsis/tsplot/form'
   defaults:
+    _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsPlotForm'
+    _title: 'METSIS Timeseries plot'
+  requirements:
+    _permission: 'access metsis ts bokeh'
+
+metsis_ts_bokeh.init_form:
+  path: '/metsis/tsplot/init_form'
+  defaults:
     _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsBokehInitForm'
-    _title: 'Metsis Timeseries plot form'
+    _title: 'METSIS Timeseries plot'
   requirements:
     _permission: 'access metsis ts bokeh'
 
@@ -21,6 +29,8 @@ metsis_ts_bokeh.plot:
     _title: 'Metsis Timeseries Plot'
   requirements:
     _permission: 'access metsis ts bokeh'
+  options:
+    no_cache: TRUE
 
 metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
   path: '/admin/config/metsis/ts_bokeh'

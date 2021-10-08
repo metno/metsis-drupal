@@ -259,6 +259,7 @@ $build['#attached'] = [
    ],
 ];
 return $build; */
+\Drupal::logger('metsis_tsplot')->debug("Calling endpoint: " . $backend_uri . '?url=' .$opendap_url);
 $build['content'] = [
  '#prefix' => '<div class="w3-container clearfix">',
  '#suffix' => '</div>'
@@ -271,11 +272,14 @@ $build['content']['back'] = [
 
 $build['plot'] =  [
   '#type' => 'inline_template',
-  '#template' => '<iframe src="{{ url }}" width="100%" height="725" frameborder=0 scrolling=no></iframe>',
+  '#template' => '<iframe src="{{ url }}" width="100%" height="725" frameborder=0 scrolling=no> title="Timeseries Bokeh Plot"</iframe>',
   '#context' => [
-      'url' => $backend_uri . '?url=' . $opendap_url,
+      'url' => $backend_uri . '?url=' . $opendap_url . '&bokeh_log_level=debug',
     ],
   ];
+$build['#cache'] = [
+  'disabled' => TRUE,
+];
 
 return $build;
 

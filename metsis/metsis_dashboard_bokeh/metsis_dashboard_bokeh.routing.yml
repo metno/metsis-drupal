@@ -18,6 +18,16 @@ dashboard.testpost:
   requirements:
     _permission: 'access bokeh dashboard'
 
+dashboard.jsontest:
+  path: /metsis/bokeh/dashboard/json
+  defaults:
+    _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::jsonTest
+    _title: "Bokeh JSON"
+  options:
+    query:
+  requirements:
+    _permission: 'access bokeh dashboard'
+
 #basket.add:
 #  path: '/metsis/basket/add/{metaid}'
 #  defaults:

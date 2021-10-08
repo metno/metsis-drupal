@@ -1,9 +1,5 @@
 <?php
 
-//require_once 'metsis_basket.constants.inc';
-require_once 'metsis_basket.utils.inc';
-//require_once 'metsis_basket.config.inc';
-global $metsis_conf;
 /*
 function metsis_basket_views_api() {
   return array('api' => 3, 'path' => drupal_get_path('module', 'metsis_basket') . '/includes/views',);
@@ -110,6 +106,6 @@ function metsis_basket_load_action_includes() {
  */
  /*
  function metsis_basket_views_data() {
-  
+
  }
 */

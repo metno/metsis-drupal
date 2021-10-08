@@ -1,6 +1,9 @@
-#services:
-#  init_subscriber:
-#    class: Drupal\metsis_lib\EventSubscriber\InitSubscriber
-#    tags:
-#      -
-#        name: event_subscriber
+services:
+  # Client factory service.
+  metsis_lib.nc_to_mmd_factory:
+    class: \Drupal\metsis_lib\Service\NcToMmdFactory
+
+  # Create a service from another Service Factory.
+  metsis_lib.nc_to_mmd:
+    class: \Drupal\metsis_lib\Service\NcToMmd
+    factory: ['@metsis_lib.nc_to_mmd_factory', 'create']

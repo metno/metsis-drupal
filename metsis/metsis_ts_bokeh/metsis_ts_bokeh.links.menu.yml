@@ -5,10 +5,10 @@ metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
   parent: metsis.group.admin
   weight: 99
 
-metsis_ts_bokeh.init_form:
+metsis_ts_bokeh.form:
   title: 'METSIS Timeseries Plot'
   description: 'View Timeseries Bokeh Plot'
-  route_name: metsis_ts_bokeh.forminit
+  route_name: metsis_ts_bokeh.form
   menu_name: main
   parent: main
   weight: 0

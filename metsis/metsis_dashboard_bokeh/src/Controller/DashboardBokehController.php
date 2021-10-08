@@ -193,7 +193,7 @@ class DashboardBokehController extends ControllerBase {
             $build['content']['dashboard-wrapper'] = [
               '#type' => 'markup',
               '#markup' => '<div id="bokeh-dashboard" class="dashboard">',
-            
+
             ];
       $build['content']['dashboard-wrapper']['dashboard'] = [
         '#type' => 'markup',
@@ -210,6 +210,39 @@ class DashboardBokehController extends ControllerBase {
           'metsis_dashboard_bokeh/dashboard',
         ],
       ];
+      return $build;
+    }
+
+    public function jsonTest() {
+      $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+      $backend_uri = $config->get('dashboard_bokeh_service');
+      //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
+      //Get the user_id
+      $user_id = (int) \Drupal::currentUser()->id();
+
+      //Get the refering page
+      $session = \Drupal::request()->getSession();
+      $referer = $session->get('back_to_search');
+
+
+      \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ] ) );
+
+      $json_data = $this->getJsonData($user_id);
+      dpm($json_data);
+
+
+
+      $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
+      $build['content'] = [
+        '#type' => 'markup',
+        '#title' => 'JSON',
+        '#markup' => '<code>' . $json_body. '</code>',
+        '#allowed_tags' => ['code'],
+      ];
+
+
+
+
       return $build;
     }
     function getDashboard($backend_uri, $resources) {

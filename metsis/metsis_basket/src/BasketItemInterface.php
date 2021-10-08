@@ -13,5 +13,3 @@ use Drupal\Core\Entity\EntityChangedInterface;
 interface BasketItemInterface extends ContentEntityInterface {
 
 }
-
-?>

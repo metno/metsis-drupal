@@ -13,3 +13,12 @@
 .plot-submit {
   flex-grow: 1;
 }
+
+
+form#metsis-tsform {
+  width: 100%;
+  max-width: unset;
+}
+.plot-input {
+  width: 45%;
+}
