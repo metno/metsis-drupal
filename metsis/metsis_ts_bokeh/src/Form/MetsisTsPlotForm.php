@@ -51,21 +51,35 @@ class MetsisTsPlotForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
+
+      //Get the API endpoint config.
+      $config = \Drupal::config('metsis_ts_bokeh.configuration');
+      $backend_uri = $config->get('ts_bokeh_plot_service');
+
+      //Get the query parameters for this request.
+      $query_from_request = \Drupal::request()->query->all();
+      $query = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
+
       $form['plotform'] = [
         '#type' => 'container',
-        '#prefix' => '<div id="plot-wrapper">',
+        '#prefix' => '<div id="plot-wrapper" height="800px">',
         '#suffix' => '</div>',
         '#attributes' => [
       'class' => ['w3-container', 'w3-display-container', 'clearfix'],
+
           ],
       ];
 
+
+if(!isset($query['url'])) {
       $form['plotform']['input'] = [
    '#type' => 'container',
   '#attributes' => [
     'class' => ['plot-input'],
     ],
   ];
+
+
         $form['plotform']['input']['data_uri'] = [
      '#type' => 'url',
      '#sze' => 100,
@@ -95,14 +109,35 @@ class MetsisTsPlotForm extends FormBase
 
    ];
 
-   $form['plotform']['plot-container'] = [];
+   $form['plotform']['plot-container'] = [
+  //   '#type' => 'markup',
+  //   '#prefix' => '<div class="w3-row">',
+  //   '#suffix' => '</div>',
+   ];
 
+}
+else {
 
+  $form['plotform']['plot-container'] =  [
+'#type' => 'inline_template',
+'#allowed_tags' => ['iframe', 'div','script'],
+'#template' => '<iframe src="{{ url }}" width="100%" height="800px"  frameborder=0 scrolling=no> title="Timeseries Bokeh Plot"</iframe>',
+'#context' => [
+  'url' => $backend_uri . '?url=' . $query['url'] . '',
+],
+'#attributes' => [
+  //'class' => ['w3-display-container', 'w3-display-middle']
+]
+];
+
+}
 
         /*
          * Attach some js libraries to this form
          */
         $form['#attached']['library'][] = 'metsis_ts_bokeh/style';
+        $form['#attached']['library'][] = 'media/oembed.formatter';
+        $form['#attached']['library'][] = 'media/oembed.frame';
   /*      $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_js';
         $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_widgets';
         $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_tables';

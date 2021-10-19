@@ -1,13 +1,13 @@
-metsis_lib.admin_config_form:
-  title: 'METSIS Lib Shared Configuration'
-  description: 'Configure METSIS'
-  route_name: metsis_lib.admin_config_form
-  parent: metsis.group.admin
-  weight: 99
+#metsis_lib.admin_config_form:
+#  title: 'METSIS Lib Shared Configuration'
+#  description: 'Configure METSIS'
+#  route_name: metsis_lib.admin_config_form
+#  parent: metsis.group.admin
+#  weight: 99
 
-metsis.group.admin:
-  title: 'METSIS'
-  route_name: system.admin_config_metsis
-  parent: system.admin_config
-  description: 'METSIS Configuration'
-  weight: -999
+#metsis.group.admin:
+#  title: 'METSIS'
+#  route_name: system.admin_config_metsis
+#  parent: system.admin_config
+#  description: 'METSIS Configuration'
+#  weight: -999

@@ -25,11 +25,13 @@ use Solarium\Core\Query\DocumentInterface;
 use Solarium\Core\Query\Result\ResultInterface;
 
 
+use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
+
 /**
  * Default controller for the metsis_basket module.
  * {@inheritdoc}
  */
-class MetsisBasketController extends ControllerBase  {
+class MetsisBasketController extends DashboardBokehController  {
 
   public function myBasket() {
     //Get the user_id
@@ -40,34 +42,53 @@ class MetsisBasketController extends ControllerBase  {
     $referer = $session->get('back_to_search');
 
 
-    //Create content wrapper
+    $build = self::post_datasource();
+
     $build['content'] = [
-      '#prefix' => '<div class="w3-container">',
-      '#suffix' => '</div>'
+      '#type' => 'container',
+    ];  //Create content wrapper
+    $build['content']['basket'] = [
+      //'#pre</span>fix' => '<div class="w3-container">',
+      //'#suffix' => '</div>',
+      '#type' => 'details',
+      '#title' => $this->t('Show basket (remove items)'),
     ];
 
+        $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
+        $build['content']['basket']['view']['#cache'] = [
+
+          'max-age' => 0,
+        ];
 
     $build['content']['back'] = [
-      '#markup' => '<a class="w3-btn" href="'. $referer . '">Go back to search </a>',
+      '#prefix' => '<div class="w3-container"><span>',
+      '#suffix' => '</span></div>',
+
+      '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
     ];
     //$build['content']['dashboard'] = [
     //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
     //];
-    $build['content']['dashboard-post'] = [
-      '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard/post">Go to Dashboard</a>',
-    ];
+    //$build['content']['dashboard-post'] = [
+    //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard/post">Go to Dashboard</a>',
+    //];
 
-    $build['content']['view'] = views_embed_view('basket_view', 'embed_1');
+    //$build['content']['view'] = views_embed_view('basket_view', 'embed_1');
 
     $build['#cache'] = [
 
       'max-age' => 0,
     ];
 
+    //  $build['#type'] = 'container';
+    //$build['#theme'] = 'metsis_basket-template';
     $build['#attached'] = [
 'library' => [
 'metsis_basket/basket_view',
 ],
+];
+$build['#attributes'] = [
+  'class' => ['myBasket'],
 ];
 
     return $build;

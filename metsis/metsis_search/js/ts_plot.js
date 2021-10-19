@@ -42,7 +42,7 @@
         console.log('Got timeseries id: ' + id);
         $('#ts-plot-button', this).once().each(function() {
 
-
+/*
 
           $(this).click(function() {
             console.log("calling ts-plot with url: " + opendap_url);
@@ -105,6 +105,7 @@
               //});
             }
           });
+          */
         });
       });
     },

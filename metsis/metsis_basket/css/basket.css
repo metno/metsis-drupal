@@ -2,3 +2,7 @@ form#views-form-basket-view-embed-1-1 {
   max-width: 100% !important;
 
 }
+.myBasket {
+ width: fit-content;
+ max-width: fit-content;
+}

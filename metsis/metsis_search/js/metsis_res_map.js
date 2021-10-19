@@ -1029,6 +1029,17 @@ console.log("Start of metsis search map script:");
         var toolclickevent_new;
         var getProductInfo;
 
+
+        //New plot service function. Add bokeh plot endpoint as iFrame
+        function plot_ts_bokeh(url_o, pywps, selector) {
+          var url = pywps+'?url='+url_o;
+          if ($('#map-ts-plot').html().length > 0) {
+            $('#map-ts-plot').empty();
+          }
+          $('#map-ts-plot').html('<iframe src="'+url+'" width="100%" height="725" frameborder=0 scrolling=no> title="Timeseries Bokeh Plot"</iframe>');
+
+        }
+
         //Th plost time series manin function
         function plot_ts(url_o, md_ts_id, path, pywps) {
           let loader = '<img class="map-ts-plot-loader" src="/' + path + '/icons/loader.gif">';
@@ -1129,7 +1140,85 @@ console.log("Start of metsis search map script:");
           //}
         }
 
+        //Function to plot timeSeries reqistered as variable plotTimeserie, used in getProductInfo
+        function plotTimeseries2(opendap_url) {
+          console.log("calling ts-plot with url: " + opendap_url);
 
+          //Hide SearchMap
+          $('#search-map').slideUp();
+          $('#map-ts-back').unbind('click');
+          $('#map-ts-back').empty();
+
+          //Show ts-bokeh plot:
+          $('#bokeh-map-ts-plot').slideDown();
+          $('.map-ts-header').css({
+            display: 'block'
+          });
+
+          //Create back to results button:
+          let button = $('#map-ts-back').append(
+            $(document.createElement('button')).prop({
+              id: 'backToMapButton',
+              class: "w3-button w3-small",
+            }).html('Back to results map')
+          );
+          // Register action for click button:
+          button.on('click', function() {
+            $('#bokeh-map-ts-plot').slideUp();
+            $('.map-ts-header').css({
+              display: 'none'
+            });
+            $('#search-map').slideDown();
+            $('#map-ts-plot').empty();
+            $('#map-ts-var-list').unbind('change');
+            $('#bokeh-map-ts-plot').find('.map-ts-vars').empty();
+            $('#backToMapButton').unbind('click');
+            $('#map-ts-back').empty();
+          });
+
+          /*  if ($('#map-ts-plot').html().length > 0 || $('#bokeh-map-ts-plot').find('.map-ts-vars').html().length > 0) {
+              $('#map-ts-plot').empty();
+              $('#bokeh-map-ts-plot').find('.map-ts-vars').empty();
+            } else {*/
+/*          let loader = '<img class="ts-click-loader" src="/core/misc/throbber-active.gif">';
+          $('#bokeh-map-ts-plot').find('.map-ts-loader').append(loader);
+          console.log('fetching variables');
+          fetch(pywpsUrl + '?get=param&resource_url=' + opendap_url)
+            .then(response => response.json())
+            .then(data => {
+              $('#bokeh-map-ts-plot').find('.map-ts-vars').html(
+                $(document.createElement('input')).prop({
+                  id: 'axis',
+                  name: 'axis',
+                  value: Object.keys(data),
+                  type: 'hidden',
+                })
+              ).append(
+                $(document.createElement('select')).prop({
+                  id: 'map-ts-var-list',
+                  name: 'var_list',
+
+                }).append(
+                  $(document.createElement('option')).text('Choose variable')
+                )
+              );
+              console.log('looping variables');
+              for (const variable of data[Object.keys(data)]) {
+                var el = document.createElement("option");
+                el.textContent = variable;
+                el.value = variable;
+                $('#bokeh-map-ts-plot').find('#map-ts-var-list').append(el);
+              }
+              $('#bokeh-map-ts-plot').find('.map-ts-loader').empty();
+*/
+  //            $('#bokeh-map-ts-plot').find('#map-ts-var-list').on('change', function() {
+                plot_ts_bokeh(opendap_url, pywpsUrl, '#map-ts_plot');
+
+    //          });
+
+            //});
+          //}
+        }
         //Hide the animation controls per default
         $('#animatedWmsControls').hide();
         $('#elevationWmsControls').hide();
@@ -1896,7 +1985,7 @@ console.log("Start of metsis search map script:");
                 console.log("Alter the popUpOverlay position.");
                 popUpOverlay.setPosition(coordinate);
                 button.on('click', function() {
-                  plotTimeseries(odResource)
+                  plotTimeseries2(odResource)
                 });
               }
             }
@@ -2070,7 +2159,7 @@ console.log("Start of metsis search map script:");
                     console.log("Alter the popUpOverlay position.");
                     $('#popup-ts-button').on('click', function() {
                       popUpOverlay.setPosition(undefined);
-                      plotTimeseries(odResource)
+                      plotTimeseries2(odResource)
                     });
                   }
                 }

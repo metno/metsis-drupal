@@ -165,41 +165,44 @@ class DashboardBokehController extends ControllerBase {
 
       // Build page
       //Create content wrapper
-      $build['content'] = [
-        '#prefix' => '<div class="w3-container clearfix">',
-        '#suffix' => '</div>'
+      $build = [];
+      $build['dashboard'] = [
+        //'#prefix' => '<div class="w3-container">',
+        //'#suffix' => '</div>'
+        '#type' => 'container',
       ];
 
 
-      $build['content']['back'] = [
+  /*    $build['dashboard']['back'] = [
         '#markup' => '<a class="w3-btn" href="'. $referer . '">Go back to search </a>',
       ];
-
+*/
 /*
-      $build['content']['endpoint'] = [
+      $build['dashboard']['endpoint'] = [
         '#type' => 'markup',
         '#markup' => '<p>Using endpoint : ' .   $backend_uri . '</p>',
 
 
       ];
 
-      $build['content']['status'] = [
+      $build['dashboard']['status'] = [
         '#type' => 'markup',
         '#markup' => '<p>Got statusCode: ' . $responseStatus . '</p>',
 
 
       ];
-*/
-            $build['content']['dashboard-wrapper'] = [
+*//*
+            $build['dashboard']['dashboard-wrapper'] = [
               '#type' => 'markup',
-              '#markup' => '<div id="bokeh-dashboard" class="dashboard">',
+              '#markup' => //'<div id="bokeh-dashboard" class="dashboard">',
 
-            ];
-      $build['content']['dashboard-wrapper']['dashboard'] = [
+            ]; */
+      $build['dashboard']['dashboard-wrapper'] = [
+        '#prefix' => '<div id="bokeh-dashboard" class="dashboard">',
         '#type' => 'markup',
         '#markup' => $markup,
         '#suffix' => '</div>',
-        '#allowed_tags' => ['script','div','tr','td'],
+        '#allowed_tags' => ['script','div','tr','td', 'css', 'button'],
 
       ];
 

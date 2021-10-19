@@ -6,6 +6,7 @@ package: METSIS
 configure: metsis_basket.metsis_basket_admin_settings_form
 dependencies:
   - metsis_lib
+  - metsis_dashboard_bokeh
   - views
   - views_bulk_operations
 type: module

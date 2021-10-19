@@ -13,7 +13,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *   id = "metsis_basket_delete_action",
  *   label = @Translation("ADC Delete items"),
  *   type = "metsis_basket_item",
- *   confirm = TRUE,
+ *   confirm = FALSE,
  * )
  */
 class MetsisBasketDeleteAction extends ViewsBulkOperationsActionBase {
