@@ -198,7 +198,7 @@ class DashboardBokehController extends ControllerBase {
 
             ]; */
       $build['dashboard']['dashboard-wrapper'] = [
-        '#prefix' => '<div id="bokeh-dashboard" class="dashboard">',
+        '#prefix' => '<div id="bokeh-dashboard" class="dashboard w3-card">',
         '#type' => 'markup',
         '#markup' => $markup,
         '#suffix' => '</div>',

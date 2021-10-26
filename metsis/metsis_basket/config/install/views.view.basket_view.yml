@@ -181,10 +181,12 @@ display:
           clear_on_exposed: true
           action_title: Action
           selected_actions:
-            6:
-              action_id: views_bulk_operations_delete_entity
+            -
+              action_id: metsis_basket_delete_action
               preconfiguration:
-                label_override: 'Delete selected products'
+                label_override: 'Delete selected'
+                add_confirmation: false
+          force_selection_info: false
           plugin_id: views_bulk_operations_bulk_form
         title:
           id: title

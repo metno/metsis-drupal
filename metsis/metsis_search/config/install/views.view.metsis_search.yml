@@ -1541,7 +1541,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"visualise-ts-{{ id }}\" reference=\"{{ id }}\" class=\"visualise-ts visualise-ts-div\">\r\n<div id=\"opendap-url\" class=\"hidden\">{{ data_access_url_opendap }}</div>\r\n<div id=\"opendap-id\" class=\"hidden\">{{ id }}</div>\r\n  <a id=\"ts-plot-button\" class=\"adc-button adc-sbutton\" \r\n >Visualise TimeSeries</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"visualise-ts-{{ id }}\" reference=\"{{ id }}\" class=\"visualise-ts visualise-ts-div\">\r\n<div id=\"opendap-url\" class=\"hidden\">{{ data_access_url_opendap }}</div>\r\n<div id=\"opendap-id\" class=\"hidden\">{{ id }}</div>\r\n  <a id=\"ts-plot-button\" class=\"adc-button adc-sbutton use-ajax\"\r\n   data-dialog-options=\"{&quot;width&quot;:1000,&quot;height&quot;:800}\"\r\n   data-dialog-type=\"modal\"\r\n   href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\"> \r\n Visualise TimeSeries</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false

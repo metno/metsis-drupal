@@ -184,3 +184,15 @@ p {
     font-style: italic;
 
 }
+
+
+.dashboard {
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 720px;
+  margin: 0;
+
+}
