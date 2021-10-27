@@ -39,7 +39,7 @@ backend_config:
     host: 157.249.74.44
     port: 8983
     path: /
-    core: adc
+    core: dev-l1
     timeout: 20
     index_timeout: 10
     optimize_timeout: 10
