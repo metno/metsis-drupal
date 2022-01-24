@@ -90,7 +90,6 @@ jquery:
   version: 1.12.1
   header: true
   remote:  https://code.jquery.com/
-  version: "1.12.0"
   license:
     name: MIT
     url:   https://code.jquery.com//LICENSE.txt
@@ -101,7 +100,6 @@ jquery.ui:
   version: 1.12.1
   header: true
   remote:  https://code.jquery.com/
-  version: "1.12.0"
   license:
     name: MIT
     url:   https://code.jquery.com//LICENSE.txt

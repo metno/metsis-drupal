@@ -1,5 +1,5 @@
 metsis_wms.get_custom_content:
-  path: /metsis/map/wmscustom
+  path: '/metsis/map/wmscustom'
   defaults:
   #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
     _controller: '\Drupal\metsis_wms\Controller\DefaultController::get_custom_content'
@@ -14,7 +14,7 @@ metsis_wms.get_custom_content:
 
 
 metsis_wms.wms:
-  path: /metsis/map/wms
+  path: '/metsis/map/wms'
   defaults:
 #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
     _controller: '\Drupal\metsis_wms\Controller\DefaultController::getWmsMap'
@@ -28,7 +28,7 @@ metsis_wms.wms:
     _permission: 'access wms'
 
 metsis_qsearch.map_getcap:
-  path: /metsis/map/getcap
+  path: '/metsis/map/getcap'
   defaults:
     _title: 'GetCapabilities'
     _controller: '\Drupal\metsis_wms\Controller\GetCapController::getCapDoc'
@@ -40,7 +40,7 @@ metsis_qsearch.map_getcap:
     _permission: 'access wms'
 
 metsis_qsearchmap_getcapfromurl:
-  path: /metsis/map/getcapfromurl
+  path: '/metsis/map/getcapfromurl'
   defaults:
     _title: 'GetWMSCapabilitiesFromUrl'
     _controller: '\Drupal\metsis_wms\Controller\GetCapController::getCapDocFromUrl'

@@ -1,0 +1,6 @@
+{
+    "name": "metsis/metsis-drupal",
+    "type": "drupal-module",
+    "description": "METSIS drupal modules",
+    "license": "GPL-2.0+"
+}

@@ -1,5 +1,5 @@
 dashboard:
-  path: /metsis/bokeh/dashboard
+  path: '/metsis/bokeh/dashboard'
   defaults:
     _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::build
     _title: "Bokeh Dashboard"
@@ -9,7 +9,7 @@ dashboard:
     _permission: 'access bokeh dashboard'
 
 dashboard.testpost:
-  path: /metsis/bokeh/dashboard/post
+  path: '/metsis/bokeh/dashboard/post'
   defaults:
     _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::post_datasource
     _title: "Bokeh Dashboard"
@@ -19,7 +19,7 @@ dashboard.testpost:
     _permission: 'access bokeh dashboard'
 
 dashboard.jsontest:
-  path: /metsis/bokeh/dashboard/json
+  path: '/metsis/bokeh/dashboard/json'
   defaults:
     _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::jsonTest
     _title: "Bokeh JSON"
@@ -49,8 +49,6 @@ dashboard_bokeh.admin_settings_form:
   options:
     _admin_route: TRUE
 
-metsis.parent:
-  title: 'Metsis'
 system.admin_config_metsis:
   path: '/admin/config/metsis'
   defaults:

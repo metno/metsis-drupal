@@ -400,8 +400,7 @@ function metsis_search_search_api_solr_search_results_alter(
     if (preg_match($pattern1, $search_path)) {
 
     $extracted_info = SearchUtils::getExtractedInfo($result);
-
-    //$gcmd_facet = SearchUtils::processGcmdFacet($result);
+  \Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
     //$session->set('gcmd', $gcmd_facet);
     //dpm($gcmd_facet);
     //add the extracted info to the tempstores

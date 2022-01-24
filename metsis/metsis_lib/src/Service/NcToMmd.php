@@ -16,7 +16,7 @@ class NcToMmd implements NcToMmdInterface {
   /**
    * Extraction status
    *
-   * @var bool 
+   * @var bool
    */
   private $status;
 
@@ -45,8 +45,9 @@ class NcToMmd implements NcToMmdInterface {
 
 	   $this->status = true;
         } else {
-	    $this->status = false;	
+	    $this->status = false;
             $metadata = [];
+            \Drupal::logger('nc_to_mmd')->error('<pre><code>' . print_r($out_nctommd, TRUE) . '</code></pre>');
         }
         //$retArr = [$status_nctommd, $metadata, $out_nctommd];
         return $metadata;

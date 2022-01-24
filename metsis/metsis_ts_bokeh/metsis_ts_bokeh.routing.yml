@@ -42,8 +42,6 @@ metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form:
   options:
     _admin_route: TRUE
 
-metsis.parent:
-  title: 'Metsis'
 system.admin_config_metsis:
   path: '/admin/config/metsis'
   defaults:
