@@ -6,8 +6,6 @@ dependencies:
     - system
   theme:
     - metsis
-    - adc
-    - sios
 id: gcmdkeywordsblock
 theme: metsis
 region: breadcrumb

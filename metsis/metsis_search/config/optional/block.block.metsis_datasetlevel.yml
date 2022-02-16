@@ -8,8 +8,6 @@ dependencies:
     - system
   theme:
     - metsis
-    - adc
-    - sios
 id: metsis_datasetlevel
 theme: metsis
 region: sidebar_first

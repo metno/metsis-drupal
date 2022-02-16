@@ -172,7 +172,7 @@ $build['#attributes'] = [
     $ids = $this->get_user_item_ids($user_id);
     //\Drupal::logger('metsis_basket')->debug(implode(',',$ids));
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('metsis_basket');
+    $tempstore = \Drupal::service('tempstore.private')->get('metsis_basket');
     $tempstore->set('basket_items', $ids);
 
 

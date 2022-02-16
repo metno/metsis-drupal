@@ -6,8 +6,6 @@ dependencies:
     - system
   theme:
     - metsis
-    - adc
-    - sios
 id: mapblockformetsissearch_2
 theme: metsis
 region: content

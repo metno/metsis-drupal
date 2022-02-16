@@ -6,8 +6,6 @@ dependencies:
     - system
   theme:
     - metsis
-    - adc
-    - sios
 id: metsis_metsissearchmap
 theme: metsis
 region: content

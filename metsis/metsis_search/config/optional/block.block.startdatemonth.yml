@@ -8,8 +8,6 @@ dependencies:
     - system
   theme:
     - metsis
-    - adc
-    - sios
 id: startdatemonth
 theme: metsis
 region: sidebar_first

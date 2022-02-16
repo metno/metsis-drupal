@@ -1,0 +1,12 @@
+<?php
+
+
+/**
+ * @file
+ */ 
+
+function metsis_search_install() {
+
+	 module_set_weight('metsis_search', 11);
+ }
+?>

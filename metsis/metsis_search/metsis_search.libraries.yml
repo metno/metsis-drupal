@@ -33,13 +33,13 @@ search_map:
   version: 1.0
   css:
     component:
-      /libraries/openlayers6/css/ol.css: {}
+      /libraries/openlayers-6.5.0/ol.css: {}
     theme:
       css/metsis_qsearch.css: {}
 
   js:
     #js/bundle.js: {}
-    /libraries/openlayers6/build/ol.js: {}
+    /libraries/openlayers-6.5.0/ol.js: {}
     https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
     js/searchmap.js: {}
   dependencies:
@@ -49,6 +49,7 @@ search_map:
     - core/drupal
     - core/drupalSettings
     - core/drupal.ajax
+    - blazy/blazy
 #    - core/drupal.dialog
 #    - core/drupal.dialog.ajax
 
@@ -89,6 +90,7 @@ search_map_block:
     - core/drupal.dialog
     - core/drupal.dialog.ajax
     - jquery_ui_slider/slider
+    - blazy/blazy
 #    - bootstrap_library/bootstrap
 
 children_count:

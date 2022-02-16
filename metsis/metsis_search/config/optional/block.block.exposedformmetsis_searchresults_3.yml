@@ -7,8 +7,6 @@ dependencies:
     - views
   theme:
     - metsis
-    - adc
-    - sios
 id: exposedformmetsis_searchresults_3
 theme: metsis
 region: sidebar_first

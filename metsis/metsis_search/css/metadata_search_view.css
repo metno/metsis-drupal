@@ -25,7 +25,7 @@ ul.js-facets-checkbox-links {
 
 
 }
-
+/*
 .ui-dialog-off-canvas {
   all: initial;
   background-attachment: scroll;
@@ -50,6 +50,7 @@ ul.js-facets-checkbox-links {
   top: 6px;
   z-index: 500
 }
+*/
 /* TRYING TO FIX METADTA PREVIEW POPUP CSS PROBLEM
 #drupal-off-canvas :not(div), #drupal-off-canvas :not(svg *), #drupal-off-canvas ::after, #drupal-off-canvas ::before {
   all: initial;

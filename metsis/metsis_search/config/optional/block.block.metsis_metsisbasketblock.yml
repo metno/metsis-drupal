@@ -5,8 +5,6 @@ dependencies:
     - metsis_basket
   theme:
     - metsis
-    - adc
-    - sios
 id: metsis_metsisbasketblock
 theme: metsis
 region: sidebar_first

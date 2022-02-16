@@ -7,6 +7,7 @@
  * utility functions for metsis_search
  *
  */
+
 namespace Drupal\metsis_search;
 
 use Solarium\QueryType\Select\Query\Query;
@@ -24,116 +25,112 @@ use Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Component\Serialization\Json;
 
-
 class SearchUtils
 {
+    /**
+     * Called from  hook_search_api_solr_search_results_alter  in metsis_search.module
+     *
+     * Input param: Results from Solrarium query
+     * Output: facet render array for facet block
+     */
+    public static function processGcmdFacet($result_set)
+    {
+        // Get the request referer for go back button
+        $request = \Drupal::request();
+        $referer = $request->headers->get('referer');
+        $session = \Drupal::request()->getSession();
+        // display facet results
+        $facet = $result_set->getFacetSet()->getFacet('gcmd');
 
-  /**
-   * Called from  hook_search_api_solr_search_results_alter  in metsis_search.module
-   *
-   * Input param: Results from Solrarium query
-   * Output: facet render array for facet block
-   */
-  public static function processGcmdFacet($result_set)
-  {
-    // Get the request referer for go back button
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-    $session = \Drupal::request()->getSession();
-    // display facet results
-    $facet = $result_set->getFacetSet()->getFacet('gcmd');
+
+        $list = [];
+        $markup = "";
+        foreach ($facet as $pivot) {
+            $markup .= SearchUtils::displayPivotFacet($pivot, $referer);
+        }
 
 
-    $list = [];
-    $markup = "";
-    foreach ($facet as $pivot) {
-        $markup .= SearchUtils::displayPivotFacet($pivot,$referer);
+        return $markup;
+
+        /*
+            $keyw_level = $session->get('keyword_level');
+
+            $markup = '<div class="gcmdlist">';
+            $markup .= "<ul>";
+            $keywords = [];
+            foreach ($facet as $value => $count) {
+              $value = rtrim($value, ", ");
+                $lower = ucwords(strtolower($value));
+                $string =  str_replace("\n","",$lower);
+                $keywords[] =  $string;
+              }
+
+              $keys = array_unique($keywords);
+              foreach( $keys as $value) {
+
+                $param = str_replace(" ", "_", $value);
+                $item = '<li><a href="'. $referer . '&gcmd'.$keyw_level.'=' .$param.'">'.$value .'</a></li>';
+                \Drupal::logger('metsis_search_gcmd_proccess')->debug($item);
+                $markup .= $item;
+              }
+
+
+
+            $markup .= "<ul>";
+            $markup .= "</div>";
+            $session->set('gcmd'.$keyw_level, $markup);
+            return $markup;
+            */
     }
 
-
-    return $markup;
-
-/*
-    $keyw_level = $session->get('keyword_level');
-
-    $markup = '<div class="gcmdlist">';
-    $markup .= "<ul>";
-    $keywords = [];
-    foreach ($facet as $value => $count) {
-      $value = rtrim($value, ", ");
-        $lower = ucwords(strtolower($value));
-        $string =  str_replace("\n","",$lower);
-        $keywords[] =  $string;
-      }
-
-      $keys = array_unique($keywords);
-      foreach( $keys as $value) {
-
-        $param = str_replace(" ", "_", $value);
-        $item = '<li><a href="'. $referer . '&gcmd'.$keyw_level.'=' .$param.'">'.$value .'</a></li>';
-        \Drupal::logger('metsis_search_gcmd_proccess')->debug($item);
-        $markup .= $item;
-      }
-
-
-
-    $markup .= "<ul>";
-    $markup .= "</div>";
-    $session->set('gcmd'.$keyw_level, $markup);
-    return $markup;
-    */
-  }
-
-  /**
-   * Recursively render pivot facets
-   *
-   * @param $pivot
-   */
-  public static function displayPivotFacet($pivot,$referer)
-  {
-      //dpm($pivot.getValue());
-      if($pivot->getValue() != null) {
-      $markup = '<ul>';
-      $item = '<li><a href="'. $referer . '&' .$pivot->getField() .'=' .$pivot->getValue().'">'.$pivot->getValue() . '(' .$pivot->getCount() .')</a></li>';
-      $item = '<li><a>'. $pivot->getValue() . '(' .$pivot->getCount() .')</a></li>';
-      //\Drupal::logger('metsis_search-pivot-facets')->debug($item);
-      $markup .= $item;
-      foreach ($pivot->getPivot() as $nextPivot) {
-          $markup .= SearchUtils::displayPivotFacet($nextPivot,$referer);
-      }
-      $markup .= '</ul>';
-      return $markup;
+    /**
+     * Recursively render pivot facets
+     *
+     * @param $pivot
+     */
+    public static function displayPivotFacet($pivot, $referer)
+    {
+        //dpm($pivot.getValue());
+        if ($pivot->getValue() != null) {
+            $markup = '<ul>';
+            $item = '<li><a href="'. $referer . '&' .$pivot->getField() .'=' .$pivot->getValue().'">'.$pivot->getValue() . '(' .$pivot->getCount() .')</a></li>';
+            $item = '<li><a>'. $pivot->getValue() . '(' .$pivot->getCount() .')</a></li>';
+            //\Drupal::logger('metsis_search-pivot-facets')->debug($item);
+            $markup .= $item;
+            foreach ($pivot->getPivot() as $nextPivot) {
+                $markup .= SearchUtils::displayPivotFacet($nextPivot, $referer);
+            }
+            $markup .= '</ul>';
+            return $markup;
+        }
     }
 
-  }
-
-  /**
-   * Recursively render facet facets
-   *
-   * @param $facet
-   */
-  public static function displayFacet($facet,$referer)
-  {
-      //dpm($facet.getValue());
-      if($facet->getValue() != null) {
-      $markup = '<ul>';
-      $item = '<li><a href="'. $referer . '&' .$facet->getField() .'=' .$facet->getValue().'">'.$facet->getValue() . '(' .$facet->getCount() .')</a></li>';
-      //\Drupal::logger('metsis_search-facet-facets')->debug($item);
-      $markup .= $item;
-     foreach ($pivot->getPivot() as $nextPivot) {
-          $markup .= SearchUtils::displayPivotFacet($nextPivot,$referer);
-      }
-      $markup .= '</ul>';
-      return $markup;
+    /**
+     * Recursively render facet facets
+     *
+     * @param $facet
+     */
+    public static function displayFacet($facet, $referer)
+    {
+        //dpm($facet.getValue());
+        if ($facet->getValue() != null) {
+            $markup = '<ul>';
+            $item = '<li><a href="'. $referer . '&' .$facet->getField() .'=' .$facet->getValue().'">'.$facet->getValue() . '(' .$facet->getCount() .')</a></li>';
+            //\Drupal::logger('metsis_search-facet-facets')->debug($item);
+            $markup .= $item;
+            foreach ($pivot->getPivot() as $nextPivot) {
+                $markup .= SearchUtils::displayPivotFacet($nextPivot, $referer);
+            }
+            $markup .= '</ul>';
+            return $markup;
+        }
     }
-
-  }
-  /**
-   * Called from  hook_search_api_solr_search_results_alter  in metsis_search.module
-   *
-   * Input param: Results from Solrarium query
-   * Output: extracted info for search map
-   */
+    /**
+     * Called from  hook_search_api_solr_search_results_alter  in metsis_search.module
+     *
+     * Input param: Results from Solrarium query
+     * Output: extracted info for search map
+     */
     public static function getExtractedInfo($result_set)
     {
 
@@ -169,7 +166,7 @@ class SearchUtils
                       $geographical_extent_east,
                       $geographical_extent_west,
                     ];
-                          $latlon = [
+            $latlon = [
                       ($geographical_extent_south + $geographical_extent_north) / 2,
                       ($geographical_extent_east + $geographical_extent_west) / 2,
             ];
@@ -195,7 +192,9 @@ class SearchUtils
             $related_lp_url = isset($fields['related_url_landing_page']) ? $fields['related_url_landing_page'] : '';
             $personnel_name = isset($fields['personnel_investigator_name'][0]) ? trim($fields['personnel_name'][0]) : '';
 
-            $dataset_name = $fields['metadata_identifier'];
+            //$dataset_name = $fields['metadata_identifier'];
+            $dataset_name = $fields['id'];
+
             $institutions = !empty($fields['personnel_investigator_organisation'][0]) ? $fields['personnel_organisation'][0] : ' ';
             // get_data_access_markup('Button Text', url)
             $netcdf_download ="";
@@ -214,8 +213,8 @@ class SearchUtils
                 //$mapthumb = SearchUtils::get_map_thumb_divs($fields['thumbnail_data'], $fields['metadata_identifier']);
             }
             $target_url = '';
-            if(isset($fields['data_access_url_ogc_wms'])) {
-              $target_url = '/metsis/map/wms?dataset='.$fields['metadata_identifier'];
+            if (isset($fields['data_access_url_ogc_wms'])) {
+                $target_url = '/metsis/map/wms?dataset='.$fields['id'];
             }
             $related_lp = "";
             if ($related_lp_url != null &&  $related_lp_url != "") {
@@ -235,10 +234,10 @@ class SearchUtils
             }
             $isotopic = "";
             $keywords = "";
-            if(isset($fields['keywords_keyword'])) {
-              //$keywords = SearchUtils::keywords_to_string($fields['keywords_keyword']);
+            if (isset($fields['keywords_keyword'])) {
+                //$keywords = SearchUtils::keywords_to_string($fields['keywords_keyword']);
                 $keywords = '';
-          }
+            }
             if (isset($fields['collection'])) {
                 $collection =$fields['collection'];
             } else {
@@ -265,9 +264,9 @@ class SearchUtils
             /**
              * time series{
              */
-             $feature_type = isset($fields['feature_type']) ? $fields['feature_type'] : 'NA';
-             $visualize_button = '';
-             $ascii_button = '';
+            $feature_type = isset($fields['feature_type']) ? $fields['feature_type'] : 'NA';
+            $visualize_button = '';
+            $ascii_button = '';
             $server_type = $config->get('ts_server_type');
             if (isset($fields['feature_type']) && isset($fields['data_access_url_opendap'])) {
                 $feature_type = $fields['feature_type'];
@@ -298,8 +297,8 @@ class SearchUtils
 
             //Get the wms layers
             $wms_layer = isset($fields['data_access_wms_layers']) ? $fields['data_access_wms_layers'][0] : "None";
-            if($wms_layer === NULL ){
-              $wms_layer = 'None';
+            if ($wms_layer === null) {
+                $wms_layer = 'None';
             }
             //Create extracted_info array from collected data
             $extracted_info[$metadata_div_counter] = [
@@ -414,33 +413,33 @@ EOD;
         return implode($glue, $keywords_array);
     }
 
-/* Get a list of available collections in the index */
-    public static function getCollections() {
-      /** @var Index $index  TODO: Change to metsis when prepeare for release */
-      $index = Index::load('metsis');
+    /* Get a list of available collections in the index */
+    public static function getCollections()
+    {
+        /** @var Index $index  TODO: Change to metsis when prepeare for release */
+        $index = Index::load('metsis');
 
-      /** @var SearchApiSolrBackend $backend */
-      $backend = $index->getServerInstance()->getBackend();
+        /** @var SearchApiSolrBackend $backend */
+        $backend = $index->getServerInstance()->getBackend();
 
-      $connector = $backend->getSolrConnector();
+        $connector = $backend->getSolrConnector();
 
-      $solarium_query = $connector->getSelectQuery();
-      // get the facetset component
-      $facetSet = $solarium_query->getFacetSet();
+        $solarium_query = $connector->getSelectQuery();
+        // get the facetset component
+        $facetSet = $solarium_query->getFacetSet();
 
-      // create a facet field instance and set options
-      $facetSet->createFacetField('collection')->setField('collection');
+        // create a facet field instance and set options
+        $facetSet->createFacetField('collection')->setField('collection');
 
-      $result = $connector->execute($solarium_query);
+        $result = $connector->execute($solarium_query);
 
-      // The total number of documents found by Solr.
-      //$found = $result->getNumFound();
-      $facet = $result->getFacetSet()->getFacet('collection');
-      $collection = [];
-      foreach ($facet as $value => $count) {
-        $collection[$value] = $value;
-      }
-      return $collection;
+        // The total number of documents found by Solr.
+        //$found = $result->getNumFound();
+        $facet = $result->getFacetSet()->getFacet('collection');
+        $collection = [];
+        foreach ($facet as $value => $count) {
+            $collection[$value] = $value;
+        }
+        return $collection;
     }
-
 }

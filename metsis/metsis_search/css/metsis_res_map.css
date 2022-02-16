@@ -90,7 +90,7 @@ in fullscreen by openlayers fullScreenControl */
 
   overflow-y: scroll;
   /* Stay on top */
-  /*background: #98C6CC;*/
+  background: white;
   /* Disable horizontal scroll */
   /* Place content 60px from the top */
   transition: 0.3s;
