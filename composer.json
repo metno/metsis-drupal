@@ -1,6 +1,6 @@
 {
     "name": "metsis/metsis-drupal",
-    "type": "metno-drupal-module",
+    "type": "drupal-metsis-module",
     "description": "METSIS drupal modules",
     "license": "GPL-2.0+"
 }
