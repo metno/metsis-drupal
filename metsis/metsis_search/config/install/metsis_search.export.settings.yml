@@ -1,0 +1,12 @@
+xslt_path: '/libraries/mmd/xslt/'
+xslt_prefix: 'mmd-to-'
+export_list:
+  mmd: MMD
+  dif: DIF
+  dif10: DIF10
+  iso: 'ISO 19115'
+export_type_desc:
+  mmd: '<a href="https://htmlpreview.github.io/?https://github.com/metno/mmd/blob/master/doc/mmd-specification.html">MET Norway Metadata Format (MMD)</a>'
+  dif: '<a href="https://earthdata.nasa.gov/esdis/esco/standards-and-references/directory-interchange-format-dif-standard">Directory Interchange Format (DIF) v.9</a>'
+  dif10: '<a href="https://earthdata.nasa.gov/esdis/esco/standards-and-references/directory-interchange-format-dif-standard">Directory Interchange Format (DIF) v.10</a>'
+  iso: '<a href="https://earthdata.nasa.gov/esdis/esco/standards-and-references/iso-19115">ISO 19115 Geographic Metadata Information</a>'

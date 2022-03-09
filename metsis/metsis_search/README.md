@@ -14,6 +14,7 @@ The Metsis Search module for Drupal 8 are based on the contributed modules, sear
 * /metsis/metadata/parent - metsis_metadata_details_parent view endpoint.
 * /metsis/search/map - Ajax callback for Search map bbox filter. (/metsis/search/map?ttlat=&tllon=&brlat&=brlon&proj=)
 * /metsis/elements/count - Ajax callback for children count (/metsis/elements/count?metadata_identifier=)
+* /metsis/metadata/export/{id} - Form with export options for exporting metadata given id.
 
 
 ## Facets

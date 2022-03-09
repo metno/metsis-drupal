@@ -150,15 +150,29 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
         // var_dump($output);
     }
 } */
+
 /**
  * Implemets hook_theme()
  */
 function metsis_search_theme($existing, $type, $theme, $path)
 {
-    \Drupal::logger('metsis_search')->debug("Enter: hook_theme");
+    \Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);
 
     return [
       'views_view_field__metsis_search__results__last_metadata_update_datetime' => [
+        //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
+          'render element' => 'elements',
+          'base hook' => 'views field',
+          'path' => 'modules/metsis/metsis_search/templates'
+      ],
+      'views_view_field__metsis_metadata_details__page_1__last_metadata_update_datetime' => [
+        //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
+          'render element' => 'elements',
+          'base hook' => 'views field',
+          'path' => 'modules/metsis/metsis_search/templates'
+      ],
+
+      'views_view_field__metsis_metadata_details__page_1__nothing_1' => [
         //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
           'render element' => 'elements',
           'base hook' => 'views field',

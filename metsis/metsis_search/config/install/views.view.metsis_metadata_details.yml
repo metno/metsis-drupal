@@ -19,63 +19,12 @@ base_table: search_api_index_metsis
 base_field: search_api_id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: role
-        options:
-          role:
-            anonymous: anonymous
-            authenticated: authenticated
-            administrator: administrator
-      cache:
-        type: tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          bypass_access: false
-          skip_access: false
-          preserve_facet_query_args: false
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Apply
-          reset_button: false
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: true
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: some
-        options:
-          items_per_page: 1
-          offset: 0
-      style:
-        type: html_list
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: true
-          type: ul
-          wrapper_class: item-list
-          class: ''
-      row:
-        type: fields
-        options:
-          default_field_elements: true
-          inline:
-            project_long_name: project_long_name
-            project_short_name: project_short_name
-            last_metadata_update_datetime: last_metadata_update_datetime
-            last_metadata_update_type: last_metadata_update_type
-            last_metadata_update_note: last_metadata_update_note
-          separator: ','
-          hide_empty: true
+      title: ''
       fields:
         title:
           id: title
@@ -84,6 +33,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Title
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -129,7 +79,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         project_long_name:
           id: project_long_name
           table: search_api_index_metsis
@@ -137,6 +86,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Project Long name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -182,7 +132,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         project_short_name:
           id: project_short_name
           table: search_api_index_metsis
@@ -190,6 +139,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Project Short name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -235,7 +185,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing:
           id: nothing
           table: views
@@ -243,6 +192,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Project Long and Short name H2'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -284,7 +234,6 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: custom
         data_center_long_name:
           id: data_center_long_name
           table: search_api_index_metsis
@@ -292,6 +241,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data center long name'
+          plugin_id: search_api
           label: Datacenter
           exclude: false
           alter:
@@ -337,7 +287,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         collection:
           id: collection
           table: search_api_index_metsis
@@ -345,6 +294,7 @@ display:
           relationship: none
           group_type: group
           admin_label: collection
+          plugin_id: search_api
           label: Collection
           exclude: false
           alter:
@@ -390,7 +340,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         iso_topic_category:
           id: iso_topic_category
           table: search_api_index_metsis
@@ -398,6 +347,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'iso topic category'
+          plugin_id: search_api
           label: 'Iso topic category'
           exclude: false
           alter:
@@ -443,7 +393,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         activity_type:
           id: activity_type
           table: search_api_index_metsis
@@ -451,6 +400,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'activity type'
+          plugin_id: search_api
           label: 'Activity type'
           exclude: false
           alter:
@@ -496,7 +446,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_9:
           id: fieldset_9
           table: views
@@ -504,6 +453,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Show Abstract'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -552,7 +502,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 1
-          plugin_id: fieldset
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -560,11 +509,12 @@ display:
           relationship: none
           group_type: group
           admin_label: Abstract
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: "{{ abstract  | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\) ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -602,10 +552,9 @@ display:
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
-          use_highlighting: false
+          use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_10:
           id: fieldset_10
           table: views
@@ -613,6 +562,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Show Keywords'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -661,7 +611,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 1
-          plugin_id: fieldset
         sm_keywords:
           id: sm_keywords
           table: search_api_index_metsis
@@ -669,6 +618,7 @@ display:
           relationship: none
           group_type: group
           admin_label: keywords
+          plugin_id: search_api
           label: Keywords
           exclude: false
           alter:
@@ -714,7 +664,6 @@ display:
           use_highlighting: false
           multi_type: ul
           multi_separator: ', '
-          plugin_id: search_api
         fieldset:
           id: fieldset
           table: views
@@ -722,6 +671,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Metadata
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -765,11 +715,10 @@ display:
           hide_alter_empty: true
           fields:
             - metadata_identifier
+            - last_metadata_update_datetime
             - alternate_identifier_type
             - alternate_identifier
             - metadata_status
-            - last_metadata_update
-            - last_metadata_update_history
             - operational_status
             - access_constraint
             - use_constraint_resource
@@ -779,7 +728,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         metadata_identifier:
           id: metadata_identifier
           table: search_api_index_metsis
@@ -787,6 +735,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Metadata identifier'
+          plugin_id: search_api
           label: 'Metadata identifier'
           exclude: false
           alter:
@@ -832,7 +781,59 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        last_metadata_update_datetime:
+          id: last_metadata_update_datetime
+          table: search_api_index_metsis
+          field: last_metadata_update_datetime
+          relationship: none
+          group_type: group
+          admin_label: 'Last metadata update datetime'
           plugin_id: search_api
+          label: 'Last metadata update'
+          exclude: false
+          alter:
+            alter_text: true
+            text: '{{ last_metadata_update_datetime  | date(''U'') | format_date(''solr_format'') }}'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         alternate_identifier_type:
           id: alternate_identifier_type
           table: search_api_index_metsis
@@ -840,6 +841,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'alternate identifier type'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -885,7 +887,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         alternate_identifier:
           id: alternate_identifier
           table: search_api_index_metsis
@@ -893,8 +894,9 @@ display:
           relationship: none
           group_type: group
           admin_label: 'alternate identifier'
+          plugin_id: search_api
           label: 'Alternate identifier'
-          exclude: true
+          exclude: false
           alter:
             alter_text: true
             text: '{{ alternate_identifier_type }} - {{ alternate_identifier }} '
@@ -938,7 +940,6 @@ display:
           use_highlighting: false
           multi_type: ol
           multi_separator: ', '
-          plugin_id: search_api
         metadata_status:
           id: metadata_status
           table: search_api_index_metsis
@@ -946,6 +947,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Metadata status'
+          plugin_id: search_api
           label: 'Metadata status'
           exclude: false
           alter:
@@ -991,113 +993,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
-        last_metadata_update:
-          id: last_metadata_update
-          table: search_api_index_metsis
-          field: last_metadata_update
-          relationship: none
-          group_type: group
-          admin_label: 'last metadata update timestamp'
-          label: 'Last metadata update'
-          exclude: false
-          alter:
-            alter_text: true
-            text: '{{last_metadata_update | date(''U'') | format_date(''solr_format'') }} '
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
-        last_metadata_update_history:
-          id: last_metadata_update_history
-          table: search_api_index_metsis
-          field: last_metadata_update_history
-          relationship: none
-          group_type: group
-          admin_label: 'last metadata update history'
-          label: 'Last metadata update history'
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: true
-          empty_zero: true
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: ol
-          multi_separator: ', '
-          plugin_id: search_api
         operational_status:
           id: operational_status
           table: search_api_index_metsis
@@ -1105,6 +1000,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'operational status'
+          plugin_id: search_api
           label: 'Operational status'
           exclude: false
           alter:
@@ -1150,7 +1046,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         access_constraint:
           id: access_constraint
           table: search_api_index_metsis
@@ -1158,6 +1053,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'access constraint'
+          plugin_id: search_api
           label: 'Access constraint'
           exclude: false
           alter:
@@ -1203,7 +1099,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         use_constraint_resource:
           id: use_constraint_resource
           table: search_api_index_metsis
@@ -1211,6 +1106,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'use constraint resource'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1256,7 +1152,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         use_constraint_identifier:
           id: use_constraint_identifier
           table: search_api_index_metsis
@@ -1264,6 +1159,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'use constraints'
+          plugin_id: search_api
           label: 'Use constraint'
           exclude: false
           alter:
@@ -1309,7 +1205,164 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        last_metadata_update_note:
+          id: last_metadata_update_note
+          table: search_api_index_metsis
+          field: last_metadata_update_note
+          relationship: none
+          group_type: group
+          admin_label: 'Last metadata update note'
           plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          field_alias: lm_update_note
+        last_metadata_update_type:
+          id: last_metadata_update_type
+          table: search_api_index_metsis
+          field: last_metadata_update_type
+          relationship: none
+          group_type: group
+          admin_label: 'Last metadata update type'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+          field_alias: lm_update_type
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'details last metadata update history'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "<details>\r\n<summary> Metadata history</summary>\r\n{{ last_metadata_update_datetime }} : {{ last_metadata_update_type }} : {{ last_metadata_update_note }}\r\n</details>"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          field_alias: update_history
         fieldset_13:
           id: fieldset_13
           table: views
@@ -1317,6 +1370,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Related resources'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -1382,7 +1436,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         related_url_landing_page_desc:
           id: related_url_landing_page_desc
           table: search_api_index_metsis
@@ -1390,6 +1443,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url landing page desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1435,7 +1489,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_user_guide_desc:
           id: related_url_user_guide_desc
           table: search_api_index_metsis
@@ -1443,6 +1496,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url user guide desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1488,7 +1542,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_scientific_publication_desc:
           id: related_url_scientific_publication_desc
           table: search_api_index_metsis
@@ -1496,6 +1549,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url scientific publication desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1541,7 +1595,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_obs_facility_desc:
           id: related_url_obs_facility_desc
           table: search_api_index_metsis
@@ -1549,6 +1602,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url observation facility desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1594,7 +1648,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_other_documentation_desc:
           id: related_url_other_documentation_desc
           table: search_api_index_metsis
@@ -1602,6 +1655,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url other documentation desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1647,7 +1701,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_home_page_desc:
           id: related_url_home_page_desc
           table: search_api_index_metsis
@@ -1655,6 +1708,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url home page desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1700,7 +1754,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_ext_metadata_desc:
           id: related_url_ext_metadata_desc
           table: search_api_index_metsis
@@ -1708,6 +1761,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url external metadata desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1753,7 +1807,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_data_management_plan_desc:
           id: related_url_data_management_plan_desc
           table: search_api_index_metsis
@@ -1761,6 +1814,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url data management plan desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1806,7 +1860,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_data_paper_desc:
           id: related_url_data_paper_desc
           table: search_api_index_metsis
@@ -1814,6 +1867,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url data paper desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1859,7 +1913,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_home_page:
           id: related_url_home_page
           table: search_api_index_metsis
@@ -1867,6 +1920,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url home page'
+          plugin_id: search_api
           label: Homepage
           exclude: false
           alter:
@@ -1912,7 +1966,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_landing_page:
           id: related_url_landing_page
           table: search_api_index_metsis
@@ -1920,6 +1973,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url landing page url'
+          plugin_id: search_api
           label: 'Dataset landing page'
           exclude: false
           alter:
@@ -1965,7 +2019,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_user_guide:
           id: related_url_user_guide
           table: search_api_index_metsis
@@ -1973,6 +2026,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url user guide url'
+          plugin_id: search_api
           label: 'Dataset user guide'
           exclude: false
           alter:
@@ -2018,7 +2072,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_data_paper:
           id: related_url_data_paper
           table: search_api_index_metsis
@@ -2026,6 +2079,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url data paper'
+          plugin_id: search_api
           label: 'Data paper'
           exclude: false
           alter:
@@ -2071,7 +2125,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_scientific_publication:
           id: related_url_scientific_publication
           table: search_api_index_metsis
@@ -2079,6 +2132,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url scientific publication'
+          plugin_id: search_api
           label: 'Scientific publication'
           exclude: false
           alter:
@@ -2124,7 +2178,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_obs_facility:
           id: related_url_obs_facility
           table: search_api_index_metsis
@@ -2132,6 +2185,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url observation facility'
+          plugin_id: search_api
           label: 'Observation facility'
           exclude: false
           alter:
@@ -2177,7 +2231,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_data_management_plan:
           id: related_url_data_management_plan
           table: search_api_index_metsis
@@ -2185,6 +2238,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url data management plan'
+          plugin_id: search_api
           label: 'Data management plan'
           exclude: false
           alter:
@@ -2230,7 +2284,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_ext_metadata:
           id: related_url_ext_metadata
           table: search_api_index_metsis
@@ -2238,6 +2291,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url external metadata'
+          plugin_id: search_api
           label: 'External metadata'
           exclude: false
           alter:
@@ -2283,7 +2337,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_other_documentation:
           id: related_url_other_documentation
           table: search_api_index_metsis
@@ -2291,6 +2344,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'related url other documentation'
+          plugin_id: search_api
           label: 'Other documentation'
           exclude: false
           alter:
@@ -2336,7 +2390,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_1:
           id: fieldset_1
           table: views
@@ -2344,6 +2397,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Dataset Citation'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -2405,7 +2459,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         dataset_citation_title:
           id: dataset_citation_title
           table: search_api_index_metsis
@@ -2413,6 +2466,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation title'
+          plugin_id: search_api
           label: Title
           exclude: false
           alter:
@@ -2458,7 +2512,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_author:
           id: dataset_citation_author
           table: search_api_index_metsis
@@ -2466,6 +2519,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation author'
+          plugin_id: search_api
           label: Author
           exclude: false
           alter:
@@ -2511,7 +2565,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_publisher:
           id: dataset_citation_publisher
           table: search_api_index_metsis
@@ -2519,6 +2572,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation publisher'
+          plugin_id: search_api
           label: Publisher
           exclude: false
           alter:
@@ -2564,7 +2618,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_publication_date:
           id: dataset_citation_publication_date
           table: search_api_index_metsis
@@ -2572,6 +2625,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation publication date'
+          plugin_id: search_api
           label: 'Publication date'
           exclude: false
           alter:
@@ -2617,7 +2671,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_publication_place:
           id: dataset_citation_publication_place
           table: search_api_index_metsis
@@ -2625,6 +2678,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation publication place'
+          plugin_id: search_api
           label: 'Publication place'
           exclude: false
           alter:
@@ -2670,7 +2724,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_series:
           id: dataset_citation_series
           table: search_api_index_metsis
@@ -2678,6 +2731,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation series'
+          plugin_id: search_api
           label: Series
           exclude: false
           alter:
@@ -2723,7 +2777,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_edition:
           id: dataset_citation_edition
           table: search_api_index_metsis
@@ -2731,6 +2784,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation edition'
+          plugin_id: search_api_numeric
           label: Edition
           exclude: false
           alter:
@@ -2785,7 +2839,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         dataset_citation_volume:
           id: dataset_citation_volume
           table: search_api_index_metsis
@@ -2793,6 +2846,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation volume'
+          plugin_id: search_api_numeric
           label: Volume
           exclude: false
           alter:
@@ -2847,7 +2901,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         dataset_citation_issue:
           id: dataset_citation_issue
           table: search_api_index_metsis
@@ -2855,6 +2908,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation issue'
+          plugin_id: search_api_numeric
           label: Issue
           exclude: false
           alter:
@@ -2909,7 +2963,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         dataset_citation_pages:
           id: dataset_citation_pages
           table: search_api_index_metsis
@@ -2917,6 +2970,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation pages'
+          plugin_id: search_api_numeric
           label: Pages
           exclude: false
           alter:
@@ -2971,7 +3025,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         dataset_citation_doi:
           id: dataset_citation_doi
           table: search_api_index_metsis
@@ -2979,13 +3032,14 @@ display:
           relationship: none
           group_type: group
           admin_label: 'datset citation doi'
+          plugin_id: search_api
           label: DOI
           exclude: false
           alter:
             alter_text: false
             text: ''
-            make_link: false
-            path: ''
+            make_link: true
+            path: '{{ dataset_citation_doi }}'
             absolute: false
             external: false
             replace_spaces: false
@@ -3024,7 +3078,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_isbn:
           id: dataset_citation_isbn
           table: search_api_index_metsis
@@ -3032,6 +3085,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation isbn'
+          plugin_id: search_api
           label: ISBN
           exclude: false
           alter:
@@ -3077,7 +3131,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_url:
           id: dataset_citation_url
           table: search_api_index_metsis
@@ -3085,6 +3138,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation url'
+          plugin_id: search_api
           label: URL
           exclude: false
           alter:
@@ -3130,7 +3184,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         dataset_citation_other:
           id: dataset_citation_other
           table: search_api_index_metsis
@@ -3138,6 +3191,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'dataset citation other'
+          plugin_id: search_api
           label: Other
           exclude: false
           alter:
@@ -3183,7 +3237,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_3:
           id: fieldset_3
           table: views
@@ -3191,6 +3244,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Investigator
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -3248,7 +3302,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         personnel_investigator_name:
           id: personnel_investigator_name
           table: search_api_index_metsis
@@ -3256,6 +3309,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'investigator name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -3301,7 +3355,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_organisation:
           id: personnel_investigator_organisation
           table: search_api_index_metsis
@@ -3309,6 +3362,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'investigator org'
+          plugin_id: search_api
           label: Organisation
           exclude: false
           alter:
@@ -3354,7 +3408,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_email:
           id: personnel_investigator_email
           table: search_api_index_metsis
@@ -3362,6 +3415,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'investigator email'
+          plugin_id: search_api
           label: Email
           exclude: false
           alter:
@@ -3407,7 +3461,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_phone:
           id: personnel_investigator_phone
           table: search_api_index_metsis
@@ -3415,6 +3468,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator phone'
+          plugin_id: search_api
           label: Phone
           exclude: false
           alter:
@@ -3460,7 +3514,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_fax:
           id: personnel_investigator_fax
           table: search_api_index_metsis
@@ -3468,6 +3521,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator phone'
+          plugin_id: search_api
           label: Fax
           exclude: false
           alter:
@@ -3513,7 +3567,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_address_country:
           id: personnel_investigator_address_country
           table: search_api_index_metsis
@@ -3521,6 +3574,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator country'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -3566,7 +3620,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_address_city:
           id: personnel_investigator_address_city
           table: search_api_index_metsis
@@ -3574,6 +3627,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator address city'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -3619,7 +3673,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_address_postal_code:
           id: personnel_investigator_address_postal_code
           table: search_api_index_metsis
@@ -3627,6 +3680,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator postal code'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -3672,7 +3726,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_address_province_or_state:
           id: personnel_investigator_address_province_or_state
           table: search_api_index_metsis
@@ -3680,6 +3733,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator province or state'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -3725,7 +3779,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_investigator_address:
           id: personnel_investigator_address
           table: search_api_index_metsis
@@ -3733,6 +3786,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel investigator address'
+          plugin_id: search_api
           label: Address
           exclude: false
           alter:
@@ -3778,7 +3832,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_12:
           id: fieldset_12
           table: views
@@ -3786,6 +3839,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Technical contact'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -3843,7 +3897,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         personnel_technical_name:
           id: personnel_technical_name
           table: search_api_index_metsis
@@ -3851,6 +3904,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -3896,7 +3950,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_organisation:
           id: personnel_technical_organisation
           table: search_api_index_metsis
@@ -3904,6 +3957,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact organisation'
+          plugin_id: search_api
           label: Organisation
           exclude: false
           alter:
@@ -3949,7 +4003,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_email:
           id: personnel_technical_email
           table: search_api_index_metsis
@@ -3957,13 +4010,14 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact email'
+          plugin_id: search_api
           label: Email
           exclude: false
           alter:
             alter_text: false
             text: ''
-            make_link: false
-            path: ''
+            make_link: true
+            path: '{{ personnel_technical_email }} '
             absolute: false
             external: false
             replace_spaces: false
@@ -4002,7 +4056,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_phone:
           id: personnel_technical_phone
           table: search_api_index_metsis
@@ -4010,6 +4063,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact phone'
+          plugin_id: search_api
           label: Phone
           exclude: false
           alter:
@@ -4055,7 +4109,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_fax:
           id: personnel_technical_fax
           table: search_api_index_metsis
@@ -4063,6 +4116,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact fax'
+          plugin_id: search_api
           label: Fax
           exclude: false
           alter:
@@ -4108,7 +4162,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_address_province_or_state:
           id: personnel_technical_address_province_or_state
           table: search_api_index_metsis
@@ -4116,6 +4169,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact address province or state'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4161,7 +4215,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_address_postal_code:
           id: personnel_technical_address_postal_code
           table: search_api_index_metsis
@@ -4169,6 +4222,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact address postal code'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4214,7 +4268,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_address_country:
           id: personnel_technical_address_country
           table: search_api_index_metsis
@@ -4222,6 +4275,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact address country'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4267,7 +4321,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_address_city:
           id: personnel_technical_address_city
           table: search_api_index_metsis
@@ -4275,6 +4328,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact address city'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4320,7 +4374,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_technical_address:
           id: personnel_technical_address
           table: search_api_index_metsis
@@ -4328,6 +4381,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel technical contact address'
+          plugin_id: search_api
           label: Address
           exclude: false
           alter:
@@ -4373,7 +4427,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_8:
           id: fieldset_8
           table: views
@@ -4381,6 +4434,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Metadata author'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -4438,7 +4492,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         personnel_metadata_author_name:
           id: personnel_metadata_author_name
           table: search_api_index_metsis
@@ -4446,6 +4499,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -4491,7 +4545,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_organisation:
           id: personnel_metadata_author_organisation
           table: search_api_index_metsis
@@ -4499,6 +4552,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author org'
+          plugin_id: search_api
           label: Organisation
           exclude: false
           alter:
@@ -4544,7 +4598,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_email:
           id: personnel_metadata_author_email
           table: search_api_index_metsis
@@ -4552,6 +4605,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author email'
+          plugin_id: search_api
           label: Email
           exclude: false
           alter:
@@ -4597,7 +4651,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_phone:
           id: personnel_metadata_author_phone
           table: search_api_index_metsis
@@ -4605,6 +4658,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author phone'
+          plugin_id: search_api
           label: Phone
           exclude: false
           alter:
@@ -4650,7 +4704,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_fax:
           id: personnel_metadata_author_fax
           table: search_api_index_metsis
@@ -4658,6 +4711,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author fax'
+          plugin_id: search_api
           label: Fax
           exclude: false
           alter:
@@ -4703,7 +4757,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_address_city:
           id: personnel_metadata_author_address_city
           table: search_api_index_metsis
@@ -4711,6 +4764,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author city'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4756,7 +4810,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_address_country:
           id: personnel_metadata_author_address_country
           table: search_api_index_metsis
@@ -4764,6 +4817,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author address country'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4809,7 +4863,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_address_postal_code:
           id: personnel_metadata_author_address_postal_code
           table: search_api_index_metsis
@@ -4817,6 +4870,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author address postal code'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4862,7 +4916,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_address_province_or_state:
           id: personnel_metadata_author_address_province_or_state
           table: search_api_index_metsis
@@ -4870,6 +4923,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author address province or state'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -4915,7 +4969,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_metadata_author_address:
           id: personnel_metadata_author_address
           table: search_api_index_metsis
@@ -4923,6 +4976,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'metadata author address'
+          plugin_id: search_api
           label: Address
           exclude: false
           alter:
@@ -4968,7 +5022,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_11:
           id: fieldset_11
           table: views
@@ -4976,6 +5029,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -5026,7 +5080,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         data_center_long_name_1:
           id: data_center_long_name_1
           table: search_api_index_metsis
@@ -5034,6 +5087,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data center long name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -5079,7 +5133,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_center_short_name_1:
           id: data_center_short_name_1
           table: search_api_index_metsis
@@ -5087,6 +5140,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data center short name'
+          plugin_id: search_api
           label: 'Short name'
           exclude: false
           alter:
@@ -5132,7 +5186,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_center_url_1:
           id: data_center_url_1
           table: search_api_index_metsis
@@ -5140,13 +5193,14 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data center url'
+          plugin_id: search_api
           label: URL
           exclude: false
           alter:
             alter_text: false
             text: ''
-            make_link: false
-            path: ''
+            make_link: true
+            path: '{{ data_center_url_1 }}'
             absolute: false
             external: false
             replace_spaces: false
@@ -5185,7 +5239,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_2:
           id: fieldset_2
           table: views
@@ -5193,6 +5246,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center contact'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -5250,7 +5304,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         personnel_datacenter_name:
           id: personnel_datacenter_name
           table: search_api_index_metsis
@@ -5258,6 +5311,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center contact name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -5303,7 +5357,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_organisation:
           id: personnel_datacenter_organisation
           table: search_api_index_metsis
@@ -5311,6 +5364,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center contact org'
+          plugin_id: search_api
           label: Organisation
           exclude: false
           alter:
@@ -5356,7 +5410,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_email:
           id: personnel_datacenter_email
           table: search_api_index_metsis
@@ -5364,6 +5417,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data center contact email'
+          plugin_id: search_api
           label: Email
           exclude: false
           alter:
@@ -5409,7 +5463,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_phone:
           id: personnel_datacenter_phone
           table: search_api_index_metsis
@@ -5417,6 +5470,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center contact phone'
+          plugin_id: search_api
           label: Phone
           exclude: false
           alter:
@@ -5462,7 +5516,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_fax:
           id: personnel_datacenter_fax
           table: search_api_index_metsis
@@ -5470,6 +5523,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data center contact'
+          plugin_id: search_api
           label: Fax
           exclude: false
           alter:
@@ -5515,7 +5569,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_address_country:
           id: personnel_datacenter_address_country
           table: search_api_index_metsis
@@ -5523,6 +5576,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel datacenter address country'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -5568,7 +5622,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_address_province_or_state:
           id: personnel_datacenter_address_province_or_state
           table: search_api_index_metsis
@@ -5576,6 +5629,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel datacenter address city state or province'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -5621,7 +5675,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_address_city:
           id: personnel_datacenter_address_city
           table: search_api_index_metsis
@@ -5629,6 +5682,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel datacenter address city'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -5674,7 +5728,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_address_postal_code:
           id: personnel_datacenter_address_postal_code
           table: search_api_index_metsis
@@ -5682,6 +5735,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel datacenter address postal code'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -5727,7 +5781,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         personnel_datacenter_address:
           id: personnel_datacenter_address
           table: search_api_index_metsis
@@ -5735,6 +5788,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'personnel datacenter address'
+          plugin_id: search_api
           label: Address
           exclude: false
           alter:
@@ -5780,7 +5834,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_4:
           id: fieldset_4
           table: views
@@ -5788,6 +5841,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Platform
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -5843,7 +5897,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         platform_long_name:
           id: platform_long_name
           table: search_api_index_metsis
@@ -5851,6 +5904,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'paltform long name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -5896,7 +5950,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_resource:
           id: platform_resource
           table: search_api_index_metsis
@@ -5904,6 +5957,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Platform name and resource link'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -5949,7 +6003,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_short_name:
           id: platform_short_name
           table: search_api_index_metsis
@@ -5957,6 +6010,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform short name'
+          plugin_id: search_api
           label: 'Short name'
           exclude: false
           alter:
@@ -6002,7 +6056,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_orbit_absolute:
           id: platform_orbit_absolute
           table: search_api_index_metsis
@@ -6010,6 +6063,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Orbit absolute'
+          plugin_id: search_api_numeric
           label: 'Orbit absolute'
           exclude: false
           alter:
@@ -6064,7 +6118,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         platform_orbit_direction:
           id: platform_orbit_direction
           table: search_api_index_metsis
@@ -6072,6 +6125,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Orbit direction'
+          plugin_id: search_api
           label: 'Orbit direction'
           exclude: false
           alter:
@@ -6117,7 +6171,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_orbit_relative:
           id: platform_orbit_relative
           table: search_api_index_metsis
@@ -6125,6 +6178,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Orbit relative'
+          plugin_id: search_api_numeric
           label: 'Orbit relative'
           exclude: false
           alter:
@@ -6179,7 +6233,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         platform_ancillary_cloud_coverage:
           id: platform_ancillary_cloud_coverage
           table: search_api_index_metsis
@@ -6187,6 +6240,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform ancillary cloud coverage'
+          plugin_id: search_api_numeric
           label: 'Cloud coverage'
           exclude: false
           alter:
@@ -6241,7 +6295,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         platform_ancillary_scene_coverage:
           id: platform_ancillary_scene_coverage
           table: search_api_index_metsis
@@ -6249,6 +6302,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform ancillary scene coverage'
+          plugin_id: search_api_numeric
           label: 'Scene coverage'
           exclude: false
           alter:
@@ -6303,7 +6357,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         fieldset_16:
           id: fieldset_16
           table: views
@@ -6311,6 +6364,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Instrument
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -6364,7 +6418,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         platform_instrument_resource:
           id: platform_instrument_resource
           table: search_api_index_metsis
@@ -6372,6 +6425,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform instrument resource'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -6417,7 +6471,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_long_name:
           id: platform_instrument_long_name
           table: search_api_index_metsis
@@ -6425,6 +6478,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'paltform instrument long name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -6470,7 +6524,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_short_name:
           id: platform_instrument_short_name
           table: search_api_index_metsis
@@ -6478,6 +6531,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'paltform instrument short name'
+          plugin_id: search_api
           label: 'Short name'
           exclude: false
           alter:
@@ -6523,7 +6577,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_mode:
           id: platform_instrument_mode
           table: search_api_index_metsis
@@ -6531,6 +6584,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform instrument mode'
+          plugin_id: search_api
           label: Mode
           exclude: false
           alter:
@@ -6576,7 +6630,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_polarisation:
           id: platform_instrument_polarisation
           table: search_api_index_metsis
@@ -6584,6 +6637,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'paltform instrument polarisation'
+          plugin_id: search_api
           label: Polarisation
           exclude: false
           alter:
@@ -6629,7 +6683,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         platform_instrument_product_type:
           id: platform_instrument_product_type
           table: search_api_index_metsis
@@ -6637,6 +6690,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'platform instrument product type'
+          plugin_id: search_api
           label: 'Product type'
           exclude: false
           alter:
@@ -6682,7 +6736,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_5:
           id: fieldset_5
           table: views
@@ -6690,6 +6743,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Temporal extent'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -6739,7 +6793,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -6747,6 +6800,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'temporal extent start date'
+          plugin_id: search_api
           label: 'Start date'
           exclude: false
           alter:
@@ -6780,7 +6834,7 @@ display:
           element_class: ''
           element_label_type: strong
           element_label_class: ''
-          element_label_colon: false
+          element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -6792,7 +6846,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -6800,6 +6853,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'temporal extent end date'
+          plugin_id: search_api
           label: 'End date'
           exclude: false
           alter:
@@ -6845,7 +6899,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         geographic_extent_rectangle_srs:
           id: geographic_extent_rectangle_srs
           table: search_api_index_metsis
@@ -6853,6 +6906,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent rectangle srs name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -6898,7 +6952,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_6:
           id: fieldset_6
           table: views
@@ -6906,6 +6959,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -6957,7 +7011,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         geographic_extent_rectangle_north:
           id: geographic_extent_rectangle_north
           table: search_api_index_metsis
@@ -6965,6 +7018,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent north'
+          plugin_id: search_api_numeric
           label: North
           exclude: false
           alter:
@@ -7019,7 +7073,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         geographic_extent_rectangle_south:
           id: geographic_extent_rectangle_south
           table: search_api_index_metsis
@@ -7027,6 +7080,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent south'
+          plugin_id: search_api_numeric
           label: South
           exclude: false
           alter:
@@ -7081,7 +7135,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         geographic_extent_ectangle_east:
           id: geographic_extent_ectangle_east
           table: search_api_index_metsis
@@ -7089,6 +7142,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent east'
+          plugin_id: search_api_numeric
           label: East
           exclude: false
           alter:
@@ -7143,7 +7197,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         geographic_extent_rectangle_west:
           id: geographic_extent_rectangle_west
           table: search_api_index_metsis
@@ -7151,6 +7204,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'geographic extent west'
+          plugin_id: search_api_numeric
           label: West
           exclude: false
           alter:
@@ -7205,7 +7259,6 @@ display:
           multi_type: separator
           multi_separator: ', '
           format_plural_values: {  }
-          plugin_id: search_api_numeric
         location_vocabulary:
           id: location_vocabulary
           table: search_api_index_metsis
@@ -7213,6 +7266,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location vocabulary'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7258,7 +7312,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_15:
           id: fieldset_15
           table: views
@@ -7266,6 +7319,7 @@ display:
           relationship: none
           group_type: group
           admin_label: location
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -7319,7 +7373,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         location_category:
           id: location_category
           table: search_api_index_metsis
@@ -7327,6 +7380,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location category'
+          plugin_id: search_api
           label: Category
           exclude: false
           alter:
@@ -7372,7 +7426,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         location_type:
           id: location_type
           table: search_api_index_metsis
@@ -7380,6 +7433,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location type'
+          plugin_id: search_api
           label: Type
           exclude: false
           alter:
@@ -7425,7 +7479,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         location_subregion1:
           id: location_subregion1
           table: search_api_index_metsis
@@ -7433,6 +7486,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location subregion1'
+          plugin_id: search_api
           label: 'Subregion 1'
           exclude: false
           alter:
@@ -7478,7 +7532,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         location_subregion2:
           id: location_subregion2
           table: search_api_index_metsis
@@ -7486,6 +7539,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location subregion2'
+          plugin_id: search_api
           label: 'Subregion 2'
           exclude: false
           alter:
@@ -7531,7 +7585,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         location_subregion3:
           id: location_subregion3
           table: search_api_index_metsis
@@ -7539,6 +7592,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location subregion3'
+          plugin_id: search_api
           label: 'Subregion 3'
           exclude: false
           alter:
@@ -7584,7 +7638,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         location_detailed_location:
           id: location_detailed_location
           table: search_api_index_metsis
@@ -7592,6 +7645,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'location detailed location'
+          plugin_id: search_api
           label: 'Detailed location'
           exclude: false
           alter:
@@ -7637,7 +7691,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_7:
           id: fieldset_7
           table: views
@@ -7645,6 +7698,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data access'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -7706,7 +7760,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         data_access_url_http_desc:
           id: data_access_url_http_desc
           table: search_api_index_metsis
@@ -7714,6 +7767,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access http desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7759,7 +7813,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ftp_desc:
           id: data_access_url_ftp_desc
           table: search_api_index_metsis
@@ -7767,6 +7820,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ftp desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7812,7 +7866,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_odata_desc:
           id: data_access_url_odata_desc
           table: search_api_index_metsis
@@ -7820,6 +7873,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access odata desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7865,7 +7919,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wms_desc:
           id: data_access_url_ogc_wms_desc
           table: search_api_index_metsis
@@ -7873,6 +7926,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogc wms desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7918,7 +7972,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_opendap_desc:
           id: data_access_url_opendap_desc
           table: search_api_index_metsis
@@ -7926,6 +7979,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access opendap desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -7971,7 +8025,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wcs_desc:
           id: data_access_url_ogc_wcs_desc
           table: search_api_index_metsis
@@ -7979,6 +8032,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogs wcs desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -8024,7 +8078,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wfs_desc:
           id: data_access_url_ogc_wfs_desc
           table: search_api_index_metsis
@@ -8032,6 +8085,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogs wfs desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -8077,7 +8131,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_http:
           id: data_access_url_http
           table: search_api_index_metsis
@@ -8085,6 +8138,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access http'
+          plugin_id: search_api
           label: HTTP
           exclude: false
           alter:
@@ -8130,7 +8184,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ftp:
           id: data_access_url_ftp
           table: search_api_index_metsis
@@ -8138,6 +8191,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ftp'
+          plugin_id: search_api
           label: FTP
           exclude: false
           alter:
@@ -8183,7 +8237,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_opendap:
           id: data_access_url_opendap
           table: search_api_index_metsis
@@ -8191,6 +8244,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access opendap'
+          plugin_id: search_api
           label: OPeNDAP
           exclude: false
           alter:
@@ -8236,7 +8290,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_odata:
           id: data_access_url_odata
           table: search_api_index_metsis
@@ -8244,6 +8297,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access odata'
+          plugin_id: search_api
           label: ODATA
           exclude: false
           alter:
@@ -8289,7 +8343,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wms:
           id: data_access_url_ogc_wms
           table: search_api_index_metsis
@@ -8297,6 +8350,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogc wms'
+          plugin_id: search_api
           label: 'OGC WMS'
           exclude: false
           alter:
@@ -8342,7 +8396,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wfs:
           id: data_access_url_ogc_wfs
           table: search_api_index_metsis
@@ -8350,6 +8403,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogc wfs'
+          plugin_id: search_api
           label: 'OGC WFS'
           exclude: false
           alter:
@@ -8395,7 +8449,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wcs:
           id: data_access_url_ogc_wcs
           table: search_api_index_metsis
@@ -8403,6 +8456,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'data access ogs wcs'
+          plugin_id: search_api
           label: 'OGC WCS'
           exclude: false
           alter:
@@ -8448,7 +8502,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_14:
           id: fieldset_14
           table: views
@@ -8456,6 +8509,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Storage information'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -8510,7 +8564,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 1
-          plugin_id: fieldset
         storage_information_file_name:
           id: storage_information_file_name
           table: search_api_index_metsis
@@ -8518,6 +8571,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file name'
+          plugin_id: search_api
           label: Name
           exclude: false
           alter:
@@ -8563,7 +8617,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_location:
           id: storage_information_file_location
           table: search_api_index_metsis
@@ -8571,6 +8624,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file location'
+          plugin_id: search_api
           label: Location
           exclude: false
           alter:
@@ -8616,7 +8670,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_format:
           id: storage_information_file_format
           table: search_api_index_metsis
@@ -8624,6 +8677,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file format'
+          plugin_id: search_api
           label: Format
           exclude: false
           alter:
@@ -8669,7 +8723,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_size:
           id: storage_information_file_size
           table: search_api_index_metsis
@@ -8677,6 +8730,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Storage information file size'
+          plugin_id: search_api
           label: Size
           exclude: false
           alter:
@@ -8722,7 +8776,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_size_unit:
           id: storage_information_file_size_unit
           table: search_api_index_metsis
@@ -8730,6 +8783,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file size unit'
+          plugin_id: search_api
           label: 'Size unit'
           exclude: false
           alter:
@@ -8775,7 +8829,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_checksum_type:
           id: storage_information_file_checksum_type
           table: search_api_index_metsis
@@ -8783,6 +8836,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file checksum type'
+          plugin_id: search_api
           label: 'Checksum type'
           exclude: false
           alter:
@@ -8828,7 +8882,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         storage_information_file_checksum:
           id: storage_information_file_checksum
           table: search_api_index_metsis
@@ -8836,6 +8889,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'storage information file checksum'
+          plugin_id: search_api
           label: Checksum
           exclude: false
           alter:
@@ -8881,14 +8935,37 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
-      filters: {  }
-      sorts: {  }
-      title: ''
-      header: {  }
-      footer: {  }
+      pager:
+        type: some
+        options:
+          offset: 0
+          items_per_page: 1
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Apply
+          reset_button: false
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: true
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: role
+        options:
+          role:
+            anonymous: anonymous
+            authenticated: authenticated
+            administrator: administrator
+      cache:
+        type: search_api_time
+        options:
+          results_lifespan: 3600
+          results_lifespan_custom: 0
+          output_lifespan: 3600
+          output_lifespan_custom: 0
       empty: {  }
-      relationships: {  }
+      sorts: {  }
       arguments:
         id:
           id: id
@@ -8897,6 +8974,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api
           default_action: empty
           exception:
             value: all
@@ -8920,10 +8998,45 @@ display:
           validate_options: {  }
           break_phrase: false
           not: false
-          plugin_id: search_api
-      display_extenders: {  }
-      show_admin_links: false
+      filters: {  }
+      style:
+        type: html_list
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+          type: ul
+          wrapper_class: item-list
+          class: ''
+      row:
+        type: fields
+        options:
+          default_field_elements: true
+          inline:
+            project_long_name: project_long_name
+            project_short_name: project_short_name
+            last_metadata_update_datetime: last_metadata_update_datetime
+            last_metadata_update_type: last_metadata_update_type
+            last_metadata_update_note: last_metadata_update_note
+          separator: ','
+          hide_empty: true
+      query:
+        type: views_query
+        options:
+          bypass_access: false
+          skip_access: false
+          preserve_facet_query_args: false
+      relationships: {  }
       css_class: metadataDetails
+      show_admin_links: false
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          plugin_id: text_custom
+      footer: {  }
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -8933,9 +9046,9 @@ display:
       tags:
         - 'config:search_api.index.metsis'
   page_1:
-    display_plugin: page
     id: page_1
     display_title: Page
+    display_plugin: page
     position: 1
     display_options:
       display_extenders:

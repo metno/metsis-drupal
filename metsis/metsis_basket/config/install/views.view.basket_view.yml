@@ -530,6 +530,7 @@ display:
           exposed: false
           expose:
             label: ''
+            field_identifier: basket_timestamp
           granularity: second
           entity_type: metsis_basket_item
           entity_field: basket_timestamp

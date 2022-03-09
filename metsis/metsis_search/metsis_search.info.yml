@@ -28,3 +28,4 @@ dependencies:
   - back_to_top
   - extlink
   - fontawesome
+  - views_autocomplete_filters

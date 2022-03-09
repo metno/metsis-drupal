@@ -58,16 +58,62 @@ metsis_search.children_count:
   requirements:
     _permission: 'access metsis search'
 
-metsis_search.export:
-  path: '/metsis/export/{data}'
+#metsis_search.export:
+#  path: '/metsis/export/{id}'
+#  defaults:
+#    _controller: '\Drupal\metsis_search\Controller\MetsisExportController::export'
+#    _title: "Export metadata"
+#  options:
+#    query:
+#      metadata_identifier: ""
+#  requirements:
+#    _permission: 'access metsis search'
+
+#metsis_search.export.mmd:
+#  path: '/metsis/export/mmd/{id}'
+#  defaults:
+#    _controller: '\Drupal\metsis_search\Controller\MetsisExportController::exportMmd'
+#    _title: "Export MMD"
+#  options:
+#    query:
+#      metadata_identifier: ""
+#  requirements:
+#    _permission: 'access metsis search'
+
+metsis_search.export.form.mmd:
+  path: '/metsis/export/{id}'
   defaults:
-    _controller: '\Drupal\metsis_search\Controller\MetsisExportController::export'
-    _title: "Export metadata"
+    _form: '\Drupal\metsis_search\Form\ExportMetadataForm'
+    _title: "Export Metadata"
+    #id: null
   options:
     query:
       metadata_identifier: ""
   requirements:
     _permission: 'access metsis search'
+
+#metsis_search.export.dif:
+#  path: '/metsis/export/dif/{id}'
+#  defaults:
+#    _controller: '\Drupal\metsis_search\Controller\MetsisExportController::exportDif'
+#    _title: "Export DIF"
+#  options:
+#    query:
+#      metadata_identifier: ""
+#  requirements:
+#    _permission: 'access metsis search'
+
+#metsis_search.export.iso:
+#  path: '/metsis/export/iso/{id}'
+#  defaults:
+#    _controller: '\Drupal\metsis_search\Controller\MetsisExportController::exportIso'
+#    _title: "Export ISO"
+#  options:
+#    query:
+#      metadata_identifier: ""
+#  requirements:
+#    _permission: 'access metsis search'
+
 
 metsis_search.admin_config_form:
   path: '/admin/config/metsis/search'

@@ -20,81 +20,12 @@ base_table: search_api_index_metsis
 base_field: search_api_id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: role
-        options:
-          role:
-            anonymous: anonymous
-            authenticated: authenticated
-            administrator: administrator
-      cache:
-        type: none
-        options: {  }
-      query:
-        type: views_query
-        options:
-          skip_access: 1
-          bypass_access: 0
-          preserve_facet_query_args: 1
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Search
-          reset_button: true
-          reset_button_label: Reset
-          exposed_sorts_label: 'Sort by'
-          expose_sort_order: false
-          sort_asc_label: Asc
-          sort_desc_label: Desc
-      pager:
-        type: full
-        options:
-          items_per_page: 15
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: ‹‹
-            next: ››
-            first: '« First'
-            last: 'Last »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- All -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: html_list
-        options:
-          grouping: {  }
-          row_class: 'datasets-{{ id }} datasets-row w3-row'
-          default_row_class: false
-          type: ul
-          wrapper_class: item-list
-          class: ''
-      row:
-        type: fields
-        options:
-          default_field_elements: true
-          inline:
-            project_long_name: project_long_name
-            project_short_name: project_short_name
-            nothing_2: nothing_2
-            nothing_3: nothing_3
-            nothing_1: nothing_1
-            use_constraint_identifier: use_constraint_identifier
-            access_constraint: access_constraint
-          separator: '&nbsp;&nbsp;'
-          hide_empty: true
+      title: 'Metadata Search'
       fields:
         id:
           id: id
@@ -103,6 +34,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ID
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -148,7 +80,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         related_url_landing_page:
           id: related_url_landing_page
           table: search_api_index_metsis
@@ -156,6 +87,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Landing page'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -201,7 +133,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         title:
           id: title
           table: search_api_index_metsis
@@ -209,6 +140,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Title
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -254,7 +186,6 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         thumbnail_data:
           id: thumbnail_data
           table: search_api_index_metsis
@@ -262,6 +193,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Thumbnail
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -307,7 +239,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         project_long_name:
           id: project_long_name
           table: search_api_index_metsis
@@ -315,6 +246,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Project Long Name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -360,7 +292,6 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         project_short_name:
           id: project_short_name
           table: search_api_index_metsis
@@ -368,6 +299,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Project Short Name'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -413,7 +345,6 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing:
           id: nothing
           table: views
@@ -421,6 +352,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Aggregated Text Project Long and Short Name'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -462,7 +394,6 @@ display:
           hide_empty: true
           empty_zero: true
           hide_alter_empty: true
-          plugin_id: custom
         personnel_organisation:
           id: personnel_organisation
           table: search_api_index_metsis
@@ -470,6 +401,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Institutions
+          plugin_id: search_api
           label: Institutions
           exclude: false
           alter:
@@ -515,7 +447,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         last_metadata_update_datetime:
           id: last_metadata_update_datetime
           table: search_api_index_metsis
@@ -523,11 +454,12 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Last Metadata Update'
+          plugin_id: search_api
           label: 'Last metadata update'
           exclude: false
           alter:
             alter_text: true
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''short'') }}'
+            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''solr_format'')  }}'
             make_link: false
             path: ''
             absolute: false
@@ -568,7 +500,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_1:
           id: fieldset_1
           table: views
@@ -576,6 +507,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Temporal extent'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -626,7 +558,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -634,6 +565,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'temporal extent start date'
+          plugin_id: search_api
           label: 'Start date'
           exclude: false
           alter:
@@ -679,7 +611,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -687,6 +618,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'temporal extent end date'
+          plugin_id: search_api
           label: 'End date'
           exclude: false
           alter:
@@ -732,7 +664,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing_8:
           id: nothing_8
           table: views
@@ -740,6 +671,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Temporal extent aggregated'
+          plugin_id: custom
           label: ''
           exclude: true
           alter:
@@ -781,7 +713,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         search_api_excerpt:
           id: search_api_excerpt
           table: search_api_index_metsis
@@ -789,6 +720,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -834,7 +766,6 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset_2:
           id: fieldset_2
           table: views
@@ -842,6 +773,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Show more'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -890,7 +822,6 @@ display:
           classes: ''
           collapsible: 1
           collapsed: 1
-          plugin_id: fieldset
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -898,11 +829,14 @@ display:
           relationship: none
           group_type: group
           admin_label: Abstract
+          entity_type: null
+          entity_field: null
+          plugin_id: search_api
           label: Abstract
           exclude: false
           alter:
-            alter_text: false
-            text: ''
+            alter_text: true
+            text: "{{ abstract  | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\) ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -940,12 +874,9 @@ display:
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
-          use_highlighting: true
+          use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          entity_type: null
-          entity_field: null
-          plugin_id: search_api
         related_url_landing_page_desc:
           id: related_url_landing_page_desc
           table: search_api_index_metsis
@@ -953,6 +884,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'landing page desc'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -998,7 +930,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing_10:
           id: nothing_10
           table: views
@@ -1006,6 +937,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Landing page link'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1047,7 +979,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -1055,6 +986,7 @@ display:
           relationship: none
           group_type: group
           admin_label: isParent
+          plugin_id: search_api_boolean
           label: ''
           exclude: true
           alter:
@@ -1104,7 +1036,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api_boolean
         data_access_url_opendap:
           id: data_access_url_opendap
           table: search_api_index_metsis
@@ -1112,6 +1043,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Data access OPENDAP'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1157,7 +1089,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         feature_type:
           id: feature_type
           table: search_api_index_metsis
@@ -1165,6 +1096,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Feature Type'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1210,7 +1142,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         ss_access:
           id: ss_access
           table: search_api_index_metsis
@@ -1218,6 +1149,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Access Constraint'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1263,7 +1195,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ogc_wms:
           id: data_access_url_ogc_wms
           table: search_api_index_metsis
@@ -1271,6 +1202,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ogc_wms
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1316,7 +1248,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         fieldset:
           id: fieldset
           table: views
@@ -1324,6 +1255,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Dataset operations'
+          plugin_id: fieldset
           label: ''
           exclude: false
           alter:
@@ -1372,17 +1304,16 @@ display:
             - nothing_4
             - data_access_url_http
             - data_access_url_ftp
+            - nothing_5
             - data_access_url_odata
             - nothing_7
             - nothing_1
-            - nothing_5
-            - mmd_xml_file
+            - nothing_11
           wrapper: fieldset
           legend: 'Data access:'
           classes: datasetOps
           collapsible: 1
           collapsed: 0
-          plugin_id: fieldset
         nothing_2:
           id: nothing_2
           table: views
@@ -1390,6 +1321,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Add to basket'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1431,7 +1363,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         nothing_3:
           id: nothing_3
           table: views
@@ -1439,6 +1370,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Metadata
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1480,7 +1412,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         nothing_6:
           id: nothing_6
           table: views
@@ -1488,6 +1419,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Visualise
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1529,7 +1461,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         nothing_4:
           id: nothing_4
           table: views
@@ -1537,11 +1468,12 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Visualise Timeseries'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"visualise-ts-{{ id }}\" reference=\"{{ id }}\" class=\"visualise-ts visualise-ts-div\">\r\n<div id=\"opendap-url\" class=\"hidden\">{{ data_access_url_opendap }}</div>\r\n<div id=\"opendap-id\" class=\"hidden\">{{ id }}</div>\r\n  <a id=\"ts-plot-button\" class=\"adc-button adc-sbutton use-ajax\"\r\n   data-dialog-options=\"{&quot;width&quot;:1000,&quot;height&quot;:800}\"\r\n   data-dialog-type=\"modal\"\r\n   href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\"> \r\n Visualise TimeSeries</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"visualise-ts-{{ id }}\" reference=\"{{ id }}\" class=\"visualise-ts visualise-ts-div\">\r\n<div id=\"opendap-url\" class=\"hidden\">{{ data_access_url_opendap }}</div>\r\n<div id=\"opendap-id\" class=\"hidden\">{{ id }}</div>\r\n  <a id=\"ts-plot-button\" class=\"adc-button adc-sbutton\" \r\n >Visualise TimeSeries</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1578,7 +1510,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
         data_access_url_http:
           id: data_access_url_http
           table: search_api_index_metsis
@@ -1586,6 +1517,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Download
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -1631,7 +1563,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         data_access_url_ftp:
           id: data_access_url_ftp
           table: search_api_index_metsis
@@ -1639,6 +1570,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Download FTP'
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -1684,7 +1616,55 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
+        nothing_5:
+          id: nothing_5
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'OPeNDAP download'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
         data_access_url_odata:
           id: data_access_url_odata
           table: search_api_index_metsis
@@ -1692,6 +1672,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'ODATA Download'
+          plugin_id: search_api
           label: ''
           exclude: false
           alter:
@@ -1737,7 +1718,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing_7:
           id: nothing_7
           table: views
@@ -1745,6 +1725,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Download ASCII'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1786,7 +1767,6 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: custom
         nothing_1:
           id: nothing_1
           table: views
@@ -1794,6 +1774,7 @@ display:
           relationship: none
           group_type: group
           admin_label: Children
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1835,68 +1816,19 @@ display:
           hide_empty: true
           empty_zero: true
           hide_alter_empty: true
-          plugin_id: custom
-        nothing_5:
-          id: nothing_5
+        nothing_11:
+          id: nothing_11
           table: views
           field: nothing
           relationship: none
           group_type: group
-          admin_label: 'OPeNDAP download'
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: true
-          empty_zero: false
-          hide_alter_empty: true
+          admin_label: 'Export Metadata'
           plugin_id: custom
-        mmd_xml_file:
-          id: mmd_xml_file
-          table: search_api_index_metsis
-          field: mmd_xml_file
-          relationship: none
-          group_type: group
-          admin_label: 'Export MMD'
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href="/metsis/export/{{ id }}">Export MMD</a>'
+            text: '<a class="use-ajax adc-button adc-sbutton inline" href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1930,14 +1862,9 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
+          hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-          plugin_id: search_api
+          hide_alter_empty: false
         use_constraint_resource:
           id: use_constraint_resource
           table: search_api_index_metsis
@@ -1945,6 +1872,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'use constraint resource'
+          plugin_id: search_api
           label: ''
           exclude: true
           alter:
@@ -1990,7 +1918,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         use_constraint_identifier:
           id: use_constraint_identifier
           table: search_api_index_metsis
@@ -1998,6 +1925,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'License icons'
+          plugin_id: search_api
           label: 'License '
           exclude: false
           alter:
@@ -2043,7 +1971,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         access_constraint:
           id: access_constraint
           table: search_api_index_metsis
@@ -2051,6 +1978,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Access constraint'
+          plugin_id: search_api
           label: Access
           exclude: false
           alter:
@@ -2096,7 +2024,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          plugin_id: search_api
         nothing_9:
           id: nothing_9
           table: views
@@ -2104,6 +2031,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'bokeh ts plot placeholder'
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -2145,7 +2073,50 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 15
+          total_pages: null
+          id: 0
+          tags:
+            next: ››
+            previous: ‹‹
+            first: '« First'
+            last: 'Last »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Items per page'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- All -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Search
+          reset_button: true
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
+          expose_sort_order: false
+          sort_asc_label: Asc
+          sort_desc_label: Desc
+      access:
+        type: role
+        options:
+          role:
+            anonymous: anonymous
+            authenticated: authenticated
+            administrator: administrator
+      cache:
+        type: none
+        options: {  }
+      empty: {  }
+      sorts: {  }
+      arguments: {  }
       filters:
         search_api_fulltext:
           id: search_api_fulltext
@@ -2154,6 +2125,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_fulltext
           operator: or
           value: ''
           group: 1
@@ -2193,7 +2165,6 @@ display:
             - abstract
             - full_text
             - title
-          plugin_id: search_api_fulltext
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -2201,6 +2172,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Start date'
+          plugin_id: search_api_date
           operator: '>='
           value:
             min: ''
@@ -2225,9 +2197,9 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -2240,7 +2212,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: search_api_date
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -2248,6 +2219,7 @@ display:
           relationship: none
           group_type: group
           admin_label: 'End date'
+          plugin_id: search_api_date
           operator: '<='
           value:
             min: ''
@@ -2272,9 +2244,9 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -2287,7 +2259,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: search_api_date
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -2295,6 +2266,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: search_api_boolean
           operator: '='
           value: All
           group: 1
@@ -2302,7 +2274,7 @@ display:
           expose:
             operator_id: ''
             label: 'Has children'
-            description: 'Check whenever datasets is parent and have children'
+            description: 'Select whether datasets are parents with children (i.e. records of the same type)'
             use_operator: false
             operator: is_parent_op
             operator_limit_selection: false
@@ -2327,9 +2299,41 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: search_api_boolean
-      sorts: {  }
-      title: 'Metadata Search'
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      style:
+        type: html_list
+        options:
+          grouping: {  }
+          row_class: 'datasets-{{ id }} datasets-row w3-row'
+          default_row_class: false
+          type: ul
+          wrapper_class: item-list
+          class: ''
+      row:
+        type: fields
+        options:
+          default_field_elements: true
+          inline:
+            project_long_name: project_long_name
+            project_short_name: project_short_name
+            nothing_2: nothing_2
+            nothing_3: nothing_3
+            nothing_1: nothing_1
+            use_constraint_identifier: use_constraint_identifier
+            access_constraint: access_constraint
+          separator: '&nbsp;&nbsp;'
+          hide_empty: true
+      query:
+        type: views_query
+        options:
+          skip_access: 1
+          bypass_access: 0
+          preserve_facet_query_args: 1
+      relationships: {  }
+      use_ajax: false
       header:
         result:
           id: result
@@ -2338,19 +2342,11 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: result
           empty: false
           content: '<div class="numberOfResults w3-panel w3-leftbar"><strong>@total</strong> datasets found. Showing datasets @start  - @end on page @current_page of @page_count pages.</div>'
-          plugin_id: result
       footer: {  }
-      empty: {  }
-      relationships: {  }
-      arguments: {  }
       display_extenders: {  }
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
-      use_ajax: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -2361,11 +2357,16 @@ display:
       tags:
         - 'config:search_api.index.metsis'
   results:
-    display_plugin: page
     id: results
     display_title: Page
+    display_plugin: page
     position: 1
     display_options:
+      cache:
+        type: none
+      defaults:
+        cache: false
+      exposed_block: true
       display_extenders:
         geocluster_views_display_extender:
           geocluster_enabled: false
@@ -2378,16 +2379,11 @@ display:
         type: none
         title: 'Metsis Search'
         description: 'Search Metadata'
-        expanded: false
-        parent: ''
         weight: 0
-        context: '0'
+        expanded: false
         menu_name: main
-      exposed_block: true
-      defaults:
-        cache: false
-      cache:
-        type: none
+        parent: ''
+        context: '0'
     cache_metadata:
       max-age: -1
       contexts:
