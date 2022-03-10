@@ -2299,6 +2299,120 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        platform_ancillary_cloud_coverage:
+          id: platform_ancillary_cloud_coverage
+          table: search_api_index_metsis
+          field: platform_ancillary_cloud_coverage
+          relationship: none
+          group_type: group
+          admin_label: 'Platform ancillary cloud coverage'
+          plugin_id: search_api_numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: platform_ancillary_cloud_coverage_op
+            label: 'Platform ancillary cloud coverage'
+            description: null
+            use_operator: false
+            operator: platform_ancillary_cloud_coverage_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: platform_ancillary_cloud_coverage
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: null
+            max_placeholder: null
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: 'Cloud coverage'
+            description: 'Platform ancillary cloud coverage'
+            identifier: platform_ancillary_cloud_coverage
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: '<10%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '10.0'
+              2:
+                title: '<20%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '20.0'
+              3:
+                title: '<30%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '30.0'
+              4:
+                title: '<40%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '40.0'
+              5:
+                title: '<50%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '50.0'
+              6:
+                title: '<60%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '60.0'
+              7:
+                title: '<70%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '70.0'
+              8:
+                title: '<80%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '80.0'
+              9:
+                title: '<90%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '90.0'
+              10:
+                title: '<100%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '100.0'
       filter_groups:
         operator: AND
         groups:
