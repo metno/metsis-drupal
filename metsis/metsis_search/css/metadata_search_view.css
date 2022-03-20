@@ -112,3 +112,5 @@ a:hover {
   margin-top: 5px;
   margin-left: 2px;
 }
+
+.views-field-fieldset-3 > span:nth-child(1) > details:nth-child(1)

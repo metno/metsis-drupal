@@ -1,5 +1,5 @@
 basket_view:
   version: 1.x
   css:
-    component:
+    theme:
       css/basket.css: {}

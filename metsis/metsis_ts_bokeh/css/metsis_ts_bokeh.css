@@ -31,3 +31,11 @@ iframe.bokehplot {
   height: 720px;
   margin: 0;
 }
+.iframe_container {
+    background-image: url('/modules/metsis/metsis_search/icons/loader.gif');
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.iframe_container iframe {
+    background: transparent;
+}

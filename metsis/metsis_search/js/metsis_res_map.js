@@ -1062,7 +1062,7 @@ console.log("Start of metsis search map script:");
 
         //Function to plot timeSeries reqistered as variable plotTimeserie, used in getProductInfo
         function plotTimeseries(opendap_url) {
-          console.log("calling ts-plot with url: " + opendap_url);
+          console.log("calling old ts-plot with url: " + opendap_url);
 
           //Hide SearchMap
           $('#search-map').slideUp();
@@ -1986,6 +1986,7 @@ console.log("Start of metsis search map script:");
                 popUpOverlay.setPosition(coordinate);
                 button.on('click', function() {
                   plotTimeseries2(odResource)
+                  //plotTimeseries(odResource)
                 });
               }
             }
@@ -2160,6 +2161,7 @@ console.log("Start of metsis search map script:");
                     $('#popup-ts-button').on('click', function() {
                       popUpOverlay.setPosition(undefined);
                       plotTimeseries2(odResource)
+                      //plotTimeseries(odResource)
                     });
                   }
                 }

@@ -31,27 +31,29 @@ use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
  * Default controller for the metsis_basket module.
  * {@inheritdoc}
  */
-class MetsisBasketController extends DashboardBokehController  {
+class MetsisBasketController extends DashboardBokehController
+{
+    public function myBasket()
+    {
+        //Get the user_id
+        $user_id = (int) \Drupal::currentUser()->id();
 
-  public function myBasket() {
-    //Get the user_id
-    $user_id = (int) \Drupal::currentUser()->id();
-
-    //Get the refering page
-    $session = \Drupal::request()->getSession();
-    $referer = $session->get('back_to_search');
+        //Get the refering page
+        $session = \Drupal::request()->getSession();
+        $referer = $session->get('back_to_search');
 
 
-    $build = self::post_datasource();
+        $build = self::post_datasource();
 
-    $build['content'] = [
+        $build['content'] = [
       '#type' => 'container',
     ];  //Create content wrapper
-    $build['content']['basket'] = [
-      //'#pre</span>fix' => '<div class="w3-container">',
-      //'#suffix' => '</div>',
+        $build['content']['basket'] = [
+      '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
+      '#suffix' => '</div>',
       '#type' => 'details',
-      '#title' => $this->t('Show basket (remove items)'),
+      '#title' => $this->t('Show my basket (remove items)'),
+      '#attributes' => ['class' => ['basketDetails']],
     ];
 
         $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
@@ -60,96 +62,97 @@ class MetsisBasketController extends DashboardBokehController  {
           'max-age' => 0,
         ];
 
-    $build['content']['back'] = [
+        $build['content']['back'] = [
       '#prefix' => '<div class="w3-container"><span>',
       '#suffix' => '</span></div>',
 
       '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
     ];
-    //$build['content']['dashboard'] = [
-    //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
-    //];
-    //$build['content']['dashboard-post'] = [
-    //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard/post">Go to Dashboard</a>',
-    //];
+        //$build['content']['dashboard'] = [
+        //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
+        //];
+        //$build['content']['dashboard-post'] = [
+        //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard/post">Go to Dashboard</a>',
+        //];
 
-    //$build['content']['view'] = views_embed_view('basket_view', 'embed_1');
+        //$build['content']['view'] = views_embed_view('basket_view', 'embed_1');
 
-    $build['#cache'] = [
+        $build['#cache'] = [
 
       'max-age' => 0,
     ];
+        $build['#theme'] = 'dashboard_page';
 
-    //  $build['#type'] = 'container';
-    //$build['#theme'] = 'metsis_basket-template';
-    $build['#attached'] = [
+        //  $build['#type'] = 'container';
+        //$build['#theme'] = 'metsis_basket-template';
+        $build['#attached'] = [
 'library' => [
 'metsis_basket/basket_view',
 ],
 ];
-$build['#attributes'] = [
+        $build['#attributes'] = [
   'class' => ['myBasket'],
 ];
 
-    return $build;
-  }
+        return $build;
+    }
 
-  public function listing($iid) {
-    \Drupal::logger('metsis_basket')->debug("Listing item with iid: " . $iid);
-    //$objects = \Drupal::entityTypeManager()->getStorage('metsis_basket', array($iid));
+    public function listing($iid)
+    {
+        \Drupal::logger('metsis_basket')->debug("Listing item with iid: " . $iid);
+        //$objects = \Drupal::entityTypeManager()->getStorage('metsis_basket', array($iid));
 
 
-    //$objects = MetsisBasket::load($iid);
-    //$mb = $objects[$iid];
-    // @FIXME
-    // drupal_set_title() has been removed. There are now a few ways to set the title
-    // dynamically, depending on the situation.
-    //
-    //
-    // @see https://www.drupal.org/node/2067859
-    // drupal_set_title($mb->name);
-    $view_builder = \Drupal::entityTypeManager()
+        //$objects = MetsisBasket::load($iid);
+        //$mb = $objects[$iid];
+        // @FIXME
+        // drupal_set_title() has been removed. There are now a few ways to set the title
+        // dynamically, depending on the situation.
+        //
+        //
+        // @see https://www.drupal.org/node/2067859
+        // drupal_set_title($mb->name);
+        $view_builder = \Drupal::entityTypeManager()
       ->getViewBuilder('metsis_basket_item');
-    $entity = \Drupal::entityTypeManager()
+        $entity = \Drupal::entityTypeManager()
       ->getStorage('metsis_basket_item')->load($iid);
-      //\Drupal::logger('metsis_basket')->debug("Loaded entity with iid: " . $entity->id());
-    return $view_builder
+        //\Drupal::logger('metsis_basket')->debug("Loaded entity with iid: " . $entity->id());
+        return $view_builder
       ->view($entity, 'full');
+    }
 
+    public function add($metaid)
+    {
+        \Drupal::logger('metsis_basket')->debug("Calling add to basket function");
+        if (\Drupal::currentUser()->isAuthenticated()) {
+            // This user is logged in.
 
-  }
+            $user_id = (int) \Drupal::currentUser()->id();
+            $user_name = \Drupal::currentUser()->getAccountName();
 
-  public function add($metaid) {
-    \Drupal::logger('metsis_basket')->debug("Calling add to basket function");
-    if (\Drupal::currentUser()->isAuthenticated()) {
-      // This user is logged in.
-
-    $user_id = (int) \Drupal::currentUser()->id();
-    $user_name = \Drupal::currentUser()->getAccountName();
-
-    //Generate uuid from uuid service
-    $uuid_service = \Drupal::service('uuid');
-    $uuid = $uuid_service->generate();
-    //Get info from solr given metaid that we put in the basket
-    $arr  = $this->msb_get_resources($metaid);
-
-
-
-    $feature_type = $arr[0];
-    $title = $arr[1];
-    $dar = $arr[2];
+            //Generate uuid from uuid service
+            $uuid_service = \Drupal::service('uuid');
+            $uuid = $uuid_service->generate();
+            //Get info from solr given metaid that we put in the basket
+            $arr  = $this->msb_get_resources($metaid);
 
 
 
-    \Drupal::logger('metsis_basket')->debug("Adding product to basket:");
-    \Drupal::logger('metsis_basket')->debug("title: @title", ['@title'  => $title]);
-    \Drupal::logger('metsis_basket')->debug("feature_type: @ft", ['@ft'  => $feature_type]);
-    \Drupal::logger('metsis_basket')->debug("dar: @ft", ['@ft'  => Json::encode($dar)]);
+            $feature_type = $arr[0];
+            $title = $arr[1];
+            $dar = $arr[2];
 
 
 
-    //Te fields we put in database
-      $fields = [
+            \Drupal::logger('metsis_basket')->debug("Adding product to basket:");
+            \Drupal::logger('metsis_basket')->debug("title: @title", ['@title'  => $title]);
+            \Drupal::logger('metsis_basket')->debug("feature_type: @ft", ['@ft'  => $feature_type]);
+            \Drupal::logger('metsis_basket')->debug("dar: @ft", ['@ft'  => Json::encode($dar)]);
+
+
+
+            //Te fields we put in database
+            $fields = [
         'uid' => $user_id,
         'uuid' => $uuid,
         'user_name' => $user_name,
@@ -160,80 +163,81 @@ $build['#attributes'] = [
         'feature_type' => $feature_type,
         'dar' => serialize($dar),
       ];
-      //dpm($res);
-      $query = \Drupal::database()->insert('metsis_basket')->fields($fields)->execute();
+            //dpm($res);
+            $query = \Drupal::database()->insert('metsis_basket')->fields($fields)->execute();
 
 
 
 
-    //\Drupal::logger('metsis_basket')->debug("dashboard json: " . $dashboard_json);
+            //\Drupal::logger('metsis_basket')->debug("dashboard json: " . $dashboard_json);
 
-    $basket_count = $this->get_user_item_count($user_id);
-    $ids = $this->get_user_item_ids($user_id);
-    //\Drupal::logger('metsis_basket')->debug(implode(',',$ids));
+            $basket_count = $this->get_user_item_count($user_id);
+            $ids = $this->get_user_item_ids($user_id);
+            //\Drupal::logger('metsis_basket')->debug(implode(',',$ids));
 
-    $tempstore = \Drupal::service('tempstore.private')->get('metsis_basket');
-    $tempstore->set('basket_items', $ids);
-
-
-    $selector = '#myBasketCount';
-    //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
-
-    $markup = '<span id="myBasketCount" class="w3-badge w3-green">' . $basket_count . '</span>';
-
-    $response = new AjaxResponse();
-    $response->addCommand(new HtmlCommand('#addtobasket-' . $metaid ,'Add to Basket &#10004;'));
-    $response->addCommand(new HtmlCommand($selector,$markup));
-    //$response->addCommand(new MessageCommand("Dataset added to basket:  " . $metaid));
-
-    return $response;
-  } else {
-    // This user is anonymous.
-    $response = new AjaxResponse();
-    //$response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
-    $response->addCommand(new HtmlCommand('.bokeh-ts-plot[reference="' .$metaid .'"]','<div class="w3-panel w3-leftbar w3-border-red w3-pale-red w3-padding-16"><span> You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a></span></div>'));
-
-    return $response;
-  }
-
-  }
-
-  public static  function get_user_item_count($user_id) {
-    $query = \Drupal::database()->select('metsis_basket', 'm');
-    $query->fields('m', array('iid'));
-    $query->condition('m.uid', $user_id, '=');
-    $results = $query->execute()->fetchAll();
-    return count($results);
-  }
-
-  public static  function get_user_item_ids($user_id) {
-    $query = \Drupal::database()->select('metsis_basket', 'm');
-    $query->fields('m', array('metadata_identifier'));
-    $query->condition('m.uid', $user_id, '=');
-    $results = $query->execute()->fetchCol();
-    return $results;
-  }
+            $tempstore = \Drupal::service('tempstore.private')->get('metsis_basket');
+            $tempstore->set('basket_items', $ids);
 
 
-  public static function msb_get_resources($metadata_identifier)
-  {
-      /** @var Index $index  TODO: Change to metsis when prepeare for release */
-      $index = Index::load('metsis');
+            $selector = '#myBasketCount';
+            //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
 
-      /** @var SearchApiSolrBackend $backend */
-      $backend = $index->getServerInstance()->getBackend();
+            $markup = '<span id="myBasketCount" class="w3-badge w3-green">' . $basket_count . '</span>';
 
-      $connector = $backend->getSolrConnector();
+            $response = new AjaxResponse();
+            $response->addCommand(new HtmlCommand('#addtobasket-' . $metaid, 'Add to Basket &#10004;'));
+            $response->addCommand(new HtmlCommand($selector, $markup));
+            //$response->addCommand(new MessageCommand("Dataset added to basket:  " . $metaid));
 
-      $solarium_query = $connector->getSelectQuery();
+            return $response;
+        } else {
+            // This user is anonymous.
+            $response = new AjaxResponse();
+            //$response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
+            $response->addCommand(new HtmlCommand('.bokeh-ts-plot[reference="' .$metaid .'"]', '<div class="w3-panel w3-leftbar w3-border-red w3-pale-red w3-padding-16"><span> You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a></span></div>'));
+
+            return $response;
+        }
+    }
+
+    public static function get_user_item_count($user_id)
+    {
+        $query = \Drupal::database()->select('metsis_basket', 'm');
+        $query->fields('m', array('iid'));
+        $query->condition('m.uid', $user_id, '=');
+        $results = $query->execute()->fetchAll();
+        return count($results);
+    }
+
+    public static function get_user_item_ids($user_id)
+    {
+        $query = \Drupal::database()->select('metsis_basket', 'm');
+        $query->fields('m', array('metadata_identifier'));
+        $query->condition('m.uid', $user_id, '=');
+        $results = $query->execute()->fetchCol();
+        return $results;
+    }
 
 
-      \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
-      $solarium_query->setQuery('metadata_identifier:'.$metadata_identifier);
+    public static function msb_get_resources($metadata_identifier)
+    {
+        /** @var Index $index  TODO: Change to metsis when prepeare for release */
+        $index = Index::load('metsis');
 
-      //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
-      //$solarium_query->setRows(2);
-      $solarium_query->setFields([
+        /** @var SearchApiSolrBackend $backend */
+        $backend = $index->getServerInstance()->getBackend();
+
+        $connector = $backend->getSolrConnector();
+
+        $solarium_query = $connector->getSelectQuery();
+
+
+        \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
+        $solarium_query->setQuery('metadata_identifier:'.$metadata_identifier);
+
+        //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
+        //$solarium_query->setRows(2);
+        $solarium_query->setFields([
         'data_access_url_http',
         'data_access_url_ftp',
         'data_access_url_odata',
@@ -243,53 +247,51 @@ $build['#attributes'] = [
         'title',
       ]);
 
-      $result = $connector->execute($solarium_query);
+        $result = $connector->execute($solarium_query);
 
-      // The total number of documents found by Solr.
-      $found = $result->getNumFound();
-      \Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
-      // The total number of documents returned from the query.
-      //$count = $result->count();
+        // The total number of documents found by Solr.
+        $found = $result->getNumFound();
+        \Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
+        // The total number of documents returned from the query.
+        //$count = $result->count();
 
-      // Check the Solr response status (not the HTTP status).
-      // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
-      //$status = $result->getStatus();
-      $title = 'NA';
-      $feature_type = 'NA';
-      $dar = [];
-      foreach ($result as $doc) {
-        $fields = $doc->getFields();
-
-      }
-      if(isset($fields['data_access_url_http'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $dar['http'] = $fields['data_access_url_http'];
-      }
-      if(isset($fields['data_access_url_ftp'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $dar['http'] = $fields['data_access_url_ftp'];
-      }
-      if(isset($fields['data_access_url_odata'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $dar['odata'] = $fields['data_access_url_odata'];
-      }
-      if(isset($fields['data_access_url_opendap'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $dar['opendap'] = $fields['data_access_url_opendap'];
-      }
-      if(isset($fields['data_access_url_ogc_wms'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $dar['ogc_wms'] = $fields['data_access_url_ogc_wms'];
-      }
-      if(isset($fields['feature_type'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $feature_type = $fields['feature_type'];
-
-      }
-      if(isset($fields['title'])) {
-        // An array of documents. Can also iterate directly on $result.
-        $title = $fields['title'][0];
-      }
+        // Check the Solr response status (not the HTTP status).
+        // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
+        //$status = $result->getStatus();
+        $title = 'NA';
+        $feature_type = 'NA';
+        $dar = [];
+        foreach ($result as $doc) {
+            $fields = $doc->getFields();
+        }
+        if (isset($fields['data_access_url_http'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $dar['http'] = $fields['data_access_url_http'];
+        }
+        if (isset($fields['data_access_url_ftp'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $dar['http'] = $fields['data_access_url_ftp'];
+        }
+        if (isset($fields['data_access_url_odata'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $dar['odata'] = $fields['data_access_url_odata'];
+        }
+        if (isset($fields['data_access_url_opendap'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $dar['opendap'] = $fields['data_access_url_opendap'];
+        }
+        if (isset($fields['data_access_url_ogc_wms'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $dar['ogc_wms'] = $fields['data_access_url_ogc_wms'];
+        }
+        if (isset($fields['feature_type'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $feature_type = $fields['feature_type'];
+        }
+        if (isset($fields['title'])) {
+            // An array of documents. Can also iterate directly on $result.
+            $title = $fields['title'][0];
+        }
         return array($feature_type, $title, $dar);
     }
 }

@@ -16,55 +16,54 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Render\Markup;
 use Drupal\metsis_basket\Entity\BasketItem;
 
+class DashboardBokehController extends ControllerBase
+{
+    public function build()
+    {
+        $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+        $backend_uri = $config->get('dashboard_bokeh_service');
+        $backend_uri = 'https://metsis.metsis-api.met.no/dashboard';
+        //Get the user_id
+        $user_id = (int) \Drupal::currentUser()->id();
 
+        //Get the refering page
+        $session = \Drupal::request()->getSession();
+        $referer = $session->get('back_to_search');
 
-class DashboardBokehController extends ControllerBase {
+        //For testing dashboard. To be removed
+        $resources_test = 'http://hyrax.epinux.com/opendap/SN99938.nc,http://hyrax.epinux.com/opendap/ctdiaoos_gi2007_2009.nc,http://hyrax.epinux.com/opendap/itp01_itp1grd2042.nc';
 
-    public function build() {
-      $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
-      $backend_uri = $config->get('dashboard_bokeh_service');
-      $backend_uri = 'https://metsis.metsis-api.met.no/dashboard';
-      //Get the user_id
-      $user_id = (int) \Drupal::currentUser()->id();
+        \Drupal::logger('metsis_dashboard_bokeh')->debug(t("@backend", ['@backend' => $backend_uri ]));
+        //$resources = $store->get('basket');
+        $resources = $this->getOpendapUris($user_id);
 
-      //Get the refering page
-      $session = \Drupal::request()->getSession();
-      $referer = $session->get('back_to_search');
+        //Json data
+        $json_data = $this->getJsonData($user_id);
+        $resources = $json_data;
 
-      //For testing dashboard. To be removed
-      $resources_test = 'http://hyrax.epinux.com/opendap/SN99938.nc,http://hyrax.epinux.com/opendap/ctdiaoos_gi2007_2009.nc,http://hyrax.epinux.com/opendap/itp01_itp1grd2042.nc';
+        \Drupal::logger('metsis_dashboard_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
 
-      \Drupal::logger('metsis_dashboard_bokeh')->debug(t("@backend", ['@backend' => $backend_uri ] ) );
-      //$resources = $store->get('basket');
-      $resources = $this->getOpendapUris($user_id);
+        /**
+         * FIXME: This IF-caluse is for testing only. Should be removed for prod
+         */
+        //if($resources == NULL) { $resources = explode(',', $resources_test); }
 
-      //Json data
-      $json_data = $this->getJsonData($user_id);
-      $resources = $json_data;
+        $markup = $this->getDashboard($backend_uri, $resources);
+        \Drupal::logger('metsis_dashboard_bokeh_get')->debug(t("@markup", ['@markup' => $markup ]));
 
-      \Drupal::logger('metsis_dashboard_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
-
-      /**
-       * FIXME: This IF-caluse is for testing only. Should be removed for prod
-       */
-      //if($resources == NULL) { $resources = explode(',', $resources_test); }
-
-      $markup = $this->getDashboard($backend_uri, $resources);
-      \Drupal::logger('metsis_dashboard_bokeh_get')->debug(t("@markup", ['@markup' => $markup ] ) );
-
-      // Build page
-      //Create content wrapper
-      $build['content'] = [
+        // Build page
+        //Create content wrapper
+        $build['content'] = [
         '#prefix' => '<div class="w3-container">',
         '#suffix' => '</div>'
       ];
 
 
-      $build['content']['back'] = [
+        $build['content']['back'] = [
         '#markup' => '<a class="w3-btn" href="'. $referer . '">Go back to search </a>',
       ];
 
-      $build['content']['dashboard-wrapper'] = [
+        $build['content']['dashboard-wrapper'] = [
         '#type' => 'markup',
         '#markup' => '<div id="bokeh-dashboard" class="w3-card">',
         '#attached' => [
@@ -73,7 +72,7 @@ class DashboardBokehController extends ControllerBase {
           ],
         ],
       ];
-      $build['content']['dashboard-wrapper']['dashboard|'] = [
+        $build['content']['dashboard-wrapper']['dashboard|'] = [
         '#type' => 'markup',
         '#markup' => $markup,
         '#suffix' => '</div>',
@@ -81,124 +80,125 @@ class DashboardBokehController extends ControllerBase {
 
       ];
 
-      return $build;
+        return $build;
     }
 
-    public function post_datasource() {
-      $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
-      $backend_uri = $config->get('dashboard_bokeh_service');
-      //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
-      //Get the user_id
-      $user_id = (int) \Drupal::currentUser()->id();
+    public function post_datasource()
+    {
+        $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+        $backend_uri = $config->get('dashboard_bokeh_service');
+        //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
+        //Get the user_id
+        $user_id = (int) \Drupal::currentUser()->id();
 
-      //Get the refering page
-      $session = \Drupal::request()->getSession();
-      $referer = $session->get('back_to_search');
-
-
-      \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ] ) );
-
-      $json_data = $this->getJsonData($user_id);
-      //dpm($json_data);
+        //Get the refering page
+        $session = \Drupal::request()->getSession();
+        $referer = $session->get('back_to_search');
 
 
+        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ]));
 
-      $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
+        $json_data = $this->getJsonData($user_id);
+        //dpm($json_data);
+
+
+
+        $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
         \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_body: @string", ['@string' => $json_body ]);
         \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_data: @string", ['@string' => $json_data ]);
 
-      //Get markup from bokeh dashboard endpoint. post json_data.
-      $markup = "<h2> Ooops Something went wrong!!</h2> Contact Administraor or see logs";
-      try {
-          $client = \Drupal::httpClient();
+        //Get markup from bokeh dashboard endpoint. post json_data.
+        $markup = "<h2> Ooops Something went wrong!!</h2> Contact Administraor or see logs";
+        try {
+            $client = \Drupal::httpClient();
 
-          //$client->setOptions(['debug' => TRUE]);
-          $request = $client->request(
-            'POST',
+            //$client->setOptions(['debug' => TRUE]);
+            $request = $client->request(
+                'POST',
             //'https://pybasket.epinux.com/post_baskettable0',
             $backend_uri,
-            [
+                [
               'json' => $json_data,
               'Accept' => 'text/html',
               'Content-Type' => 'application/json',
-              'debug' => FALSE,
+              'debug' => false,
             ],
+            );
+
+            $responseStatus = $request->getStatusCode();
+            \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("response status: @string", ['@string' => $responseStatus ]);
+            $data = $request->getBody();
+            \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got original response: @markup", ['@markup' => $data]));
 
 
-
-        );
-
-        $responseStatus = $request->getStatusCode();
-        \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("response status: @string", ['@string' => $responseStatus ]);
-        $data = $request->getBody();
-        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got original response: @markup", ['@markup' => $data] ) );
-
-
-        //$markup = \Drupal\Component\Serialization\Json::decode($data);
+            //$markup = \Drupal\Component\Serialization\Json::decode($data);
         //$data = str_replace("\n", "", $data);
         //$data = str_replace("\r", "", $data);
         //$data = preg_replace(‘\/\s+\/’, ‘ ‘, trim($data)).”\n”;
 
         //$markup = $data;
         //return ($json_response);
-      }
-      catch (Exception $e){
-        \Drupal::messenger()->addError("Could not contact bokeh dashboard api at @uri .", [ '@uri' => $backend_uri]);
-        \Drupal::messenger()->addError($e);
-      }
-      //$markup = preg_replace("/\n/"," ",$data);
-      //$markup = trim(preg_replace('/\s\s+/', ' ', $data));
-      //$markup = str_replace("/\n", " " , $data);
-    /*  $data = str_replace("\\n"," ", $data);
-      $data = str_replace("\n"," ", $data);
-      $data = str_replace("\r", " ", $data);
-      $data = ltrim($data, '"');
-      $data = rtrim($data, '"');
+        } catch (Exception $e) {
+            \Drupal::messenger()->addError("Could not contact bokeh dashboard api at @uri .", [ '@uri' => $backend_uri]);
+            \Drupal::messenger()->addError($e);
+        }
+        //$markup = preg_replace("/\n/"," ",$data);
+        //$markup = trim(preg_replace('/\s\s+/', ' ', $data));
+        //$markup = str_replace("/\n", " " , $data);
+        /*  $data = str_replace("\\n"," ", $data);
+          $data = str_replace("\n"," ", $data);
+          $data = str_replace("\r", " ", $data);
+          $data = ltrim($data, '"');
+          $data = rtrim($data, '"');
 */
-      $markup = $data;
+        $markup = $data;
 
-      //$markup = str_replace(array("\n","\r\n","\r"), '', $data);
-      //$markup = $this->getDashboard($backend_uri, $resources);
-      \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got markup response: @markup", ['@markup' => $markup ] ) );
-      \Drupal::logger('metsis_dashboard_bokeh')->debug("Using endpoint: " . $backend_uri);
-      \Drupal::logger('metsis_dashboard_bokeh')->debug("Got status code: " . $responseStatus);
+        //$markup = str_replace(array("\n","\r\n","\r"), '', $data);
+        //$markup = $this->getDashboard($backend_uri, $resources);
+        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got markup response: @markup", ['@markup' => $markup ]));
+        \Drupal::logger('metsis_dashboard_bokeh')->debug("Using endpoint: " . $backend_uri);
+        \Drupal::logger('metsis_dashboard_bokeh')->debug("Got status code: " . $responseStatus);
 
-      // Build page
-      //Create content wrapper
-      $build = [];
-      $build['dashboard'] = [
-        //'#prefix' => '<div class="w3-container">',
-        //'#suffix' => '</div>'
+        // Build page
+        //Create content wrapper
+        $build = [];
+        $build['dashboard'] = [
+        '#prefix' => '<div class="w3-container w3-card-2 w3-padding">',
+        '#suffix' => '</div>',
         '#type' => 'container',
       ];
-
-
-  /*    $build['dashboard']['back'] = [
-        '#markup' => '<a class="w3-btn" href="'. $referer . '">Go back to search </a>',
-      ];
+        /*
+                $build['dashboard']['header'] = [
+              '#markup' => '<header class="w3-center w3-container"><h2> My dashboard</h2></header>',
+              '#type' => 'markup',
+            ];
+        */
+        /*    $build['dashboard']['back'] = [
+              '#markup' => '<a class="w3-btn" href="'. $referer . '">Go back to search </a>',
+            ];
 */
-/*
-      $build['dashboard']['endpoint'] = [
-        '#type' => 'markup',
-        '#markup' => '<p>Using endpoint : ' .   $backend_uri . '</p>',
+        /*
+              $build['dashboard']['endpoint'] = [
+                '#type' => 'markup',
+                '#markup' => '<p>Using endpoint : ' .   $backend_uri . '</p>',
 
 
-      ];
+              ];
 
-      $build['dashboard']['status'] = [
-        '#type' => 'markup',
-        '#markup' => '<p>Got statusCode: ' . $responseStatus . '</p>',
+              $build['dashboard']['status'] = [
+                '#type' => 'markup',
+                '#markup' => '<p>Got statusCode: ' . $responseStatus . '</p>',
 
 
-      ];
-*//*
+              ];
+        *//*
             $build['dashboard']['dashboard-wrapper'] = [
               '#type' => 'markup',
               '#markup' => //'<div id="bokeh-dashboard" class="dashboard">',
 
             ]; */
-      $build['dashboard']['dashboard-wrapper'] = [
-        '#prefix' => '<div id="bokeh-dashboard" class="dashboard w3-card">',
+        $build['dashboard']['dashboard-wrapper'] = [
+        '#prefix' => '<div id="bokeh-dashboard" class="w3-center dashboard">',
         '#type' => 'markup',
         '#markup' => $markup,
         '#suffix' => '</div>',
@@ -207,36 +207,37 @@ class DashboardBokehController extends ControllerBase {
       ];
 
 
-      //Add bokeh libraries
-      $build['#attached'] = [
+        //Add bokeh libraries
+        $build['#attached'] = [
         'library' => [
           'metsis_dashboard_bokeh/dashboard',
         ],
       ];
-      return $build;
+        return $build;
     }
 
-    public function jsonTest() {
-      $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
-      $backend_uri = $config->get('dashboard_bokeh_service');
-      //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
-      //Get the user_id
-      $user_id = (int) \Drupal::currentUser()->id();
+    public function jsonTest()
+    {
+        $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+        $backend_uri = $config->get('dashboard_bokeh_service');
+        //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
+        //Get the user_id
+        $user_id = (int) \Drupal::currentUser()->id();
 
-      //Get the refering page
-      $session = \Drupal::request()->getSession();
-      $referer = $session->get('back_to_search');
-
-
-      \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ] ) );
-
-      $json_data = $this->getJsonData($user_id);
-      dpm($json_data);
+        //Get the refering page
+        $session = \Drupal::request()->getSession();
+        $referer = $session->get('back_to_search');
 
 
+        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ]));
 
-      $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
-      $build['content'] = [
+        $json_data = $this->getJsonData($user_id);
+        dpm($json_data);
+
+
+
+        $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
+        $build['content'] = [
         '#type' => 'markup',
         '#title' => 'JSON',
         '#markup' => '<code>' . $json_body. '</code>',
@@ -246,114 +247,112 @@ class DashboardBokehController extends ControllerBase {
 
 
 
-      return $build;
+        return $build;
     }
-    function getDashboard($backend_uri, $resources) {
+    public function getDashboard($backend_uri, $resources)
+    {
 
       //Create datasources query parameters from resources
-      $res_list = $resources;
-      $query_params = "?";
-      /*
-      foreach ($res_list as $r) {
-        $query_params .= 'datasources=' . urlencode($r) . '&';
-      }
-      */
-      $query_params .= 'datasources=' . \Drupal\Component\Serialization\Json::encode($resources);
-      // Add user email query parameter
-      $query_params .= 'email=' .  \Drupal::currentUser()->getEmail();
-  /*    try {
-           $client = \Drupal::httpClient();
-           //$client->setOptions(['debug' => TRUE]);
-           $request = $client->request('GET', $backend_uri,
-           ['debug' => TRUE,
-             'headers' => [
-             'Accept' => 'application/json',
-             ],
-             'query' => [
-               'datasources' => $resources,
-               'email' =>  \Drupal::currentUser()->getEmail(),
-             ],
-           ]
-       );
-       $responseStatus = $request->getStatusCode();
-       $data = $request->getBody();
-       $json_response = \Drupal\Component\Serialization\Json::decode($data);
-     }*/
-     $params = [
+        $res_list = $resources;
+        $query_params = "?";
+        /*
+        foreach ($res_list as $r) {
+          $query_params .= 'datasources=' . urlencode($r) . '&';
+        }
+        */
+        $query_params .= 'datasources=' . \Drupal\Component\Serialization\Json::encode($resources);
+        // Add user email query parameter
+        $query_params .= 'email=' .  \Drupal::currentUser()->getEmail();
+        /*    try {
+                 $client = \Drupal::httpClient();
+                 //$client->setOptions(['debug' => TRUE]);
+                 $request = $client->request('GET', $backend_uri,
+                 ['debug' => TRUE,
+                   'headers' => [
+                   'Accept' => 'application/json',
+                   ],
+                   'query' => [
+                     'datasources' => $resources,
+                     'email' =>  \Drupal::currentUser()->getEmail(),
+                   ],
+                 ]
+             );
+             $responseStatus = $request->getStatusCode();
+             $data = $request->getBody();
+             $json_response = \Drupal\Component\Serialization\Json::decode($data);
+           }*/
+        $params = [
        'query' => [
          'datasources' => \Drupal\Component\Serialization\Json::encode($resources),
          'email' => \Drupal::currentUser()->getEmail(),
        ],
      ];
-      try {
-        $client = \Drupal::httpClient();
+        try {
+            $client = \Drupal::httpClient();
 
-        //$client->setOptions(['debug' => TRUE]);
-        $request = $client->request(
-          'GET',
+            //$client->setOptions(['debug' => TRUE]);
+            $request = $client->request(
+                'GET',
 
           //'https://pybasket.epinux.com/post_baskettable0',
           $backend_uri,
-          $params,
-          [
+                $params,
+                [
           //  'json' => $json_data,
             'Accept' => 'text/html',
             'Content-Type' => 'application/json',
-            'debug' => FALSE,
+            'debug' => false,
           ],
-      );
+            );
 
-        $responseStatus = $request->getStatusCode();
-        $data = $request->getBody();
-        \Drupal::logger('metsis_dashboard_bokeh_get_data')->debug(t("@markup", ['@markup' => $data ] ) );
-        $json_response = \Drupal\Component\Serialization\Json::decode($data);
-        //return ($json_response);
-      }
-      catch (Exception $e){
-        \Drupal::messenger()->addError("Could not contact bokeh dashboard api at @uri .", [ '@uri' => $backend_uri]);
-        \Drupal::messenger()->addError($e);
-      }
+            $responseStatus = $request->getStatusCode();
+            $data = $request->getBody();
+            \Drupal::logger('metsis_dashboard_bokeh_get_data')->debug(t("@markup", ['@markup' => $data ]));
+            $json_response = \Drupal\Component\Serialization\Json::decode($data);
+            //return ($json_response);
+        } catch (Exception $e) {
+            \Drupal::messenger()->addError("Could not contact bokeh dashboard api at @uri .", [ '@uri' => $backend_uri]);
+            \Drupal::messenger()->addError($e);
+        }
         return $data;
         //return $json_response;
     }
 
-    function getOpendapUris($user_id) {
-      //Fetch opendap uris:
-      $query = \Drupal::database()->select('metsis_basket', 'm');
-      $query->fields('m', ['data_access_resource_opendap']); //['data_access_resource_opendap']);
-      $query->condition('m.uid', $user_id, '=');
-      $results = $query->execute()->fetchCol();
-      $opendap_uris = [];
+    public function getOpendapUris($user_id)
+    {
+        //Fetch opendap uris:
+        $query = \Drupal::database()->select('metsis_basket', 'm');
+        $query->fields('m', ['data_access_resource_opendap']); //['data_access_resource_opendap']);
+        $query->condition('m.uid', $user_id, '=');
+        $results = $query->execute()->fetchCol();
+        $opendap_uris = [];
 
 
-      foreach($results as $record) {
+        foreach ($results as $record) {
+            $opendap_uris[] = $record;
+        }
 
-        $opendap_uris[] = $record;
-
+        return $opendap_uris;
     }
+    public function getJsonData($user_id)
+    {
+        //Fetch opendap uris:
+        $query = \Drupal::database()->select('metsis_basket', 'm');
+        $query->fields('m', ['metadata_identifier', 'feature_type', 'title', 'dar' ]); //['data_access_resource_opendap']);
+        $query->condition('m.uid', $user_id, '=');
+        $results = $query->execute();
+        $json_data = [];
 
-      return $opendap_uris;
-    }
-    function getJsonData($user_id) {
-      //Fetch opendap uris:
-      $query = \Drupal::database()->select('metsis_basket', 'm');
-      $query->fields('m', ['metadata_identifier', 'feature_type', 'title', 'dar' ]); //['data_access_resource_opendap']);
-      $query->condition('m.uid', $user_id, '=');
-      $results = $query->execute();
-      $json_data = [];
-
-      foreach($results as $record) {
-        //dpm($record);
-        $json_data['data'][(string) $record->metadata_identifier] = [
+        foreach ($results as $record) {
+            //dpm($record);
+            $json_data['data'][(string) $record->metadata_identifier] = [
             'title' => (string) $record->title,
             'feature_type' => (string) $record->feature_type,
             'resources' => unserialize($record->dar),
         ];
-
+        }
+        $json_data['email'] = \Drupal::currentUser()->getEmail();
+        $json_data['project'] = 'METSIS';
+        return $json_data;
     }
-      $json_data['email'] = \Drupal::currentUser()->getEmail();
-      $json_data['project'] = 'METSIS';
-      return $json_data;
-
-    }
-  }
+}

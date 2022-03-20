@@ -53,14 +53,14 @@ class MetsisTsPlotForm extends FormBase
     {
 
       //Get the API endpoint config.
-      $config = \Drupal::config('metsis_ts_bokeh.configuration');
-      $backend_uri = $config->get('ts_bokeh_plot_service');
+        $config = \Drupal::config('metsis_ts_bokeh.configuration');
+        $backend_uri = $config->get('ts_bokeh_plot_service');
 
-      //Get the query parameters for this request.
-      $query_from_request = \Drupal::request()->query->all();
-      $query = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
+        //Get the query parameters for this request.
+        $query_from_request = \Drupal::request()->query->all();
+        $query = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
 
-      $form['plotform'] = [
+        $form['plotform'] = [
         '#type' => 'container',
         '#prefix' => '<div id="plot-wrapper" height="800px">',
         '#suffix' => '</div>',
@@ -71,8 +71,8 @@ class MetsisTsPlotForm extends FormBase
       ];
 
 
-if(!isset($query['url'])) {
-      $form['plotform']['input'] = [
+        if (!isset($query['url'])) {
+            $form['plotform']['input'] = [
    '#type' => 'container',
   '#attributes' => [
     'class' => ['plot-input'],
@@ -80,7 +80,7 @@ if(!isset($query['url'])) {
   ];
 
 
-        $form['plotform']['input']['data_uri'] = [
+            $form['plotform']['input']['data_uri'] = [
      '#type' => 'url',
      '#sze' => 100,
      '#title' => t("Enter dataset resource URL:"),
@@ -93,12 +93,12 @@ if(!isset($query['url'])) {
        ],
    ];
 
-        $form['plotform']['input']['actions'] = [
+            $form['plotform']['input']['actions'] = [
      '#type' => 'actions',
    ];
 
 
-        $form['plotform']['input']['actions']['submit'] = [
+            $form['plotform']['input']['actions']['submit'] = [
      '#type' => 'submit',
      '#value' => t('Plot'),
      '#ajax' => [
@@ -109,40 +109,40 @@ if(!isset($query['url'])) {
 
    ];
 
-   $form['plotform']['plot-container'] = [
+            $form['plotform']['plot-container'] = [
   //   '#type' => 'markup',
   //   '#prefix' => '<div class="w3-row">',
   //   '#suffix' => '</div>',
    ];
-
-}
-else {
-
-  $form['plotform']['plot-container'] =  [
+        } else {
+            $form['plotform']['plot-container'] =  [
 '#type' => 'inline_template',
 '#allowed_tags' => ['iframe', 'div','script'],
-'#template' => '<iframe src="{{ url }}" width="100%" height="800px"  frameborder=0 scrolling=no> title="Timeseries Bokeh Plot"</iframe>',
+'#template' => '<iframe src="{{ url }}" width="100%" height="800px" border=0 name="bokeh-iframe" frameborder="0" noresize scrolling=no onload="document.getElementById("spinner").style.display="none";"> title="Timeseries Bokeh Plot"</iframe>',
 '#context' => [
   'url' => $backend_uri . '?url=' . $query['url'] . '',
 ],
 '#attributes' => [
-  //'class' => ['w3-display-container', 'w3-display-middle']
-]
+//  'class' => ['iframe_container'],
+],
+'#prefix' => '<div class"iframe_container">',
+'#suffix' => '</div>',
 ];
-
-}
+        }
 
         /*
          * Attach some js libraries to this form
          */
         $form['#attached']['library'][] = 'metsis_ts_bokeh/style';
         $form['#attached']['library'][] = 'media/oembed.formatter';
+        $form['#attached']['library'][] = 'core/jquery';
+        $form['#attached']['library'][] = 'jquery_ui/core';
         //$form['#attached']['library'][] = 'media/oembed.frame';
-  /*      $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_js';
-        $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_widgets';
-        $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_tables';
-        $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_api';
-        $form['#attached']['library'][] = 'jquery_ui_draggable/draggable';
+        /*      $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_js';
+              $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_widgets';
+              $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_tables';
+              $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_api';
+              $form['#attached']['library'][] = 'jquery_ui_draggable/draggable';
 */
         return $form;
     }
@@ -173,9 +173,9 @@ else {
      **/
     public function submitForm(array &$form, FormStateInterface $form_state)
     {
-       //$form_state->setValue('data_uri', '');
-       //$form_state->disableCache();
-       $form_state->setRebuild();
+        //$form_state->setValue('data_uri', '');
+        //$form_state->disableCache();
+        $form_state->setRebuild();
     }
 
     /*
@@ -199,7 +199,9 @@ else {
       ],
       '#attributes' => [
         'class' => ['w3-display-container', 'w3-display-middle']
-      ]
+      ],
+      '#prefix' => '<div class="iframe_container">',
+      '#suffix' => '</div>',
     ];
         return $form['plotform'];
     }

@@ -1,5 +1,7 @@
 <?php
 
+//require_once DRUPAL_ROOT . '/modules/metsis/metsis_csv_bokeh/includes/metsis_csv_bokeh.utils.inc';
+
 /**
  * Implements hook_help()
  *
@@ -8,8 +10,9 @@
  *
  * @return string
  */
-function metsis_csv_bokeh_help($path, $arg) {
-  switch ($path) {
+function metsis_csv_bokeh_help($path, $arg)
+{
+    switch ($path) {
     case 'help.page.metsis_csv_bokeh':
       $output = '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('This METSIS module provides blocks for configuring and downloading
@@ -23,4 +26,3 @@ function metsis_csv_bokeh_help($path, $arg) {
       return '<p>' . t('METSIS CSV Bokeh.') . '</p>';
   }
 }
-
