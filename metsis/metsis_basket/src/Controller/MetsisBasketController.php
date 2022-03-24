@@ -15,6 +15,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\MessageCommand;
+use Drupal\Core\Ajax\RedirectCommand;
 
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Query\QueryInterface;
@@ -79,7 +80,7 @@ class MetsisBasketController extends DashboardBokehController
 
         $build['#cache'] = [
 
-      'max-age' => 0,
+      'max-age' => 25,
     ];
         $build['#theme'] = 'dashboard_page';
 
@@ -123,7 +124,7 @@ class MetsisBasketController extends DashboardBokehController
 
     public function add($metaid)
     {
-        \Drupal::logger('metsis_basket')->debug("Calling add to basket function");
+        //\Drupal::logger('metsis_basket')->debug("Calling add to basket function");
         if (\Drupal::currentUser()->isAuthenticated()) {
             // This user is logged in.
 
@@ -143,12 +144,12 @@ class MetsisBasketController extends DashboardBokehController
             $dar = $arr[2];
 
 
-
+            /*
             \Drupal::logger('metsis_basket')->debug("Adding product to basket:");
             \Drupal::logger('metsis_basket')->debug("title: @title", ['@title'  => $title]);
             \Drupal::logger('metsis_basket')->debug("feature_type: @ft", ['@ft'  => $feature_type]);
             \Drupal::logger('metsis_basket')->debug("dar: @ft", ['@ft'  => Json::encode($dar)]);
-
+            */
 
 
             //Te fields we put in database
@@ -193,9 +194,9 @@ class MetsisBasketController extends DashboardBokehController
         } else {
             // This user is anonymous.
             $response = new AjaxResponse();
-            //$response->addCommand(new MessageCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
-            $response->addCommand(new HtmlCommand('.bokeh-ts-plot[reference="' .$metaid .'"]', '<div class="w3-panel w3-leftbar w3-border-red w3-pale-red w3-padding-16"><span> You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a></span></div>'));
-
+            //$response->addCommand(new RedirectCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
+            $response->addCommand(new MessageCommand($this->t('You must be logges in to add items to the basket.')));
+            $response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
             return $response;
         }
     }
@@ -232,7 +233,7 @@ class MetsisBasketController extends DashboardBokehController
         $solarium_query = $connector->getSelectQuery();
 
 
-        \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
+        //\Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
         $solarium_query->setQuery('metadata_identifier:'.$metadata_identifier);
 
         //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
@@ -251,7 +252,7 @@ class MetsisBasketController extends DashboardBokehController
 
         // The total number of documents found by Solr.
         $found = $result->getNumFound();
-        \Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
+        //\Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
         // The total number of documents returned from the query.
         //$count = $result->count();
 

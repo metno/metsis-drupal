@@ -236,8 +236,8 @@ class MetsisCsvBokehDownloadForm extends FormBase
         $backend_uri = $config->get('ts_bokeh_plot_service');
 
         //Do some debugging
-        \Drupal::logger('metsis_ts_bokeh')->debug('adc_get_ts_bokeh_plot backend: ' . $backend_uri);
-        \Drupal::logger('metsis_ts_bokeh')->debug('adc_get_ts_bokeh_plot( ' . $data_uri .', ' . $yaxis . ')');
+        //\Drupal::logger('metsis_ts_bokeh')->debug('adc_get_ts_bokeh_plot backend: ' . $backend_uri);
+        //\Drupal::logger('metsis_ts_bokeh')->debug('adc_get_ts_bokeh_plot( ' . $data_uri .', ' . $yaxis . ')');
 
         try {
             $client = \Drupal::httpClient();
@@ -267,7 +267,7 @@ class MetsisCsvBokehDownloadForm extends FormBase
     {
         $tempstore = \Drupal::service('tempstore.private')->get('metsis_ts_bokeh');
         $data_uri = $tempstore->get('data_uri');
-        \Drupal::logger('metsis_ts_bokeh')->debug('adc_get_plot_y_vars data uri: ' . $data_uri);
+        //\Drupal::logger('metsis_ts_bokeh')->debug('adc_get_plot_y_vars data uri: ' . $data_uri);
 
         $ts_bokeh_plot_vars = adc_get_ts_bokeh_plot_vars($data_uri);
         $y_vars = $ts_bokeh_plot_vars['y_axis'];

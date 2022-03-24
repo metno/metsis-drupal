@@ -174,7 +174,7 @@ class MetsisExportController extends ControllerBase
 
         // The total number of documents found by Solr.
         $found = $result->getNumFound();
-        \Drupal::logger('export_doc')->debug("found: " . $found);
+        //\Drupal::logger('export_doc')->debug("found: " . $found);
         $mmd = null;
         foreach ($result as $doc) {
             $fields = $doc->getFields();

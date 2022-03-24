@@ -156,7 +156,7 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
  */
 function metsis_search_theme($existing, $type, $theme, $path)
 {
-    \Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);
+    //Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);
 
     return [
       'views_view_field__metsis_search__results__last_metadata_update_datetime' => [
@@ -291,7 +291,7 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
     /*Get the current session */
     $request = \Drupal::request();
     $session = \Drupal::request()->getSession();
-    \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
+    //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
     //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
     // Get the current bbox filter
     $search_path = $request->getPathInfo();
@@ -299,9 +299,9 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
 
     //Only alter the solr-query if the search-path contains the word metsis.
     // This is to aviod solr query to be cahnged for normal site search
-    \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
+    //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
     if (preg_match($pattern, $search_path)) {
-        \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
+        //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
         $bboxFilter = $session->get('bboxFilter');
 
         //Get filter predicate from config
@@ -415,8 +415,8 @@ function metsis_search_search_api_solr_search_results_alter(
     //Extract some info for the search map from the solr result
     $request = \Drupal::request();
     $referer = $request->headers->get('referer');
-    \Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
-    \Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
+    //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
+    //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
     $search_path = $request->getPathInfo();
     $pattern1 = '/metsis\/search/i';
     //$pattern2 =  '/metsis\/elements/i';
@@ -454,7 +454,7 @@ function metsis_search_search_api_solr_search_results_alter(
 function metsis_search_views_pre_build(ViewExecutable $view)
 {
     if ($view->id() == 'metsis_search') {
-        \Drupal::logger('metsis_search')->debug("hook_metsis_search_view_pre_build");
+        //\Drupal::logger('metsis_search')->debug("hook_metsis_search_view_pre_build");
         //Check if reset query and reset boundingbox if so.
         \Drupal::cache()->invalidate('metsis_search_map');
         $request = \Drupal::request();

@@ -22,7 +22,7 @@ class DashboardBokehController extends ControllerBase
     {
         $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
         $backend_uri = $config->get('dashboard_bokeh_service');
-        $backend_uri = 'https://metsis.metsis-api.met.no/dashboard';
+        //$backend_uri = 'https://metsis.metsis-api.met.no/dashboard';
         //Get the user_id
         $user_id = (int) \Drupal::currentUser()->id();
 
@@ -31,9 +31,9 @@ class DashboardBokehController extends ControllerBase
         $referer = $session->get('back_to_search');
 
         //For testing dashboard. To be removed
-        $resources_test = 'http://hyrax.epinux.com/opendap/SN99938.nc,http://hyrax.epinux.com/opendap/ctdiaoos_gi2007_2009.nc,http://hyrax.epinux.com/opendap/itp01_itp1grd2042.nc';
+        //$resources_test = 'http://hyrax.epinux.com/opendap/SN99938.nc,http://hyrax.epinux.com/opendap/ctdiaoos_gi2007_2009.nc,http://hyrax.epinux.com/opendap/itp01_itp1grd2042.nc';
 
-        \Drupal::logger('metsis_dashboard_bokeh')->debug(t("@backend", ['@backend' => $backend_uri ]));
+        \Drupal::logger('metsis_dashboard_bokeh')->debug('Configured backend: @backend', ['@backend' => $backend_uri ]);
         //$resources = $store->get('basket');
         $resources = $this->getOpendapUris($user_id);
 
@@ -41,7 +41,7 @@ class DashboardBokehController extends ControllerBase
         $json_data = $this->getJsonData($user_id);
         $resources = $json_data;
 
-        \Drupal::logger('metsis_dashboard_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
+        //\Drupal::logger('metsis_dashboard_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
 
         /**
          * FIXME: This IF-caluse is for testing only. Should be removed for prod
@@ -49,7 +49,7 @@ class DashboardBokehController extends ControllerBase
         //if($resources == NULL) { $resources = explode(',', $resources_test); }
 
         $markup = $this->getDashboard($backend_uri, $resources);
-        \Drupal::logger('metsis_dashboard_bokeh_get')->debug(t("@markup", ['@markup' => $markup ]));
+        //\Drupal::logger('metsis_dashboard_bokeh_get')->debug(t("@markup", ['@markup' => $markup ]));
 
         // Build page
         //Create content wrapper
@@ -96,7 +96,7 @@ class DashboardBokehController extends ControllerBase
         $referer = $session->get('back_to_search');
 
 
-        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ]));
+        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug("Got backend @backend", ['@backend' => $backend_uri ]);
 
         $json_data = $this->getJsonData($user_id);
         //dpm($json_data);
@@ -104,8 +104,8 @@ class DashboardBokehController extends ControllerBase
 
 
         $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
-        \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_body: @string", ['@string' => $json_body ]);
-        \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_data: @string", ['@string' => $json_data ]);
+        //\Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_body: @string", ['@string' => $json_body ]);
+        //\Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_data: @string", ['@string' => $json_data ]);
 
         //Get markup from bokeh dashboard endpoint. post json_data.
         $markup = "<h2> Ooops Something went wrong!!</h2> Contact Administraor or see logs";
@@ -126,9 +126,9 @@ class DashboardBokehController extends ControllerBase
             );
 
             $responseStatus = $request->getStatusCode();
-            \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("response status: @string", ['@string' => $responseStatus ]);
+            //\Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("response status: @string", ['@string' => $responseStatus ]);
             $data = $request->getBody();
-            \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got original response: @markup", ['@markup' => $data]));
+            //\Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got original response: @markup", ['@markup' => $data]));
 
 
             //$markup = \Drupal\Component\Serialization\Json::decode($data);
@@ -155,8 +155,8 @@ class DashboardBokehController extends ControllerBase
 
         //$markup = str_replace(array("\n","\r\n","\r"), '', $data);
         //$markup = $this->getDashboard($backend_uri, $resources);
-        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got markup response: @markup", ['@markup' => $markup ]));
-        \Drupal::logger('metsis_dashboard_bokeh')->debug("Using endpoint: " . $backend_uri);
+        //\Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("Got markup response: @markup", ['@markup' => $markup ]));
+        //\Drupal::logger('metsis_dashboard_bokeh')->debug("Using endpoint: " . $backend_uri);
         \Drupal::logger('metsis_dashboard_bokeh')->debug("Got status code: " . $responseStatus);
 
         // Build page
@@ -229,10 +229,10 @@ class DashboardBokehController extends ControllerBase
         $referer = $session->get('back_to_search');
 
 
-        \Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ]));
+        //\Drupal::logger('metsis_dashboard_bokeh_testpost')->debug(t("@backend", ['@backend' => $backend_uri ]));
 
         $json_data = $this->getJsonData($user_id);
-        dpm($json_data);
+        //dpm($json_data);
 
 
 
@@ -307,7 +307,7 @@ class DashboardBokehController extends ControllerBase
 
             $responseStatus = $request->getStatusCode();
             $data = $request->getBody();
-            \Drupal::logger('metsis_dashboard_bokeh_get_data')->debug(t("@markup", ['@markup' => $data ]));
+            //\Drupal::logger('metsis_dashboard_bokeh_get_data')->debug(t("@markup", ['@markup' => $data ]));
             $json_response = \Drupal\Component\Serialization\Json::decode($data);
             //return ($json_response);
         } catch (Exception $e) {

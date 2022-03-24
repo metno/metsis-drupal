@@ -10,31 +10,31 @@ use Drupal\search_api\Query\QueryInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\SettingsCommand;
 
-class MapSearchController extends ControllerBase {
-
-
+class MapSearchController extends ControllerBase
+{
     /* Callback from openlayers when boundingbox filter are drawed on map.
     Add current drawed boundingbox to solr search query */
-    public function setBoundingBox() {
-      $query_from_request = \Drupal::request()->query->all();
-      $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
+    public function setBoundingBox()
+    {
+        $query_from_request = \Drupal::request()->query->all();
+        $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
 
-      $tllat = $params['tllat'];
-      $tllon = $params['tllon'];
-      $brlat = $params['brlat'];
-      $brlon = $params['brlon'];
-      $proj = $params['proj'];
-      \Drupal::logger('metsis_search_map_search_controller')->debug("Got boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
-      $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
+        $tllat = $params['tllat'];
+        $tllon = $params['tllon'];
+        $brlat = $params['brlat'];
+        $brlon = $params['brlon'];
+        $proj = $params['proj'];
+        \Drupal::logger('metsis_search_map_search_controller')->debug("Got boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
+        $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
 
-      //Get current session variables
-      $session = \Drupal::request()->getSession();
-      $session->set('bboxFilter', $bboxFilter);
-      $session->set('tllat', $tllat);
-      $session->set('tllon', $tllon);
-      $session->set('brlat', $brlat);
-      $session->set('brlon', $brlon);
-      $session->set('proj', $proj);
+        //Get current session variables
+        $session = \Drupal::request()->getSession();
+        $session->set('bboxFilter', $bboxFilter);
+        $session->set('tllat', $tllat);
+        $session->set('tllon', $tllon);
+        $session->set('brlat', $brlat);
+        $session->set('brlon', $brlon);
+        $session->set('proj', $proj);
 
         //Get saved configuration
         $config = \Drupal::config('metsis_search.settings');
@@ -50,7 +50,7 @@ class MapSearchController extends ControllerBase {
         $map_layers_list =  $config->get('map_layers');
         $map_filter = $config->get('map_bbox_filter');
 
-      $data = [
+        $data = [
         'metsis_search_map_block' => [
           'mapLat' => $map_lat, //to be replaced with configuration variables
           'mapLon' => $map_lon, //to be replaced with configuration variables
@@ -70,116 +70,118 @@ class MapSearchController extends ControllerBase {
           'mapFilter' => $map_filter,
         ],
       ];
-      $response = new AjaxResponse();
-      //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
-      $response->addCommand(new SettingsCommand ($data, TRUE));
+        $response = new AjaxResponse();
+        //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
+        $response->addCommand(new SettingsCommand($data, true));
 
 
-      return $response;
+        return $response;
+    }
 
- }
+    /* select projection callback */
+    public function setProjection()
+    {
+        $query_from_request = \Drupal::request()->query->all();
+        $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
 
- /* select projection callback */
- public function setProjection() {
-   $query_from_request = \Drupal::request()->query->all();
-   $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
+        $proj = $params['proj'];
+        //\Drupal::logger('metsis_search_map_search_controller')->debug("Got projection: " . $proj);
+        //Get current session variables
+        $session = \Drupal::request()->getSession();
+        $session->set('proj', $proj);
 
-   $proj = $params['proj'];
-   \Drupal::logger('metsis_search_map_search_controller')->debug("Got projection: " . $proj);
-   //Get current session variables
-   $session = \Drupal::request()->getSession();
-   $session->set('proj', $proj);
+        //Get saved configuration
+        $config = \Drupal::config('metsis_search.settings');
+        $map_location = $config->get('map_selected_location');
+        $map_lat =  $config->get('map_locations')[$map_location]['lat'];
+        $map_lon = $config->get('map_locations')[$map_location]['lon'];
+        $map_zoom = $config->get('map_zoom');
+        $map_additional_layers = $config->get('map_additional_layers_b');
+        $map_projections = $config->get('map_projections');
+        $map_init_proj =  $config->get('map_init_proj');
+        $map_base_layer_wms_north =  $config->get('map_base_layer_wms_north');
+        $map_base_layer_wms_south =  $config->get('map_base_layer_wms_south');
+        $map_layers_list =  $config->get('map_layers');
+        $map_filter = $config->get('map_bbox_filter');
 
-     //Get saved configuration
-     $config = \Drupal::config('metsis_search.settings');
-     $map_location = $config->get('map_selected_location');
-     $map_lat =  $config->get('map_locations')[$map_location]['lat'];
-     $map_lon = $config->get('map_locations')[$map_location]['lon'];
-     $map_zoom = $config->get('map_zoom');
-     $map_additional_layers = $config->get('map_additional_layers_b');
-     $map_projections = $config->get('map_projections');
-     $map_init_proj =  $config->get('map_init_proj');
-     $map_base_layer_wms_north =  $config->get('map_base_layer_wms_north');
-     $map_base_layer_wms_south =  $config->get('map_base_layer_wms_south');
-     $map_layers_list =  $config->get('map_layers');
-     $map_filter = $config->get('map_bbox_filter');
-
-   $data = [
+        $data = [
      'metsis_search_map_block' => [
        'proj' => $proj,
      ],
    ];
-   $response = new AjaxResponse();
-   //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
-   $response->addCommand(new SettingsCommand ($data, TRUE));
+        $response = new AjaxResponse();
+        //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
+        $response->addCommand(new SettingsCommand($data, true));
 
 
-   return $response;
+        return $response;
+    }
 
-}
+    /* Callback from openlayers when boundingbox filter are drawed on map.
+    Add current drawed boundingbox to solr search query */
+    public function setPlace()
+    {
+        $query_from_request = \Drupal::request()->query->all();
+        $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
 
-/* Callback from openlayers when boundingbox filter are drawed on map.
-Add current drawed boundingbox to solr search query */
-public function setPlace() {
-  $query_from_request = \Drupal::request()->query->all();
-  $params = \Drupal\Component\Utility\UrlHelper::filterQueryParameters($query_from_request);
+        $tllat = $params['tllat'];
+        $tllon = $params['tllon'];
+        $brlat = $params['brlat'];
+        $brlon = $params['brlon'];
+        $proj = $params['proj'];
+        //\Drupal::logger('metsis_search_map_search_controller')->debug("Got PLACE boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
+        $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
 
-  $tllat = $params['tllat'];
-  $tllon = $params['tllon'];
-  $brlat = $params['brlat'];
-  $brlon = $params['brlon'];
-  $proj = $params['proj'];
-  \Drupal::logger('metsis_search_map_search_controller')->debug("Got PLACE boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
-  $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
+        //Get current session variables
+        $session = \Drupal::request()->getSession();
+        $session->set('bboxFilter', $bboxFilter);
+        $session->set('tllat', $tllat);
+        $session->set('tllon', $tllon);
+        $session->set('brlat', $brlat);
+        $session->set('brlon', $brlon);
+        $session->set('proj', $proj);
+        $session->set('place_filter', "Contains");
 
-  //Get current session variables
-  $session = \Drupal::request()->getSession();
-  $session->set('bboxFilter', $bboxFilter);
-  $session->set('tllat', $tllat);
-  $session->set('tllon', $tllon);
-  $session->set('brlat', $brlat);
-  $session->set('brlon', $brlon);
-  $session->set('proj', $proj);
-  $session->set('place_filter', "Contains");
+        $response = new AjaxResponse();
+        //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
 
-$response = new AjaxResponse();
-  //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
+        //\Drupal::logger('metsis_search_map_search_controller')->debug(\Drupal::request()->getRequestUri());
+        return $response;
+        //return $this->redirect(\Drupal::request()->getRequestUri());
+    }
 
-  \Drupal::logger('metsis_search_map_search_controller')->debug(\Drupal::request()->getRequestUri());
-  return $response;
-  //return $this->redirect(\Drupal::request()->getRequestUri());
-}
+    public function reset()
+    {
+        //Get current session variables
+        $session = \Drupal::request()->getSession();
+        //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+        $session->remove('bboxFilter');
+        $session->remove('tllat');
+        $session->remove('tllon');
+        $session->remove('brlat');
+        $session->remove('brlon');
+        $session->remove('extracted_info');
+        $session->remove('proj');
+        $session->remove('gcmd');
+        $session->remove('keywords_level');
+        $session->remove('back_to_search');
+        $session->remove('place_filter');
+        $session->set('keywords_level', 1);
+        $session->set('back_to_search', '/metsis/search');
 
-public function reset() {
-  //Get current session variables
-  $session = \Drupal::request()->getSession();
-  //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-  $session->remove('bboxFilter');
-  $session->remove('tllat');
-  $session->remove('tllon');
-  $session->remove('brlat');
-  $session->remove('brlon');
-  $session->remove('extracted_info');
-  $session->remove('proj');
-  $session->remove('gcmd');
-  $session->remove('keywords_level');
-  $session->remove('back_to_search');
-  $session->remove('place_filter');
-  $session->set('keywords_level', 1);
-  $session->set('back_to_search', '/metsis/search');
+        //$session->remove('proj', $proj);
+        $session->remove('place_filter');
 
-  //$session->remove('proj', $proj);
-  $session->remove('place_filter');
+        //$response = new AjaxResponse();
+        //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
 
-//$response = new AjaxResponse();
-  //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
+        //\Drupal::logger('metsis_search_map_search_controller')->debug(\Drupal::request()->getRequestUri());
+        //return $response;
+        return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
+    }
 
-  //\Drupal::logger('metsis_search_map_search_controller')->debug(\Drupal::request()->getRequestUri());
-  //return $response;
-  return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
-}
-
- public function resetCallback() {
-     \Drupal::logger('metsis_search')->debug("MapSearchController::resetCallback");
- }
+    public function resetCallback()
+    {
+        \Drupal::logger('metsis_search')->debug("MapSearchController::resetCallback");
+    }
 }

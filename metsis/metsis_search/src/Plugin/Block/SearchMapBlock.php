@@ -35,17 +35,17 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         $module_handler = \Drupal::service('module_handler');
         $module_path = $module_handler->getModule('metsis_search')->getPath();
         // Get the bounding box drawn on the map
-        \Drupal::logger('metsis_search')->debug("Building MapSearchBlock");
+        //\Drupal::logger('metsis_search')->debug("Building MapSearchBlock");
         //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
         //$bboxFilter = $tempstore->get('bboxFilter');
         $session = \Drupal::request()->getSession();
         $bboxFilter = $session->get('bboxFilter');
         $proj = $session->get('proj');
-        \Drupal::logger('metsis_search:metsis_search_map')->debug('current session projection: ' . $proj);
+        //\Drupal::logger('metsis_search:metsis_search_map')->debug('current session projection: ' . $proj);
         //Extract info from request object:
         $request = \Drupal::request();
         $searchUri = $request->getRequestUri();
-        \Drupal::logger('metsis_search:metsis_search_map')->debug('Current search uri: @url', ['@url' => $searchUri]);
+        //\Drupal::logger('metsis_search:metsis_search_map')->debug('Current search uri: @url', ['@url' => $searchUri]);
 
         //if ($bboxFilter != null) {
         $tllat = $session->get('tllat');
@@ -57,7 +57,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         $tllon = $tempstore->get('tllon');
         $brlat = $tempstore->get('brlat');
         $brlon = $tempstore->get('brlon'); */
-        \Drupal::logger('metsis_search_map_block')->debug("Got input filter vars: " .$tllat .','. $tllon .','.$brlat.','.$brlon);
+        //\Drupal::logger('metsis_search_map_block')->debug("Got input filter vars: " .$tllat .','. $tllon .','.$brlat.','.$brlon);
         //}
 
         //Get saved configuration
