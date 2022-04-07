@@ -275,7 +275,7 @@ class MetsisTsBokehController extends ControllerBase
     ],
   ];
         $build['#cache'] = [
-  'disabled' => true,
+  //'disabled' => true,
 ];
 
         return $build;

@@ -1036,7 +1036,7 @@ console.log("Start of metsis search map script:");
           if ($('#map-ts-plot').html().length > 0) {
             $('#map-ts-plot').empty();
           }
-          $('#map-ts-plot').html('<iframe src="'+url+'" width="100%" height="725" frameborder=0 scrolling=no> title="Timeseries Bokeh Plot"</iframe>');
+          $('#map-ts-plot').html('<iframe src="'+url+'" width="100%" height="725" frameborder=0 scrolling=no allowfullscreen> title="Timeseries Bokeh Plot"</iframe>');
 
         }
 
@@ -1152,7 +1152,7 @@ console.log("Start of metsis search map script:");
           //Show ts-bokeh plot:
           $('#bokeh-map-ts-plot').slideDown();
           $('.map-ts-header').css({
-            display: 'block'
+            display: 'none'
           });
 
           //Create back to results button:
@@ -1174,7 +1174,46 @@ console.log("Start of metsis search map script:");
             $('#bokeh-map-ts-plot').find('.map-ts-vars').empty();
             $('#backToMapButton').unbind('click');
             $('#map-ts-back').empty();
-          });
+            $('#bokeh-map-ts-plot').css("width", $(window).width());
+            $('#bokeh-map-ts-plot').css("height", $(window).height());
+            // if already full screen; exit
+  // else go fullscreen
+  if (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  ) {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    }
+  } else {
+    element = $('#bokeh-map-ts-plot').get(0);
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
+});
+          /*  $('#bokeh-map-ts-plot').css({
+                position: 'fixed',
+                top: '0',
+                right: '0',
+                bottom: '0',
+                left: '0'
+            }); */
+        //  });
 
           /*  if ($('#map-ts-plot').html().length > 0 || $('#bokeh-map-ts-plot').find('.map-ts-vars').html().length > 0) {
               $('#map-ts-plot').empty();

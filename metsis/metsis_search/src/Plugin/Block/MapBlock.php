@@ -25,10 +25,10 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class MapBlock extends BlockBase implements BlockPluginInterface
 {
-  /**
-   * {@inheritdoc}
-   * Add js to block and return renderarray
-   */
+    /**
+     * {@inheritdoc}
+     * Add js to block and return renderarray
+     */
     public function build()
     {
         //\Drupal::logger('metsis_search')->debug("Building MapSearchForm");
@@ -125,7 +125,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface
       'contexts' => [
         //  'route',
 
-        'url.path',
+        #'url.path',
         'url.query_args',
       ],
     ];

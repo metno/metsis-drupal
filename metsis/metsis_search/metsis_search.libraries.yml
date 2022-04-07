@@ -1,26 +1,25 @@
 metadata_search_view:
-  version: 1.x
+  version: 1.0.1
   css:
     theme:
       css/metadata_search_view.css: {}
   dependencies:
-    - core/jquery
+#    - core/jquery
 #    - core/jquery.ui
 #    - core/jquery.once
-    - core/drupal
-    - core/drupalSettings
-    - core/drupal.ajax
-    - core/drupal.dialog
-    - core/drupal.dialog.ajax
-    - core/jquery.form
-    - jquery_ui_draggable/draggable
+#    - core/drupal
+#    - core/drupalSettings
+#    - core/drupal.ajax
+#    - core/drupal.dialog
+#    - core/drupal.dialog.ajax
+#    - jquery_ui_draggable/draggable
 
 ts_plot:
-  version: 1.0
+  version: 1.0.1
   js:
-    https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js: { type: external}
-    https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js: { type: external}
-    https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js: { type: external}
+    https://cdn.pydata.org/bokeh/release/bokeh-2.3.3.min.js: { type: external, minified: true}
+    https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.3.min.js: { type: external, minified: true}
+    https://cdn.pydata.org/bokeh/release/bokeh-tables-2.3.3.min.js: { type: external, minified: true}
     js/ts_plot.js: {}
   dependencies:
     - core/jquery
@@ -30,7 +29,7 @@ ts_plot:
     - core/drupalSettings
 
 search_map:
-  version: 1.0
+  version: 1.0.1
   css:
     component:
       /libraries/openlayers-6.5.0/ol.css: {}
@@ -39,8 +38,8 @@ search_map:
 
   js:
     #js/bundle.js: {}
-    /libraries/openlayers-6.5.0/ol.js: {}
-    https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
+    /libraries/openlayers-6.5.0/ol.js: {minified: true}
+    https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: {minified: true}
     js/searchmap.js: {}
   dependencies:
     - core/jquery
@@ -54,31 +53,25 @@ search_map:
 #    - core/drupal.dialog.ajax
 
 search_map_block:
-  version: 1.0
+  version: 1.0.1
   css:
     component:
       /libraries/openlayers-6.5.0/ol.css: {}
 #      /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.css: {}
       /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
-      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external }
+      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external minified: true}
     #  https://unpkg.com/ol-geocoder@latest/dist/ol-geocoder.min.css
     theme:
 #      css/metsis_qsearch.css: {}
       css/metsis_res_map.css: {}
   js:
-    #js/bundle.js: {}
-    #https://cdn.pydata.org/bokeh/release/bokeh-2.0.2.min.js: { type: external}
-    #https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.0.2.min.js: { type: external}
-    #https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js: { type: external}
-    #/libraries/openlayers6/build/ol.js: {}
-    #/libraries/openlayers6/apidoc/scripts/bootstrap.min.js: {}
-    /libraries/proj4js-2.6.3/dist/proj4.js: {}
-    /libraries/openlayers-6.5.0/ol.js: {}
+    /libraries/proj4js-2.6.3/dist/proj4.js: {minified: true}
+    /libraries/openlayers-6.5.0/ol.js: {minified: true}
 #    /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.js: {}
     /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
     #https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
     #js/metsis_search_map_block.js: {}
-    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external }
+    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external, minified: true, attributes: {async: true}}
     js/metsis_res_map.js: {}
   dependencies:
     - core/jquery
@@ -94,7 +87,7 @@ search_map_block:
 #    - bootstrap_library/bootstrap
 
 children_count:
-  version: 1.0
+  version: 1.0.1
   js:
     js/children_count.js: {}
   dependencies:
@@ -104,7 +97,7 @@ children_count:
     - core/drupal.ajax
 
 gcmd:
-  version: 1.0
+  version: 1.0.1
   css:
     theme:
       css/gcmd.css: {}
@@ -112,6 +105,6 @@ gcmd:
     js/gcmd.js: {}
 
 export:
-  version: 1.0
+  version: 1.0.1
   js:
     js/export.js: {}

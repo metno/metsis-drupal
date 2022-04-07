@@ -331,7 +331,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
 
         //Placeholder for ts-plot
         $build['map-ts-plot'] = [
-    '#prefix' => '<div id="bokeh-map-ts-plot" class="w3-card-2 w3-container">',
+    '#prefix' => '<div id="bokeh-map-ts-plot" style="width:auto;height:auto">',
     '#suffix' => '</div>',
     '#allowed_tags' => ['div'],
   ];
@@ -375,7 +375,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
           'contexts' => [
           //  'route',
 
-              'url.path',
+            #  'url.path',
               'url.query_args',
             ],
           ];
@@ -384,12 +384,12 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         $build['#attached'] = [
       'library' => [
       'metsis_lib/adc-button',
-      'metsis_ts_bokeh/style',
-      'metsis_ts_bokeh/bokeh_js',
-      'metsis_ts_bokeh/bokeh_widgets',
-      'metsis_ts_bokeh/bokeh_tables',
-      'metsis_ts_bokeh/bokeh_api',
-      'blazy/load',
+      #'metsis_ts_bokeh/style',
+      #'metsis_ts_bokeh/bokeh_js',
+      #'metsis_ts_bokeh/bokeh_widgets',
+      #'metsis_ts_bokeh/bokeh_tables',
+      #'metsis_ts_bokeh/bokeh_api',
+      'blazy/blazy',
       'metsis_search/search_map_block',
       ],
     'drupalSettings' => [

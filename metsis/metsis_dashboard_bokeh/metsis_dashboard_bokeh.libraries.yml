@@ -1,9 +1,6 @@
 dashboard:
-  version: 1.0
+  version: 1.0.1
   css:
-#    component:
-#      css/bokeh.css: {}
-#      css/docs.css: {}
     theme:
       css/theme.css: {}
   js:

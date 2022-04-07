@@ -7,6 +7,7 @@ dependencies:
     - user.role.anonymous
     - user.role.authenticated
   module:
+    - better_exposed_filters
     - search_api
     - user
     - views_autocomplete_filters
@@ -836,14 +837,14 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{{ abstract  | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\) ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n"
+            text: "{{ abstract  | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n"
             make_link: false
             path: ''
             absolute: false
             external: false
             replace_spaces: false
             path_case: none
-            trim_whitespace: false
+            trim_whitespace: true
             alt: ''
             rel: ''
             link_class: ''
@@ -1473,7 +1474,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"visualise-ts-{{ id }}\" reference=\"{{ id }}\" class=\"visualise-ts visualise-ts-div\">\r\n<div id=\"opendap-url\" class=\"hidden\">{{ data_access_url_opendap }}</div>\r\n<div id=\"opendap-id\" class=\"hidden\">{{ id }}</div>\r\n  <a id=\"ts-plot-button\" class=\"adc-button adc-sbutton\" \r\n >Visualise TimeSeries</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2095,7 +2096,7 @@ display:
             offset_label: Offset
           quantity: 9
       exposed_form:
-        type: basic
+        type: bef
         options:
           submit_button: Search
           reset_button: true
@@ -2104,6 +2105,53 @@ display:
           expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
+          text_input_required: 'Select any filter and click on Apply to see results'
+          text_input_required_format: basic_html
+          bef:
+            general:
+              autosubmit: false
+              autosubmit_exclude_textfield: false
+              autosubmit_textfield_delay: 500
+              autosubmit_hide: false
+              input_required: false
+              allow_secondary: false
+              secondary_label: 'Advanced options'
+              secondary_open: false
+            filter:
+              search_api_fulltext:
+                plugin_id: default
+                advanced:
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
+              temporal_extent_start_date:
+                plugin_id: default
+                advanced:
+                  collapsible: false
+                  is_secondary: false
+              temporal_extent_end_date:
+                plugin_id: default
+                advanced:
+                  collapsible: false
+                  is_secondary: false
+              is_parent:
+                plugin_id: default
+                advanced:
+                  sort_options: false
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
+              platform_ancillary_cloud_coverage:
+                plugin_id: default
+                advanced:
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
       access:
         type: role
         options:
@@ -2444,7 +2492,7 @@ display:
         type: views_query
         options:
           skip_access: 1
-          bypass_access: 0
+          bypass_access: 1
           preserve_facet_query_args: 1
       relationships: {  }
       use_ajax: false
@@ -2478,6 +2526,7 @@ display:
     display_options:
       cache:
         type: none
+        options: {  }
       defaults:
         cache: false
       exposed_block: true

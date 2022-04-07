@@ -79,8 +79,9 @@ class MetsisBasketController extends DashboardBokehController
         //$build['content']['view'] = views_embed_view('basket_view', 'embed_1');
 
         $build['#cache'] = [
-
-      'max-age' => 25,
+          'contexts' => ['user', 'session'],
+          'tags' => ['basket:user:'.$user_id],
+      #'max-age' => 25,
     ];
         $build['#theme'] = 'dashboard_page';
 
@@ -89,6 +90,7 @@ class MetsisBasketController extends DashboardBokehController
         $build['#attached'] = [
 'library' => [
 'metsis_basket/basket_view',
+'metsis_dashboard_bokeh/dashboard'
 ],
 ];
         $build['#attributes'] = [
@@ -176,9 +178,11 @@ class MetsisBasketController extends DashboardBokehController
             $ids = $this->get_user_item_ids($user_id);
             //\Drupal::logger('metsis_basket')->debug(implode(',',$ids));
 
-            $tempstore = \Drupal::service('tempstore.private')->get('metsis_basket');
-            $tempstore->set('basket_items', $ids);
+            //$tempstore = \Drupal::service('tempstore.private')->get('metsis_basket');
+            //$tempstore->set('basket_items', $ids);
 
+            $session = \Drupal::request()->getSession();
+            $session->set('basket_items', $ids);
 
             $selector = '#myBasketCount';
             //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
@@ -189,7 +193,7 @@ class MetsisBasketController extends DashboardBokehController
             $response->addCommand(new HtmlCommand('#addtobasket-' . $metaid, 'Add to Basket &#10004;'));
             $response->addCommand(new HtmlCommand($selector, $markup));
             //$response->addCommand(new MessageCommand("Dataset added to basket:  " . $metaid));
-
+            \Drupal\Core\Cache\Cache::invalidateTags(array('basket:user:'.$user_id));
             return $response;
         } else {
             // This user is anonymous.
