@@ -51,7 +51,7 @@ class WmsController extends ControllerBase
 
         $markup = 'No Data Found!';
         $webMapServers = [];
-        \Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
+        //\Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
         if (count($query) > 0) {
             $datasets = explode(",", $query['dataset']);
 
@@ -125,15 +125,14 @@ class WmsController extends ControllerBase
 
         $capdoc_postfix = "?SERVICE=WMS&REQUEST=GetCapabilities"; //TODO: Read this from config
 
-        \Drupal::logger('metsis_wms')->debug("Calling getFields");
+        //\Drupal::logger('metsis_wms')->debug("Calling getFields");
         $resultset = $this->getFields($datasets, $fields);
         //$documents = $result->getDocuments());
 
 
-            foreach ($resultset as $document) {
-              $fields = $document->getFields();
-              if (isset($fields['data_access_url_ogc_wms'])) {
-
+        foreach ($resultset as $document) {
+            $fields = $document->getFields();
+            if (isset($fields['data_access_url_ogc_wms'])) {
                 $mi = $fields['metadata_identifier'];
 
                 foreach ($fields['data_access_url_ogc_wms'] as $wms_url) {
@@ -153,16 +152,14 @@ class WmsController extends ControllerBase
                 } else {
                     $web_map_servers[$mi] = '{capabilitiesUrl: "' . $wms_url_lhs . $wms_data[$mi]['dar'][0] . $capdoc_postfix . '", activeLayer:"", layers: []}';
                 }
+            } else {
+                \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
+                return new RedirectResponse($referer);
             }
-           else {
-              \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
-              return new RedirectResponse($referer);
-          }
         }
 
         $webMapServers = implode(',', $web_map_servers);
         return $webMapServers;
-
     }
 
 
@@ -255,7 +252,7 @@ EOM;
         //foreach ($metadata_identifier as $id) {
         //    \Drupal::logger('metsis_wms')->debug("setQuery: metadata_identifier: " .$id);
         $ids = implode(' ', $metadata_identifier);
-            $solarium_query->setQuery('metadata_identifier:('.$ids.')');
+        $solarium_query->setQuery('metadata_identifier:('.$ids.')');
         //}
         //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
         //$solarium_query->setRows(2);
@@ -265,7 +262,7 @@ EOM;
 
         // The total number of documents found by Solr.
         $found = $result->getNumFound();
-        \Drupal::logger('metsis_wms')->debug("found :" .$found);
+        //\Drupal::logger('metsis_wms')->debug("found :" .$found);
         // The total number of documents returned from the query.
         //$count = $result->count();
 

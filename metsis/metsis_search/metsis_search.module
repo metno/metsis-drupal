@@ -87,7 +87,7 @@ function metsis_search_views_pre_render(ViewExecutable $view)
         $view->element['#attached']['library'][] = 'metsis_search/children_count';
         $view->element['#attached']['library'][] = 'blazy/load';
         $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
-
+        //$view->element['#cache']['max-age'] = 400;
 
         //Attach ts plot javascript and settings to view
         //$view->element['#attached']['library'][] = 'metsis_search/ts_plot';
@@ -95,6 +95,7 @@ function metsis_search_views_pre_render(ViewExecutable $view)
           'pywps_service' => $pywps_service,
           'module_path' => $module_path
         ];
+        //\Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
     }
     if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
         $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
@@ -109,7 +110,7 @@ function metsis_search_views_pre_render(ViewExecutable $view)
           'pywps_service' => $pywps_service,
           'module_path' => $module_path
         ];
-
+        //$view->element['#cache']['max-age'] = 400;
         //Add back to parent search button.
         //$view->header['area']->options['alter']['text'] = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
         //var_dump($view->header);
@@ -313,7 +314,7 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
 
         //Add bbox filter query if drawn bbox on map
         if ($bboxFilter != null && $bboxFilter != "") {
-            \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
+            //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
             $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
             $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
             //$request->query->set('bboxFilter', $search_string);
@@ -323,7 +324,7 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
         //Filter on selected collections from config
         $selected_collections = $config->get('selected_collections');
         if (isset($selected_collections) && $selected_collections != null) {
-            \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
+            //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
             $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
         }
 
@@ -426,7 +427,7 @@ function metsis_search_search_api_solr_search_results_alter(
     //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
     if (preg_match($pattern1, $search_path)) {
         $extracted_info = SearchUtils::getExtractedInfo($result);
-        \Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
+        //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
         //$session->set('gcmd', $gcmd_facet);
         //dpm($gcmd_facet);
         //add the extracted info to the tempstores

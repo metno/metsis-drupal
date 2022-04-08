@@ -25,11 +25,11 @@ class MetsisBasketDeleteAction extends ViewsBulkOperationsActionBase
      */
     public function execute($entity = null)
     {
-        \Drupal::logger('metsis_basket')->debug('Executing metsis basket delete action');
+        //\Drupal::logger('metsis_basket')->debug('Executing metsis basket delete action');
         $user = \Drupal::currentUser();
-        \Drupal::logger('metsis_basket')->debug('Crrent user id is: ' . $user->id());
-        \Drupal::logger('metsis_basket')->debug('Current item id is: ' . $entity->id());
-        \Drupal::logger('metsis_basket')->debug('Current session user: ' . $entity->uid->value);
+        //\Drupal::logger('metsis_basket')->debug('Crrent user id is: ' . $user->id());
+        //\Drupal::logger('metsis_basket')->debug('Current item id is: ' . $entity->id());
+        //\Drupal::logger('metsis_basket')->debug('Current session user: ' . $entity->uid->value);
 
 
         /* TODO: SHould we add more sanity checks here?? Before delete?

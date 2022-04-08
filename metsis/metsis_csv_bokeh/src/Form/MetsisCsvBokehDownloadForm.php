@@ -52,9 +52,15 @@ class MetsisCsvBokehDownloadForm extends FormBase
      */
     public function buildForm(array $form, FormStateInterface $form_state)
     {
-        $tempstore = \Drupal::service('tempstore.private')->get('metsis_csv_bokeh');
+        //$tempstore = \Drupal::service('tempstore.private')->get('metsis_csv_bokeh');
         $config = \Drupal::config('metsis_csv_bokeh.settings');
         $form = [];
+
+        //Backend uri ncplot for extracting variables and exporting
+        //hardcoded for now:
+        $form_state->set('download_uri', $config->get('csv_bokeh_download_service'));
+        $form_state->set('backend_uri', 'https://ncapi.metsis-api.met.no/ncplot/plot');
+
 
         /**
          * TODO multiple OPeNDAP URLs can be requested as a comma separated list, but
@@ -63,6 +69,7 @@ class MetsisCsvBokehDownloadForm extends FormBase
         // Get the request referer for go back button
         $request = \Drupal::request();
         $referer = $request->headers->get('referer');
+        $form_state->set('referer', $referer);
 
         /**
          * Check if we got opendap urls from http request. then overwite
@@ -73,11 +80,11 @@ class MetsisCsvBokehDownloadForm extends FormBase
 
         $opendap_urls = isset($query['opendap_urls']) ? $query['opendap_urls'] : '';
         $opendap_urls = array_map('trim', explode(',', $opendap_urls));
-
+        dpm($opendap_urls);
         //TODO: Change this to save whole array when multiple urls are supported
-        $tempstore->set('metsis_csv_bokeh_data_uri', $opendap_urls[0]);
-
-        $bokeh_plot_vars = self::adc_get_cvs_bokeh_plot_vars($tempstore->get('metsis_csv_bokeh_data_uri'));
+        //$tempstore->set('metsis_csv_bokeh_data_uri', $opendap_urls[0]);
+        $form_state->set('resource_url', $opendap_urls[0]);
+        $bokeh_plot_vars = self::adc_get_cvs_bokeh_plot_vars($form_state->get('resource_url'), $form_state);
         if (isset($bokeh_plot_vars['y_axis'])) {
             $odv_object = $bokeh_plot_vars['y_axis'];
         }
@@ -128,12 +135,12 @@ class MetsisCsvBokehDownloadForm extends FormBase
      '#type' => 'submit',
      '#value' => t('Submit'),
    ];
-
-        $results = $form_state->getValue('results');
-        if (isset($results)) {
-            $form['results'] = ['#value' => $form_state->getValue('results'),];
-        }
-
+        /*
+                $results = $form_state->getValue('results');
+                if (isset($results)) {
+                    $form['results'] = ['#value' => $form_state->getValue('results'),];
+                }
+        */
         //Add go back putton
         $form['actions']['go_back'] = [
      '#type' => 'markup',
@@ -163,9 +170,9 @@ class MetsisCsvBokehDownloadForm extends FormBase
         /*
          * Download ASCII csv
          */
-        $tempstore = \Drupal::service('tempstore.private')->get('metsis_csv_bokeh');
+        //$tempstore = \Drupal::service('tempstore.private')->get('metsis_csv_bokeh');
         $res = self::adc_get_csv_bokeh_download_query($form_state);
-        $tempstore->set('metsis_csv_bokeh_download_query', $res);
+        //$tempstore->set('metsis_csv_bokeh_download_query', $res);
         $response =  new RedirectResponse($res);
         $response->send();
 
@@ -173,14 +180,17 @@ class MetsisCsvBokehDownloadForm extends FormBase
     }
 
 
-    public function adc_get_csv_bokeh_download_query($form_state)
+    public function adc_get_csv_bokeh_download_query(FormStateInterface $form_state)
     {
-        $sra = explode("=param", $_SESSION['metsis_csv_bokeh'][session_id()]['metsis_csv_bokeh_data_uri']);
-        $download_file_format = $form_state['values']['csv_file_format'];
+        $download_uri = $form_state->get('download_uri');
+        $opendap_url = $form_state->get('resource_url');
+        $download_file_format = $form_state->getValue('csv_file_format');
         $selected_variables = [];
+        $selected_form_variables = $form_state->getValue('selected_variables');
+
         $selected_variables_string='';
-        foreach ($form_state['input']['selected_variables'] as $sv) {
-            if ($sv != null) {
+        foreach ($selected_form_variables as $sv) {
+            if ($sv !== 0) {
                 array_push($selected_variables, $sv);
             }
         }
@@ -188,17 +198,16 @@ class MetsisCsvBokehDownloadForm extends FormBase
             $selected_variables_string = '&variable=';
             $selected_variables_string .= implode("&variable=", $selected_variables);
         }
-        return(CSV_BOKEH_DOWNLOAD_SERVICE . '?resource_url=' . $sra[0] . '&output_format='.$download_file_format.$selected_variables_string);
+        return($download_uri . '?resource_url=' . $opendap_url . '&output_format='.$download_file_format.$selected_variables_string);
     }
 
-    public function adc_get_cvs_bokeh_plot_vars($data_uri)
+    public function adc_get_cvs_bokeh_plot_vars($data_uri, FormStateInterface $form_state)
     {
 
   //Get the backend service url from configuration
         $config = \Drupal::config('metsis_ts_bokeh.configuration');
-        $backend_uri = $config->get('ts_bokeh_plot_service');
-        //$backend_uri = 'https://ncapi.metsis-api.met.no/ncplot/plot';
-        \Drupal::logger('metsis_ts_bokeh')->debug('Got backend ur config: ' . $backend_uri);
+        $backend_uri = $form_state->get('backend_uri');
+        //\Drupal::logger('metsis_ts_bokeh')->debug('Got backend ur config: ' . $backend_uri);
         try {
             $client = \Drupal::httpClient();
             $request = $client->request('GET', $backend_uri, [
@@ -223,7 +232,7 @@ class MetsisCsvBokehDownloadForm extends FormBase
                 )->toString())
             ));
 
-            $response =  new RedirectResponse('/metsis/bokeh/init');
+            $response =  new RedirectResponse($form_state->get('referer'));
             $response->send();
         }
     }
@@ -232,8 +241,9 @@ class MetsisCsvBokehDownloadForm extends FormBase
     {
 
   //Get the backend service url from configuration
-        $config = \Drupal::config('metsis_ts_bokeh.configuration');
-        $backend_uri = $config->get('ts_bokeh_plot_service');
+        $//config = \Drupal::config('metsis_ts_bokeh.configuration');
+        //$backend_uri = $config->get('ts_bokeh_plot_service');
+        $backend_uri = $form_state->get('backend_uri');
 
         //Do some debugging
         //\Drupal::logger('metsis_ts_bokeh')->debug('adc_get_ts_bokeh_plot backend: ' . $backend_uri);
@@ -256,7 +266,8 @@ class MetsisCsvBokehDownloadForm extends FormBase
         if ($responseStatus != 200) {
             \Drupal::messenger()->addError("Service call did not succeed. Ensure that the following URL is correct.");
             \Drupal::messenger()->addError($uri);
-            return new RedirectResponse(\Drupal\Core\Url::fromRoute('metsis_ts_bokeh.formplot'));
+            //return new RedirectResponse(\Drupal\Core\Url::fromRoute('metsis_ts_bokeh.formplot'));
+            return new RedirectResponse($form_state->get('referer'));
         }
         return ($data);
     }
@@ -265,7 +276,7 @@ class MetsisCsvBokehDownloadForm extends FormBase
      */
     public function adc_get_csv_bokeh_plot_y_vars()
     {
-        $tempstore = \Drupal::service('tempstore.private')->get('metsis_ts_bokeh');
+        //$tempstore = \Drupal::service('tempstore.private')->get('metsis_ts_bokeh');
         $data_uri = $tempstore->get('data_uri');
         //\Drupal::logger('metsis_ts_bokeh')->debug('adc_get_plot_y_vars data uri: ' . $data_uri);
 

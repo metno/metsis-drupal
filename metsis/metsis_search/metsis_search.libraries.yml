@@ -59,7 +59,7 @@ search_map_block:
       /libraries/openlayers-6.5.0/ol.css: {}
 #      /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.css: {}
       /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
-      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external minified: true}
+      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
     #  https://unpkg.com/ol-geocoder@latest/dist/ol-geocoder.min.css
     theme:
 #      css/metsis_qsearch.css: {}
