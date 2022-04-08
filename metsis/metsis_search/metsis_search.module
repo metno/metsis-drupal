@@ -139,18 +139,16 @@ function metsis_search_views_pre_render(ViewExecutable $view)
   }
 }
 */
-/*
-function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
+
+function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache)
+{
     if (isset($view) && ($view->storage->id() == 'metsis_search')) {
-      foreach ($view->result as $index => &$result) {
-           // Alter the title field value
-           //var_dump($result->search_api_excerpt);
-           $output[$index]['search_api_excerpt'] = $result->search_api_excerpt;
-           $output[$index]['search_api_excerpt']
-         }
+        $cache->options['results_lifespan'] = 400;
+        $cache->options['output_lifespan'] = 400;
+        //dpm($cache->options);
         // var_dump($output);
     }
-} */
+}
 
 /**
  * Implemets hook_theme()

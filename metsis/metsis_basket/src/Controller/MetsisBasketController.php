@@ -42,13 +42,19 @@ class MetsisBasketController extends DashboardBokehController
         //Get the refering page
         $session = \Drupal::request()->getSession();
         $referer = $session->get('back_to_search');
-
-
-        $build = self::post_datasource();
-
         $build['content'] = [
       '#type' => 'container',
     ];  //Create content wrapper
+        $build['content']['back'] = [
+      '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
+      '#suffix' => '</span></div>',
+
+      '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
+    ];
+
+        $build[] = self::post_datasource();
+
+
         $build['content']['basket'] = [
       '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
       '#suffix' => '</div>',
@@ -63,12 +69,7 @@ class MetsisBasketController extends DashboardBokehController
           'max-age' => 0,
         ];
 
-        $build['content']['back'] = [
-      '#prefix' => '<div class="w3-container"><span>',
-      '#suffix' => '</span></div>',
 
-      '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
-    ];
         //$build['content']['dashboard'] = [
         //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
         //];

@@ -163,7 +163,7 @@ class DashboardBokehController extends ControllerBase
         //Create content wrapper
         $build = [];
         $build['dashboard'] = [
-        '#prefix' => '<div class="w3-container w3-card-2 w3-padding">',
+        '#prefix' => '<div class="w3-container w3-card-2 w3-padding dashBoardCard">',
         '#suffix' => '</div>',
         '#type' => 'container',
       ];

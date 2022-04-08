@@ -188,11 +188,13 @@ p {
 
 .dashboard {
   max-width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 720px;
-  margin: 0;
+  margin: 12px;
 
+}
+.bk {
+  width: auto;
+}
+.dashBoardCard {
+  margin-top: 16px;
 }
