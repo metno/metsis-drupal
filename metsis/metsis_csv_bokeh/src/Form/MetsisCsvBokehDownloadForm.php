@@ -80,7 +80,7 @@ class MetsisCsvBokehDownloadForm extends FormBase
 
         $opendap_urls = isset($query['opendap_urls']) ? $query['opendap_urls'] : '';
         $opendap_urls = array_map('trim', explode(',', $opendap_urls));
-        dpm($opendap_urls);
+        //dpm($opendap_urls);
         //TODO: Change this to save whole array when multiple urls are supported
         //$tempstore->set('metsis_csv_bokeh_data_uri', $opendap_urls[0]);
         $form_state->set('resource_url', $opendap_urls[0]);
