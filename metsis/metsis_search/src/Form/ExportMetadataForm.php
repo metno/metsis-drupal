@@ -71,7 +71,23 @@ class ExportMetadataForm extends FormBase
         '#type' => 'hidden',
         '#value' => $id,
       ];
+        if (!$form_state->has('mmd')) {
+            $mmd = $this->getMmd($id);
 
+
+            if ($mmd == null || $mmd == '') {
+                $form['export'] = [
+        '#type' => 'markup',
+        '#markup' => $this->t('The export service is not yet available for this dataset.'),
+        '#allowd_tags' => ['a'],
+      ];
+                return $form;
+            } else {
+                $form_state->set('mmd', $mmd);
+            }
+        }
+
+        //  } else {
         $form['export'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Export metadata'),
@@ -98,6 +114,9 @@ class ExportMetadataForm extends FormBase
         $form['export']['actions']['submit'] = [
         '#type' => 'submit',
         '#value' => 'Export ' . $options[$def_export],
+        //'#ajax' => [
+        //  'wrapper' => 'metsis-export-form',
+        //],
       ];
 
         $form['export']['list']['#default_value'] = $def_export;
@@ -107,6 +126,7 @@ class ExportMetadataForm extends FormBase
         //$form_state->setRequestMethod('POST');
 
         return $form;
+        //}
     }
     /**
      * AJAX callback for select list
@@ -141,8 +161,17 @@ class ExportMetadataForm extends FormBase
         $id = $values['solr-id'];
 
         //Get the base64 encoded mmd from solr given the id.
-        $mmd = $this->getMmd($id);
+        $mmd = $form_state->get('mmd');
+        /*
+                $mmd = $this->getMmd($id);
 
+                if ($mmd == null || $mmd == '') {
+                    $response = new AjaxResponse();
+                    $response->addCommand(new ReplaceCommand('#metsis-export-form', 'The export service is not yet available for this dataset.'));
+                    $form_state->setResponse($response);
+
+                //return $response;
+              } else {*/
         $export_type = $values['list'];
         //dpm($export_type);
 
@@ -166,8 +195,8 @@ class ExportMetadataForm extends FormBase
         $form_state->setResponse($response);
         //dpm($response);
         //return $response;
+        //}
     }
-
     /**
      * Use solrium to fetch the mmd_xml_file field given the id.
      */
