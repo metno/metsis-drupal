@@ -16,6 +16,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\MessageCommand;
 use Drupal\Core\Ajax\RedirectCommand;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
 
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Query\QueryInterface;
@@ -200,8 +201,16 @@ class MetsisBasketController extends DashboardBokehController
             // This user is anonymous.
             $response = new AjaxResponse();
             //$response->addCommand(new RedirectCommand('You do not have access to add items to the basket. Please <a class="w3-text-black" href="/user/login"><em>log in...</em></a>', '.bokeh-ts-plot[reference="' .$metaid .'"]', ['type' => 'error']));
-            $response->addCommand(new MessageCommand($this->t('You must be logges in to add items to the basket.')));
-            $response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
+            //$response->addCommand(new MessageCommand($this->t('You must be logges in to add items to the basket.')));
+            //$response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
+            $login_form = [];
+            $login_form['login'] = \Drupal::formBuilder()->getForm('\Drupal\user\Form\UserLoginForm');
+            $login_form['register'] = [
+              '#type' => 'markup',
+              '#markup' => 'Or <a class="w3-button w3-border w3-theme-border button" href="/user/register">register</a> an account',
+              '#allowed_tags' => ['a'],
+            ];
+            $response->addCommand(new OpenModalDialogCommand('Please login to add products to the basket', $login_form, ['width' => '500']));
             return $response;
         }
     }

@@ -1,31 +1,27 @@
 langcode: en
 status: true
 dependencies:
-  enforced:
-    module:
-      - metsis_search
   config:
     - search_api.index.metsis
     - views.view.metsis_search
   module:
     - views
     - search_api_autocomplete
-    - search_api_solr
+    - search_api_solr_autocomplete
 id: metsis_search
 label: 'Metsis Search'
 index_id: metsis
 suggester_settings:
   server:
-    fields:
-      - text_suggester
-  search_api_solr_suggester:
-    search_api_solr/site_hash: 1
-    search_api/index: metsis
-    drupal/langcode: any
+    fields: {  }
+  search_api_solr_terms:
+    fields: {  }
 suggester_weights:
-  server: -49
-  search_api_solr_suggester: 0
-suggester_limits: {  }
+  server: 0
+  search_api_solr_terms: 0
+suggester_limits:
+  server: 5
+  search_api_solr_terms: 5
 search_settings:
   'views:metsis_search':
     displays:
@@ -33,8 +29,8 @@ search_settings:
       selected: {  }
 options:
   limit: 10
-  min_length: 3
+  min_length: 1
   show_count: false
-  autosubmit: true
+  delay: null
   submit_button_selector: ':submit'
-  delay: 350
+  autosubmit: true
