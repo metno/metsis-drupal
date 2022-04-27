@@ -95,6 +95,7 @@ function metsis_search_views_pre_render(ViewExecutable $view)
           'pywps_service' => $pywps_service,
           'module_path' => $module_path
         ];
+        //$view->addCacheContext('url.query_args');
         //\Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
     }
     if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
@@ -145,8 +146,8 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
     if (isset($view) && ($view->storage->id() == 'metsis_search')) {
         $cache->options['results_lifespan'] = 400;
         $cache->options['output_lifespan'] = 400;
-        //dpm($cache->options);
-        // var_dump($output);
+        //dpm($cache);
+        //dpm($output);
     }
 }
 
@@ -301,8 +302,11 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
     //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
     if (preg_match($pattern, $search_path)) {
         //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
-        $bboxFilter = $session->get('bboxFilter');
-
+        if ($session->has('bboxFilter')) {
+            $bboxFilter = $session->get('bboxFilter');
+        } else {
+            $bboxFilter = null;
+        }
         //Get filter predicate from config
         $config = \Drupal::config('metsis_search.settings');
         $map_bbox_filter = $config->get('map_bbox_filter');

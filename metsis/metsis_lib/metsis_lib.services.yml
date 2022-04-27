@@ -7,3 +7,7 @@ services:
   metsis_lib.nc_to_mmd:
     class: \Drupal\metsis_lib\Service\NcToMmd
     factory: ['@metsis_lib.nc_to_mmd_factory', 'create']
+  metsis_lib.route_subscriber:
+    class: Drupal\metsis_lib\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

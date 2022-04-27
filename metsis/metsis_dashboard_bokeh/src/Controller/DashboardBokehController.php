@@ -208,11 +208,11 @@ class DashboardBokehController extends ControllerBase
 
 
         //Add bokeh libraries
-        $build['#attached'] = [
-        'library' => [
-          'metsis_dashboard_bokeh/dashboard',
-        ],
-      ];
+        //  $build['#attached'] = [
+        //  'library' => [
+        //    'metsis_dashboard_bokeh/dashboard',
+        //  ],
+        //];
         return $build;
     }
 

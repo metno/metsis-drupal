@@ -2011,7 +2011,7 @@ console.log("Start of metsis search map script:");
 
             //Check for timeseries product
             if (odResource != null && odResource != "") {
-              if (feature_ids[id].featureType === 'timeSeries' || feature_ids[id].featureType === 'profile') {
+              if (feature_ids[id].featureType === 'timeSeries' || feature_ids[id].featureType === 'timeSeriesProfile'|| feature_ids[selected_id].featureType === 'profile') {
                 console.log("Got timeseries product: " + feature_ids[id].id);
                 $('#popup-content').append("<p>" + feature_ids[id].title + "</p>");
                 var button = $('#popup-content').append(
@@ -2185,7 +2185,7 @@ console.log("Start of metsis search map script:");
 
                 //Check for timeseries product
                 if (odResource != null && odResource != "") {
-                  if (feature_ids[selected_id].featureType === 'timeSeries' || feature_ids[selected_id].featureType === 'profile') {
+                  if (feature_ids[selected_id].featureType === 'timeSeries' || feature_ids[selected_id].featureType === 'timeSeriesProfile' || feature_ids[selected_id].featureType === 'profile') {
                     console.log("Got timeseries product: " + feature_ids[selected_id].id);
                     //$('#popupSelectedProductContent').append("<p>" + feature_ids[selected_id].title + "</p>");
                     $('#popupSelectedProductContent').append(

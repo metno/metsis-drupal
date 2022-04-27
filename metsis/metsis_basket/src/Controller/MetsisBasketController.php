@@ -64,11 +64,11 @@ class MetsisBasketController extends DashboardBokehController
     ];
 
         $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
-        $build['content']['basket']['view']['#cache'] = [
+        /*  $build['content']['basket']['view']['#cache'] = [
 
-          'max-age' => 0,
-        ];
-
+            'max-age' => 0,
+          ];
+*/
 
         //$build['content']['dashboard'] = [
         //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
@@ -84,7 +84,7 @@ class MetsisBasketController extends DashboardBokehController
           'tags' => ['basket:user:'.$user_id],
       #'max-age' => 25,
     ];
-        $build['#theme'] = 'dashboard_page';
+        //$build['#theme'] = 'dashboard_page';
 
         //  $build['#type'] = 'container';
         //$build['#theme'] = 'metsis_basket-template';
