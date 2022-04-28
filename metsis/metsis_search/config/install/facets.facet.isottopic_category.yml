@@ -63,8 +63,14 @@ processor_configs:
     weights:
       build: 50
     settings:
-      exclude: "Unknown,['climatologyMeteorologyAtmosphere', 'oceans'], [None, None],[None, None, None],not available \r\n\r\n"
+      exclude: "Unknown,['climatologyMeteorologyAtmosphere', 'oceans'], [None, None],[None, None, None],not available,Not available\r\n\r\n"
       regex: false
+      invert: false
+  hierarchy_processor:
+    processor_id: hierarchy_processor
+    weights:
+      build: 100
+    settings: {  }
   url_processor_handler:
     processor_id: url_processor_handler
     weights:
