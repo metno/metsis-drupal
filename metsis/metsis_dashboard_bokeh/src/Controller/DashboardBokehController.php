@@ -40,6 +40,7 @@ class DashboardBokehController extends ControllerBase
         //Json data
         $json_data = $this->getJsonData($user_id);
         $resources = $json_data;
+        //dpm($json_data);
 
         //\Drupal::logger('metsis_dashboard_bokeh_json')->debug("@string", ['@string' => \Drupal\Component\Serialization\Json::encode($json_data)]);
 
@@ -104,7 +105,7 @@ class DashboardBokehController extends ControllerBase
 
 
         $json_body =  \Drupal\Component\Serialization\Json::encode($json_data);
-        //\Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_body: @string", ['@string' => $json_body ]);
+        \Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_body: @string", ['@string' => $json_body ]);
         //\Drupal::logger('metsis_dashboard_bokeh_json_testpost')->debug("json_data: @string", ['@string' => $json_data ]);
 
         //Get markup from bokeh dashboard endpoint. post json_data.
@@ -353,6 +354,12 @@ class DashboardBokehController extends ControllerBase
         }
         $json_data['email'] = \Drupal::currentUser()->getEmail();
         $json_data['project'] = 'METSIS';
+        //ADD notebook to dashboard
+        $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+        $notebook = $config->get('dashboard_notebook_service');
+        if ($notebook) {
+            $json_data['notebook'] = true;
+        }
         return $json_data;
     }
 }
