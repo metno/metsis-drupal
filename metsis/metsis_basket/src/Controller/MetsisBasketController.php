@@ -55,16 +55,16 @@ class MetsisBasketController extends DashboardBokehController
 
         $build[] = self::post_datasource();
 
-
-        $build['content']['basket'] = [
+        if ($this->get_user_item_count($user_id) > 0) {
+            $build['content']['basket'] = [
       '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
       '#suffix' => '</div>',
       '#type' => 'details',
       '#title' => $this->t('Show my basket (remove items)'),
       '#attributes' => ['class' => ['basketDetails']],
     ];
-
-        $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
+            $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
+        }
         /*  $build['content']['basket']['view']['#cache'] = [
 
             'max-age' => 0,
@@ -83,6 +83,7 @@ class MetsisBasketController extends DashboardBokehController
         $build['#cache'] = [
           'contexts' => ['user', 'session'],
           'tags' => ['basket:user:'.$user_id],
+          'keys' => ['views', 'basket_view','embed_1'],
       #'max-age' => 25,
     ];
         //$build['#theme'] = 'dashboard_page';
@@ -221,7 +222,13 @@ class MetsisBasketController extends DashboardBokehController
         $query->fields('m', array('iid'));
         $query->condition('m.uid', $user_id, '=');
         $results = $query->execute()->fetchAll();
-        return count($results);
+        if (is_null($results)) {
+            $count = 0;
+        } else {
+            $count = count($results);
+        }
+        //dpm($count);
+        return $count;
     }
 
     public static function get_user_item_ids($user_id)
