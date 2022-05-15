@@ -81,16 +81,20 @@ class DashboardBokehController extends ControllerBase
 
       ];
 
+
         return $build;
     }
 
     public function post_datasource()
     {
         $config = \Drupal::config('metsis_dashboard_bokeh.configuration');
+        //$config = $this->configFactory('metsis_dashboard_bokeh.configuration');
+
         $backend_uri = $config->get('dashboard_bokeh_service');
         //$backend_uri = 'https://pybasket.epinux.com/post_jsondict';
         //Get the user_id
         $user_id = (int) \Drupal::currentUser()->id();
+        //$user_id = (int) $this->currentUser->id();
 
         //Get the refering page
         $session = \Drupal::request()->getSession();
