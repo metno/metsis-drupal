@@ -37,7 +37,7 @@ class MetsisBasketController extends DashboardBokehController
 {
     public function myBasket()
     {
-        //Get the user_id
+        //Get the current user_id
         $user_id = (int) \Drupal::currentUser()->id();
 
         //Get the refering page
@@ -53,8 +53,10 @@ class MetsisBasketController extends DashboardBokehController
       '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
     ];
 
+        //Get markup for the Bokeh Dashboard
         $build[] = self::post_datasource();
 
+        //Show the basket table, if it has any entries
         if ($this->get_user_item_count($user_id) > 0) {
             $build['content']['basket'] = [
       '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
@@ -80,6 +82,8 @@ class MetsisBasketController extends DashboardBokehController
 
         //$build['content']['view'] = views_embed_view('basket_view', 'embed_1');
 
+
+        //Set some caching for this page
         $build['#cache'] = [
           'contexts' => ['user', 'session'],
           'tags' => ['basket:user:'.$user_id],
@@ -92,8 +96,10 @@ class MetsisBasketController extends DashboardBokehController
         //$build['#theme'] = 'metsis_basket-template';
         $build['#attached'] = [
 'library' => [
+  'core/jquery.ui',
+  'leaflet/leaflet',
 'metsis_basket/basket_view',
-'metsis_dashboard_bokeh/dashboard'
+//'metsis_dashboard_bokeh/dashboard'
 ],
 ];
         $build['#attributes'] = [
@@ -292,7 +298,7 @@ class MetsisBasketController extends DashboardBokehController
         }
         if (isset($fields['data_access_url_ftp'])) {
             // An array of documents. Can also iterate directly on $result.
-            $dar['http'] = $fields['data_access_url_ftp'];
+            $dar['ftp'] = $fields['data_access_url_ftp'];
         }
         if (isset($fields['data_access_url_odata'])) {
             // An array of documents. Can also iterate directly on $result.
@@ -304,7 +310,7 @@ class MetsisBasketController extends DashboardBokehController
         }
         if (isset($fields['data_access_url_ogc_wms'])) {
             // An array of documents. Can also iterate directly on $result.
-            $dar['ogc_wms'] = $fields['data_access_url_ogc_wms'];
+            $dar['OGC:WMS'] = $fields['data_access_url_ogc_wms'];
         }
         if (isset($fields['feature_type'])) {
             // An array of documents. Can also iterate directly on $result.

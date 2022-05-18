@@ -227,7 +227,11 @@ class ExportMetadataForm extends FormBase
         foreach ($result as $doc) {
             $fields = $doc->getFields();
             //\Drupal::logger('export_doc')->debug($doc);
-            $mmd = $fields['mmd_xml_file'];
+            if (isset($fields['mmd_xml_file'])) {
+                $mmd = $fields['mmd_xml_file'];
+            } else {
+                $mmd = '';
+            }
         }
         return $mmd;
     }
