@@ -290,7 +290,7 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
 
     /*Get the current session */
     $request = \Drupal::request();
-    $session = \Drupal::request()->getSession();
+    $session = $request->getSession();
     //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
     //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
     // Get the current bbox filter

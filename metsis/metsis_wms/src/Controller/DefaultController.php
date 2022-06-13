@@ -47,6 +47,12 @@ class DefaultController extends ControllerBase
         $module_handler = \Drupal::service('module_handler');
         $module_path = $module_handler->getModule('metsis_search')->getPath();
 
+
+        //Redirect back to search with message if no info are given.
+        if (!isset($query['dataset']) || $query['dataset'] == "") {
+            \Drupal::messenger()->addStatus(t("Missing dataset query parameter or valid dataset id"));
+            return new RedirectResponse($referer);
+        }
         /** Variables from configuration
         *
         */

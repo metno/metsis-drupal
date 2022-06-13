@@ -13,11 +13,18 @@ label: 'Metsis Search'
 index_id: metsis
 suggester_settings:
   server:
-    fields: {  }
+    fields:
+      - text_suggester
+  search_api_solr_suggester:
+    search_api_solr/site_hash: 1
+    search_api/index: metsis
+    drupal/langcode: any
   search_api_solr_terms:
-    fields: {  }
+    fields:
+      - full_text
 suggester_weights:
   server: 0
+  search_api_solr_suggester: 0
   search_api_solr_terms: 0
 suggester_limits:
   server: 5
