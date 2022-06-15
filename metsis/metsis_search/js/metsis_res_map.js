@@ -1892,7 +1892,7 @@ console.log("Start of metsis search map script:");
           var coordinate = evt.coordinate;
           var resolution = map.getView().getResolution();
 
-          console.log(wmsLayerGroup.getLayers().getArray().length);
+          //console.log(wmsLayerGroup.getLayers().getArray().length);
           //If we have wms layers, check if we have featureInfo for selected coordinate.
           /*    if (!featureLayersGroup.getVisible() && wmsLayerGroup.getLayers().getArray().length > 0) {
                 console.log("Fetching wmsfeatureinfo");
@@ -1941,7 +1941,10 @@ console.log("Start of metsis search map script:");
             /* Show / Hide results depending on selected dataset in map */
             id = feature.get('id');
             newId = id.replace(/_/g, "-");
+            newId = newId.replace(/\./g, "");
+            //newId = id.replace(/:/g, "-");
             //alert(newId);
+            console.log('newid: ' + newId);
             //$('.datasets-' + newId).css('display', 'block');
             $('.datasets-' + newId).slideDown();
             //$('._'+newId).css('display', 'block');
