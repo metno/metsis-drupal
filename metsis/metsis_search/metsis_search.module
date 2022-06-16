@@ -466,7 +466,7 @@ function metsis_search_views_pre_build(ViewExecutable $view)
         //Check if operator op is set in query and op=Reset to reset boundingbox
         if (isset($query_from_request['op'])) {
             if ($query_from_request['op'] == "Reset" || $query_from_request['op'] == "Nullstill") {
-                \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
+                //\Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
                 $session = \Drupal::request()->getSession();
                 //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
                 $session->remove('bboxFilter');

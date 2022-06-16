@@ -6,6 +6,5 @@ It also contains a VBO view for showing the products added to basket with the po
 
 ## Endpoint
 The following URI endpoints are provided by this module:
-* /metsis/mybasket -> Show your basket with the items added.
-* /metsis/basket/add/{id} -> Ajax endpoint which add the product with current {id} to the basket.
-
+* /metsis/mybasket -> Show your basket with the items added and include the bokeh dashboard.
+* /metsis/basket/add/{id} -> Ajax endpoint which add the product with current {id} to the basket from within the metsis search.

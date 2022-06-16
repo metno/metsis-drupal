@@ -24,7 +24,7 @@ class MapSearchController extends ControllerBase
         $brlat = $params['brlat'];
         $brlon = $params['brlon'];
         $proj = $params['proj'];
-        \Drupal::logger('metsis_search_map_search_controller')->debug("Got boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
+        //\Drupal::logger('metsis_search_map_search_controller')->debug("Got boundingbox with ENVELOPE(" .  $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')');
         $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
 
         //Get current session variables
@@ -182,6 +182,6 @@ class MapSearchController extends ControllerBase
 
     public function resetCallback()
     {
-        \Drupal::logger('metsis_search')->debug("MapSearchController::resetCallback");
+        //\Drupal::logger('metsis_search')->debug("MapSearchController::resetCallback");
     }
 }

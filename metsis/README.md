@@ -2,9 +2,8 @@
 ## New search api based version
 ## Initial working commit
 # Todo:
-- Replace tempstore with session variables where most logical
 - Make all url-paths using the routing names
 - Clean up unused files and code (Started)
 - Document submodules
-- Prepare for drupal 9 (Started) 
+- Prepare for drupal 9 (Started)
 - Remove deprecated module config form elements.
