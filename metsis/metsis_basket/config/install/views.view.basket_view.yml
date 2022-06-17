@@ -81,8 +81,8 @@ display:
             -
               action_id: metsis_basket_delete_action
               preconfiguration:
-                add_confirmation: false
-                label_override: 'Delete selected'
+                add_confirmation: true
+                label_override: 'Delete selected products'
         title:
           id: title
           table: metsis_basket
