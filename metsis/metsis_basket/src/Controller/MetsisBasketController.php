@@ -73,6 +73,16 @@ class MetsisBasketController extends DashboardBokehController
           ];
 */
 
+        $build['content']['loading'] = [
+      '#type' => "markup",
+      '#prefix' => '<div id="dash-loader-wrapper">',
+      '#markup' => $this->t("Dashboard is loading... "),
+      '#suffix' => '<img id="dashTrobber" src="/core/misc/throbber-active.gif"></div>',
+      '#allowed_tags' => ['img'],
+      '#attributes' => [
+        'class' => 'dashLoader',
+      ],
+  ];
         //$build['content']['dashboard'] = [
         //  '#markup' => '<a class="w3-btn" href="/metsis/bokeh/dashboard">Go to Dashboard (GET)</a>',
         //];
@@ -99,7 +109,7 @@ class MetsisBasketController extends DashboardBokehController
   'core/jquery.ui',
   'leaflet/leaflet',
 'metsis_basket/basket_view',
-//'metsis_dashboard_bokeh/dashboard'
+//'metsis_dashboard_bokeh/dashboard',
 ],
 ];
         $build['#attributes'] = [
