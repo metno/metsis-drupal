@@ -1,5 +1,5 @@
 metadata_search_view:
-  version: 1.0.1
+  version: 1.0.2
   css:
     theme:
       css/metadata_search_view.css: {}
@@ -15,7 +15,7 @@ metadata_search_view:
 #    - jquery_ui_draggable/draggable
 
 ts_plot:
-  version: 1.0.1
+  version: 1.0.2
   js:
     https://cdn.pydata.org/bokeh/release/bokeh-2.3.3.min.js: { type: external, minified: true}
     https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.3.min.js: { type: external, minified: true}
@@ -29,7 +29,7 @@ ts_plot:
     - core/drupalSettings
 
 search_map:
-  version: 1.0.1
+  version: 1.0.2
   css:
     component:
       /libraries/openlayers-6.5.0/ol.css: {}
