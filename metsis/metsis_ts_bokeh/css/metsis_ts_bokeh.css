@@ -39,3 +39,14 @@ iframe.bokehplot {
 .iframe_container iframe {
     background: transparent;
 }
+
+.ts-dialog{
+    width: 100% !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 9980;
+    height: 100% !important;
+    .ui-dialog-content{
+        max-height: 100% !important;
+    }
+}

@@ -115,17 +115,26 @@ class MetsisTsPlotForm extends FormBase
   //   '#suffix' => '</div>',
    ];
         } else {
+            /*
+              $form['fs'] = [
+                   '#type' => 'markup',
+                   '#prefix' => '<button onclick="requestFullscreen();">',
+                   '#markup' => '<i  class="fa fa-solid fa-expand"></i>',
+                   '#suffix' => '</button>',
+                   '#allowed_tags' => ['i','a','button'],
+                 ];*/
             $form['plotform']['plot-container'] =  [
 '#type' => 'inline_template',
 '#allowed_tags' => ['iframe', 'div','script'],
-'#template' => '<iframe src="{{ url }}" width="100%" height="800px" border=0 name="bokeh-iframe" frameborder="0" noresize scrolling=no onload="document.getElementById("spinner").style.display="none";"> title="Timeseries Bokeh Plot"</iframe>',
+'#template' => '<iframe src="{{ url }}" width="100%" allowfullscreen="true" height="800px" border=0 name="bokeh-iframe" frameborder="0" noresize scrolling=no> title="Timeseries Bokeh Plot"</iframe>',
+//onload="document.getElementById(&quot;spinner&quot;).style.background-image=&quot;none&quot;;"
 '#context' => [
   'url' => $backend_uri . '?url=' . $query['url'] . '',
 ],
 '#attributes' => [
-//  'class' => ['iframe_container'],
+  //'class' => ['ts-dialog'],
 ],
-'#prefix' => '<div class"iframe_container">',
+'#prefix' => '<div id="spinner" class="iframe_container">',
 '#suffix' => '</div>',
 ];
         }
@@ -137,6 +146,7 @@ class MetsisTsPlotForm extends FormBase
         $form['#attached']['library'][] = 'media/oembed.formatter';
         $form['#attached']['library'][] = 'core/jquery';
         $form['#attached']['library'][] = 'jquery_ui/core';
+        $form['#attached']['library'][] = 'fontawesome/fontawesome.svg';
         //$form['#attached']['library'][] = 'media/oembed.frame';
         /*      $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_js';
               $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_widgets';

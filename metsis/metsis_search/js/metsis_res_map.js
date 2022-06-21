@@ -1178,7 +1178,7 @@ console.log("Start of metsis search map script:");
             $('#bokeh-map-ts-plot').css("height", $(window).height());
             // if already full screen; exit
   // else go fullscreen
-  if (
+  /*if (
     document.fullscreenElement ||
     document.webkitFullscreenElement ||
     document.mozFullScreenElement ||
@@ -1204,8 +1204,10 @@ console.log("Start of metsis search map script:");
     } else if (element.msRequestFullscreen) {
       element.msRequestFullscreen();
     }
-  }
+  }*/
 });
+
+
           /*  $('#bokeh-map-ts-plot').css({
                 position: 'fixed',
                 top: '0',
@@ -1356,6 +1358,18 @@ console.log("Start of metsis search map script:");
             }
           }
           return false;
+        }
+
+        //TS plot as ajax dialog
+        function plotTsDialog(url) {
+          var ajaxSettings = {
+            url: '/metsis/tsplot/form?url=' +url,
+            dialogType: 'modal',
+            dialog: { width: '100%', height: window.innerHeight },
+          };
+          var myAjaxObject = Drupal.ajax(ajaxSettings);
+          myAjaxObject.execute();
+
         }
         //Function for retrieving wms capabilities
         function getWmsLayers(wmsUrl, title, geom) {
@@ -2027,7 +2041,8 @@ console.log("Start of metsis search map script:");
                 console.log("Alter the popUpOverlay position.");
                 popUpOverlay.setPosition(coordinate);
                 button.on('click', function() {
-                  plotTimeseries2(odResource)
+                  plotTsDialog(odResource)
+                  //plotTimeseries2(odResource)
                   //plotTimeseries(odResource)
                 });
               }
@@ -2202,7 +2217,8 @@ console.log("Start of metsis search map script:");
                     console.log("Alter the popUpOverlay position.");
                     $('#popup-ts-button').on('click', function() {
                       popUpOverlay.setPosition(undefined);
-                      plotTimeseries2(odResource)
+                      plotTsDialog(odResource)
+                      //plotTimeseries2(odResource)
                       //plotTimeseries(odResource)
                     });
                   }
