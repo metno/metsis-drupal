@@ -42,7 +42,14 @@ class MetsisBasketController extends DashboardBokehController
 
         //Get the refering page
         $session = \Drupal::request()->getSession();
-        $referer = $session->get('back_to_search');
+        //$referer = $session->get('back_to_search');
+        $referer = \Drupal::request()->headers->get('referer');
+        $pattern1 = '/metsis\/search/i';
+        if (!preg_match($pattern1, $referer)) {
+            $referer = '/metsis/search';
+        } else {
+            $session->set('basket_ref', $referer);
+        }
         $build['content'] = [
       '#type' => 'container',
     ];  //Create content wrapper
@@ -50,7 +57,7 @@ class MetsisBasketController extends DashboardBokehController
       '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
       '#suffix' => '</span></div>',
 
-      '#markup' => '<a class="w3-btn w3-border-black" href="'. $referer . '">Go back to search </a>',
+      '#markup' => '<a class="w3-btn w3-border-black" href="'. $session->get('basket_ref') . '">Go back to search </a>',
     ];
 
         //Get markup for the Bokeh Dashboard
