@@ -40,7 +40,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: ''
+            text: '{{ id | split(''.'') | join(''-'') }}'
             make_link: false
             path: ''
             absolute: false
@@ -1829,7 +1829,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="use-ajax adc-button adc-sbutton inline" href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
+            text: '<a class="use-ajax ajax adc-button adc-sbutton inline" href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
             make_link: false
             path: ''
             absolute: false

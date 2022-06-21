@@ -405,7 +405,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="ext" href="https://vocab.met.no/mmd/Activity_Type/{{ activity_type | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ activity_type }}</a>'
+            text: '<a class="ext" href="https://vocab.met.no/mmd/Activity_Type/{{ activity_type | title | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ activity_type }}</a>'
             make_link: false
             path: ''
             absolute: false
@@ -9073,9 +9073,9 @@ display:
       query:
         type: views_query
         options:
-          bypass_access: false
-          skip_access: false
-          preserve_facet_query_args: false
+          skip_access: 1
+          bypass_access: 1
+          preserve_facet_query_args: 0
       relationships: {  }
       css_class: metadataDetails
       show_admin_links: false

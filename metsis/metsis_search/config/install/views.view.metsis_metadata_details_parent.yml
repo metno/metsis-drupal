@@ -1761,9 +1761,9 @@ display:
       query:
         type: views_query
         options:
-          bypass_access: false
-          skip_access: false
-          preserve_facet_query_args: false
+          skip_access: 1
+          bypass_access: 1
+          preserve_facet_query_args: 0
       relationships: {  }
       header:
         area:
