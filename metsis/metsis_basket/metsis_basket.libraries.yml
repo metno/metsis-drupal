@@ -7,5 +7,5 @@ basket_view:
     js/bokeh_progress.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.once
+    - core/once
     - core/drupal
