@@ -778,7 +778,7 @@ display:
           label: 'Last metadata update'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{last_metadata_update | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -820,6 +820,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         metadata_status:
           id: metadata_status
           table: search_api_index_metsis
@@ -1587,7 +1590,7 @@ display:
           label: 'Start date'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -1629,6 +1632,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -1640,7 +1646,7 @@ display:
           label: 'End date'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -1682,6 +1688,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
       pager:
         type: some
         options:
@@ -1759,11 +1768,11 @@ display:
           separator: ','
           hide_empty: true
       query:
-        type: views_query
+        type: search_api_query
         options:
-          skip_access: 1
-          bypass_access: 1
-          preserve_facet_query_args: 0
+          bypass_access: true
+          skip_access: true
+          preserve_facet_query_args: false
       relationships: {  }
       header:
         area:

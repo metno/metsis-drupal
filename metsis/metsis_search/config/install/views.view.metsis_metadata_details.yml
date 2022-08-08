@@ -835,6 +835,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         alternate_identifier_type:
           id: alternate_identifier_type
           table: search_api_index_metsis
@@ -6858,7 +6861,7 @@ display:
           label: 'Start date'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -6900,6 +6903,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -6911,7 +6917,7 @@ display:
           label: 'End date'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -6953,6 +6959,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         geographic_extent_rectangle_srs:
           id: geographic_extent_rectangle_srs
           table: search_api_index_metsis
@@ -9071,11 +9080,11 @@ display:
           separator: ','
           hide_empty: true
       query:
-        type: views_query
+        type: search_api_query
         options:
-          skip_access: 1
-          bypass_access: 1
-          preserve_facet_query_args: 0
+          bypass_access: true
+          skip_access: true
+          preserve_facet_query_args: false
       relationships: {  }
       css_class: metadataDetails
       show_admin_links: false
