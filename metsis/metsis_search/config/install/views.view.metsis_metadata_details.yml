@@ -2686,7 +2686,7 @@ display:
           label: 'Publication date'
           exclude: false
           alter:
-            alter_text: true
+            alter_text: false
             text: '{{ dataset_citation_publication_date | date(''U'') | format_date(''solr_format'') }}'
             make_link: false
             path: ''
@@ -2728,6 +2728,9 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
         dataset_citation_publication_place:
           id: dataset_citation_publication_place
           table: search_api_index_metsis
