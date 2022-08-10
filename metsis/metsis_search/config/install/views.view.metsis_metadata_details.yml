@@ -6022,7 +6022,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if platform_resource %}\r\n<a href=\"{{ platform_resource }}\">{{ platform_long_name }}</a>\r\n{% else %}\r\n{{ platform_long_name }}\r\n{%endif %}"
+            text: "{% for key,platform in  platform_long_name|split(',') %}\r\n    {{ voc }}:\r\n    {% for key1, resource in  platform_resource|split(',') %}\r\n        {% if key == key1 %}\r\n            {% if platform_resource %}\r\n                              <a href=\"{{ platform_resource }}\">{{ platform_long_name }}</a>\r\n             {% else %}\r\n               {{ platform_long_name }} \r\n            {% endif %}\r\n       {% endif %}\r\n    {% endfor %}\r\n{% endfor %}\r\n"
             make_link: false
             path: ''
             absolute: false
