@@ -302,7 +302,9 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
     //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
     if (preg_match($pattern, $search_path)) {
         //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
-        $session->set('back_to_search', $request->headers->get('referer'));
+        if ($request->headers->has('referer')) {
+            $session->set('back_to_search', $request->headers->get('referer'));
+        }
         if ($session->has('bboxFilter')) {
             $bboxFilter = $session->get('bboxFilter');
         } else {
@@ -330,7 +332,13 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
             //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
             $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
         }
-
+        /**
+         * Parent boost results
+         */
+        $score_parent = $config->get('score_parent');
+        if ($score_parent) {
+            $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=20 reRankWeight=3}');
+        }
         /**
          * Add fields not defined in search view but needed for
          * other metsis search backends. I.E MapSearch

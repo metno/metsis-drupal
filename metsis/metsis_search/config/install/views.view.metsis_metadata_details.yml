@@ -5946,6 +5946,7 @@ display:
           fields:
             - platform_long_name
             - platform_resource
+            - nothing_2
             - platform_short_name
             - platform_orbit_absolute
             - platform_orbit_direction
@@ -6016,13 +6017,66 @@ display:
           field: platform_resource
           relationship: none
           group_type: group
-          admin_label: 'Platform name and resource link'
+          admin_label: 'Platform resource'
           plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: "{% set platforms = platform_long_name|split(',') %}\r\n{% set resources = platform_resource|split(',') %}\r\n\r\n{% for platform in platforms %}\r\n{{ platform }} \r\n           \r\n    \r\n    {% endfor %}\r\n{% for res in resources %}\r\n{{ res }}\r\n {% endfor %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: true
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        nothing_2:
+          id: nothing_2
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'Platform name and resource link'
+          plugin_id: custom
           label: Name
           exclude: false
           alter:
             alter_text: true
-            text: "{% for key,platform in  platform_long_name|split(',') %}\r\n    {{ voc }}:\r\n    {% for key1, resource in  platform_resource|split(',') %}\r\n        {% if key == key1 %}\r\n            {% if platform_resource %}\r\n                              <a href=\"{{ platform_resource }}\">{{ platform_long_name }}</a>\r\n             {% else %}\r\n               {{ platform_long_name }} \r\n            {% endif %}\r\n       {% endif %}\r\n    {% endfor %}\r\n{% endfor %}\r\n"
+            text: "{% set counter= 0 %}\r\n{% set platforms = platform_long_name|split(',') %}\r\n{% set resources = platform_resource|split(',') %}\r\n \r\n  {% for resource in resources %}\r\n{% if resource|length != 0 %}\r\n<a href=\"{{resource}}\">{{ platforms[counter] }}</a>\r\n{%else %}\r\n{{ platforms[counter] }}\r\n{% endif %}\r\n{% set counter= counter+1 %}\r\n{% endfor %}"
             make_link: false
             path: ''
             absolute: false
@@ -6056,13 +6110,9 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
-          empty_zero: true
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         platform_short_name:
           id: platform_short_name
           table: search_api_index_metsis
@@ -6469,6 +6519,7 @@ display:
           fields:
             - platform_instrument_resource
             - platform_instrument_long_name
+            - nothing_3
             - platform_instrument_short_name
             - platform_instrument_mode
             - platform_instrument_polarisation
@@ -6539,10 +6590,10 @@ display:
           group_type: group
           admin_label: 'paltform instrument long name'
           plugin_id: search_api
-          label: Name
-          exclude: false
+          label: ''
+          exclude: true
           alter:
-            alter_text: true
+            alter_text: false
             text: "{% if platform_instrument_resource %}\r\n<a href=\"{{ platform_instrument_resource }}\">{{ platform_instrument_long_name }}</a>\r\n{% else %}\r\n{{ platform_instrument_long_name }}\r\n{%endif %}"
             make_link: false
             path: ''
@@ -6572,7 +6623,7 @@ display:
           element_class: ''
           element_label_type: strong
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -6584,6 +6635,55 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        nothing_3:
+          id: nothing_3
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'platform instrument name and link'
+          plugin_id: custom
+          label: Name
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% set counter= 0 %}\r\n{% set platforms = platform_instrument_long_name|split(',') %}\r\n{% set resources = platform_instrument_resource|split(',') %}\r\n \r\n  {% for resource in resources %}\r\n{% if resource|length != 0 %}\r\n<a href=\"{{resource}}\">{{ platforms[counter] }}</a>\r\n{%else %}\r\n{{ platforms[counter] }}\r\n{% endif %}\r\n{% set counter= counter+1 %}\r\n{% endfor %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         platform_instrument_short_name:
           id: platform_instrument_short_name
           table: search_api_index_metsis

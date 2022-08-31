@@ -3,10 +3,22 @@
 
 /**
  * @file
- */ 
+ */
 
-function metsis_search_install() {
+function metsis_search_install()
+{
+    module_set_weight('metsis_search', 11);
+}
 
-	 module_set_weight('metsis_search', 11);
+
+ function metsis_search_update_9303()
+ {
+     $host = \Drupal::request()->getHost();
+     if ((strpos($host, 'nbs') === false) || (strpos($host, 'satellittdata') === false)) {
+         \Drupal::logger('metsis_search')->notice('Updating metsis search configuration');
+         $config_factory = \Drupal::configFactory();
+         $config = $config_factory->getEditable('metsis_search.settings');
+         $config->set('score_parent', true);
+         $config->save(true);
+     }
  }
-?>

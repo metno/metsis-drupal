@@ -24,9 +24,9 @@ use Drupal\metsis_search\SearchUtils;
  *   */
 class MetsisSearchConfigurationForm extends ConfigFormBase
 {
-  /*
-   * {@inheritdoc}
-  */
+    /*
+     * {@inheritdoc}
+    */
     protected function getEditableConfigNames()
     {
         return [
@@ -83,6 +83,14 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           '#default_value' => $config->get('ts_server_type'),
         ];
 */
+
+        $form['score_parent'] = [
+          '#type' => 'checkbox',
+          '#title' => $this->t('Tick this box to sort parent datasets with children first in the search results.'),
+          '#default_value' => $config->get('score_parent'),
+          '#return_value' => true,
+        ];
+
         $form['ts_pywps_url'] = [
       '#type' => 'textfield',
       '#title' => t('Enter URL of TS plot service'),
@@ -307,6 +315,8 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           //->set('csv_button_text', $values['csv_button_text'])
           ->set('selected_collections', $values['collections'])
           ->set('pywps_service', $values['ts_pywps_url'])
+          ->set('score_parent', $values['score_parent'])
+
           ->save();
 
         parent::submitForm($form, $form_state);
