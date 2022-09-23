@@ -1,10 +1,10 @@
 langcode: en
 status: true
 dependencies: {  }
-id: views_page---metsis_search__results_temporal_extent_end_date
-label: 'End date'
+id: views_page---metsis_search__results_search_api_relevance
+label: Relevance
 weight: 0
 display_id: views_page---metsis_search__results
-field_identifier: temporal_extent_end_date
+field_identifier: search_api_relevance
 default_sort: false
 default_order: desc

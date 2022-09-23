@@ -49,3 +49,9 @@ utils:
   dependencies:
     - core/jquery
     - core/drupal
+
+landing_page:
+  version: 1.0.1
+  css:
+    theme:
+      css/landing_page.css: {}

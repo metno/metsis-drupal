@@ -16,3 +16,15 @@
 #    description: 'METSIS Specific configuraton'
 #  requirements:
 #    _permission: 'administer site configuration'
+
+metsis_lib.dynamic_landing_pages_controller_getLandingPage:
+  path: '/dataset/{id}'
+  defaults:
+    _controller: '\Drupal\metsis_lib\Controller\DynamicLandingPagesController::getLandingPage'
+    _title: 'Dataset landing page'
+  requirements:
+     _custom_access: '\Drupal\metsis_lib\Controller\DynamicLandingPagesController::access'
+  options:
+    no_cache: 'TRUE'
+    query:
+      export_type: null

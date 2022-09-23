@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies: {  }
+id: views_page---metsis_search__simplesearch_temporal_extent_start_date
+label: 'Start Date'
+weight: 0
+display_id: views_page---metsis_search__simplesearch
+field_identifier: temporal_extent_start_date
+default_sort: true
+default_order: desc

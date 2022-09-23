@@ -167,16 +167,23 @@ class MapSearchController extends ControllerBase
         $session->remove('back_to_search');
         $session->remove('place_filter');
         $session->set('keywords_level', 1);
-        $session->set('back_to_search', '/metsis/search');
+
 
         //$session->remove('proj', $proj);
         $session->remove('place_filter');
 
         //$response = new AjaxResponse();
         //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));
+        //$config = \Drupal::config('metsis_search.settings');
 
-        //\Drupal::logger('metsis_search_map_search_controller')->debug(\Drupal::request()->getRequestUri());
-        //return $response;
+        //$keep_parent_filter = $config->get('keep_parent_filter');
+        /*  if ($keep_parent_filter) {
+              $session->set('back_to_search', '/metsis/search?f[0]=dataset_level%3ALevel-1');
+              return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?f[0]=dataset_level%3ALevel-1');
+          } else {
+              $session->set('back_to_search', '/metsis/search');
+              return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
+          }*/
         return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
     }
 

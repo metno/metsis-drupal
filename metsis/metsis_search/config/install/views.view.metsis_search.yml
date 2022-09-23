@@ -2151,7 +2151,7 @@ display:
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
-            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options: '5, 10, 15, 25, 50'
             items_per_page_options_all: false
             items_per_page_options_all_label: '- All -'
             offset: false
@@ -2176,14 +2176,18 @@ display:
               autosubmit_textfield_delay: 500
               autosubmit_hide: false
               input_required: false
-              allow_secondary: false
+              allow_secondary: true
               secondary_label: 'Advanced options'
               secondary_open: false
+              reset_button_always_show: true
+            pager:
+              plugin_id: bef
+              advanced:
+                is_secondary: true
             filter:
               search_api_fulltext:
                 plugin_id: default
                 advanced:
-                  placeholder_text: ''
                   rewrite:
                     filter_rewrite_values: ''
                   collapsible: false
@@ -2199,14 +2203,25 @@ display:
                   collapsible: false
                   is_secondary: false
               is_parent:
-                plugin_id: default
+                plugin_id: bef
                 advanced:
                   sort_options: false
                   rewrite:
                     filter_rewrite_values: ''
                   collapsible: false
                   is_secondary: false
+                select_all_none: false
+                select_all_none_nested: false
+                display_inline: false
               platform_ancillary_cloud_coverage:
+                plugin_id: default
+                advanced:
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
+              dataset_type:
                 plugin_id: default
                 advanced:
                   placeholder_text: ''
@@ -2246,17 +2261,28 @@ display:
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
-            operator_limit_selection: false
-            operator_list: {  }
+            operator_limit_selection: true
+            operator_list:
+              and: and
+              or: or
             identifier: fulltext
             required: false
-            remember: true
+            remember: false
             multiple: true
             remember_roles:
               authenticated: authenticated
               administrator: administrator
               anonymous: '0'
+              content_editor: '0'
+            expose_fields: false
             placeholder: 'Enter your search here'
+            searched_fields_id: ''
+            autocomplete_filter: 0
+            autocomplete_min_chars: '0'
+            autocomplete_items: '10'
+            autocomplete_raw_suggestion: 1
+            autocomplete_raw_dropdown: 1
+            autocomplete_dependent: 0
           is_grouped: false
           group_info:
             label: ''
@@ -2369,6 +2395,64 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        dataset_type:
+          id: dataset_type
+          table: search_api_index_metsis
+          field: dataset_type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: dataset_type_op
+            label: 'Dataset type'
+            description: null
+            use_operator: false
+            operator: dataset_type_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: dataset_type
+            required: false
+            remember: false
+            multiple: true
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: null
+            max_placeholder: null
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: 'Dataset Level'
+            description: 'Filter on Parent/Level-1 and Child/Level-2 datasets'
+            identifier: dataset_type
+            optional: true
+            widget: radios
+            multiple: false
+            remember: false
+            default_group: '1'
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: Parent/Level-1
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: Level-1
+              2:
+                title: Child/Level-2
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: Level-2
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -2397,18 +2481,26 @@ display:
               authenticated: authenticated
               anonymous: '0'
               administrator: '0'
-          is_grouped: false
+          is_grouped: true
           group_info:
-            label: ''
+            label: IsParent
             description: ''
-            identifier: ''
+            identifier: is_parent
             optional: true
-            widget: select
+            widget: radios
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items: {  }
+            group_items:
+              1:
+                title: 'Yes'
+                operator: '='
+                value: '1'
+              2:
+                title: 'No'
+                operator: '='
+                value: '0'
         platform_ancillary_cloud_coverage:
           id: platform_ancillary_cloud_coverage
           table: search_api_index_metsis
@@ -2600,6 +2692,264 @@ display:
         library_in_views_display_extender: {  }
         metatag_display_extender: {  }
       path: metsis/search
+      menu:
+        type: none
+        title: 'Metsis Search'
+        description: 'Search Metadata'
+        weight: 0
+        expanded: false
+        menu_name: main
+        parent: ''
+        context: '0'
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - url.query_args
+        - user.roles
+      tags:
+        - 'config:search_api.index.metsis'
+  simplesearch:
+    id: simplesearch
+    display_title: Page2
+    display_plugin: page
+    position: 1
+    display_options:
+      title: 'Simple Search'
+      cache:
+        type: none
+        options: {  }
+      filters:
+        search_api_fulltext:
+          id: search_api_fulltext
+          table: search_api_index_metsis
+          field: search_api_fulltext
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_fulltext
+          operator: or
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: search_api_fulltext_op
+            label: Search
+            description: ''
+            use_operator: false
+            operator: search_api_fulltext_op
+            operator_limit_selection: true
+            operator_list:
+              and: and
+              or: or
+            identifier: fulltext
+            required: false
+            remember: false
+            multiple: true
+            remember_roles:
+              authenticated: authenticated
+              administrator: administrator
+              anonymous: '0'
+              content_editor: '0'
+            expose_fields: false
+            placeholder: 'Enter your search here'
+            searched_fields_id: ''
+            autocomplete_filter: 0
+            autocomplete_min_chars: '0'
+            autocomplete_items: '10'
+            autocomplete_raw_suggestion: 1
+            autocomplete_raw_dropdown: 1
+            autocomplete_dependent: 0
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          parse_mode: direct
+          min_length: null
+          fields:
+            - abstract
+            - full_text
+            - title
+        temporal_extent_start_date:
+          id: temporal_extent_start_date
+          table: search_api_index_metsis
+          field: temporal_extent_start_date
+          relationship: none
+          group_type: group
+          admin_label: 'Start date'
+          plugin_id: search_api_date
+          operator: '>='
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
+          group: 1
+          exposed: true
+          expose:
+            operator_id: temporal_extent_start_date_op
+            label: 'Start Date'
+            description: ''
+            use_operator: false
+            operator: temporal_extent_start_date_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: start_date
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        temporal_extent_end_date:
+          id: temporal_extent_end_date
+          table: search_api_index_metsis
+          field: temporal_extent_end_date
+          relationship: none
+          group_type: group
+          admin_label: 'End date'
+          plugin_id: search_api_date
+          operator: '<='
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
+          group: 1
+          exposed: true
+          expose:
+            operator_id: temporal_extent_end_date_op
+            label: 'End Date'
+            description: ''
+            use_operator: false
+            operator: temporal_extent_end_date_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: end_date
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        dataset_type:
+          id: dataset_type
+          table: search_api_index_metsis
+          field: dataset_type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: dataset_type_op
+            label: 'Dataset type'
+            description: null
+            use_operator: false
+            operator: dataset_type_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: dataset_type
+            required: false
+            remember: false
+            multiple: true
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: null
+            max_placeholder: null
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: 'Dataset Level'
+            description: 'Filter on Parent/Level-1 and Child/Level-2 datasets'
+            identifier: dataset_type
+            optional: true
+            widget: radios
+            multiple: false
+            remember: false
+            default_group: '1'
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: Parent/Level-1
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: Level-1
+              2:
+                title: Child/Level-2
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: Level-2
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      defaults:
+        cache: false
+        title: false
+        filters: false
+        filter_groups: false
+      display_description: 'simple search'
+      exposed_block: true
+      display_extenders:
+        geocluster_views_display_extender:
+          geocluster_enabled: false
+          geocluster_options: {  }
+        views_merge_rows: {  }
+        library_in_views_display_extender: {  }
+        metatag_display_extender: {  }
+      path: metsis/simplesearch
       menu:
         type: none
         title: 'Metsis Search'

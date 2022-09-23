@@ -9,4 +9,5 @@ dependencies:
   - ctools
   - token
   - token_views_filter
+  - field_group
 type: module

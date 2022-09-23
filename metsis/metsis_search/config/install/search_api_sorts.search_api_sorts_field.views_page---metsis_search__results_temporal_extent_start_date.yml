@@ -2,9 +2,9 @@ langcode: en
 status: true
 dependencies: {  }
 id: views_page---metsis_search__results_temporal_extent_start_date
+label: 'Start date'
+weight: 0
 display_id: views_page---metsis_search__results
 field_identifier: temporal_extent_start_date
 default_sort: true
 default_order: desc
-label: 'Start date'
-weight: 0

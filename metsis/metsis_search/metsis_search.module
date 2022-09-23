@@ -337,7 +337,17 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
          */
         $score_parent = $config->get('score_parent');
         if ($score_parent) {
-            $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=20 reRankWeight=3}');
+            $def_sorts = $solarium_query->getSorts();
+            //dpm($def_sorts);
+            $solarium_query->clearSorts();
+            $solarium_query->addSort('score', $solarium_query::SORT_DESC);
+            foreach ($def_sorts as $field => $order) {
+                $solarium_query->addSort($field, $order);
+            }
+
+            //dpm($solarium_query->getQuery());
+            //dpm($solarium_query->getSorts());
+            $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
         }
         /**
          * Add fields not defined in search view but needed for
@@ -430,7 +440,7 @@ function metsis_search_search_api_solr_search_results_alter(
     //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
     //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
     $search_path = $request->getPathInfo();
-    $pattern1 = '/metsis\/search/i';
+    $pattern1 = '/metsis\/.*search/i';
     //$pattern2 =  '/metsis\/elements/i';
 
     //Only alter the solr-query if the search-path contains the word metsis.
@@ -478,7 +488,7 @@ function metsis_search_views_pre_build(ViewExecutable $view)
         //Check if operator op is set in query and op=Reset to reset boundingbox
         if (isset($query_from_request['op'])) {
             if ($query_from_request['op'] == "Reset" || $query_from_request['op'] == "Nullstill") {
-                //\Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
+                \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
                 $session = \Drupal::request()->getSession();
                 //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
                 $session->remove('bboxFilter');
@@ -493,11 +503,20 @@ function metsis_search_views_pre_build(ViewExecutable $view)
                 $session->remove('back_to_search');
                 $session->remove('place_filter');
                 $session->set('keywords_level', 1);
-                $session->set('back_to_search', '/metsis/search');
+
 
 
                 \Drupal::cache()->invalidate('block:metsis_search_map');
-                return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
+                //$config = \Drupal::config('metsis_search.settings');
+                //$keep_parent_filter = $config->get('keep_parent_filter');
+                //dpm($keep_parent_filter);
+            /*    if ($keep_parent_filter) {
+                    $session->set('back_to_search', '/metsis/search?f[0]=dataset_level%3ALevel-1');
+                    return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?f[0]=dataset_level%3ALevel-1');
+                } else {
+                    $session->set('back_to_search', '/metsis/search');
+                    return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
+                }*/
             }
         }
     }

@@ -90,7 +90,14 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           '#default_value' => $config->get('score_parent'),
           '#return_value' => true,
         ];
-
+        /*
+                $form['keep_parent_filter'] = [
+                  '#type' => 'checkbox',
+                  '#title' => $this->t('Tick this box to keep the parent dataset filter when resetting the search.'),
+                  '#default_value' => $config->get('keep_parent_filter'),
+                  '#return_value' => true,
+                ];
+        */
         $form['ts_pywps_url'] = [
       '#type' => 'textfield',
       '#title' => t('Enter URL of TS plot service'),
@@ -316,6 +323,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           ->set('selected_collections', $values['collections'])
           ->set('pywps_service', $values['ts_pywps_url'])
           ->set('score_parent', $values['score_parent'])
+          //->set('keep_parent_filter', $values['keep_parent_filter'])
 
           ->save();
 
