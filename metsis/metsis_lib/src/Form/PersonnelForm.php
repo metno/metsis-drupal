@@ -36,7 +36,7 @@ class PersonnelForm extends FormBase
       '#weight' => '0',
       '#group' => 'personnel',
       '#attributes' => [
-        'class' => ['w3-cell-row'],
+        //'class' => ['flex-wrapper'],
       ],
     ];
         }
@@ -45,13 +45,13 @@ class PersonnelForm extends FormBase
             $i = 0;
             foreach ($fields['personnel_investigator_name'] as $investigator) {
                 $form['investigator'][$i] = [
-          '#prefix' => '<div class="w3-card-2 w3-cell w3-container">',
+          '#prefix' => '<div class="w3-card-2 w3-margin w3-padding">',
           '#suffix' => '</div>',
         ];
                 $form['investigator'][$i]['avatar'] = [
           '#type' => 'markup',
           '#prefix' => '<div class="w3-center">',
-          '#markup' => '<i class="fa fa-user fa-2x" aria-hidden="true"></i>',
+          '#markup' => '<i class=" fa fa-user fa-2x" aria-hidden="true"></i>',
           '#suffix' => '</div>',
           '#allowed_tags' => ['i'],
         ];
@@ -76,7 +76,7 @@ class PersonnelForm extends FormBase
 '#title' => $this->t('Organization:'),
 //'#prefix' => '<p>',
 '#markup' => $fields['personnel_investigator_organisation'][$i],
-//'#suffix' => '</p>',
+//'#suffix' => '</div>',
 ];
                 $i++;
             }
@@ -86,8 +86,8 @@ class PersonnelForm extends FormBase
             $i = 0;
             foreach ($fields['personnel_metadata_author_name'] as $author) {
                 $form['metadata_author'][$i] = [
-          '#prefix' => '<div class="w3-card-2 w3-cell w3-container">',
-          '#suffix' => '</div>',
+                  '#prefix' => '<div class="w3-card-2 w3-margin w3-padding">',
+                  '#suffix' => '</div>',
         ];
                 $form['metadata_author'][$i]['avatar'] = [
           '#type' => 'markup',
@@ -127,8 +127,8 @@ class PersonnelForm extends FormBase
             $i = 0;
             foreach ($fields['personnel_datacenter_name'] as $datacenter) {
                 $form['data_center_contact'][$i] = [
-          '#prefix' => '<div class="w3-card-2 w3-cell w3-container">',
-          '#suffix' => '</div>',
+                  '#prefix' => '<div class="w3-card-2 w3-margin w3-padding">',
+                  '#suffix' => '</div>',
         ];
                 $form['data_center_contact'][$i]['avatar'] = [
           '#type' => 'markup',
@@ -169,7 +169,7 @@ class PersonnelForm extends FormBase
             $i = 0;
             foreach ($fields['personnel_technical_name'] as $technical) {
                 $form['technical_contact'][$i] = [
-                  '#prefix' => '<div class="w3-card-2 w3-cell w3-container">',
+                  '#prefix' => '<div class="w3-card-2 w3-margin w3-padding">',
                   '#suffix' => '</div>',
                 ];
                 $form['technical_contact'][$i]['avatar'] = [
