@@ -101,7 +101,8 @@ class DefaultController extends ControllerBase
             //foreach ($metadata_identifier as $id) {
             //    \Drupal::logger('metsis_wms')->debug("setQuery: metadata_identifier: " .$id);
             $ids = implode(' ', $datasets);
-            $solarium_query->setQuery('metadata_identifier:('.$ids.')');
+            $solarium_query->setQuery('id:('.$ids.')');
+            //dpm($solarium_query->getQuery());
             //}
             //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
             //$solarium_query->setRows(2);

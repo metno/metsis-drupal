@@ -195,13 +195,15 @@ class PersonnelForm extends FormBase
           ],
           //'#suffix' => '</p>',
         ];
-                $form['technical_contact'][$i]['org'] = [
+                if (isset($fields['personnel_technical_organisation'])) {
+                    $form['technical_contact'][$i]['org'] = [
         '#type' => 'item',
         '#title' => $this->t('Organization:'),
         //'#prefix' => '<p>',
         '#markup' => $fields['personnel_technical_organisation'][$i],
         //'#suffix' => '</p>',
         ];
+                }
                 $i++;
             }
         }

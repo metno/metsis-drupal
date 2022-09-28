@@ -167,7 +167,7 @@ class DynamicLandingPagesController extends ControllerBase
         foreach ($result as $doc) {
             $fields = $doc->getFields();
         }
-        dpm($fields);
+        //dpm($fields);
 
         if (null != \Drupal::request()->query->get('export_type')) {
             $response = new Response();
@@ -194,13 +194,18 @@ class DynamicLandingPagesController extends ControllerBase
         $renderArray = [];
         //if this is a child dataset,  give some information.
         /*
-                if (($fields['isChild']) && ($fields['related_dataset'][0] !== null)) {
-                    $renderArray['parent'] = [
+        if (($fields['isChild']) && ($fields['related_dataset'][0] !== null)) {
+            $parent_id = $fields['related_dataset'][0];
+            $parent = substr($parent_id, strlen($id_prefix));
+            $renderArray['parent'] = [
+                    '#prefix' => '<div class="w3-container">',
                     '#type' => 'markup',
-                    '#markup' => $this->t('<p>This is a child dataset.Check the landing page of the parent dataset</p>'),
-                ];
-                }
-        */
+                    '#markup' => '<p>This is a child dataset. See the parent <a class="w3-text-blue" href="/dataset/'.$parent.'">Landing Page</a> for more information.</p>',
+                    '#suffix' => '</div>',
+                    '#allowed_tags' => ['a'],
+          ];
+        }
+*/
 
         //Render the title
         $renderArray['title'] = [
@@ -209,11 +214,15 @@ class DynamicLandingPagesController extends ControllerBase
 
         ];
 
-        //Render the title
+        //Render the abstract. create links of urls in text.
+        //$abstract = $fields['abstract'][0];
+        $abstract = preg_replace('/(http[s]?:\\/\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\.,"!\) ])/', '<a class="w3-text-blue" href="$1">$1</a>', $fields['abstract'][0]);
+        //if ((substr($abstract, -1)) === '.' || substr($abstract, -1) === ',') {
+        //}
         $renderArray['abstract'] = [
           '#type' => 'markup',
-          '#markup' => $this->t('<p> <em> %abstract </em></p>', ['%abstract' => $fields['abstract'][0]]),
-
+          '#markup' => '<div class="w3-container"><p> <em>'.$abstract.'</em></p></div>',
+          '#allowed_tags' => ['a','em','div'],
         ];
 
         /**
@@ -479,6 +488,18 @@ class DynamicLandingPagesController extends ControllerBase
             //'class' => ['w3-cell'],
           ],
         ];
+
+        if (($fields['isChild']) && ($fields['related_dataset'][0] !== null)) {
+            $parent_id = $fields['related_dataset'][0];
+            $parent = substr($parent_id, strlen($id_prefix));
+            $renderArray['related_information']['parent'] = [
+                    '#prefix' => '<div class="w3-container w3-bar">',
+                    '#type' => 'markup',
+                    '#markup' => '<p><em>This is a child dataset. See the parent <a class="w3-text-blue" href="/dataset/'.$parent.'">Landing Page</a> for more information.</em></p>',
+                    '#suffix' => '</div>',
+                    '#allowed_tags' => ['a', 'em'],
+          ];
+        }
         $landingPage = new Url('<current>');
         $landingPage = $fullhost.$landingPage->toString();
         $renderArray['related_information']['landing_page'] = [
@@ -576,7 +597,41 @@ class DynamicLandingPagesController extends ControllerBase
             }
         }
 
+        /**
+        * Datacenter
+        */
+        $renderArray['datacenter_wrapper'] = [
+           '#type' => 'fieldset',
+           '#title' => $this->t('Data Center'),
 
+         ];
+
+        if (isset($fields['data_center_short_name'])) {
+            $renderArray['datacenter_wrapper']['short'] = [
+             '#type' => 'item',
+             '#title' => $this->t('Short name:'),
+             '#markup' => $fields['data_center_short_name'][0],
+             '#allowed_tags' => ['a', 'strong'],
+           ];
+        }
+
+        if (isset($fields['data_center_long_name'])) {
+            $renderArray['datacenter_wrapper']['long'] = [
+             '#type' => 'item',
+             '#title' => $this->t('Name:'),
+             '#markup' => $fields['data_center_long_name'][0],
+             '#allowed_tags' => ['a', 'strong'],
+           ];
+        }
+
+        if (isset($fields['data_center_url'])) {
+            $renderArray['datacenter_wrapper']['url'] = [
+             '#type' => 'item',
+             '#title' => $this->t('URL:'),
+             '#markup' => '<a class="w3-text-blue" href="'.$fields['data_center_url'][0].'">'.$fields['data_center_url'][0].'</a>',
+             '#allowed_tags' => ['a', 'strong'],
+           ];
+        }
 
         /**
          * PERSONNEL
@@ -628,9 +683,9 @@ class DynamicLandingPagesController extends ControllerBase
         if (isset($fields['dataset_citation_doi'])) {
             $renderArray['citation_wrapper']['doi'] = [
             '#type' => 'item',
-            '#title' => $this->t('DOI:'),
-            '#markup' => '<a class="w3-text-blue" href="'.$fields['dataset_citation_doi'][0].'">' .$fields['dataset_citation_doi'][0].'</a>',
-            '#allowed_tags' => ['a', 'strong'],
+            //'#title' => $this->t('DOI:'),
+            '#markup' => '<i class="ai ai-doi"></i> <a class="w3-text-blue" href="'.$fields['dataset_citation_doi'][0].'">' .$fields['dataset_citation_doi'][0].'</a>',
+            '#allowed_tags' => ['a', 'strong','i'],
           ];
         }
         //dpm(sizeof($renderArray['citation_wrapper']));
@@ -694,8 +749,11 @@ class DynamicLandingPagesController extends ControllerBase
         //$renderArray['#attached']['library'][] = 'field_group/tabs';
         //$renderArray['#attached']['library'][] = 'field_group/formatter.horizontal_tabs';
         $renderArray['#attached']['library'][] = 'metsis_lib/landing_page';
+        $renderArray['#attached']['library'][] = 'metsis_lib/fa_academia';
         $renderArray['#cache']['max-age'] = 0;
 
+
+        //ADD JSONLD META
         $jsonld = $this->getJsonld($fields);
         $renderArray['#attached']['html_head'][] = [
         [

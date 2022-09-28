@@ -87,6 +87,8 @@ function metsis_search_views_pre_render(ViewExecutable $view)
         $view->element['#attached']['library'][] = 'metsis_search/children_count';
         $view->element['#attached']['library'][] = 'blazy/load';
         $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
+        $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+
         //$view->element['#cache']['max-age'] = 400;
 
         //Attach ts plot javascript and settings to view
@@ -118,6 +120,10 @@ function metsis_search_views_pre_render(ViewExecutable $view)
       //  $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
       //  $view->display['results']->handler->handlers['header']
       //      ['area']->options['content'] = $new_value;
+    }
+
+    if (isset($view) && ($view->storage->id() == 'metsis_metadata_details')) {
+        $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
     }
 }
 
@@ -287,7 +293,7 @@ function metsis_search_views_data_alter(array &$data)
 function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInterface $solarium_query, \Drupal\search_api\Query\QueryInterface $query)
 {
     \Drupal::cache()->invalidate('metsis_search_map');
-
+    //dpm($query->getKeys());
     /*Get the current session */
     $request = \Drupal::request();
     $session = $request->getSession();
@@ -401,8 +407,19 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
         $uniq_fields = array_unique($fields);
 
 
+        /**
+         *  Hack to avoid users to have to use "" when searching for identifiers
+         * with nameing authrity prefixes.
+         */
+        $keys = $query->getKeys();
+        if (substr($keys, 0, 6) === 'no.met') {
+            $new_keys = str_replace(':', '?', $keys);
+            $query->keys($new_keys);
+            //dpm($query->getKeys());
+        }
 
-        //dpm($uniq_fields);
+
+
         $solarium_query->setFields($uniq_fields);
     }
     /**
@@ -541,6 +558,31 @@ function metsis_search_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
 //var_dump($form);
 //}
 }
+
+/**
+ * Alter the Font Awesome categories metadata.
+ *
+ * @param array &$metadata
+ *   An array representing the categories metadata.
+ */
+function metsis_search_fontawesome_metadata_categories_alter(array &$metadata): void
+{
+    //dpm($metadata);
+}
+
+/**
+ * Alter the Font Awesome icon metadata.
+ *
+ * @param array &$metadata
+ *   An array representing the icon metadata.
+ */
+function metsis_search_fontawesome_metadata_alter(array &$metadata): void
+{
+    // Alter the metadata as needed.
+
+    //dpm($metadata);
+}
+
 
 
 function metsis_search_update_9302()
