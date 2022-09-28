@@ -295,6 +295,56 @@ class DynamicLandingPagesController extends ControllerBase
         $renderArray['extentGroup'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\ExtentForm', $fields, $features, $isPoint);
 
 
+        /**
+        * Dataset Citation
+        */
+        $renderArray['citation_wrapper'] = [
+           '#type' => 'fieldset',
+           '#title' => $this->t('Dataset Citation'),
+
+         ];
+
+        if (isset($fields['dataset_citation_title'])) {
+            $renderArray['citation_wrapper']['title'] = [
+            '#type' => 'item',
+            '#title' => $this->t('Title:'),
+            '#markup' => $fields['dataset_citation_title'][0],
+            '#allowed_tags' => ['a', 'strong'],
+          ];
+        }
+
+        if (isset($fields['dataset_citation_author'])) {
+            $renderArray['citation_wrapper']['author'] = [
+            '#type' => 'item',
+            '#title' => $this->t('Author:'),
+            '#markup' => $fields['dataset_citation_author'][0],
+            '#allowed_tags' => ['a', 'strong'],
+          ];
+        }
+
+        if (isset($fields['dataset_citation_publisher'])) {
+            $renderArray['citation_wrapper']['publisher'] = [
+           '#type' => 'item',
+           '#title' => $this->t('Publisher:'),
+           '#markup' => $fields['dataset_citation_publisher'][0],
+           '#allowed_tags' => ['a', 'strong'],
+         ];
+        }
+
+        if (isset($fields['dataset_citation_doi'])) {
+            $renderArray['citation_wrapper']['doi'] = [
+            '#type' => 'item',
+            //'#title' => $this->t('DOI:'),
+            '#markup' => '<i class="ai ai-doi"></i> <a class="w3-text-blue" href="'.$fields['dataset_citation_doi'][0].'">' .$fields['dataset_citation_doi'][0].'</a>',
+            '#allowed_tags' => ['a', 'strong','i'],
+          ];
+        }
+        //dpm(sizeof($renderArray['citation_wrapper']));
+        if (sizeof($renderArray['citation_wrapper']) <= 2) {
+            $renderArray['citation_wrapper'] = null;
+        }
+        //$render
+
         $renderArray['constraints_and_info'] = [
           '#prefix' => '<div class="w3-cell-row">',
           '#suffix' => '</div>',
@@ -644,55 +694,7 @@ class DynamicLandingPagesController extends ControllerBase
         $renderArray['personnel_wrapper']['personnel_tabs'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\PersonnelForm', $fields);
 
 
-        /**
-        * Dataset Citation
-        */
-        $renderArray['citation_wrapper'] = [
-           '#type' => 'fieldset',
-           '#title' => $this->t('Dataset Citation'),
 
-         ];
-
-        if (isset($fields['dataset_citation_title'])) {
-            $renderArray['citation_wrapper']['title'] = [
-            '#type' => 'item',
-            '#title' => $this->t('Title:'),
-            '#markup' => $fields['dataset_citation_title'][0],
-            '#allowed_tags' => ['a', 'strong'],
-          ];
-        }
-
-        if (isset($fields['dataset_citation_author'])) {
-            $renderArray['citation_wrapper']['author'] = [
-            '#type' => 'item',
-            '#title' => $this->t('Author:'),
-            '#markup' => $fields['dataset_citation_author'][0],
-            '#allowed_tags' => ['a', 'strong'],
-          ];
-        }
-
-        if (isset($fields['dataset_citation_publisher'])) {
-            $renderArray['citation_wrapper']['publisher'] = [
-           '#type' => 'item',
-           '#title' => $this->t('Publisher:'),
-           '#markup' => $fields['dataset_citation_publisher'][0],
-           '#allowed_tags' => ['a', 'strong'],
-         ];
-        }
-
-        if (isset($fields['dataset_citation_doi'])) {
-            $renderArray['citation_wrapper']['doi'] = [
-            '#type' => 'item',
-            //'#title' => $this->t('DOI:'),
-            '#markup' => '<i class="ai ai-doi"></i> <a class="w3-text-blue" href="'.$fields['dataset_citation_doi'][0].'">' .$fields['dataset_citation_doi'][0].'</a>',
-            '#allowed_tags' => ['a', 'strong','i'],
-          ];
-        }
-        //dpm(sizeof($renderArray['citation_wrapper']));
-        if (sizeof($renderArray['citation_wrapper']) <= 2) {
-            $renderArray['citation_wrapper'] = null;
-        }
-        //$render
 
         /**
          * KEYWORDS

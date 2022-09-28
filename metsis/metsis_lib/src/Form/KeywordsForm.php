@@ -24,7 +24,7 @@ class KeywordsForm extends FormBase
     public function buildForm(array $form, FormStateInterface $form_state, $fields = null)
     {
         $form['keywords'] = [
-        '#type' => 'vertical_tabs',
+        '#type' => 'horizontal_tabs',
         //'#tree' => true,
         '#default_tab' => 'iso',
       ];

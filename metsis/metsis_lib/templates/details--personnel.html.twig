@@ -25,7 +25,12 @@
     %}
     <summary{{ summary_attributes.addClass(summary_classes) }}>{{ title }}</summary>
   {%- endif -%}
+{% if attributes.personnel %}
   <div class="w3-section flex-wrapper details-wrapper">
+{% else %}
+  <div class="w3-section details-wrapper">
+
+{% endif %}
     {% if errors %}
       <div class="w3-paenl w3-pale-red w3-leftbar w3-border w3-border-red form-item--error-message">
         <stron>{{ errors }}</stron>

@@ -36,7 +36,7 @@ class PersonnelForm extends FormBase
       '#weight' => '0',
       '#group' => 'personnel',
       '#attributes' => [
-        //'class' => ['flex-wrapper'],
+        'personnel' => 'yes',
       ],
     ];
         }
