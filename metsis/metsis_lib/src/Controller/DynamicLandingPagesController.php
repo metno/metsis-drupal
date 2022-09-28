@@ -781,7 +781,7 @@ class DynamicLandingPagesController extends ControllerBase
     {
         //Check the current host and give access accordenly
         $host = \Drupal::request()->getHost();
-        if (($host === 'adc.met.no') || ($host === 'data-test.met.no')|| ($host === 'metsis-dev.local')) {
+        if (($host === 'adc.met.no') || ($host === 'data-test.met.no')|| ($host === 'metsis-dev.local')|| ($host === 'metsis-staging.met.no')) {
             return AccessResult::allowed();
         } else {
             return  AccessResult::forbidden();
