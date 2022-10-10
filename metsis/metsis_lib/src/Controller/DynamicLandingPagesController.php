@@ -372,17 +372,17 @@ class DynamicLandingPagesController extends ControllerBase
             }
             if (isset($fields['use_constraint_identifier'])) {
                 if (null != self::LICENCES[$fields['use_constraint_identifier']]) {
-                    $renderArray['constraints_and_info']['constraints']['licence_identifier'] = [
-          '#type' => 'item',
-          '#title' => $this->t('Licence:'),
-          '#markup' => '<a class="w3-text-blue" href="'.self::LICENCES[$fields['use_constraint_identifier']]['url'].'">' .$fields['use_constraint_identifier'].'</a>',
-          '#allowed_tags' => ['a', 'strong'],
-        ];
-
+                    /*            $renderArray['constraints_and_info']['constraints']['licence_identifier'] = [
+                      '#type' => 'item',
+                      '#title' => $this->t('Licence:'),
+                      '#markup' => '<a class="w3-text-blue" href="'.self::LICENCES[$fields['use_constraint_identifier']]['url'].'">' .$fields['use_constraint_identifier'].'</a>',
+                      '#allowed_tags' => ['a', 'strong'],
+                    ];
+*/
                     $renderArray['constraints_and_info']['constraints']['licence_img'] = [
           '#type' => 'markup',
           //'#prefix' => '<p>',
-          '#markup' => '<img class="w3-image" loading="lazy" width="100" height="35" src="'.self::LICENCES[$fields['use_constraint_identifier']]['img'].'"/>',
+          '#markup' => '<a rel="license" class="w3-text-blue" href="'.self::LICENCES[$fields['use_constraint_identifier']]['url'].'"><img class="w3-image" loading="lazy" width="100" height="35" src="'.self::LICENCES[$fields['use_constraint_identifier']]['img'].'"/></a>',
           //'#suffix' => '</p>',
           '#allowed_tags' => ['img'],
         ];
@@ -604,6 +604,7 @@ class DynamicLandingPagesController extends ControllerBase
         }
 
         if (isset($fields['related_url_scientific_publication'])) {
+            $i = 0;
             foreach ($fields['related_url_scientific_publication'] as $resource) {
                 $renderArray['related_information']['scientific_publication'] = [
                  '#type' => 'item',
@@ -611,6 +612,20 @@ class DynamicLandingPagesController extends ControllerBase
                  '#markup' => '<a class="w3-text-blue" href="'.$resource.'">' .$resource.'</a>',
                  '#allowed_tags' => ['a', 'strong'],
                ];
+
+
+                if (isset($fields['related_url_scientific_publication_desc'])) {
+                    $renderArray['related_information']['scientific_publication']['desc'] = [
+                '#type' => 'markup',
+                //'#title' => $this->t('Scientific Publication Citation:'),
+                '#markup' => '<div class="w3-panel w3-leftbar">
+                  <p><i class="fa fa-quote-right w3-xlarge"></i><br>
+                    <i class="w3-serif w3-large">'.$fields['related_url_scientific_publication_desc'][$i].'</i></p>
+                      </div> ',
+                '#allowed_tags' => ['a', 'strong','div', 'i','p'],
+              ];
+                }
+                $i++;
             }
         }
 
