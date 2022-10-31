@@ -619,8 +619,8 @@ class DynamicLandingPagesController extends ControllerBase
                 '#type' => 'markup',
                 //'#title' => $this->t('Scientific Publication Citation:'),
                 '#markup' => '<div class="w3-panel w3-leftbar">
-                  <p><i class="fa fa-quote-right w3-xlarge"></i><br>
-                    <i class="w3-serif w3-large">'.$fields['related_url_scientific_publication_desc'][$i].'</i></p>
+                  <p><i class="fa fa-quote-right w3-large"></i> <br>
+                    <i class="w3-serif ">'.$fields['related_url_scientific_publication_desc'][$i].'</i></p>
                       </div> ',
                 '#allowed_tags' => ['a', 'strong','div', 'i','p'],
               ];
