@@ -62,4 +62,7 @@ function metsis_lib_theme($existing, $type, $theme, $path)
     ],
   ];
     }
+    else {
+      return [];
+    }
 }
