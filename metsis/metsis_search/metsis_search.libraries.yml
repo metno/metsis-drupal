@@ -23,9 +23,9 @@ ts_plot:
     js/ts_plot.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui
+    - jquery_ui/core
     - core/drupal
-    - core/jquery.once
+    - core/once
     - core/drupalSettings
 
 search_map:
@@ -43,8 +43,8 @@ search_map:
     js/searchmap.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui
-    - core/jquery.once
+    - jquery_ui/core
+    - core/once
     - core/drupal
     - core/drupalSettings
     - core/drupal.ajax
@@ -76,7 +76,7 @@ search_map_block:
   dependencies:
     - core/jquery
     - jquery_ui/core
-    - core/jquery.once
+    - core/once
     - core/drupal
     - core/drupalSettings
     - core/drupal.ajax
@@ -92,7 +92,7 @@ children_count:
     js/children_count.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.once
+    - core/once
     - core/drupal
     - core/drupal.ajax
 

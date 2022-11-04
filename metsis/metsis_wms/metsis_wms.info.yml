@@ -1,6 +1,6 @@
 name: 'METSIS WMS'
 description: 'Provides an OL6 WMS client interface.'
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^8.8 || ^9 || ^10
 version: 2.0.1
 package: METSIS
 #dependencies:

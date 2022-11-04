@@ -67,11 +67,11 @@ class DashboardBokehController extends ControllerBase
         $build['content']['dashboard-wrapper'] = [
         '#type' => 'markup',
         '#markup' => '<div id="bokeh-dashboard" class="w3-card">',
-        '#attached' => [
+      /*  '#attached' => [
           'library' => [
             'metsis_dashboard_bokeh/dashboard',
           ],
-        ],
+        ],*/
       ];
         $build['content']['dashboard-wrapper']['dashboard|'] = [
         '#type' => 'markup',

@@ -1,8 +1,9 @@
 name: 'METSIS Time Series Bokeh'
 description: 'Drupal module to consume a Bokeh time series plot'
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^8.8 || ^9 || ^10
 version: 2.0.1
 package: METSIS
 type: module
 configure: metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form
-dependencies: {  }
+dependencies:
+  - jquery_ui_draggable

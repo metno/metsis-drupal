@@ -11,4 +11,6 @@ dependencies:
   - views_bulk_operations
   - metsis_basket
   - user
+  - leaflet
+  - geofield
 type: module

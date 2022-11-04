@@ -25,7 +25,7 @@ wms_ol6:
   dependencies:
     - core/jquery
     - jquery_ui/core
-    - core/jquery.once
+    - core/once
     - core/drupal
     - core/drupalSettings
     - core/drupal.ajax
@@ -125,7 +125,7 @@ bundle:
 #    js/getWMS.js: {}
   dependencies:
     - core/jquery
-    - core/jquery.ui
+    - jquery_ui/core
     - core/drupal
 #    - openlayers/openlayers
   libraries-override:
@@ -147,8 +147,8 @@ wmsmap:
      js/wmsSlider.js: { weight: -2 }
   dependencies:
     - core/jquery
-    - core/jquery.ui
-    - core/jquery.once
+    - jquery_ui/core
+    - core/once
     - core/drupal
     - core/drupalSettings
 
