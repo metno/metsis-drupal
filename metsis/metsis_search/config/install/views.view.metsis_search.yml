@@ -504,6 +504,59 @@ display:
           date_format: solr_format
           custom_date_format: ''
           timezone: UTC
+        dataset_citation_doi:
+          id: dataset_citation_doi
+          table: search_api_index_metsis
+          field: dataset_citation_doi
+          relationship: none
+          group_type: group
+          admin_label: DOI
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if  'doi.org' in dataset_citation_doi|raw == false %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         fieldset_1:
           id: fieldset_1
           table: views
@@ -1993,7 +2046,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{{ use_constraint_license_text }} \r\n{% endif %}"
+            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{{ use_constraint_license_text }} \r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{{ use_constraint_license_text }} \r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2149,7 +2202,7 @@ display:
             first: '« First'
             last: 'Last »'
           expose:
-            items_per_page: false
+            items_per_page: true
             items_per_page_label: 'Items per page'
             items_per_page_options: '5, 10, 15, 25, 50'
             items_per_page_options_all: false
@@ -2277,7 +2330,7 @@ display:
             expose_fields: false
             placeholder: 'Enter your search here'
             searched_fields_id: ''
-            autocomplete_filter: 0
+            autocomplete_filter: 1
             autocomplete_min_chars: '0'
             autocomplete_items: '10'
             autocomplete_raw_suggestion: 1
@@ -2401,7 +2454,7 @@ display:
           field: dataset_type
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: Parent-Child
           plugin_id: search_api_string
           operator: '='
           value:
@@ -2459,7 +2512,7 @@ display:
           field: is_parent
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: 'Has Children'
           plugin_id: search_api_boolean
           operator: '='
           value: All
@@ -2483,8 +2536,8 @@ display:
               administrator: '0'
           is_grouped: true
           group_info:
-            label: IsParent
-            description: ''
+            label: 'Has children'
+            description: 'Select whether datasets are parents with children (i.e. records of the same type) '
             identifier: is_parent
             optional: true
             widget: radios
