@@ -1971,8 +1971,8 @@ console.log("Start of metsis search map script:");
             //});
 
             //Reload the lazy loading of thumbnails
-            var bLazy = new Blazy();
-            bLazy.revalidate();
+            //var bLazy = new Blazy();
+            //bLazy.revalidate();
 
 
             //console.log("Got " + feature.get('name') + " at coordinate:");
@@ -2028,7 +2028,7 @@ console.log("Start of metsis search map script:");
 
             //Check for timeseries product
             if (odResource != null && odResource != "") {
-              if (feature_ids[id].featureType === 'timeSeries' || feature_ids[id].featureType === 'timeSeriesProfile'|| feature_ids[selected_id].featureType === 'profile') {
+              if (featureType === 'timeSeries' || featureType === 'timeSeriesProfile'|| featureType === 'profile') {
                 console.log("Got timeseries product: " + feature_ids[id].id);
                 $('#popup-content').append("<p>" + feature_ids[id].title + "</p>");
                 var button = $('#popup-content').append(
@@ -2235,8 +2235,8 @@ console.log("Start of metsis search map script:");
           } else {
             console.log("No feature selected");
             //$('.datasets-row').css('display', 'block');
-            var bLazy = new Blazy();
-            bLazy.revalidate();
+            //var bLazy = new Blazy();
+            //bLazy.revalidate();
           }
 
           //});

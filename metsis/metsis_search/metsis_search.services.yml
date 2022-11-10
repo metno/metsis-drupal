@@ -1,6 +1,6 @@
-#services:
-#  request_subscriber:
-#    class: Drupal\metsis_search\EventSubscriber\MetsisSearchEventSubscriber
-#    tags:
-#      -
-#        name: event_subscriber
+services:
+  request_subscriber:
+    class: Drupal\metsis_search\EventSubscriber\MetsisSearchEventSubscriber
+    tags:
+      -
+        name: event_subscriber

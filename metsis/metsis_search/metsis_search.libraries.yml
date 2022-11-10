@@ -96,6 +96,17 @@ children_count:
     - core/drupal
     - core/drupal.ajax
 
+thumbnail_lazy:
+  version: 1.0.1
+  js:
+    js/thumbnail_lazy.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupal
+    - core/drupal.ajax
+    - lazy/lazysises
+
 gcmd:
   version: 1.0.1
   css:

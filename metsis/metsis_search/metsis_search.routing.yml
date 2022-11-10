@@ -58,6 +58,17 @@ metsis_search.children_count:
   requirements:
     _permission: 'access metsis search'
 
+metsis_search.load_tbumbs:
+  path: '/metsis/thumbnail/{id}'
+  defaults:
+    _controller: '\Drupal\metsis_search\Controller\MetsisThumbnailController::loadThumbnails'
+    _title: "Load thumbnails"
+  options:
+    query:
+      metadata_identifier: ""
+  requirements:
+    _permission: 'access metsis search'
+
 #metsis_search.export:
 #  path: '/metsis/export/{id}'
 #  defaults:

@@ -15,6 +15,7 @@ use Solarium\QueryType\Select\Result\Document;
 use Solarium\Core\Query\DocumentInterface;
 use Solarium\Core\Query\Result\ResultInterface;
 use Drupal\metsis_search\SearchUtils;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_help().
@@ -85,9 +86,14 @@ function metsis_search_views_pre_render(ViewExecutable $view)
     if (isset($view) && ($view->storage->id() == 'metsis_search')) {
         $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
         $view->element['#attached']['library'][] = 'metsis_search/children_count';
-        $view->element['#attached']['library'][] = 'blazy/load';
+        //$view->element['#attached']['library'][] = 'blazy/load';
         $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
         $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+
+        //Use lazysizes for custom thumbnail lazy loading.
+        $view->element['#attached']['library'][] = 'metsis_search/thumbnail_lazy';
+        //$view->element['#attached']['library'][] = 'lazy/lazy';
+        //$view->element['#attached']['library'][] = 'lazy/lazysizes';
 
         //$view->element['#cache']['max-age'] = 400;
 
@@ -344,14 +350,16 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
         $score_parent = $config->get('score_parent');
         if ($score_parent) {
             $def_sorts = $solarium_query->getSorts();
-            //dpm($def_sorts);
+            /*
+            if(isset($def_sorts['temporal_extent_start_date'])) {
+
+            }*/
             $solarium_query->clearSorts();
             $solarium_query->addSort('score', $solarium_query::SORT_DESC);
             foreach ($def_sorts as $field => $order) {
                 $solarium_query->addSort($field, $order);
             }
 
-            //dpm($solarium_query->getQuery());
             //dpm($solarium_query->getSorts());
             $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
         }
@@ -412,16 +420,23 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
          * with nameing authrity prefixes.
          */
         $keys = $query->getKeys();
-        if($keys != null) {
-        if (substr($keys, 0, 6) === 'no.met') {
-            $new_keys = str_replace(':', '?', $keys);
-            $query->keys($new_keys);
-            //dpm($query->getKeys());
+        //dpm($keys);
+
+        if ($keys != null) {
+            if (substr($keys[0], 0, 6) === 'no.met') {
+                $new_keys = str_replace(':', '?', $keys[0]);
+                $query->keys($new_keys);
+                //dpm($query->getKeys());
+            }
         }
-}
 
 
         $solarium_query->setFields($uniq_fields);
+        //We dont need to get the thumbnail data as we will lazy-load that later.
+        $solarium_query->removeField('thumbnail_data');
+        //dpm($solarium_query->getFields());
+
+        //dpm($solarium_query->getQuery());
     }
     /**
      * TODO:: Update url params and breadcrumbs
@@ -558,6 +573,33 @@ function metsis_search_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
 //  ];
 //var_dump($form);
 //}
+}
+
+/**
+ * Implements hook_form_views_exposed_form_alter.
+ *
+ * @inheritdoc
+ */
+
+function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+    $view = $form_state->getStorage('view');
+    if (($view['view']->id() == 'metsis_search') && ($view['view']->current_display == 'results')) {
+        //$form['actions']['submit']['#value'] = t('Apply Nowx1');
+
+        //Remove the any option from dataset dataset_level/type
+        unset($form['dataset_type']['#options']['All']);
+
+        //Hide the children filter if dataset_level/type are set to Child/Level-2
+        $form['is_parent']['#states'] = [
+            'visible' => [
+              ':input[name="dataset_type"]' => [
+                ['value' => 1],
+        ],
+      ],
+    ];
+        dpm($form);
+    }
 }
 
 /**
