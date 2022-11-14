@@ -577,6 +577,7 @@ function metsis_search_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
 
 /**
  * Implements hook_form_views_exposed_form_alter.
+ * Manipulate the exposed search form
  *
  * @inheritdoc
  */
@@ -598,7 +599,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
         ],
       ],
     ];
-        dpm($form);
+        //dpm($form);
     }
 }
 

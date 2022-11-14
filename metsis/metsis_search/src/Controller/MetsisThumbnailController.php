@@ -52,19 +52,26 @@ class MetsisThumbnailController extends ControllerBase
         //$documents = $result->getDocuments();
 
         //\Drupal::logger('metsis_search')->debug('Got ' . $found . ' children for dataset ' . $id);
-        $thumb = '/modules/metsis/metsis_search/images/missing_map_place_holder.png';
+        //$thumb = '/modules/metsis/metsis_search/images/missing_map_place_holder.png';
+        $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+        $response = new AjaxResponse();
+        dpm($found);
         if ($found > 0) {
             foreach ($result as $doc) {
                 foreach ($doc as $field => $value) {
                     if ($field === 'thumbnail_data') {
                         $thumb = $value;
+                        dpm('got thumb: ' . $thumb);
+                        $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>'));
+                    } else {
+                        $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image"/>'));
                     }
                 }
             }
         }
-        $response = new AjaxResponse();
+
         //$response->addCommand(new InvokeCommand(null, 'changeDatesCallback', [$form_state->getValues()]));
-        $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>"'));
+        //$response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image"/>"'));
 
         return $response;
     }
