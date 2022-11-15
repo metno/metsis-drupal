@@ -6,7 +6,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 use Drupal\Component\Utility\Timer;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\devel\DevelDumperManagerInterface;
+//use Drupal\devel\DevelDumperManagerInterface;
 use Drupal\search_api\LoggerTrait;
 use Solarium\Core\Client\Adapter\AdapterHelper;
 use Solarium\Core\Event\Events as SolariumEvents;
@@ -16,6 +16,11 @@ use Solarium\Core\Event\PreExecuteRequest;
 use Solarium\Core\Event\PostCreateResult;
 use Solarium\QueryType\Select\Query\Query;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\search_api\Query\QueryInterface;
+
+use Drupal\search_api_solr\Event\PreQueryEvent;
+use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
+use Drupal\search_api_solr\Event\SearchApiSolrEvents;
 
 class MetsisSearchEventSubscriber implements EventSubscriberInterface
 {
@@ -38,8 +43,38 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
         $events[SolariumEvents::PRE_EXECUTE_REQUEST][] = ['preExecuteRequest'];
         $events[SolariumEvents::POST_EXECUTE_REQUEST][] = ['postExecuteRequest'];
         $events[SolariumEvents::POST_CREATE_RESULT][] = ['postCreateResult'];
+        $events[SearchApiSolrEvents::PRE_QUERY][] = ['onPreQuery'];
+        $events[SearchApiSolrEvents::POST_CONVERT_QUERY][] = ['postConvertQuery'];
         return $events;
     }
+
+
+    /**
+     * Listen to  the post convert query event
+     *
+     * @param \Drupal\search_api_solr\Event\PostConvertedQueryEvent $event
+     *
+     */
+    public function postConvertQuery(PostConvertedQueryEvent $event)
+    {
+        //  \Drupal::logger('metsis-search')->debug("PostCreateQuery");
+      //  dpm($event);
+    }
+
+
+
+    /**
+     * Listen to  the pre create query
+     *
+     * @param \Drupal\search_api_solr\Event\PreQueryEvent $event
+     *
+     */
+    public function onPreQuery(PreQueryEvent $event)
+    {
+        //  \Drupal::logger('metsis-search')->debug("PostCreateQuery");
+        dpm($event->getSearchApiQuery()->getKeys());
+    }
+
 
     /**
      * Listen to  the post create query
@@ -50,6 +85,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
     public function postCreateQuery(PostCreateQuery $event)
     {
         //  \Drupal::logger('metsis-search')->debug("PostCreateQuery");
+      //  dpm($event);
     }
 
 
@@ -86,5 +122,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
     public function postCreateResult(PostCreateResult $event)
     {
         //  \Drupal::logger('metsis-search')->debug("postCreateResult");
+      //  dpm($event);
     }
 }

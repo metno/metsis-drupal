@@ -14,6 +14,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Ajax\RemoveCommand;
 
 class MetsisThumbnailController extends ControllerBase
 {
@@ -21,58 +22,52 @@ class MetsisThumbnailController extends ControllerBase
     public function loadThumbnails($id)
     {
 
-  /** @var Index $index  TODO: Change to metsis when prepeare for release */
+      /** @var Index $index  TODO: Change to metsis when prepeare for release */
         $index = Index::load('metsis');
 
         /** @var SearchApiSolrBackend $backend */
         $backend = $index->getServerInstance()->getBackend();
 
+        //Get the solr connector for backend and index
         $connector = $backend->getSolrConnector();
 
+        //Get the select query handler
         $solarium_query = $connector->getSelectQuery();
+        //Modify the query
         $solarium_query->setQuery('id:'.$id);
-        //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
         $solarium_query->setRows(1);
         $solarium_query->setFields('thumbnail_data');
 
-
+        //Execute the query
         $result = $connector->execute($solarium_query);
 
         // The total number of documents found by Solr.
         $found = $result->getNumFound();
 
-        // The total number of documents returned from the query.
-        //$count = $result->count();
-
-        // Check the Solr response status (not the HTTP status).
-        // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
-        //$status = $result->getStatus();
-
-        // An array of documents. Can also iterate directly on $result.
-        //$documents = $result->getDocuments();
-
-        //\Drupal::logger('metsis_search')->debug('Got ' . $found . ' children for dataset ' . $id);
         //$thumb = '/modules/metsis/metsis_search/images/missing_map_place_holder.png';
         $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         $response = new AjaxResponse();
-        dpm($found);
+        //Return thumbnail inside image tag if document have thumbnail_data. If not remove the thumbnail wrapper <div>.
         if ($found > 0) {
             foreach ($result as $doc) {
-                foreach ($doc as $field => $value) {
-                    if ($field === 'thumbnail_data') {
-                        $thumb = $value;
-                        dpm('got thumb: ' . $thumb);
-                        $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>'));
-                    } else {
-                        $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image"/>'));
+                if (sizeof($doc->getFields()) > 0) {
+                    foreach ($doc as $field => $value) {
+                        if ($field === 'thumbnail_data') {
+                            $thumb = $value;
+                            //dpm('got thumb for id:'.$id.': ' . $thumb);
+                            //Add thumbnail image tag
+                            $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>'));
+                        }
                     }
+                } else {
+                    //dpm('using no thumb for id: ' . $id);
+                    //Remove wrapper tag
+                    $response->addCommand(new RemoveCommand('#thumb-wrapper-'.$id));
                 }
             }
         }
 
-        //$response->addCommand(new InvokeCommand(null, 'changeDatesCallback', [$form_state->getValues()]));
-        //$response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image"/>"'));
-
+        //Return ajax response
         return $response;
     }
 }

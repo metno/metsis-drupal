@@ -187,19 +187,19 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-        thumbnail_data:
-          id: thumbnail_data
-          table: search_api_index_metsis
-          field: thumbnail_data
+        nothing_12:
+          id: nothing_12
+          table: views
+          field: nothing
           relationship: none
           group_type: group
           admin_label: Thumbnail
-          plugin_id: search_api
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: "<div class=\"res-thumb w3-padding w3-left media media--blazy media--loading media--image\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  class=\"w3-image b-lazy media__image media__element img-responsive\" alt=\"Embedded Thumbnail\" data-src={{thumbnail_data}}\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\" style=\"width:70%;max-width:250px\"/>\r\n</a></div>"
+            text: "<div id=\"thumb-wrapper-{{id}}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>"
             make_link: false
             path: ''
             absolute: false
@@ -235,11 +235,7 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
+          hide_alter_empty: false
         project_long_name:
           id: project_long_name
           table: search_api_index_metsis
@@ -2046,7 +2042,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{{ use_constraint_license_text }} \r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{{ use_constraint_license_text }} \r\n{% endif %}"
+            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2255,6 +2251,14 @@ display:
                 advanced:
                   collapsible: false
                   is_secondary: false
+              dataset_type:
+                plugin_id: default
+                advanced:
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
               is_parent:
                 plugin_id: bef
                 advanced:
@@ -2267,14 +2271,6 @@ display:
                 select_all_none_nested: false
                 display_inline: false
               platform_ancillary_cloud_coverage:
-                plugin_id: default
-                advanced:
-                  placeholder_text: ''
-                  rewrite:
-                    filter_rewrite_values: ''
-                  collapsible: false
-                  is_secondary: false
-              dataset_type:
                 plugin_id: default
                 advanced:
                   placeholder_text: ''
@@ -2312,7 +2308,7 @@ display:
             operator_id: search_api_fulltext_op
             label: Search
             description: ''
-            use_operator: false
+            use_operator: true
             operator: search_api_fulltext_op
             operator_limit_selection: true
             operator_list:
@@ -2320,12 +2316,12 @@ display:
               or: or
             identifier: fulltext
             required: false
-            remember: false
+            remember: true
             multiple: true
             remember_roles:
+              anonymous: anonymous
               authenticated: authenticated
               administrator: administrator
-              anonymous: '0'
               content_editor: '0'
             expose_fields: false
             placeholder: 'Enter your search here'
@@ -2335,7 +2331,7 @@ display:
             autocomplete_items: '10'
             autocomplete_raw_suggestion: 1
             autocomplete_raw_dropdown: 1
-            autocomplete_dependent: 0
+            autocomplete_dependent: 1
           is_grouped: false
           group_info:
             label: ''
@@ -2348,7 +2344,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: direct
+          parse_mode: terms
           min_length: null
           fields:
             - abstract
