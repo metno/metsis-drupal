@@ -23,7 +23,6 @@ facets are blocks that can be placed in regions on search page.
 
 
 ## TODO
-* Find a way to add "Back to parent search" on child search view.
 * Clean up code (remove unused code, not used configuration etc)
 * Update this documentation with endpoints etc.
 * Integrate result map with children (elements) view.

@@ -436,7 +436,7 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
         //We dont need to get the thumbnail data as we will lazy-load that later.
         $solarium_query->removeField('thumbnail_data');
         //dpm($solarium_query->getFields());
-        dpm($solarium_query->getFilterQueries());
+        //dpm($solarium_query->getFilterQueries());
         //dpm($solarium_query->getQuery());
     }
     /**
@@ -590,16 +590,16 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
         //$form['actions']['submit']['#value'] = t('Apply Nowx1');
 
         //Remove the any option from dataset dataset_level/type
-        unset($form['dataset_type']['#options']['All']);
-
+        //unset($form['dataset_type']['#options']['All']);
+        //dpm($form['is_parent']);
         //Hide the children filter if dataset_level/type are set to Child/Level-2
-        $form['is_parent']['#states'] = [
+      /*  $form['is_parent']['#states'] = [
             'visible' => [
               ':input[name="dataset_type"]' => [
                 ['value' => 1],
         ],
       ],
-    ];
+    ];*/
         //dpm($form);
     }
 }

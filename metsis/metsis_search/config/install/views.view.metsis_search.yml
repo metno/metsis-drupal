@@ -2251,32 +2251,21 @@ display:
                 advanced:
                   collapsible: false
                   is_secondary: false
-              dataset_type:
-                plugin_id: default
-                advanced:
-                  placeholder_text: ''
-                  rewrite:
-                    filter_rewrite_values: ''
-                  collapsible: false
-                  is_secondary: false
               is_parent:
-                plugin_id: bef
+                plugin_id: bef_single
                 advanced:
                   sort_options: false
                   rewrite:
                     filter_rewrite_values: ''
                   collapsible: false
                   is_secondary: false
-                select_all_none: false
-                select_all_none_nested: false
-                display_inline: false
               platform_ancillary_cloud_coverage:
                 plugin_id: default
                 advanced:
                   placeholder_text: ''
                   rewrite:
                     filter_rewrite_values: ''
-                  collapsible: false
+                  collapsible: true
                   is_secondary: false
       access:
         type: role
@@ -2456,9 +2445,9 @@ display:
           value:
             min: ''
             max: ''
-            value: ''
+            value: Level-1
           group: 1
-          exposed: true
+          exposed: false
           expose:
             operator_id: dataset_type_op
             label: 'Dataset type'
@@ -2476,7 +2465,7 @@ display:
             min_placeholder: null
             max_placeholder: null
             placeholder: null
-          is_grouped: true
+          is_grouped: false
           group_info:
             label: 'Dataset Level'
             description: 'Filter on Parent/Level-1 and Child/Level-2 datasets'
@@ -2511,32 +2500,33 @@ display:
           admin_label: 'Has Children'
           plugin_id: search_api_boolean
           operator: '='
-          value: All
+          value: '1'
           group: 1
           exposed: true
           expose:
             operator_id: ''
             label: 'Has children'
-            description: 'Select whether datasets are parents with children (i.e. records of the same type)'
+            description: 'Show only parent datasets that have children'
             use_operator: false
             operator: is_parent_op
             operator_limit_selection: false
             operator_list: {  }
             identifier: is_parent
             required: false
-            remember: false
-            multiple: false
+            remember: true
+            multiple: true
             remember_roles:
               authenticated: authenticated
-              anonymous: '0'
+              anonymous: anonymous
+              content_editor: '0'
               administrator: '0'
           is_grouped: true
           group_info:
-            label: 'Has children'
-            description: 'Select whether datasets are parents with children (i.e. records of the same type) '
+            label: 'Has Children'
+            description: 'Show only parent datasets that have children'
             identifier: is_parent
             optional: true
-            widget: radios
+            widget: select
             multiple: false
             remember: false
             default_group: All
@@ -2546,10 +2536,6 @@ display:
                 title: 'Yes'
                 operator: '='
                 value: '1'
-              2:
-                title: 'No'
-                operator: '='
-                value: '0'
         platform_ancillary_cloud_coverage:
           id: platform_ancillary_cloud_coverage
           table: search_api_index_metsis
