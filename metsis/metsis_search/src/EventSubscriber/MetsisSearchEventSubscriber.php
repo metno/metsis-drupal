@@ -141,7 +141,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
 
         $keys = $query->getKeys();
         $use_direct = false; //Use direct query?
-
+        if($keys !== null) {
         foreach($keys as $key => $value) {
           if(!is_array($value)) {
         if(preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value)) {
@@ -156,6 +156,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
       }
       }
       }
+    }
       $conjuction = $query->getParseMode()->getConjunction();
       if($use_direct) {
         $parse_mode = $parse_mode_service->createInstance('direct');
