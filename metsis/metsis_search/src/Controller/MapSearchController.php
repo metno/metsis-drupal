@@ -48,8 +48,15 @@ class MapSearchController extends ControllerBase
         $map_base_layer_wms_north =  $config->get('map_base_layer_wms_north');
         $map_base_layer_wms_south =  $config->get('map_base_layer_wms_south');
         $map_layers_list =  $config->get('map_layers');
-        $map_filter = $config->get('map_bbox_filter');
 
+        //Check if user have selected spatial filter. If not use default config.
+        if (isset($params['cond']) && $params['cond'] !== "") {
+            $map_filter = $params['cond'];
+        //$session->set('cond', $map_filter);
+        } else {
+            $map_filter = $config->get('map_bbox_filter');
+        }
+        $session->set('cond', $map_filter);
         $data = [
         'metsis_search_map_block' => [
           'mapLat' => $map_lat, //to be replaced with configuration variables

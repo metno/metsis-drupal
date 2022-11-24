@@ -36,49 +36,96 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
   *
   * @var \Drupal\Core\Session\AccountProxyInterface
   */
- protected $currentUser;
+    protected $currentUser;
 
- /**
-  * Config factory.
-  *
-  * @var \Drupal\Core\Config\ConfigFactoryInterface
-  */
- protected $config;
+    /**
+     * Config factory.
+     *
+     * @var \Drupal\Core\Config\ConfigFactoryInterface
+     */
+    protected $config;
 
- /**
-  * Current session.
-  *
-  * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
-  */
- protected $session;
+    /**
+     * Current session.
+     *
+     * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
+     */
+    protected $session;
 
- /**
-   * Cache backend service.
-   *
-   * @var \Drupal\Core\Cache\CacheBackendInterface
-   */
-  protected $cache;
+    /**
+      * Cache backend service.
+      *
+      * @var \Drupal\Core\Cache\CacheBackendInterface
+      */
+    protected $cache;
 
-  //Special solr chars
-  protected $speacial_chars = ['*','?',':'];
+    //Special solr chars
+    protected $speacial_chars = ['*','?',':'];
 
- /**
-  * Construct an example service instance.
-  *
-  * @param \Drupal\Core\Session\AccountProxyInterface $current_user
-  *   Account proxy for the currently logged-in user.
-  */
- public function __construct(
-   AccountProxyInterface $current_user,
-   ConfigFactoryInterface $configFactory,
-   SessionInterface $session,
-   CacheBackendInterface $cache
- ) {
 
-   $this->currentUser = $current_user;
-   $this->config = $configFactory->get('metsis_search.settings');
-   $this->session = $session;
- }
+    /**
+     * Default solr search fields needed for metsis_search
+     */
+    protected $default_fields = [
+     'id',
+     'personnel_organisation',
+     'project_long_name',
+     'project_short_name',
+     'temporal_extent_start_date',
+     'temporal_extent_end_date',
+     'last_metadata_update_datetime',
+     //'abstract',
+     'related_url_landing_page',
+     //'thumbnail_data',
+     'isParent',
+     'data_access_url_opendap',
+     'feature_type',
+     'ss_access',
+     'data_access_url_http',
+     'data_access_url_odata',
+     'uuid',
+     'score',
+     'hash',
+     'geographic_extent_rectangle_south',
+     'geographic_extent_rectangle_north',
+     'geographic_extent_rectangle_west',
+     'geographic_extent_rectangle_east',
+     'use_constraint',
+     //'iso_topic_category',
+     'activity_type',
+     'dataset_production_status',
+     'metadata_status',
+     //'data_center_long_name',
+     //'data_center_short_name',
+     //'data_center_url',
+     //'personnel_datacenter_role',
+     //'personnel_datacenter_name',
+     //'personnel_datacenter_email',
+     'personnel_name',
+     'metadata_identifier',
+     'collection',
+     //'keywords_keyword',
+     'data_access_url_ftp',
+     'data_access_url_ogc_wms',
+     'data_access_wms_layers',
+   ];
+
+    /**
+     * Construct an example service instance.
+     *
+     * @param \Drupal\Core\Session\AccountProxyInterface $current_user
+     *   Account proxy for the currently logged-in user.
+     */
+    public function __construct(
+        AccountProxyInterface $current_user,
+        ConfigFactoryInterface $configFactory,
+        SessionInterface $session,
+        CacheBackendInterface $cache
+    ) {
+        $this->currentUser = $current_user;
+        $this->config = $configFactory->get('metsis_search.settings');
+        $this->session = $session;
+    }
 
     /**
      * {@inheritdoc}
@@ -117,58 +164,60 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
      */
     public function onPreQuery(PreQueryEvent $event)
     {
-      //Search api query
-      $query = $event->getSearchApiQuery();
-      //Solarium search api solr query
-      $solarium_query= $event->getSolariumQuery();
+        //Search api query
+        $query = $event->getSearchApiQuery();
+        //Solarium search api solr query
+        $solarium_query= $event->getSolariumQuery();
 
-      //Get the search id for this search view
-      $searchId = $query->getSearchId();
-      //Only do something during this event if we have metsis search view
-      if($searchId === 'views_page:metsis_search__results') {
-
-        //  \Drupal::logger('metsis-search')->debug("PostCreateQuery");
-        /*
-        dpm($this->currentUser->id());
-
-
-        dpm($query->getKeys());
-        dpm($query->getSearchId());
-        */
-        //Get parsemode plugin interface.
-        $parse_mode_service = \Drupal::service('plugin.manager.search_api.parse_mode');
+        //Get the search id for this search view
+        $searchId = $query->getSearchId();
+        //Only do something during this event if we have metsis search view
+        if (($searchId !== null) && ($searchId === 'views_page:metsis_search__results')) {
+            dpm('Got metsis search query...');
+            /**
+             * Invalidate the search result map cache
+             */
 
 
-        $keys = $query->getKeys();
-        $use_direct = false; //Use direct query?
-        if($keys !== null) {
-        foreach($keys as $key => $value) {
-          if(!is_array($value)) {
-        if(preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value)) {
-          $use_direct = true;
-        }
-      }
-      else {
-        foreach($value as $key => $value2) {
-        if(preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value2)) {
-          $use_direct = true;
-        }
-      }
-      }
-      }
-    }
-      $conjuction = $query->getParseMode()->getConjunction();
-      if($use_direct) {
-        $parse_mode = $parse_mode_service->createInstance('direct');
-        $parse_mode->setConjunction($conjuction);
-        $query->setParseMode($parse_mode);
-      }
-        //
-        //dpm($query->getParseMode()->label());
 
-        //dpm($this->config);
+            /**
+             * Manipulate the parse mode for the query
+             */
+
+            //Get parsemode plugin interface.
+            $parse_mode_service = \Drupal::service('plugin.manager.search_api.parse_mode');
+
+
+            $keys = $query->getKeys();
+            $use_direct = false; //Use direct query?
+            if ($keys !== null) {
+                dpm($keys);
+                foreach ($keys as $key => $value) {
+                    if (!is_array($value)) {
+                        if (preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value)) {
+                            $use_direct = true;
+                        }
+                    } else {
+                        foreach ($value as $key => $value2) {
+                            if (preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value2)) {
+                                $use_direct = true;
+                            }
+                        }
+                    }
+                }
+            }
+            $conjuction = $query->getParseMode()->getConjunction();
+            if ($use_direct) {
+                $parse_mode = $parse_mode_service->createInstance('direct');
+                $parse_mode->setConjunction($conjuction);
+                $query->setParseMode($parse_mode);
+            }
+            //
+            dpm($query->getParseMode()->label());
+
+            //dpm($this->config);
         //dpm($this->session);
-      }
+        }
     }
 
 

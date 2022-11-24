@@ -683,6 +683,20 @@ div.ui-slider span.ui-slider-handle {
   text-align: left;
 }
 
+.map-filter-wrapper {
+  display: inline-block;
+  padding-left: 0px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.map-filter-labels {
+  display: inline-block;
+  padding-left: 2px;
+  padding-right: 5px;
+  text-align: left;
+}
+
 .proj-wrapper {
   display: inline-block;
   padding-left: 0px;

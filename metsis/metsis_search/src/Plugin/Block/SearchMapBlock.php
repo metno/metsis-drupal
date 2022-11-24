@@ -52,6 +52,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         $tllon = $session->get('tllon');
         $brlat = $session->get('brlat');
         $brlon = $session->get('brlon');
+        $filter = $session->get('cond');
         /*
         $tllat = $tempstore->get('tllat');
         $tllon = $tempstore->get('tllon');
@@ -116,7 +117,13 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
         //Top panel projection selection markup
         $build['search-map']['top-panel']['projection'] = [
           '#type' => 'markup',
-          '#markup' => '<div class="proj-wrapper"><label class="proj-label"><strong>Select Projection:</strong></label></div>',
+          '#markup' => '<div class="proj-wrapper"><label class="proj-label"><strong>Select projection:</strong></label></div>',
+          '#allowed_tags' => ['div','label','strong'],
+        ];
+
+        $build['search-map']['top-panel']['map-filter'] = [
+          '#type' => 'markup',
+          '#markup' => '<div class="map-filter-wrapper"><label class="map-filter-label"><strong>Select spatial filter:</strong></label></div>',
           '#allowed_tags' => ['div','label','strong'],
         ];
 
@@ -389,7 +396,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
       #'metsis_ts_bokeh/bokeh_widgets',
       #'metsis_ts_bokeh/bokeh_tables',
       #'metsis_ts_bokeh/bokeh_api',
-      'blazy/blazy',
+      //'blazy/blazy',
       'metsis_search/search_map_block',
       ],
     'drupalSettings' => [
@@ -408,6 +415,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface
       'brlon' => $brlon,
       'brlat' => $brlat,
       'proj' => $proj,
+      'cond' => $filter,
       'bboxFilter' => $bboxFilter,
       'mapFilter' => $map_filter,
       'pins' => $map_pins,

@@ -512,7 +512,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  'doi.org' in dataset_citation_doi|raw == false %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            text: "{% if  'doi.org' in dataset_citation_doi %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2337,6 +2337,7 @@ display:
           min_length: null
           fields:
             - abstract
+            - dataset_citation_doi
             - full_text
             - title
         temporal_extent_start_date:
@@ -2650,6 +2651,50 @@ display:
                   min: ''
                   max: ''
                   value: '100.0'
+        metadata_status:
+          id: metadata_status
+          table: search_api_index_metsis
+          field: metadata_status
+          relationship: none
+          group_type: group
+          admin_label: 'Metadata status'
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: Active
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:

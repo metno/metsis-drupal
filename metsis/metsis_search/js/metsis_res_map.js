@@ -37,6 +37,7 @@ console.log("Start of metsis search map script:");
         var brlat = drupalSettings.metsis_search_map_block.brlat;
         var brlon = drupalSettings.metsis_search_map_block.brlon;
         var selected_proj = drupalSettings.metsis_search_map_block.proj;
+        var selected_filter = drupalSettings.metsis_search_map_block.cond;
         var base_layer_wms_north = drupalSettings.metsis_search_map_block.base_layer_wms_north;
         var base_layer_wms_south = drupalSettings.metsis_search_map_block.base_layer_wms_south;
         var pywpsUrl = drupalSettings.metsis_search_map_block.pywps_service;
@@ -54,7 +55,8 @@ console.log("Start of metsis search map script:");
           console.log('init proj: ' + init_proj);
           console.log('current selected  projection: ' + selected_proj);
           console.log('current bbox: ' + brlat + ',' + brlon + ',' + tllat + ',' + tllon);
-          console.log('current map_filter: ' + mapFilter);
+          console.log('init map_filter: ' + mapFilter);
+          console.log('current selected map_filter: ' + selected_filter);
           console.log('current bbox_filter: ' + bboxFilter);
           console.log('initial map zoom: ' + mapZoom);
           console.log("WMS Layers to skip: ");
@@ -72,6 +74,12 @@ console.log("Start of metsis search map script:");
           var proj = init_proj;
         } else {
           var proj = selected_proj;
+        }
+
+        //Set the current selected filter
+        if (selected_filter == null) {
+          selected_filter = mapFilter;
+
         }
         // Create the  map baselayer input boxses
         /*        $('.basemap-wrapper').append(
@@ -174,6 +182,43 @@ console.log("Start of metsis search map script:");
           "vertical-align": "middle"
         });
 
+        //Create change filter radio buttons
+        $('.map-filter-wrapper').append(
+          $(document.createElement('input')).prop({
+            id: 'within',
+            name: 'map-filter',
+            value: 'Within',
+            type: 'radio',
+            class: 'mapFilter'
+          })
+        ).append(
+          $(document.createElement('label')).prop({
+            class: "map-filter-labels",
+            for: 'within'
+          }).html('Within')
+        );
+        $('.map-filter-wrapper').append(
+          $(document.createElement('input')).prop({
+            id: 'intersects',
+            name: 'map-filter',
+            value: 'Intersects',
+            type: 'radio',
+            class: 'mapFilter'
+          })
+        ).append(
+          $(document.createElement('label')).prop({
+            class: "map-filter-labels",
+            for: 'intersects'
+          }).html('Intersects')
+        );
+
+
+        //Set default checked filter
+        //var flt = document.getElementsByName('map-filter');
+        console.log('selected filter: ' + selected_filter);
+        document.getElementById(selected_filter).checked = true;
+
+
 
         //If additional lyers are set, create the layers dropdown button list
         if (additional_layers) {
@@ -240,8 +285,9 @@ console.log("Start of metsis search map script:");
 
         //display current bbox search filter
 
-        $('.current-bbox-filter').text('Current filter: ' + mapFilter);
+
         if (bboxFilter != null) {
+          $('.current-bbox-filter').text(mapFilter+': ');
           $('.current-bbox-select').text(bboxFilter);
         }
 
@@ -2879,10 +2925,18 @@ map.addControl(geocoder);
               bottomRight[0] = topLeftCopy;
             }
 
-
+            //Get the current selected filter
+            var choices = [];
+            $("input[name='map-filter']:checked").each(function() {
+              choices.push($(this).attr('value'));
+            });
+             selected_filter = choices[0];
+            //var flt = document.getElementsByName('map-filter');
+            //console.log(flt);
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj;
+            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj+ '&cond=' + selected_filter;
             console.log('calling controller url: ' + myurl);
+
             data = Drupal.ajax({
               url: myurl,
               async: false

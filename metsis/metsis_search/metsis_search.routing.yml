@@ -10,6 +10,7 @@ metsis_search.map:
       brlat: ""
       brlon: ""
       proj: ""
+      cond: ""
   requirements:
     _permission: 'access metsis search'
 

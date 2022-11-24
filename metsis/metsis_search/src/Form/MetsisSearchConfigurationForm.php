@@ -200,14 +200,14 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
     ];
         $form['searchmap']['bbox_filter'] = [
       '#type' => 'select',
-      '#title' => t('Select predicate for bounding box filter'),
-  //    '#description' => t("Select boundingbox filter predicate"),
+      '#title' => t('Select the default predicate for bounding box filter'),
+      '#description' => t("The default boundingbox filter predicate"),
       '#options' => [
-        'Intersects' => 'Intersects',
-        'Within' => 'Whitin',
-        'Contains' => 'Contains',
-        'Disjoint' => 'Disjoint',
-        'Equals' => 'Equals'
+        'intersects' => 'Intersects',
+        'within' => 'Within',
+        //'contains' => 'Contains',
+        //'disjoint' => 'Disjoint',
+        //'equals' => 'Equals'
       ],
       '#default_value' => $config->get('map_bbox_filter'),
     ];

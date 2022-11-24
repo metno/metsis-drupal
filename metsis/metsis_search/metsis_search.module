@@ -325,14 +325,18 @@ function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInt
         }
         //Get filter predicate from config
         $config = \Drupal::config('metsis_search.settings');
-        $map_bbox_filter = $config->get('map_bbox_filter');
+        if ($session->has('cond')) {
+            $map_bbox_filter = ucfirst($session->get('cond'));
+        } else {
+            $map_bbox_filter = $config->get('map_bbox_filter');
+        }
         if ($session->get("place_filter") === 'Contains') {
             $map_bbox_filter = 'Contains';
         }
 
         //Add bbox filter query if drawn bbox on map
         if ($bboxFilter != null && $bboxFilter != "") {
-            //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
+            \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
             $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
             $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
             //$request->query->set('bboxFilter', $search_string);
@@ -536,6 +540,7 @@ function metsis_search_views_pre_build(ViewExecutable $view)
                 $session->remove('keywords_level');
                 $session->remove('back_to_search');
                 $session->remove('place_filter');
+                $session->remove('cond');
                 $session->set('keywords_level', 1);
 
 
