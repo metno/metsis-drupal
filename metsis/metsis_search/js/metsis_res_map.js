@@ -215,8 +215,10 @@ console.log("Start of metsis search map script:");
 
         //Set default checked filter
         //var flt = document.getElementsByName('map-filter');
-        console.log('selected filter: ' + selected_filter);
-        document.getElementById(selected_filter).checked = true;
+        selected_fiter = selected_filter.toLowerCase();
+        console.log('selected filter: ' + selected_filter.toLowerCase());
+
+        document.getElementById(selected_filter.toLowerCase()).checked = true;
 
 
 
