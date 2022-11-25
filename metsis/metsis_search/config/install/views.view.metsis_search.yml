@@ -2251,6 +2251,14 @@ display:
                 advanced:
                   collapsible: false
                   is_secondary: false
+              dataset_type:
+                plugin_id: bef_single
+                advanced:
+                  placeholder_text: ''
+                  rewrite:
+                    filter_rewrite_values: ''
+                  collapsible: false
+                  is_secondary: false
               is_parent:
                 plugin_id: bef_single
                 advanced:
@@ -2448,7 +2456,7 @@ display:
             max: ''
             value: Level-1
           group: 1
-          exposed: false
+          exposed: true
           expose:
             operator_id: dataset_type_op
             label: 'Dataset type'
@@ -2466,17 +2474,18 @@ display:
             min_placeholder: null
             max_placeholder: null
             placeholder: null
-          is_grouped: false
+          is_grouped: true
           group_info:
-            label: 'Dataset Level'
-            description: 'Filter on Parent/Level-1 and Child/Level-2 datasets'
+            label: Parent/Level-1
+            description: 'Show only Parent/Level-1 datasets'
             identifier: dataset_type
             optional: true
-            widget: radios
+            widget: select
             multiple: false
             remember: false
             default_group: '1'
-            default_group_multiple: {  }
+            default_group_multiple:
+              1: 1
             group_items:
               1:
                 title: Parent/Level-1
@@ -2485,13 +2494,6 @@ display:
                   min: ''
                   max: ''
                   value: Level-1
-              2:
-                title: Child/Level-2
-                operator: '='
-                value:
-                  min: ''
-                  max: ''
-                  value: Level-2
         is_parent:
           id: is_parent
           table: search_api_index_metsis

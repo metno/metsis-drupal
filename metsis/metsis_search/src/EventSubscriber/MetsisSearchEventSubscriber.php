@@ -173,7 +173,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
         $searchId = $query->getSearchId();
         //Only do something during this event if we have metsis search view
         if (($searchId !== null) && ($searchId === 'views_page:metsis_search__results')) {
-            dpm('Got metsis search query...');
+            //dpm('Got metsis search query...');
             /**
              * Invalidate the search result map cache
              */
@@ -191,7 +191,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
             $keys = $query->getKeys();
             $use_direct = false; //Use direct query?
             if ($keys !== null) {
-                dpm($keys);
+                //dpm($keys);
                 foreach ($keys as $key => $value) {
                     if (!is_array($value)) {
                         if (preg_match('/[' . preg_quote(implode(',', $this->speacial_chars)) . ']+/', $value)) {
@@ -213,7 +213,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
                 $query->setParseMode($parse_mode);
             }
             //
-            dpm($query->getParseMode()->label());
+            //dpm($query->getParseMode()->label());
 
             //dpm($this->config);
         //dpm($this->session);

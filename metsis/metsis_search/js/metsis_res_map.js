@@ -287,9 +287,9 @@ console.log("Start of metsis search map script:");
 
         //display current bbox search filter
 
-
+        const mapFilterInfo = selected_filter.charAt(0).toUpperCase() + selected_filter.slice(1)
         if (bboxFilter != null) {
-          $('.current-bbox-filter').text(mapFilter+': ');
+          $('.current-bbox-filter').text('Spatial filter: '+mapFilterInfo+' ');
           $('.current-bbox-select').text(bboxFilter);
         }
 
