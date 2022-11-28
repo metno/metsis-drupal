@@ -1,6 +1,6 @@
 map_base_layer_wms_north: 'https://public-wms.met.no/backgroundmaps/northpole.map'
 map_base_layer_wms_south: 'https://public-wms.met.no/backgroundmaps/southpole.map'
-map_init_proj: 'EPSG:4326'
+map_init_proj: 'EPSG:32661'
 map_projections:
   'EPSG:4326': 'EPSG:4326'
   'EPSG:32661': 'UPS North'
@@ -18,7 +18,7 @@ map_locations:
     lat: 59.94266
     lon: 10.72051
 map_selected_location: longyearbyen
-map_bbox_filter: Within
+map_bbox_filter: intersects
 map_search_text: 'Click on the map to draw a selection box. Boxes in UPS are transfomed into 4-edge polygons'
 map_layers:
   - europaveg
@@ -36,12 +36,26 @@ csv_button_text: 'Download dataset as ASCII'
 map_additional_layers_b: true
 map_pins_b: true
 selected_collections:
+  NBS: NBS
+  SIOS: SIOS
   ADC: ADC
   NSDN: NSDN
-  GCW: GCW
-  SIOS: SIOS
-  NMAP: NMAP
-  YOPP: YOPP
   APPL: APPL
+  YOPP: YOPP
+  NMAP: NMAP
+  AeN: AeN
+  DAM: DAM
+  SIOSIN: SIOSIN
+  SIOSCD: SIOSCD
   NMDC: NMDC
-pywps_service: 'https://ncapi.adc-ncplot.met.no/ncplot/plot'
+  CC: CC
+  GCW: GCW
+  SESS2019: SESS2019
+  SESS2018: SESS2018
+  SESS2020: SESS2020
+  SESS2022: SESS2022
+  SIOSAP: SIOSAP
+  CVL: CVL
+pywps_service: 'https://bokeh.metsis-api.met.no/TS-Plot'
+map_wms_layers_skip: ''
+score_parent: 0
