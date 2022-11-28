@@ -211,6 +211,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
       ],
       '#default_value' => $config->get('map_bbox_filter'),
     ];
+  
 
         $form['searchmap']['search_text'] = [
       '#type' => 'textarea',
