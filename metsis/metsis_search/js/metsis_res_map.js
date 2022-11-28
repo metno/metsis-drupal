@@ -65,7 +65,7 @@ console.log("Start of metsis search map script:");
           //console.log(extracted_info);
 
         }
-
+        
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
