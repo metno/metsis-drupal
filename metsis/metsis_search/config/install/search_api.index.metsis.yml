@@ -51,7 +51,8 @@ third_party_settings:
     multilingual:
       limit_to_content_language: false
       include_language_independent: true
-      specific_languages: {  }
+      specific_languages:
+        en: '0'
 id: metsis
 name: metsis
 description: ''
@@ -217,7 +218,8 @@ field_settings:
     label: 'Dataset citation doi'
     datasource_id: solr_document
     property_path: dataset_citation_doi
-    type: string
+    type: text
+    boost: !!float 3
   dataset_citation_edition:
     label: 'Dataset citation edition'
     datasource_id: solr_document
@@ -1120,11 +1122,12 @@ datasource_settings:
     request_handler: ''
     default_query: '*:*'
     label_field: title
-    language_field: ss_language
+    language_field: ''
     url_field: related_url_landing_page
 processor_settings:
   add_url: {  }
   aggregated_field: {  }
+  auto_aggregated_fulltext_field: {  }
   entity_type: {  }
   highlight:
     weights:
