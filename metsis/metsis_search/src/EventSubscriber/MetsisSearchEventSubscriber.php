@@ -21,11 +21,14 @@ use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api_solr\Event\PreQueryEvent;
 use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\SearchApiSolrEvents;
+use Drupal\search_api_solr\Event\PostExtractResultsEvent;
 
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
+
+use Drupal\metsis_search\SearchUtils;
 
 class MetsisSearchEventSubscriber implements EventSubscriberInterface
 {
@@ -61,6 +64,9 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
 
     //Special solr chars
     protected $speacial_chars = ['*','?',':'];
+
+    //To hold the current searchId
+    protected $search_id;
 
 
     /**
@@ -125,6 +131,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
         $this->currentUser = $current_user;
         $this->config = $configFactory->get('metsis_search.settings');
         $this->session = $session;
+        $this->cache = $cache;
     }
 
     /**
@@ -138,6 +145,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
         $events[SolariumEvents::POST_CREATE_RESULT][] = ['postCreateResult'];
         $events[SearchApiSolrEvents::PRE_QUERY][] = ['onPreQuery'];
         $events[SearchApiSolrEvents::POST_CONVERT_QUERY][] = ['postConvertQuery'];
+        $events[SearchApiSolrEvents::POST_EXTRACT_RESULTS][] = ['postExtractResults'];
         return $events;
     }
 
@@ -171,15 +179,100 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
 
         //Get the search id for this search view
         $searchId = $query->getSearchId();
+        $this->search_id = $searchId;
         //Only do something during this event if we have metsis search view
         if (($searchId !== null) && ($searchId === 'views_page:metsis_search__results')) {
             //dpm('Got metsis search query...');
             /**
              * Invalidate the search result map cache
              */
+            $this->cache->invalidate('metsis_search_map');
+            //Get the current request object
+            $request = \Drupal::request();
 
 
 
+            if ($request->headers->has('referer')) {
+                $this->session->set('back_to_search', $request->headers->get('referer'));
+            }
+            if ($this->session->has('bboxFilter')) {
+                $bboxFilter = $this->session->get('bboxFilter');
+            } else {
+                $bboxFilter = null;
+            }
+            //Get filter predicate from config
+            if ($this->session->has('cond')) {
+                $map_bbox_filter = ucfirst($this->session->get('cond'));
+            } else {
+                $map_bbox_filter = $this->config->get('map_bbox_filter');
+            }
+            if ($this->session->get("place_filter") === 'Contains') {
+                $map_bbox_filter = 'Contains';
+            }
+
+            //Add bbox filter query if drawn bbox on map
+            if ($bboxFilter != null && $bboxFilter != "") {
+                \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
+                $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
+                $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
+                //$request->query->set('bboxFilter', $search_string);
+            //$request->request->set('bboxFilter', $search_string);
+            }
+
+            //Filter on selected collections from config
+            $selected_collections = $this->config->get('selected_collections');
+            if (isset($selected_collections) && $selected_collections != null) {
+                //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
+                $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
+            }
+            /**
+             * Parent boost results
+             */
+            $score_parent = $this->config->get('score_parent');
+            if ($score_parent) {
+                $def_sorts = $solarium_query->getSorts();
+                /*
+                if(isset($def_sorts['temporal_extent_start_date'])) {
+
+                }*/
+                $solarium_query->clearSorts();
+                $solarium_query->addSort('score', $solarium_query::SORT_DESC);
+                foreach ($def_sorts as $field => $order) {
+                    $solarium_query->addSort($field, $order);
+                }
+
+                //dpm($solarium_query->getSorts());
+                $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
+            }
+            /**
+             * Add fields not defined in search view but needed for
+             * other metsis search backends. I.E MapSearch
+             */
+            $fields = $solarium_query->getFields();
+            $newfields = array_merge($fields, $this->default_fields);
+            //make sure the fields array contains unique fields
+            $uniq_fields = array_unique($newfields);
+
+
+            /**
+             *  Hack to avoid users to have to use "" when searching for identifiers
+             * with nameing authrity prefixes.
+             */
+            $keys = $query->getKeys();
+            //dpm($keys);
+
+            if ($keys != null) {
+                if (substr($keys[0], 0, 6) === 'no.met') {
+                    $new_keys = str_replace(':', '?', $keys[0]);
+                    $query->keys($new_keys);
+                    //dpm($query->getKeys());
+                }
+            }
+
+
+            $solarium_query->setFields($uniq_fields);
+            //We dont need to get the thumbnail data as we will lazy-load that later.
+            $solarium_query->removeField('thumbnail_data');
             /**
              * Manipulate the parse mode for the query
              */
@@ -217,9 +310,32 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
 
             //dpm($this->config);
         //dpm($this->session);
+        //  dpm($solarium_query->getFields());
         }
     }
 
+
+    /**
+     * Listen to  the post create query
+     *
+     * @param \Drupal\search_api_solr\Event\PostExtractResultsEvent $event
+     *
+     */
+    public function postExtractResults(PostExtractResultsEvent $event)
+    {
+        //  \Drupal::logger('metsis-search')->debug("PostCreateQuery");
+        //dpm($event->getSearchApiResultSet());
+        // if (($this->search_id !== null) && ($this->search_id === 'views_page:metsis_search__results')) {
+        //   //dpm($this->search_id);
+        //   $result = $event->getSearchApiResultSet();
+        //   $extracted_info = SearchUtils::getExtractedInfo($result);
+        //
+        //   $this->session->set('extracted_info', $extracted_info);
+        //   if ($this->session->has('basket_ref')) {
+        //       $this->session->remove('basket_ref');
+        //   }
+        // }
+    }
 
     /**
      * Listen to  the post create query
@@ -267,6 +383,16 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
     public function postCreateResult(PostCreateResult $event)
     {
         //  \Drupal::logger('metsis-search')->debug("postCreateResult");
-      //  dpm($event);
+      //dpm($event->getResult());
+      if (($this->search_id !== null) && ($this->search_id === 'views_page:metsis_search__results')) {
+        //dpm($this->search_id);
+        //$result = $event->getSearchApiResultSet();
+        $extracted_info = SearchUtils::getExtractedInfo($event->getResult());
+
+        $this->session->set('extracted_info', $extracted_info);
+        if ($this->session->has('basket_ref')) {
+            $this->session->remove('basket_ref');
+        }
+      }
     }
 }

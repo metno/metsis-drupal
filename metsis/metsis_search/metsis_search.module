@@ -298,151 +298,151 @@ function metsis_search_views_data_alter(array &$data)
 
 function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInterface $solarium_query, \Drupal\search_api\Query\QueryInterface $query)
 {
-    \Drupal::cache()->invalidate('metsis_search_map');
-    //dpm($query->getKeys());
-    /*Get the current session */
-    $request = \Drupal::request();
-    //$session = $request->getSession();
-    $session = \Drupal::service('session');
-    //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
-    //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-    // Get the current bbox filter
-    $search_path = $request->getPathInfo();
-    $pattern = '/metsis/i';
-
-    //Only alter the solr-query if the search-path contains the word metsis.
-    // This is to aviod solr query to be cahnged for normal site search
-    //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
-    if (preg_match($pattern, $search_path)) {
-        //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
-        if ($request->headers->has('referer')) {
-            $session->set('back_to_search', $request->headers->get('referer'));
-        }
-        if ($session->has('bboxFilter')) {
-            $bboxFilter = $session->get('bboxFilter');
-        } else {
-            $bboxFilter = null;
-        }
-        //Get filter predicate from config
-        $config = \Drupal::config('metsis_search.settings');
-        if ($session->has('cond')) {
-            $map_bbox_filter = ucfirst($session->get('cond'));
-        } else {
-            $map_bbox_filter = $config->get('map_bbox_filter');
-        }
-        if ($session->get("place_filter") === 'Contains') {
-            $map_bbox_filter = 'Contains';
-        }
-
-        //Add bbox filter query if drawn bbox on map
-        if ($bboxFilter != null && $bboxFilter != "") {
-            \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
-            $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
-            $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
-            //$request->query->set('bboxFilter', $search_string);
-        //$request->request->set('bboxFilter', $search_string);
-        }
-
-        //Filter on selected collections from config
-        $selected_collections = $config->get('selected_collections');
-        if (isset($selected_collections) && $selected_collections != null) {
-            //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
-            $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
-        }
-        /**
-         * Parent boost results
-         */
-        $score_parent = $config->get('score_parent');
-        if ($score_parent) {
-            $def_sorts = $solarium_query->getSorts();
-            /*
-            if(isset($def_sorts['temporal_extent_start_date'])) {
-
-            }*/
-            $solarium_query->clearSorts();
-            $solarium_query->addSort('score', $solarium_query::SORT_DESC);
-            foreach ($def_sorts as $field => $order) {
-                $solarium_query->addSort($field, $order);
-            }
-
-            //dpm($solarium_query->getSorts());
-            $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
-        }
-        /**
-         * Add fields not defined in search view but needed for
-         * other metsis search backends. I.E MapSearch
-         */
-        $fields = $solarium_query->getFields();
-
-        $fields[] = 'id';
-        $fields[] = 'personnel_organisation';
-        $fields[] = 'project_long_name';
-        $fields[] = 'project_short_name';
-        $fields[] = 'temporal_extent_start_date';
-        $fields[] = 'temporal_extent_end_date';
-        $fields[] =' last_metadata_update_datetime';
-        //$fields[] = 'abstract';
-        $fields[] = 'related_url_landing_page';
-        //$fields[] = 'thumbnail_data';
-        $fields[] = 'isParent';
-        $fields[] = 'data_access_url_opendap';
-        $fields[] = 'feature_type';
-        $fields[] = 'ss_access';
-        $fields[] = 'data_access_url_http';
-        $fields[] = 'data_access_url_odata';
-        $fields[] = 'uuid';
-        $fields[] = 'score';
-        $fields[] = 'hash';
-        $fields[] = 'geographic_extent_rectangle_south';
-        $fields[] = 'geographic_extent_rectangle_north';
-        $fields[] = 'geographic_extent_rectangle_west';
-        $fields[] = 'geographic_extent_rectangle_east';
-        $fields[] = 'use_constraint';
-        //$fields[] = 'iso_topic_category';
-        $fields[] = 'activity_type';
-        $fields[] = 'dataset_production_status';
-        $fields[] = 'metadata_status';
-        //$fields[] = 'data_center_long_name';
-        //$fields[] = 'data_center_short_name';
-        //$fields[] = 'data_center_url';
-        //$fields[] = 'personnel_datacenter_role';
-        //$fields[] = 'personnel_datacenter_name';
-        //$fields[] = 'personnel_datacenter_email';
-        $fields[] = 'personnel_name';
-        $fields[] = 'metadata_identifier';
-        $fields[] = 'collection';
-        //$fields[] = 'keywords_keyword';
-        $fields[] = 'data_access_url_ftp';
-        $fields[] = 'data_access_url_ogc_wms';
-        $fields[] = 'data_access_wms_layers';
-
-        //make sure the fields array contains unique fields
-        $uniq_fields = array_unique($fields);
-
-
-        /**
-         *  Hack to avoid users to have to use "" when searching for identifiers
-         * with nameing authrity prefixes.
-         */
-        $keys = $query->getKeys();
-        //dpm($keys);
-
-        if ($keys != null) {
-            if (substr($keys[0], 0, 6) === 'no.met') {
-                $new_keys = str_replace(':', '?', $keys[0]);
-                $query->keys($new_keys);
-                //dpm($query->getKeys());
-            }
-        }
-
-
-        $solarium_query->setFields($uniq_fields);
-        //We dont need to get the thumbnail data as we will lazy-load that later.
-        $solarium_query->removeField('thumbnail_data');
+    // \Drupal::cache()->invalidate('metsis_search_map');
+    // //dpm($query->getKeys());
+    // /*Get the current session */
+    // $request = \Drupal::request();
+    // //$session = $request->getSession();
+    // $session = \Drupal::service('session');
+    // //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
+    // //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+    // // Get the current bbox filter
+    // $search_path = $request->getPathInfo();
+    // $pattern = '/metsis/i';
+    //
+    // //Only alter the solr-query if the search-path contains the word metsis.
+    // // This is to aviod solr query to be cahnged for normal site search
+    // //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
+    // if (preg_match($pattern, $search_path)) {
+    //     //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
+    //     if ($request->headers->has('referer')) {
+    //         $session->set('back_to_search', $request->headers->get('referer'));
+    //     }
+    //     if ($session->has('bboxFilter')) {
+    //         $bboxFilter = $session->get('bboxFilter');
+    //     } else {
+    //         $bboxFilter = null;
+    //     }
+    //     //Get filter predicate from config
+    //     $config = \Drupal::config('metsis_search.settings');
+    //     if ($session->has('cond')) {
+    //         $map_bbox_filter = ucfirst($session->get('cond'));
+    //     } else {
+    //         $map_bbox_filter = $config->get('map_bbox_filter');
+    //     }
+    //     if ($session->get("place_filter") === 'Contains') {
+    //         $map_bbox_filter = 'Contains';
+    //     }
+    //
+    //     //Add bbox filter query if drawn bbox on map
+    //     if ($bboxFilter != null && $bboxFilter != "") {
+    //         \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
+    //         $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
+    //         $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
+    //         //$request->query->set('bboxFilter', $search_string);
+    //     //$request->request->set('bboxFilter', $search_string);
+    //     }
+    //
+    //     //Filter on selected collections from config
+    //     $selected_collections = $config->get('selected_collections');
+    //     if (isset($selected_collections) && $selected_collections != null) {
+    //         //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
+    //         $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
+    //     }
+    //     /**
+    //      * Parent boost results
+    //      */
+    //     $score_parent = $config->get('score_parent');
+    //     if ($score_parent) {
+    //         $def_sorts = $solarium_query->getSorts();
+    //         /*
+    //         if(isset($def_sorts['temporal_extent_start_date'])) {
+    //
+    //         }*/
+    //         $solarium_query->clearSorts();
+    //         $solarium_query->addSort('score', $solarium_query::SORT_DESC);
+    //         foreach ($def_sorts as $field => $order) {
+    //             $solarium_query->addSort($field, $order);
+    //         }
+    //
+    //         //dpm($solarium_query->getSorts());
+    //         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
+    //     }
+    //     /**
+    //      * Add fields not defined in search view but needed for
+    //      * other metsis search backends. I.E MapSearch
+    //      */
+    //     $fields = $solarium_query->getFields();
+    //
+    //     $fields[] = 'id';
+    //     $fields[] = 'personnel_organisation';
+    //     $fields[] = 'project_long_name';
+    //     $fields[] = 'project_short_name';
+    //     $fields[] = 'temporal_extent_start_date';
+    //     $fields[] = 'temporal_extent_end_date';
+    //     $fields[] =' last_metadata_update_datetime';
+    //     //$fields[] = 'abstract';
+    //     $fields[] = 'related_url_landing_page';
+    //     //$fields[] = 'thumbnail_data';
+    //     $fields[] = 'isParent';
+    //     $fields[] = 'data_access_url_opendap';
+    //     $fields[] = 'feature_type';
+    //     $fields[] = 'ss_access';
+    //     $fields[] = 'data_access_url_http';
+    //     $fields[] = 'data_access_url_odata';
+    //     $fields[] = 'uuid';
+    //     $fields[] = 'score';
+    //     $fields[] = 'hash';
+    //     $fields[] = 'geographic_extent_rectangle_south';
+    //     $fields[] = 'geographic_extent_rectangle_north';
+    //     $fields[] = 'geographic_extent_rectangle_west';
+    //     $fields[] = 'geographic_extent_rectangle_east';
+    //     $fields[] = 'use_constraint';
+    //     //$fields[] = 'iso_topic_category';
+    //     $fields[] = 'activity_type';
+    //     $fields[] = 'dataset_production_status';
+    //     $fields[] = 'metadata_status';
+    //     //$fields[] = 'data_center_long_name';
+    //     //$fields[] = 'data_center_short_name';
+    //     //$fields[] = 'data_center_url';
+    //     //$fields[] = 'personnel_datacenter_role';
+    //     //$fields[] = 'personnel_datacenter_name';
+    //     //$fields[] = 'personnel_datacenter_email';
+    //     $fields[] = 'personnel_name';
+    //     $fields[] = 'metadata_identifier';
+    //     $fields[] = 'collection';
+    //     //$fields[] = 'keywords_keyword';
+    //     $fields[] = 'data_access_url_ftp';
+    //     $fields[] = 'data_access_url_ogc_wms';
+    //     $fields[] = 'data_access_wms_layers';
+    //
+    //     //make sure the fields array contains unique fields
+    //     $uniq_fields = array_unique($fields);
+    //
+    //
+    //     /**
+    //      *  Hack to avoid users to have to use "" when searching for identifiers
+    //      * with nameing authrity prefixes.
+    //      */
+    //     $keys = $query->getKeys();
+    //     //dpm($keys);
+    //
+    //     if ($keys != null) {
+    //         if (substr($keys[0], 0, 6) === 'no.met') {
+    //             $new_keys = str_replace(':', '?', $keys[0]);
+    //             $query->keys($new_keys);
+    //             //dpm($query->getKeys());
+    //         }
+    //     }
+    //
+    //
+    //     $solarium_query->setFields($uniq_fields);
+    //     //We dont need to get the thumbnail data as we will lazy-load that later.
+    //     $solarium_query->removeField('thumbnail_data');
         //dpm($solarium_query->getFields());
         //dpm($solarium_query->getFilterQueries());
         //dpm($solarium_query->getQuery());
-    }
+    //}
     /**
      * TODO:: Update url params and breadcrumbs
      */
@@ -470,34 +470,34 @@ function metsis_search_search_api_solr_search_results_alter(
     \Solarium\QueryType\Select\Result\Result $result
 ) {
     //Get current session Object
-    $session = \Drupal::request()->getSession();
-
-    //Extract some info for the search map from the solr result
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-    //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
-    //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
-    $search_path = $request->getPathInfo();
-    $pattern1 = '/metsis\/.*search/i';
-    //$pattern2 =  '/metsis\/elements/i';
-
-    //Only alter the solr-query if the search-path contains the word metsis.
-    // This is to aviod solr query to be cahnged for normal site search
-    //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
-    if (preg_match($pattern1, $search_path)) {
-        $extracted_info = SearchUtils::getExtractedInfo($result);
-        //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
-        //$session->set('gcmd', $gcmd_facet);
-        //dpm($gcmd_facet);
-        //add the extracted info to the tempstores
-        //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-
-        $session->set('extracted_info', $extracted_info);
-        if ($session->has('basket_ref')) {
-            $session->remove('basket_ref');
-        }
-        //$session->set('back_to_search', $referer);
-    }
+    // $session = \Drupal::request()->getSession();
+    //
+    // //Extract some info for the search map from the solr result
+    // $request = \Drupal::request();
+    // $referer = $request->headers->get('referer');
+    // //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
+    // //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
+    // $search_path = $request->getPathInfo();
+    // $pattern1 = '/metsis\/.*search/i';
+    // //$pattern2 =  '/metsis\/elements/i';
+    //
+    // //Only alter the solr-query if the search-path contains the word metsis.
+    // // This is to aviod solr query to be cahnged for normal site search
+    // //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
+    // if (preg_match($pattern1, $search_path)) {
+    //     $extracted_info = SearchUtils::getExtractedInfo($result);
+    //     //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
+    //     //$session->set('gcmd', $gcmd_facet);
+    //     //dpm($gcmd_facet);
+    //     //add the extracted info to the tempstores
+    //     //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+    //
+    //     $session->set('extracted_info', $extracted_info);
+    //     if ($session->has('basket_ref')) {
+    //         $session->remove('basket_ref');
+    //     }
+    //     //$session->set('back_to_search', $referer);
+    // }
     //var_dump(count($extracted_info));
 //var_dump($extracted_info);
 }
