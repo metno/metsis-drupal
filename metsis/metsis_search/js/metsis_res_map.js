@@ -5,7 +5,7 @@ console.log("Start of metsis search map script:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisSearchBlock = {
     attach: function(context, drupalSettings) {
-      $('#map-res', context).each(function() {
+      $('#map-res', context).once('metsis-search-map').each(function() {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS Map...');
@@ -65,7 +65,7 @@ console.log("Start of metsis search map script:");
           //console.log(extracted_info);
 
         }
-        
+
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
