@@ -161,10 +161,10 @@ class SearchUtils
             $geographical_extent_west = $fields['geographic_extent_rectangle_west'];
 
             $geographical_extent = [
-                      $geographical_extent_north,
-                      $geographical_extent_south,
-                      $geographical_extent_east,
-                      $geographical_extent_west,
+                    (float)  $geographical_extent_north,
+                    (float)  $geographical_extent_south,
+                    (float)  $geographical_extent_east,
+                    (float)  $geographical_extent_west,
                     ];
             $latlon = [
                       ($geographical_extent_south + $geographical_extent_north) / 2,
