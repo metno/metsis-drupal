@@ -5,7 +5,7 @@ console.log("Start of wms map script:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisWmsMap = {
     attach: function(context, drupalSettings) {
-      $('#map-res', context).each(function() {
+      $('#map-res', context).once('metsis-wms-map').each(function() {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS WMS Map...');
