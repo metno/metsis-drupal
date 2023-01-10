@@ -2479,8 +2479,8 @@ display:
             label: Parent/Level-1
             description: 'Show only Parent/Level-1 datasets'
             identifier: dataset_type
-            optional: true
-            widget: select
+            optional: false
+            widget: radios
             multiple: false
             remember: false
             default_group: '1'
