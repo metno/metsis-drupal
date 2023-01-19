@@ -51,7 +51,7 @@ class DefaultController extends ControllerBase
         //Redirect back to search with message if no info are given.
         if (!isset($query['dataset']) || $query['dataset'] == "") {
             \Drupal::messenger()->addStatus(t("Missing dataset query parameter or valid dataset id"));
-            return new RedirectResponse($referer);
+            return new RedirectResponse('/metsis/search');
         }
         /** Variables from configuration
         *
@@ -153,7 +153,7 @@ class DefaultController extends ControllerBase
                     return new RedirectResponse($referer);
                 }
             }
-          //  dpm($wms_data);
+            //  dpm($wms_data);
 
             /**
              * Create the render array
