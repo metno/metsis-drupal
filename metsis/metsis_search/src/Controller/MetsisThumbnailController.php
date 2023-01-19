@@ -48,6 +48,9 @@ class MetsisThumbnailController extends ControllerBase
         $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         $response = new AjaxResponse();
         //Return thumbnail inside image tag if document have thumbnail_data. If not remove the thumbnail wrapper <div>.
+        $selector = str_replace('_','-',$id);
+        $selector = str_replace('.','-',$selector);
+
         if ($found > 0) {
             foreach ($result as $doc) {
                 if (sizeof($doc->getFields()) > 0) {
@@ -56,13 +59,13 @@ class MetsisThumbnailController extends ControllerBase
                             $thumb = $value;
                             //dpm('got thumb for id:'.$id.': ' . $thumb);
                             //Add thumbnail image tag
-                            $response->addCommand(new ReplaceCommand('#thumb-'.$id, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>'));
+                            $response->addCommand(new ReplaceCommand('#thumb-'.$selector, '<img class="w3-image" src="' .$thumb.'" typeof="Image" style="width:70%;max-width:250px"/>'));
                         }
                     }
                 } else {
                     //dpm('using no thumb for id: ' . $id);
                     //Remove wrapper tag
-                    $response->addCommand(new RemoveCommand('#thumb-wrapper-'.$id));
+                    $response->addCommand(new RemoveCommand('#thumb-wrapper-'.$selector));
                 }
             }
         }

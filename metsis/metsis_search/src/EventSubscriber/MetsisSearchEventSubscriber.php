@@ -388,6 +388,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
         //dpm($this->search_id);
         //$result = $event->getSearchApiResultSet();
         $extracted_info = SearchUtils::getExtractedInfo($event->getResult());
+        \Drupal::logger('metsis_search-hook_search_results')->debug('<pre><code>' . print_r($event->getResult(), true) . '</code></pre>');
+        \Drupal::logger('metsis_search-hook_search_extracted_info')->debug('<pre><code>' . print_r($extracted_info, true) . '</code></pre>');
 
         $this->session->set('extracted_info', $extracted_info);
         if ($this->session->has('basket_ref')) {

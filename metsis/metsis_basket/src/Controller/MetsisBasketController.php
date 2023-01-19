@@ -214,9 +214,11 @@ class MetsisBasketController extends DashboardBokehController
             //$markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
 
             $markup = '<span id="myBasketCount" class="w3-badge w3-green">' . $basket_count . '</span>';
+            $selector_id = str_replace('_','-',$metaid);
+            $selector_id = str_replace('.','-',$selector_id);
 
             $response = new AjaxResponse();
-            $response->addCommand(new HtmlCommand('#addtobasket-' . $metaid, 'Add to Basket &#10004;'));
+            $response->addCommand(new HtmlCommand('#addtobasket-' . $selector_id, 'Add to Basket &#10004;'));
             $response->addCommand(new HtmlCommand($selector, $markup));
             //$response->addCommand(new MessageCommand("Dataset added to basket:  " . $metaid));
             \Drupal\Core\Cache\Cache::invalidateTags(array('basket:user:'.$user_id));
@@ -277,7 +279,7 @@ class MetsisBasketController extends DashboardBokehController
         $solarium_query = $connector->getSelectQuery();
 
 
-        //\Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
+        \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " .$metadata_identifier);
         $solarium_query->setQuery('metadata_identifier:'.$metadata_identifier);
 
         //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
@@ -296,7 +298,7 @@ class MetsisBasketController extends DashboardBokehController
 
         // The total number of documents found by Solr.
         $found = $result->getNumFound();
-        //\Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
+        \Drupal::logger('metsis_basket_solr_query')->debug("found :" .$found);
         // The total number of documents returned from the query.
         //$count = $result->count();
 
