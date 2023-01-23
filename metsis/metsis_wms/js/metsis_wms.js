@@ -44,7 +44,7 @@ console.log("Start of wms map script:");
           console.log(wms_layers_skip);
 
         }
-
+        console.log("Wms data is:");
         console.log(wms_data);
 
         //Set the configured zoom level as the same as default:
@@ -1561,8 +1561,8 @@ console.log("Start of wms map script:");
             //});
 
             //Reload the lazy loading of thumbnails
-            var bLazy = new Blazy();
-            bLazy.revalidate();
+            //var bLazy = new Blazy();
+            //bLazy.revalidate();
 
 
             //console.log("Got " + feature.get('name') + " at coordinate:");
@@ -1819,8 +1819,8 @@ console.log("Start of wms map script:");
           } else {
             console.log("No feature selected");
             //$('.datasets-row').css('display', 'block');
-            var bLazy = new Blazy();
-            bLazy.revalidate();
+            //var bLazy = new Blazy();
+            //bLazy.revalidate();
           }
 
           //});

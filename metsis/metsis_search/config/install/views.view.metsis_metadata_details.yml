@@ -24,7 +24,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: ''
+      title: 'Metadata Details'
       fields:
         title:
           id: title
@@ -180,6 +180,116 @@ display:
           empty: ''
           hide_empty: true
           empty_zero: true
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        is_child:
+          id: is_child
+          table: search_api_index_metsis
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: isChild
+          plugin_id: search_api_boolean
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: true-false
+          type_custom_true: ''
+          type_custom_false: ''
+          not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        related_dataset:
+          id: related_dataset
+          table: search_api_index_metsis
+          field: related_dataset
+          relationship: none
+          group_type: group
+          admin_label: 'Related dataset'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -446,6 +556,55 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        nothing_5:
+          id: nothing_5
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'Parent dataset'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if is_child == 'True' %}\r\n<strong> Parent dataset:</strong><a href=/metsis/search?fulltext={{ related_dataset}}>\_{{ related_dataset }} </a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         fieldset_9:
           id: fieldset_9
           table: views
@@ -605,12 +764,67 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
+            - keywords_vocabulary
             - sm_keywords
+            - nothing_4
           wrapper: details
           legend: 'Show Keywords'
           classes: ''
           collapsible: 1
           collapsed: 1
+        keywords_vocabulary:
+          id: keywords_vocabulary
+          table: search_api_index_metsis
+          field: keywords_vocabulary
+          relationship: none
+          group_type: group
+          admin_label: 'keywords vocabulary'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         sm_keywords:
           id: sm_keywords
           table: search_api_index_metsis
@@ -620,7 +834,7 @@ display:
           admin_label: keywords
           plugin_id: search_api
           label: Keywords
-          exclude: false
+          exclude: true
           alter:
             alter_text: false
             text: ''
@@ -662,8 +876,57 @@ display:
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
-          multi_type: ul
+          multi_type: separator
           multi_separator: ', '
+        nothing_4:
+          id: nothing_4
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'Keywords with vocab'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if keywords_vocabulary %}\r\n{% for key,voc in  keywords_vocabulary|split(',') %}\r\n    <a href=\"https://vocab.met.no/mmd/Keywords_Vocabulary/{{ voc | replace({' ':''})| replace({'none':'None'})}}\" target=\"_blank\">{{ voc | replace({'CFSTDN':'CF standard names'})| replace({'GCMDSK':'GCMD Science Keyword'}) | replace({'GCMDLOC':'GCMD Locations'}) | replace({'GCMDPROV':'GCMD Providers'}) | replace({'GEMET':'INSPIRE Themes'}) | replace({'none':'None'})}}</a>:\r\n    {% for key1, keyword in  sm_keywords|split(',') %}\r\n        {% if key == key1 %}\r\n            {% if 'GCMDSK' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDLOC' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDPROV' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GEMET' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'CFSTDN' in voc %}\r\n                <a href=\"http://vocab.nerc.ac.uk/standard_name/{{ keyword|replace({' ':''}) }}\" target=\"_blank\">{{ keyword }}</a>\r\n             {% else %}\r\n               {{ keyword }} \r\n            {% endif %}\r\n       {% endif %}\r\n    {% endfor %}\r\n     <br>\r\n{% endfor %}\r\n{% else %}\r\n    {{ sm_keywords }}\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         fieldset:
           id: fieldset
           table: views
@@ -3096,9 +3359,9 @@ display:
           label: DOI
           exclude: false
           alter:
-            alter_text: false
-            text: ''
-            make_link: true
+            alter_text: true
+            text: "{% if  'https://doi.org'  in dataset_citation_doi %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi  | replace('https://doi.org/','')}}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org' not in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org'  in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            make_link: false
             path: '{{ dataset_citation_doi }}'
             absolute: false
             external: false
@@ -9191,12 +9454,7 @@ display:
       relationships: {  }
       css_class: metadataDetails
       show_admin_links: false
-      header:
-        area_text_custom:
-          id: area_text_custom
-          table: views
-          field: area_text_custom
-          plugin_id: text_custom
+      header: {  }
       footer: {  }
       display_extenders: {  }
     cache_metadata:

@@ -594,8 +594,8 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     if (($view['view']->id() == 'metsis_search') && ($view['view']->current_display == 'results')) {
         //$form['actions']['submit']['#value'] = t('Apply Nowx1');
 
-        //Remove the any option from dataset dataset_level/type
-        //unset($form['dataset_type']['#options']['All']);
+        //Always keep advanced options closed
+        unset($form['secondary']['#open']);
         //dpm($form['is_parent']);
         //Hide the children filter if dataset_level/type are set to Child/Level-2
       /*  $form['is_parent']['#states'] = [
