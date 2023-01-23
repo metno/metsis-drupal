@@ -105,7 +105,7 @@ thumbnail_lazy:
     - core/once
     - core/drupal
     - core/drupal.ajax
-    - lazy/lazysises
+    - lazy/lazysizes
 
 gcmd:
   version: 1.0.1
