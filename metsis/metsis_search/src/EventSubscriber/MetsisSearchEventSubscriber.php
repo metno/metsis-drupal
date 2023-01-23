@@ -267,6 +267,11 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface
                     $query->keys($new_keys);
                     //dpm($query->getKeys());
                 }
+                if (substr($keys[0], 0, 8) === 'no.nersc') {
+                    $new_keys = str_replace(':', '?', $keys[0]);
+                    $query->keys($new_keys);
+                    //dpm($query->getKeys());
+                }
             }
 
 
