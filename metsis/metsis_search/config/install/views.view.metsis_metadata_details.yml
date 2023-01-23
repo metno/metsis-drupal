@@ -568,7 +568,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_child == 'True' %}\r\n<strong> Parent dataset:</strong><a href=/metsis/search?fulltext={{ related_dataset}}>\_{{ related_dataset }} </a>\r\n{% endif %}"
+            text: "{% if is_child == 'True' %}\r\n<strong> Parent dataset:</strong><a href=\"/metsis/search?fulltext=id:{{ related_dataset}}\">\_{{ related_dataset }} </a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
