@@ -46,6 +46,10 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     //Get the current request object.
     $request = \Drupal::request();
     $referer = $request->headers->get('referer');
+
+    $config = \Drupal::config('metsis_search.settings');
+    $disable_basket = $config->get('hide_add_to_basket');
+
     $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span>';
 
     if ($view->id() == 'metsis_elements' && $display_id === 'results') {
@@ -62,7 +66,19 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       'plugin_id' => 'text_custom',
     );
         $view->setHandler('results', 'header', 'area_text_custom', $options);
+        if ($disable_basket) {
+          $fields = $view->display_handler->getOption('fields');
+          $fields['nothing_2']['exclude'] = TRUE;
+          $view->display_handler->overrideOption('fields', $fields);
+     }
     }
+if ($view->id() == 'metsis_search' && $display_id === 'results') {
+    if ($disable_basket) {
+      $fields = $view->display_handler->getOption('fields');
+      $fields['nothing_2']['exclude'] = TRUE;
+      $view->display_handler->overrideOption('fields', $fields);
+ }
+}
 }
 
 /**

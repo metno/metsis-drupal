@@ -105,6 +105,13 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
       '#size' => 100,
       '#default_value' => $config->get('pywps_service'),
     ];
+
+    $form['hide_add_to_basket'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Tick this box to hide the "add to basket"-button on search results page'),
+      '#description' => $this->t("Disable the add to basket functionality in the search results"),
+      '#default_value' => $config->get('hide_add_to_basket'),
+    ];
         /*
         $form['ts_button_text'] = [
           '#type' => 'textfield',
@@ -211,7 +218,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
       ],
       '#default_value' => $config->get('map_bbox_filter'),
     ];
-  
+
 
         $form['searchmap']['search_text'] = [
       '#type' => 'textarea',
@@ -324,6 +331,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           ->set('selected_collections', $values['collections'])
           ->set('pywps_service', $values['ts_pywps_url'])
           ->set('score_parent', $values['score_parent'])
+          ->set('hide_add_to_basket', $values['hide_add_to_basket'])
           //->set('keep_parent_filter', $values['keep_parent_filter'])
 
           ->save();
