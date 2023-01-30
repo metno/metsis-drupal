@@ -1125,6 +1125,7 @@ console.log("Start of wms map script:");
             function onGetCapSuccess(response) {
               //console.log(response);
               result = parser.read(response);
+
               console.log(result);
               //var options = ol.source.WMS.optionsFromCapabilities(result);
 

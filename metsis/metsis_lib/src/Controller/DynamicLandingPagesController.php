@@ -130,19 +130,14 @@ class DynamicLandingPagesController extends ControllerBase
      */
     public function getLandingPage($id)
     {
-        //Determine the id_prefix given the host
+
+        //Get the host of this drupal instance
         $host = \Drupal::request()->getHost();
-
-
         $fullhost = \Drupal::request()->getSchemeAndHttpHost();
-        //dpm($host);
-        if ($host === 'adc.met.no') {
-            $id_prefix = 'no-met-adc-';
-        }
-        if ($host === 'data.met.no') {
-            $id_prefix = 'no-met-data-';
-        }
-        $id_prefix = 'no-met-adc-';
+
+        //Get the configured prefix for the landingpage lookup
+        $main_config = $this->configFactory->get('metsis_lib.settings');
+        $id_prefix = $main_config->get('landing_pages_prefix');
         /** @var Index $index  TODO: Change to metsis when prepeare for release */
         $index = Index::load('metsis');
 
@@ -152,7 +147,7 @@ class DynamicLandingPagesController extends ControllerBase
         $connector = $backend->getSolrConnector();
 
         $solarium_query = $connector->getSelectQuery();
-        $solarium_query->setQuery('id:'.$id_prefix.$id);
+        $solarium_query->setQuery('id:'.$id_prefix.'-'.$id);
         //$solarium_query->addSort('sequence_id', Query::SORT_ASC);
         $solarium_query->setRows(1);
         //$fields[] = 'id';
@@ -538,10 +533,10 @@ class DynamicLandingPagesController extends ControllerBase
             //'class' => ['w3-cell'],
           ],
         ];
-
+        if(isset($fields['isChild']) && isset($fields['related_dataset'])) {
         if (($fields['isChild']) && ($fields['related_dataset'][0] !== null)) {
             $parent_id = $fields['related_dataset'][0];
-            $parent = substr($parent_id, strlen($id_prefix));
+            $parent = substr($parent_id, strlen($id_prefix)+1);
             $renderArray['related_information']['parent'] = [
                     '#prefix' => '<div class="w3-container w3-bar">',
                     '#type' => 'markup',
@@ -550,6 +545,7 @@ class DynamicLandingPagesController extends ControllerBase
                     '#allowed_tags' => ['a', 'em'],
           ];
         }
+      }
         $landingPage = new Url('<current>');
         $landingPage = $fullhost.$landingPage->toString();
         $renderArray['related_information']['landing_page'] = [
@@ -727,7 +723,7 @@ class DynamicLandingPagesController extends ControllerBase
         /**
          * Platform and Instrument
          */
-        if (isset($fields['platform_short_name']) || $fields['platform_instrument_short_name']) {
+        if (isset($fields['platform_short_name']) || isset($fields['platform_instrument_short_name'])) {
             $renderArray['aquisition_wrapper'] = [
            '#type' => 'fieldset',
            '#title' => $this->t('Aquisition Information'),
@@ -771,7 +767,7 @@ class DynamicLandingPagesController extends ControllerBase
 
 
         //ADD JSONLD META
-        $jsonld = $this->getJsonld($fields);
+        $jsonld = $this->getJsonld($fields,$host);
         $renderArray['#attached']['html_head'][] = [
         [
           '#type' => 'html_tag',
@@ -796,11 +792,12 @@ class DynamicLandingPagesController extends ControllerBase
    */
     public function access(AccountInterface $account)
     {
-        //Check the current host and give access accordenly
-        $host = \Drupal::request()->getHost();
-        if (($host === 'adc.met.no') || ($host === 'data-test.met.no')|| ($host === 'metsis-dev.local')|| ($host === 'metsis-staging.met.no')) {
+        //Get the metsis general config (metsis_lib)
+        $config = $this->configFactory->get('metsis_lib.settings');
+        #Only enable access if dynamica landing pages are enabled
+        if($config->get('enable_landing_pages')) {        //Check the current host and give access accordenly
             return AccessResult::allowed();
-        } else {
+          } else {
             return  AccessResult::forbidden();
         }
     }
@@ -823,7 +820,7 @@ class DynamicLandingPagesController extends ControllerBase
         return $xslt->transformToXml(new SimpleXMLElement($xml));
     }
 
-    public function getJsonld($fields)
+    public function getJsonld($fields,$host)
     {
         $json = [
           '@context' => 'https://schema.org/',
@@ -835,26 +832,16 @@ class DynamicLandingPagesController extends ControllerBase
           'identifier' => [
             $fields['metadata_identifier'],
           ],
-          'keywords' => [
-            $fields['keywords_keyword']
-          ],
+          'keywords' => $fields['keywords_keyword'],
           'license' => $fields['use_constraint_resource'],
+          'includedInDataCatalog' => [
+            '@type' => 'DataCatalog',
+            'name:' => $host,
+          ],
+          'temporalCoverage' => $fields['temporal_extent_start_date'][0].'/'.isset($fields['temporal_extent_end_date'][0]) ? $fields['temporal_extent_end_date'][0] : '',
+
         ];
         $string = <<<EOF
-       {
-        "@context":"https://schema.org/",
-        "@type":"Dataset",
-        "name":"{$fields['title'][0]}",
-        "description":"{$fields['abstract'][0]}",
-        "url":"{$fields['related_url_landing_page'][0]}",
-        "identifier": ["{$fields['related_url_landing_page'][0]}",
-                       "https://identifiers.org/ark:/12345/fk1234"],
-        "keywords":[
-          {$keywords}
-        ],
-        "license" : "{$fields['use_constraint_resource'][0]}",
-
-
         "creator":{
            "@type":"Organization",
            "url": "https://www.ncei.noaa.gov/",

@@ -1,21 +1,21 @@
-#metsis_lib.admin_config_form:
-#  path: '/admin/config/metsis/lib'
-#  defaults:
-#    _form: '\Drupal\metsis_lib\Form\MetsisLibConfigurationForm'
-#    _title: 'METSIS Shared Configuration'
-#  requirements:
-#    _permission: 'administer site configuration'
-#  options:
-#    _admin_route: TRUE
+metsis_lib.admin_config_form:
+  path: '/admin/config/metsis/lib'
+  defaults:
+    _form: '\Drupal\metsis_lib\Form\MetsisLibConfigurationForm'
+    _title: 'METSIS Shared Configuration'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
 
-#system.admin_config_metsis:
-#  path: '/admin/config/metsis'
-#  defaults:
-#    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
-#    _title: 'METSIS'
-#    description: 'METSIS Specific configuraton'
-#  requirements:
-#    _permission: 'administer site configuration'
+system.admin_config_metsis:
+  path: '/admin/config/metsis'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'METSIS'
+    description: 'METSIS Specific configuraton'
+  requirements:
+    _permission: 'administer site configuration'
 
 metsis_lib.dynamic_landing_pages_controller_getLandingPage:
   path: '/dataset/{id}'

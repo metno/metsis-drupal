@@ -44,32 +44,25 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('metsis_lib.settings');
 
-    $form['opendap_parser'] = [
-      '#type' => 'fieldset',
-      '#title' => 'Configure OPeNDAP parser service',
-      '#tree' => TRUE,
+    $form['enable_landing_pages'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Enable dynamic landing pages',
+      '#default_value' => $config->get('enable_landing_pages'),
     ];
-    $form['opendap_parser']['opendap_parser_ip'] = [
+    $form['landing_pages_prefix'] = [
       '#type' => 'textfield',
-      '#title' => t('Enter the IP of the OPeNDAP parser service.'),
-      //'#description' => t("url northern base map"),
-      '#size' => 20,
-      '#default_value' => $config->get('metsis_opendap_parser_ip'),
-    ];
-    $form['opendap_parser']['opendap_parser_port'] = [
-      '#type' => 'number',
-      '#title' => t('Enter the port number of the OPeNDAP parser service.'),
-      //'#description' => t("url southern base map"),
-      '#size' => 10,
-      '#default_value' => $config->get('metsis_opendap_parser_port'),
-    ];
-
-    $form['opendap_parser']['metsis_opendap_parser_service'] = [
-      '#type' => 'textfield',
-      '#title' => t('Enter the service string for the OPeNDAP parser service.'),
-      //'#description' => t("url northern base map"),
-      '#size' => 30,
-      '#default_value' => $config->get('metsis_opendap_parser_service'),
+      '#title' => $this->t('Enter id prefix for the landing pages that should be rendered'),
+      '#description' => $this->t("example: no-met-adc or no-met"),
+      '#size' => 15,
+      '#default_value' => $config->get('landing_pages_prefix'),
+      '#states' => [
+        'visible' => [
+             ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
+        ],
+        'required' => [
+             ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
+      ],
+    ],
     ];
 
 
@@ -101,10 +94,8 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
 
 
         $this->configFactory->getEditable('metsis_lib.settings')
-          ->set('metsis_opendap_parser_ip', $values['opendap_parser']['opendap_parser_ip'])
-          ->set('metsis_opendap_parser_port', $values['opendap_parser']['opendap_parser_port'])
-          ->set('metsis_opendap_parser_service', $values['opendap_parser']['metsis_opendap_parser_service'])
-
+          ->set('enable_landing_pages', $form_state->getValue('enable_landing_pages'))
+          ->set('landing_pages_prefix', $form_state->getValue('landing_pages_prefix'))
           ->save();
 
         parent::submitForm($form, $form_state);
