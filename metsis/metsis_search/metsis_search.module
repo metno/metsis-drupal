@@ -67,18 +67,18 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     );
         $view->setHandler('results', 'header', 'area_text_custom', $options);
         if ($disable_basket) {
-          $fields = $view->display_handler->getOption('fields');
-          $fields['nothing_2']['exclude'] = TRUE;
-          $view->display_handler->overrideOption('fields', $fields);
-     }
+            $fields = $view->display_handler->getOption('fields');
+            $fields['nothing_2']['exclude'] = true;
+            $view->display_handler->overrideOption('fields', $fields);
+        }
     }
-if ($view->id() == 'metsis_search' && $display_id === 'results') {
-    if ($disable_basket) {
-      $fields = $view->display_handler->getOption('fields');
-      $fields['nothing_2']['exclude'] = TRUE;
-      $view->display_handler->overrideOption('fields', $fields);
- }
-}
+    if ($view->id() == 'metsis_search' && $display_id === 'results') {
+        if ($disable_basket) {
+            $fields = $view->display_handler->getOption('fields');
+            $fields['nothing_2']['exclude'] = true;
+            $view->display_handler->overrideOption('fields', $fields);
+        }
+    }
 }
 
 /**
@@ -612,15 +612,40 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
 
         //Always keep advanced options closed
         unset($form['secondary']['#open']);
-        //dpm($form['is_parent']);
+
+        //Get the metsis earch config object
+        $config = \Drupal::config('metsis_search.settings');
+        $enable_cloud_coverage = $config->get('enable_cloud_coverage');
+        $cloud_coverage_details = $config->get('cloud_coverage_details');
+        $disable_children_filter = $config->get('disable_children_filter');
+        //dpm($form);
+        if (!$enable_cloud_coverage) {
+            //unset($form['#info']['filter-platform_ancillary_cloud_coverage']);
+            $form['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
+            $form['platform_ancillary_cloud_coverage']['#access'] = false;
+            $form['platform_ancillary_cloud_coverage']['#multiple'] = false;
+            $form['platform_ancillary_cloud_coverage_collapsible']['#type'] = 'hidden';
+            $form['platform_ancillary_cloud_coverage_collapsible']['#access'] = false;
+        }
+        if ($enable_cloud_coverage && (!$cloud_coverage_details)) {
+            unset($form['platform_ancillary_cloud_coverage_collapsible']);
+            unset($form['platform_ancillary_cloud_coverage']['#group']);
+        }
+
+        if ($disable_children_filter) {
+            $form['is_parent']['#type'] = 'hidden';
+            $form['is_parent']['#access'] = false;
+        }
+
         //Hide the children filter if dataset_level/type are set to Child/Level-2
-      /*  $form['is_parent']['#states'] = [
-            'visible' => [
-              ':input[name="dataset_type"]' => [
-                ['value' => 1],
+        /*  $form['is_parent']['#states'] = [
+              'visible' => [
+                ':input[name="dataset_type"]' => [
+                  ['value' => 1],
+          ],
         ],
-      ],
     ];*/
+        //dpm($form);
         //dpm($form);
     }
 }

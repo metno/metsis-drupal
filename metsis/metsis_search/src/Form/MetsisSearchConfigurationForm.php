@@ -50,11 +50,18 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
         $config = $this->config('metsis_search.settings');
         //$form = array();
 
+        $form['note'] = [
+      '#type' => 'markup',
+      '#prefix' => '<div class="messages-list__item messages messages--warning">',
+      '#markup' => '<div class="messages__header"><h2 class="messages__title">Note<h2></div><div class="messages__content"> Caches might need to be rebuild before these configuration changes takes place.</div>',
+      '#suffix' => '</div>',
+      '#allowed_tags' => ['div', 'span','strong','h2'],
+    ];
         //Get a list of collections
         $collections =  SearchUtils::getCollections();
         //dpm($collections);
         $form['collections'] = [
-      '#title' => t('Select which collections to include in search (if none are selected, all collections will be included in the search)'),
+      '#title' => $this->t('Select which collections to include in search (if none are selected, all collections will be included in the search)'),
       '#type' => 'select',
       //'#header' => ['Collection'],
       '#options' => $collections,
@@ -105,12 +112,38 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
       '#size' => 100,
       '#default_value' => $config->get('pywps_service'),
     ];
-
-    $form['hide_add_to_basket'] = [
+        //Hide add to basket button
+        $form['hide_add_to_basket'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Tick this box to hide the "add to basket"-button on search results page'),
       '#description' => $this->t("Disable the add to basket functionality in the search results"),
       '#default_value' => $config->get('hide_add_to_basket'),
+    ];
+
+        //Hide children filter checkbox
+        $form['disable_children_filter'] = [
+  '#type' => 'checkbox',
+  '#title' => $this->t('Tick this box to disable the "Has Children" checkbox filter in search form'),
+  '#description' => $this->t("Disable the filter on parents with children checkbox in search form"),
+  '#default_value' => $config->get('disable_children_filter'),
+];
+
+        //Add cloud coverage filter
+        $form['enable_cloud_coverage'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Enable cloud coverage search filter in search form',
+      '#default_value' => $config->get('enable_cloud_coverage'),
+    ];
+        $form['cloud_coverage_details'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show the cloud coverage filter inside a closed details tag in search form'),
+      '#size' => 15,
+      '#default_value' => $config->get('cloud_coverage_details'),
+      '#states' => [
+        'visible' => [
+             ':input[name="enable_cloud_coverage"]' => ['checked' => true],
+        ],
+      ],
     ];
         /*
         $form['ts_button_text'] = [
@@ -332,6 +365,9 @@ class MetsisSearchConfigurationForm extends ConfigFormBase
           ->set('pywps_service', $values['ts_pywps_url'])
           ->set('score_parent', $values['score_parent'])
           ->set('hide_add_to_basket', $values['hide_add_to_basket'])
+          ->set('enable_cloud_coverage', $values['enable_cloud_coverage'])
+          ->set('cloud_coverage_details', $values['cloud_coverage_details'])
+          ->set('disable_children_filter', $values['disable_children_filter'])
           //->set('keep_parent_filter', $values['keep_parent_filter'])
 
           ->save();
