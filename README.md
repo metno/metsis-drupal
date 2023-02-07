@@ -1,4 +1,6 @@
-11# METSIS-Drupal
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/metno/metsis-drupal/codeql.yml?label=javascript&logo=javascript&style=flat-square)
+
+# METSIS-Drupal
 
 ## Background
 METSIS is the MET Norway Scientific Information System. METSIS is a collection of software packages offering data management functionality. In particular METSIS is addressing the following areas:
