@@ -5,5 +5,5 @@
 - Make all url-paths using the routing names
 - Clean up unused files and code (Started)
 - Document submodules
-- Prepare for drupal 9 (Started)
+- Prepare for drupal 10 (Started)
 - Remove deprecated module config form elements.
