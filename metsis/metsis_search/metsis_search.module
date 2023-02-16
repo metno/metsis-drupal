@@ -124,7 +124,7 @@ function metsis_search_views_pre_render(ViewExecutable $view)
     }
     if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
         $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
-        //$view->element['#attached']['library'][] = 'metsis_search/children_count';
+        $view->element['#attached']['library'][] = 'metsis_search/children_count';
         $view->element['#attached']['library'][] = 'blazy/load';
         $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
 
