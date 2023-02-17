@@ -1119,8 +1119,10 @@ console.log("Start of wms map script:");
             //      mode: 'cors',
             //    }).then(function(response) {
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
+            //wmsUrl = wmsUrl.replace('//lustre', '/lustre');
             wmsUrl = wmsUrl.split("?")[0];
             wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            console.log("trying wms with url: " + wmsUrl);
 
             function onGetCapSuccess(response) {
               //console.log(response);
@@ -1134,8 +1136,8 @@ console.log("Start of wms map script:");
               var defaultProjection = result.Capability.Layer.CRS;
               var layers = result.Capability.Layer.Layer;
               var bbox = result.Capability.Layer.EX_GeographicBoundingBox;
-
-              var parentTitle = result.Capability.Layer.Layer.Title;
+              console.log(layers);
+              var parentTitle = result.Capability.Layer.Title;
               console.log("Parent title: " + parentTitle);
               var wmsGroup = new ol.layer.Group({
                 title: productTitle,
@@ -1146,8 +1148,15 @@ console.log("Start of wms map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
-                if (ls) {
+                if(!ls) {
+                  lst = layers[idx]
+                  if(lst) {
+                    ls = [lst];
+                  }
 
+                }
+                if (ls) {
+                  console.log(ls.Name);
                   for (var i = 0; i < ls.length; i++) {
                     var getTimeDimensions = function() {
                       var dimensions = ls[i].Dimension;
@@ -1210,6 +1219,7 @@ console.log("Start of wms map script:");
 
                     var title = ls[i].Title;
                     var layerName = ls[i].Name;
+                    console.log('title: ' + title + " name: " + layerName)
                     if (layerName === 'lon' || layerName === 'lat') {
                       visible = false;
                     }
@@ -1233,7 +1243,7 @@ console.log("Start of wms map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    console.log("i="+i+" layer_name: " + layerName);
+                    console.log("i="+i+" layer_name: " + ls[i].Name);
                     if ( $.inArray(ls[i].Name, wms_layers_skip) === -1 ) {
                     wmsGroup.getLayers().insertAt(i,
                       new ol.layer.Tile({
@@ -1268,6 +1278,7 @@ console.log("Start of wms map script:");
                   //hasTimeDimension = false;
 
                 }
+
 
               }
               //})
@@ -1321,10 +1332,14 @@ console.log("Start of wms map script:");
                 });
                 $('#time').text(timeDimensions[0]);
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
-                var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
-                var img = document.getElementById('map-wms-legend');
-                img.src = legendUrl;
-
+                 try {
+                   var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
+                   var img = document.getElementById('map-wms-legend');
+                   img.src = legendUrl;
+                 }
+                 catch {
+                   console.log("No legendUrl info for layer");
+                 }
                 //$('#bottomMapPanel').show();
                 map.updateSize();
               }

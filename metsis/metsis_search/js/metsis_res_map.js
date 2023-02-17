@@ -1570,8 +1570,10 @@ console.log("Start of metsis search map script:");
             //      mode: 'cors',
             //    }).then(function(response) {
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
+            wmsUrl = wmsUrl.replace('//lustre', '/lustre');
             wmsUrl = wmsUrl.split("?")[0];
             wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            console.log("trying wms with url: " + wmsUrl);
 
             function onGetCapSuccess(response) {
               //console.log(response);
@@ -1596,6 +1598,13 @@ console.log("Start of metsis search map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
+                if(!ls) {
+                  lst = layers[idx]
+                  if(lst) {
+                    ls = [lst];
+                  }
+
+                }
                 if (ls) {
 
                   for (var i = 0; i < ls.length; i++) {
