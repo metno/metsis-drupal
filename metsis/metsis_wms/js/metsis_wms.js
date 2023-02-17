@@ -1119,7 +1119,7 @@ console.log("Start of wms map script:");
             //      mode: 'cors',
             //    }).then(function(response) {
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
-            //wmsUrl = wmsUrl.replace('//lustre', '/lustre');
+            wmsUrl = wmsUrl.replace('//lustre', '/lustre');
             wmsUrl = wmsUrl.split("?")[0];
             wmsUrlOrig = wmsUrlOrig.split("?")[0];
             console.log("trying wms with url: " + wmsUrl);
