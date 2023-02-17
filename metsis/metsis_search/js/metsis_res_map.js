@@ -1839,6 +1839,8 @@ console.log("Start of metsis search map script:");
               type: 'GET',
               url: wmsUrl + getCapString,
               dataType: 'xml',
+              cache:true,
+              timeout:8000,
               //async: false,
               error: function() {
                 console.log("Request failed: " + wmsUrl + getCapString);
