@@ -2,9 +2,9 @@ wms_ol6:
   version: 1.0
   css:
     component:
-      /libraries/openlayers-6.5.0/ol.css: {}
+      /libraries/openlayers-6.5.0/ol.css: {minified: true, preprocess: true}
 #      /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.css: {}
-      /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
+      /libraries/ol-ext-3.1.17/dist/ol-ext.css: {minified: true, preprocess: true}
     theme:
 #      css/metsis_qsearch.css: {}
       css/metsis_wms.css: {}
@@ -15,13 +15,13 @@ wms_ol6:
     #https://cdn.pydata.org/bokeh/release/bokeh-tables-2.0.2.min.js: { type: external}
     #/libraries/openlayers6/build/ol.js: {}
     #/libraries/openlayers6/apidoc/scripts/bootstrap.min.js: {}
-    /libraries/proj4js-2.6.3/dist/proj4.js: {}
-    /libraries/openlayers-6.5.0/ol.js: {}
+    /libraries/proj4js-2.6.3/dist/proj4.js: {minified: true, preprocess: true}
+    /libraries/openlayers-6.5.0/ol.js: {minified: true, preprocess: true}
 #    /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.js: {}
-    /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
+    /libraries/ol-ext-3.1.17/dist/ol-ext.js: {minified: true, preprocess: true}
     #https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
     #js/metsis_search_map_block.js: {}
-    js/metsis_wms.js: {}
+    js/metsis_wms.js: {preprocess: true}
   dependencies:
     - core/jquery
     - jquery_ui/core

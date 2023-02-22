@@ -162,7 +162,7 @@ class DynamicLandingPagesController extends ControllerBase
         foreach ($result as $doc) {
             $fields = $doc->getFields();
         }
-        //dpm($fields);
+        dpm($fields);
 
         if (null != \Drupal::request()->query->get('export_type')) {
             $response = new Response();
@@ -261,7 +261,9 @@ class DynamicLandingPagesController extends ControllerBase
           ]];
           */
         // set map type (default leaflet OSM)
-        $settings['leaflet_map'] = 'OSM Mapnik';
+        //$map = [
+
+
         /*
         $settings['zoom'] = 3;
         $settings['map_position']['force'] = false;
@@ -271,18 +273,25 @@ class DynamicLandingPagesController extends ControllerBase
         //$settings['map_position']['center']['lon'] = $features['lon'];
 
         // set $map array with leafletMapGetInfo
-        $map = \Drupal::service('leaflet.service')->leafletMapGetInfo($settings['leaflet_map']);
+        $map = \Drupal::service('leaflet.service')->leafletMapGetInfo();
+        //  dpm($map);
+      //$map = leaflet_leaflet_map_info();
+      $map['OSM Mapnik']['settings']['leaflet_markercluster'] = [
+
+          'control' => false,
+
+      ];
 
         //Set manual zoom for points
         if ($isPoint) {
-            $map['settings']['zoom'] = 7;
+            $map['OSM Mapnik']['settings']['zoom'] = 7;
             //$map['settings']['map_position_force'] = true;
         }
         //dpm($map);
         //dpm($features);
         //$map['settings']['zoom'] = 1;
         // render the map
-        $map_result = \Drupal::service('leaflet.service')->leafletRenderMap($map, $features, $height = '400px');
+        $map_result = \Drupal::service('leaflet.service')->leafletRenderMap($map['OSM Mapnik'], $features, $height = '400px');
         //Add the rendered map to the renderArray
         $renderArray['map'] = $map_result;
 
@@ -546,6 +555,19 @@ class DynamicLandingPagesController extends ControllerBase
           ];
         }
       }
+
+      if(isset($fields['isParent'])) {
+        if ($fields['isParent'] == true ) {
+            $renderArray['related_information']['parent'] = [
+                    '#prefix' => '<div class="w3-container w3-bar">',
+                    '#type' => 'markup',
+                    '#markup' => '<p><em>This is a parent dataset. See the <a class="w3-text-blue" href="/metsis/elements/'.$id_prefix.'-'.$id.'/search">list of children</a> for more information.</em></p>',
+                    '#suffix' => '</div>',
+                    '#allowed_tags' => ['a', 'em'],
+          ];
+        }
+      }
+
         $landingPage = new Url('<current>');
         $landingPage = $fullhost.$landingPage->toString();
         $renderArray['related_information']['landing_page'] = [
@@ -713,6 +735,7 @@ class DynamicLandingPagesController extends ControllerBase
         $renderArray['keywords_wrapper'] = [
            '#type' => 'fieldset',
            '#title' => $this->t('Keywords'),
+           '#allowed_tags' => ['a'],
 
          ];
 
@@ -743,10 +766,20 @@ class DynamicLandingPagesController extends ControllerBase
             $renderArray['metadata_update_wrapper']['update'][] = [
              '#type' => 'markup',
              '#prefix' => '<p>',
-             '#markup' => $value. ' | '. $fields['last_metadata_update_type'][$i].' | ' .$fields['last_metadata_update_note'][$i],
+             '#markup' => $value. ' | '. (isset($fields['last_metadata_update_type'][$i]) ? $fields['last_metadata_update_type'][$i] : '').' | ' . (isset($fields['last_metadata_update_note'][$i]) ? $fields['last_metadata_update_note'][$i] : '') ,
              '#suffix' => '</p>'
            ];
             $i++;
+        }
+
+        if(isset($fields['storage_information_file_name'])) {
+          $renderArray['storage_information_wrapper'] = [
+            '#type' => 'fieldset',
+            '#title' => $this->t('Storage Information'),
+
+          ];
+             $renderArray['storage_information_wrapper']['information'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\StorageInformationForm', $fields);
+
         }
         //$renderArray['#group_children']['temporal'] = 'extent';
         //$renderArray['#group_children']['geographical'] = 'extent';

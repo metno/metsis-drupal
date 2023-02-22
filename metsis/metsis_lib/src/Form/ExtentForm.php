@@ -43,7 +43,7 @@ class ExtentForm extends FormBase
       '#markup' => $fields['temporal_extent_start_date'][0],
       //'#suffix' => '</p>',
     ];
-
+      if(isset($fields['temporal_extent_end_date'])) {
         $form['temporal']['end'] = [
       '#type' => 'item',
       '#title' => $this->t('End Date:'),
@@ -51,6 +51,7 @@ class ExtentForm extends FormBase
       '#markup' => $fields['temporal_extent_end_date'][0],
       //'#suffix' => '</p>',
     ];
+  }
         $form['geographical'] = [
       '#type' => 'details',
       '#title' => $this->t('Geographical Extent'),

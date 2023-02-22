@@ -38,9 +38,9 @@ search_map:
 
   js:
     #js/bundle.js: {}
-    /libraries/openlayers-6.5.0/ol.js: {minified: true}
-    https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: {minified: true}
-    js/searchmap.js: {}
+    /libraries/openlayers-6.5.0/ol.js: {minified: true, preprocess: true}
+    https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: {minified: true, preprocess: true}
+    js/searchmap.js: { preprocess: true}
   dependencies:
     - core/jquery
     - jquery_ui/core
@@ -56,23 +56,23 @@ search_map_block:
   version: 1.0.2
   css:
     component:
-      /libraries/openlayers-6.5.0/ol.css: {}
+      /libraries/openlayers-6.5.0/ol.css: {minified: true, preprocess: true}
 #      /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.css: {}
-      /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
-      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
+      /libraries/ol-ext-3.1.17/dist/ol-ext.css: {minified: true, preprocess: true}
+      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true, preprocess: true}
     #  https://unpkg.com/ol-geocoder@latest/dist/ol-geocoder.min.css
     theme:
 #      css/metsis_qsearch.css: {}
       css/metsis_res_map.css: {}
   js:
-    /libraries/proj4js-2.6.3/dist/proj4.js: {minified: true}
-    /libraries/openlayers-6.5.0/ol.js: {minified: true}
+    /libraries/proj4js-2.6.3/dist/proj4.js: {minified: true, preprocess: true}
+    /libraries/openlayers-6.5.0/ol.js: {minified: true, preprocess: true}
 #    /libraries/ol-layerswitcher-3.8.3/dist/ol-layerswitcher.js: {}
     /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
     #https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js: { type: external }
     #js/metsis_search_map_block.js: {}
-    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external, minified: true, attributes: {async: true}}
-    js/metsis_res_map.js: {}
+    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external, minified: true, attributes: {async: true}, preprocess: true}
+    js/metsis_res_map.js: {preprocess: true}
   dependencies:
     - core/jquery
     - jquery_ui/core

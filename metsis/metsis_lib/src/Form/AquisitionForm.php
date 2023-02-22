@@ -15,7 +15,7 @@ class AquisitionForm extends FormBase
      */
     public function getFormId()
     {
-        return 'keywords_form';
+        return 'aquasition_form';
     }
 
     /**
@@ -36,7 +36,7 @@ class AquisitionForm extends FormBase
 ];
         foreach ($fields['platform_short_name'] as $platform) {
             $i=0;
-            $form['iso'][] = [
+            $form['platform'][] = [
     '#type' => 'markup',
     '#markup' => '<a alt="'.$fields['platform_long_name'][$i].'"href="'.$fields['platform_resource'][$i].'">'.$platform.'</a>',
     '#allowed_tags' => ['a'],
@@ -51,7 +51,7 @@ class AquisitionForm extends FormBase
 ];
         foreach ($fields['platform_instrument_short_name'] as $platform) {
             $i=0;
-            $form['iso'][] = [
+            $form['instrument'][] = [
     '#type' => 'markup',
     '#markup' => '<a alt="'.$fields['platform_instrument_long_name'][$i].'"href="'.$fields['platform_instrument_resource'][$i].'">'.$platform.'</a>',
     '#allowed_tags' => ['a'],

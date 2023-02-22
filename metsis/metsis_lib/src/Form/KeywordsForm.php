@@ -34,14 +34,20 @@ class KeywordsForm extends FormBase
 '#title' => $this->t('ISO Topic Keywords'),
 '#weight' => '0',
 '#group' => 'keywords',
+'#allowed_tags' => ['a'],
 ];
             foreach ($fields['iso_topic_category'] as $iso) {
-                $form['iso'][] = [
+              //dpm($iso);
+                $form['iso'][$iso] = [
+                  '#prefix' => '<p>',
     '#type' => 'markup',
-    '#markup' => '<a href="https://vocab.met.no/mmd/ISO_Topic_Category/"'.$iso.'>'.$iso.'</a>',
-    '#allowed_tags' => ['a'],
+    '#markup' => '<a href="https://vocab.met.no/mmd/ISO_Topic_Category/'.$iso.'">'.$iso.'</a>',
+    '#allowed_tags' => ['a','p'],
+    '#suffix' => '</p>'
   ];
+
             }
+
         }
 
         foreach ($fields['keywords_vocabulary'] as $vocab) {

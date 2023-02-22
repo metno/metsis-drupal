@@ -4,7 +4,7 @@ basket_view:
     theme:
       css/basket.css: {}
   js:
-    js/bokeh_progress.js: {}
+    js/bokeh_progress.js:  {preprocess: true}
   dependencies:
     - core/jquery
     - core/once
