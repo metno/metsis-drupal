@@ -162,7 +162,7 @@ class DynamicLandingPagesController extends ControllerBase
         foreach ($result as $doc) {
             $fields = $doc->getFields();
         }
-        dpm($fields);
+        //dpm($fields);
 
         if (null != \Drupal::request()->query->get('export_type')) {
             $response = new Response();
