@@ -215,11 +215,11 @@ console.log("Start of metsis search map script:");
 
         //Set default checked filter
         //var flt = document.getElementsByName('map-filter');
-        selected_fiter = selected_filter.toLowerCase();
+        selected_filter = selected_filter.toLowerCase();
         console.log('selected filter: ' + selected_filter.toLowerCase());
-
-        document.getElementById(selected_filter.toLowerCase()).checked = true;
-
+        if(selected_filter !== 'contains') {
+          document.getElementById(selected_filter.toLowerCase()).checked = true;
+        }
 
 
         //If additional lyers are set, create the layers dropdown button list
