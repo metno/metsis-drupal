@@ -559,9 +559,13 @@ function metsis_search_views_pre_build(ViewExecutable $view)
                 $session->remove('cond');
                 $session->set('keywords_level', 1);
 
+                $session->remove('place_lat');
+                $session->remove('place_lon');
+
 
 
                 \Drupal::cache()->invalidate('block:metsis_search_map');
+                \Drupal::cache()->invalidate('block:metsis_search_map_block');
                 //$config = \Drupal::config('metsis_search.settings');
                 //$keep_parent_filter = $config->get('keep_parent_filter');
                 //dpm($keep_parent_filter);

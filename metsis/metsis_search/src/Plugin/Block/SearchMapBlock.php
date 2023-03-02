@@ -13,6 +13,8 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+use Drupal\Core\Cache\UncacheableDependencyTrait;
+
 /**
  * Provides a Block.
  *
@@ -25,6 +27,7 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class SearchMapBlock extends BlockBase implements BlockPluginInterface
 {
+  use UncacheableDependencyTrait;
     /**
      * {@inheritdoc}
      * Add js to block and return renderarray

@@ -120,14 +120,14 @@ class MapBlock extends BlockBase implements BlockPluginInterface
     ];
 
         $build['#cache'] = [
-    //'max-age' => 0,
+        'max-age' => 0,
     //'tags' =>$this->getCacheTags(),
-      'contexts' => [
+     // 'contexts' => [
         //  'route',
 
         #'url.path',
-        'url.query_args',
-      ],
+      //  'url.query_args',
+      //],
     ];
 
         $build['#attached'] = [

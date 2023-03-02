@@ -173,11 +173,13 @@ class MapSearchController extends ControllerBase
         $session->remove('keywords_level');
         $session->remove('back_to_search');
         $session->remove('place_filter');
+        $session->remove('place_lat');
+        $session->remove('place_lon');
         $session->set('keywords_level', 1);
 
 
         //$session->remove('proj', $proj);
-        $session->remove('place_filter');
+        //$session->remove('place_filter');
 
         //$response = new AjaxResponse();
         //$response->addCommand(new SettingsCommand(['metsis_search_map_block' => []], TRUE));

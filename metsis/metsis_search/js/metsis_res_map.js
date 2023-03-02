@@ -2516,8 +2516,8 @@ geocoder.on('addresschosen', function(evt) {
     success: function(response) {
 
           //Store place in browser session
-         sessionStorage.setItem("place_lat", evt.place.lat);
-         sessionStorage.setItem("place_lon", evt.place.lon);
+         //sessionStorage.setItem("place_lat", evt.place.lat);
+         //sessionStorage.setItem("place_lon", evt.place.lon);
 
          console.log(window.location.href);
 
