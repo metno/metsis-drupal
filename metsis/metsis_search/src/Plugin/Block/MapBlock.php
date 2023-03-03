@@ -12,7 +12,7 @@ namespace Drupal\metsis_search\Plugin\Block;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
-
+use Drupal\Core\Cache\UncacheableDependencyTrait;
 /**
  * Provides a Block.
  *
@@ -25,6 +25,8 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class MapBlock extends BlockBase implements BlockPluginInterface
 {
+  use UncacheableDependencyTrait;
+
     /**
      * {@inheritdoc}
      * Add js to block and return renderarray
@@ -48,20 +50,16 @@ class MapBlock extends BlockBase implements BlockPluginInterface
         $brlon = "";
         $proj = $session->get('proj');
         //\Drupal::logger('metsis_search:mapBlock')->debug('current mapblock session projection: ' . $proj);
-
+      /*
         if ($bboxFilter != null) {
             $tllat = $session->get('tllat');
             $tllon = $session->get('tllon');
             $brlat = $session->get('brlat');
             $brlon = $session->get('brlon');
-            /*
-            $tllat = $tempstore->get('tllat');
-            $tllon = $tempstore->get('tllon');
-            $brlat = $tempstore->get('brlat');
-            $brlon = $tempstore->get('brlon'); */
+
         //\Drupal::logger('metsis_search_map_block')->debug("Got input filter vars: " .$tllat .','. $tllon .','.$brlat.','.$brlon);
         }
-
+      */
         //Get saved configuration
         $config = \Drupal::config('metsis_search.settings');
         $map_location = $config->get('map_selected_location');
@@ -114,6 +112,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface
       '#type' => 'markup',
       '#markup' => '<div id="metmap" class="metmap"></div>',
       '#allowed_tags' => ['div','label'],
+      '#cache' => [ 'max-age' => 0]
     ];
         $build['suffix'] = [
       '#markup' => '<br><br>'

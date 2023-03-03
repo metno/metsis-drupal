@@ -27,7 +27,7 @@ use Drupal\Core\Cache\UncacheableDependencyTrait;
  */
 class SearchMapBlock extends BlockBase implements BlockPluginInterface
 {
-  use UncacheableDependencyTrait;
+
     /**
      * {@inheritdoc}
      * Add js to block and return renderarray
