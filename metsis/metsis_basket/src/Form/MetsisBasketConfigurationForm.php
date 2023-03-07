@@ -1,35 +1,24 @@
 <?php
-/**
- *
- * @file
- * Contains \Drupal\metsis_basket\Form\MetsisBasketConfigurationForm
- *
- * Form for Metsis Basket Admin Configuration
- *
- */
+
 namespace Drupal\metsis_basket\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Url;
 
 /**
- *  Class ConfigurationForm.
+ * Class ConfigurationForm.
  *
  *  {@inheritdoc}
- *
- *
  */
 class MetsisBasketConfigurationForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
-  */
+   */
   protected function getEditableConfigNames() {
     return [
       'metsis_basket.configuration',
-      ];
+    ];
   }
 
   /**
@@ -77,20 +66,15 @@ class MetsisBasketConfigurationForm extends ConfigFormBase {
       '#required' => FALSE,
     ];
     return parent::buildForm($form, $form_state);
- }
+  }
 
   /**
    * {@inheritdoc}
    *
-   * TODO: Add validation to the rest of the form elements
+   * @todo Add validation to the rest of the form elements.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-  /*  $value = $form_state->getValue('metsis_basket_server');
 
-    if (!UrlHelper::isValid($value,TRUE)) {
-      $form_state->setErrorByName('metsis_basket_server', t('The basket server address is not valid.', array('%metsis_basket_server' => $value)));
-      return;
-    }*/
   }
 
   /**
@@ -112,4 +96,5 @@ class MetsisBasketConfigurationForm extends ConfigFormBase {
       ->set('metsis_basket_endpoint', $form_state->getValue('metsis_basket_endpoint'))
       ->save();
   }
+
 }

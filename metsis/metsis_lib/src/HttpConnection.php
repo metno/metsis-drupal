@@ -1,11 +1,13 @@
 <?php
+
 namespace Drupal\metsis_lib;
+
 use GuzzleHttp\Exception\RequestException;
 
 /**
  * Example:
  *  $con = new HttpConnection('normap-dev.met.no','8080');
- *  $res=$con->get('/solr/l1-adcsolr/select',array("q"=>"*:*","rows"=>30,"wt"=>"json","indent"=>"true"));
+ *  $res=$con->get('/solr/l1-adcsolr/select',array("q"=>"*:*","rows"=>30,"wt"=>"json","indent"=>"true"));.
  */
 class HttpConnection {
 
@@ -17,25 +19,37 @@ class HttpConnection {
   private $response_body;
   private $response_headers;
 
+  /**
+   *
+   */
   public function __construct($host, $port) {
 
     $this->host = $host;
 
     $this->port = $port;
 
-    $this->headers = new HeaderList(array(), "\r\n");
+    $this->headers = new HeaderList([], "\r\n");
   }
 
-  public function get($path, $params = array(), $headers = array()) {
+  /**
+   *
+   */
+  public function get($path, $params = [], $headers = []) {
 
     return $this->send($path, 'get', $params, $headers);
   }
 
+  /**
+   *
+   */
   public static function serialize_auth($user, $pass) {
 
     return base64_encode("$user:$pass");
   }
 
+  /**
+   *
+   */
   public static function serialize_params($params) {
 
     $query_string = '';
@@ -48,22 +62,24 @@ class HttpConnection {
     return substr($query_string, 1);
   }
 
-  private function send($path, $method, $params = array(), $headers = array()) {
+  /**
+   *
+   */
+  private function send($path, $method, $params = [], $headers = []) {
 
     $this->headers->add($headers);
 
     $params = self::serialize_params($params);
     \Drupal::logger('metsis_lib')->debug("HttpConnection request: " . "http://{$this->host}:{$this->port}{$path}?{$params} HTTP/1.0\r\n");
-    //$client = new Client();
-    //$client->setDefaultOption('verify', false);
-  /*  $this->request = array(
-      strtoupper($method),
-      "http://{$this->host}:{$this->port}{$path}?{$params} HTTP/1.0\r\n",
-      $this->headers->to_s() . "\r\n"
+    // $client = new Client();
+    // $client->setDefaultOption('verify', false);
+    /*  $this->request = array(
+    strtoupper($method),
+    "http://{$this->host}:{$this->port}{$path}?{$params} HTTP/1.0\r\n",
+    $this->headers->to_s() . "\r\n"
     );
-*/
-    //$this->request .= $this->headers->to_s() . "\r\n";
-
+     */
+    // $this->request .= $this->headers->to_s() . "\r\n";.
     $this->request = strtoupper($method) . " http://{$this->host}:{$this->port}{$path}?{$params} HTTP/1.0\r\n";
 
     $this->request .= $this->headers->to_s() . "\r\n";
@@ -84,10 +100,12 @@ class HttpConnection {
       throw new RequestException("could not establish connection with $host");
     }
 
-
     return $this->parse_response();
   }
 
+  /**
+   *
+   */
   private function parse_response() {
 
     $this->response = str_replace("\r\n", "\n", $this->response);
@@ -95,7 +113,7 @@ class HttpConnection {
     list($headers, $body) = explode("\n\n", $this->response, 2);
 
     $headers = new HeaderList($headers);
-    return array('headers' => $headers->to_a(), 'body' => $body, 'code' => $headers->get_response_code());
+    return ['headers' => $headers->to_a(), 'body' => $body, 'code' => $headers->get_response_code()];
   }
 
 }

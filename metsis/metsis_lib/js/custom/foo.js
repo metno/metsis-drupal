@@ -4,11 +4,11 @@
         attach: function () {
 
             try {
-//                $('.adc-back').append('<div class="browser_back"><a class="browser_back_link" alt="go one page back" title="go one page back" href="#browser_back">back</a></div>');
+                //                $('.adc-back').append('<div class="browser_back"><a class="browser_back_link" alt="go one page back" title="go one page back" href="#browser_back">back</a></div>');
                 $('.ext_data_source').click(function () {
                     var loc = jQuery(this).attr('href');
                     alert(loc);
-                    jQuery.colorbox({html: "<h1>Welcome</h1>"});
+                    jQuery.colorbox({ html: "<h1>Welcome</h1>" });
                     event.preventDefault();
                     //jQuery.colorbox({closeButton: true, opacity: 0.9, html: '<iframe id="data_source_iframe" src="' + loc + '" frameborder="0" allowfullscreen></iframe>'});
                     //return;

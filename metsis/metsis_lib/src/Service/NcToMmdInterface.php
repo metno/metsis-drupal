@@ -18,11 +18,10 @@ interface NcToMmdInterface {
    *
    * @return array
    */
-  public function getMetadata(string $filepath, string $filename, string $output_path ): array;
+  public function getMetadata(string $filepath, string $filename, string $output_path): array;
 
   /**
    * Retrieve metadata extraction status.
-   *
    *
    * @return bool
    */

@@ -32,23 +32,22 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
     \Drupal::logger('metsis_basket')->debug('Current item id is: ' . $entity->id());
     \Drupal::logger('metsis_basket')->debug('Current item bundle is: ' . $entity->bundle());
 
-    /**
+    /*
      * Get the default endpoint names from default config
      */
     $default_config = \Drupal::config('metsis_basket.settings');
-    $basket_endpoint= $default_config->get("constants.basket_endpoint");
+    $basket_endpoint = $default_config->get("constants.basket_endpoint");
     $wms_endpoint = $default_config->get("constants.wms_endpoint");
     $ts_endpoint = $default_config->get("constants.ts_endpoint");
 
     \Drupal::logger('metsis_basket')->debug('metadata_identifier is: ' . $entity->get('metadata_identifier')->value);
-
 
     /* Get the metadata identifiers */
     $metadata_identifiers = [];
     $metadata_identifiers[] = $entity->metadata_identifier->value;
 
     $solr_core = adc_get_solr_core([$metadata_identifiers[0]]);
-    //$solr_core = "adc-test";
+    // $solr_core = "adc-test";.
     $options = [
       'query' => [
         'dataset' => implode(",", $metadata_identifiers),
@@ -56,32 +55,32 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
         'calling_results_page' => $basket_endpoint,
       ],
     ];
-    //var_dump($metadata_identifiers);
+    // var_dump($metadata_identifiers);
     if (count($metadata_identifiers) > 1) {
       \Drupal::messenger()->addWarning('Time series plotting for basket items is not fully implemented.');
     }
     if (adc_has_feature_type($metadata_identifiers[0], 'timeSeries') === 1) {
       $options['query']['metadata_identifier'] = $metadata_identifiers[0];
-      //drupal_goto($ts_endpoint, $options);
+      // drupal_goto($ts_endpoint, $options);.
       \Drupal::messenger()->addMessage("Calling Visualization TS service for single item: " . $entity->metadata_identifier->value);
-      $output = print_r($options,1);
+      $output = print_r($options, 1);
       \Drupal::logger('metsis_basket')->debug("TS Endpoint is: " . $ts_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling single visualization service with options: " . $output);
       $url = Url::fromRoute('metsis_timseries.tsform', $options['query']);
-      //$response = new RedirectResponse('metsis_timseries.tsform', $options);
+      // $response = new RedirectResponse('metsis_timseries.tsform', $options);.
       $response = new RedirectResponse($url);
       return $response->send();
     }
     else {
-      //drupal_goto($wms_endpoint, $options);
+      // drupal_goto($wms_endpoint, $options);.
       \Drupal::messenger()->addMessage("Calling Visualization WMS service for single item: " . $entity->metadata_identifier->value);
-      $output = print_r($options,1);
+      $output = print_r($options, 1);
       \Drupal::logger('metsis_basket')->debug("WMS Endpoint is: " . $wms_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling single visualization service with options: " . $output);
       $url = Url::fromRoute('metsis_qsearch.wms', $options['query']);
-      //$response = new RedirectResponse('metsis_qsearch.wms', $options);
+      // $response = new RedirectResponse('metsis_qsearch.wms', $options);.
       $response = new RedirectResponse($url);
-      //return new RedirectResponse('metsis_qsearch.wms', $options);
+      // Return new RedirectResponse('metsis_qsearch.wms', $options);.
       return $response->send();
     }
 
@@ -92,14 +91,13 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
    */
   public function executeMultiple(array $objects) {
 
-    /**
+    /*
      * Get the default endpoint names from default config
      */
     $default_config = \Drupal::config('metsis_basket.settings');
-    $basket_endpoint= $default_config->get("constants.basket_endpoint");
+    $basket_endpoint = $default_config->get("constants.basket_endpoint");
     $wms_endpoint = $default_config->get("constants.wms_endpoint");
     $ts_endpoint = $default_config->get("constants.ts_endpoint");
-
 
     $metadata_identifiers = [];
     foreach ($objects as $entity) {
@@ -115,31 +113,30 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
       ],
     ];
 
-
     if (count($metadata_identifiers) > 1) {
       \Drupal::messenger()->addWarning('Time series plotting for basket items is not fully implemented.');
     }
     if (adc_has_feature_type($metadata_identifiers[0], 'timeSeries') === 1) {
       $options['query']['metadata_identifier'] = $metadata_identifiers[0];
-      //drupal_goto($ts_endpoint, $options);
+      // drupal_goto($ts_endpoint, $options);.
       \Drupal::messenger()->addMessage("Calling Visualization TS service for multiple items: " . $entity->metadata_identifier->value);
-      $output = print_r($options,1);
+      $output = print_r($options, 1);
       \Drupal::logger('metsis_basket')->debug("TS Endpoint is: " . $ts_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling multiple visualization service with options: " . $output);
-      //var_dump($options);
+      // var_dump($options);
       $url = Url::fromRoute('metsis_timseries.tsform', $options['query']);
-      //$response = new RedirectResponse('metsis_timseries.tsform', $options);
+      // $response = new RedirectResponse('metsis_timseries.tsform', $options);.
       $response = new RedirectResponse($url);
       return $response->send();
     }
     else {
-      //drupal_goto($wms_endpoint, $options);
+      // drupal_goto($wms_endpoint, $options);.
       \Drupal::messenger()->addMessage("Calling Visualization WMS service for multiple item: " . $entity->metadata_identifier->value);
-      $output = print_r($options,1);
+      $output = print_r($options, 1);
       \Drupal::logger('metsis_basket')->debug("WMS Endpoint is: " . $wms_endpoint);
       \Drupal::logger('metsis_basket')->debug("Calling multiple visualization service with options: " . $output);
       $url = Url::fromRoute('metsis_qsearch.wms', $options['query']);
-      //$response = new RedirectResponse('metsis_qsearch.wms', $options);
+      // $response = new RedirectResponse('metsis_qsearch.wms', $options);.
       $response = new RedirectResponse($url);
       return $response->send();
     }
@@ -147,7 +144,8 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
 
   /**
    * {@inheritdoc}
-   * TODO: Make sure this access function behave as expected
+   *
+   * @todo Make sure this access function behave as expected.
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($object->getEntityType() === 'metsis_basket_item  ') {
@@ -158,6 +156,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
 
     // Other entity types may have different
     // access methods and properties.
-  return TRUE;
+    return TRUE;
   }
+
 }

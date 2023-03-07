@@ -1,13 +1,15 @@
 .accordion {
-    min-height: 600px;
+  min-height: 600px;
 }
 
-.childdataset.odd{
-    background: #f7e6ff;
+.childdataset.odd {
+  background: #f7e6ff;
 }
-.childdataset.even{
-    background: #eeccff;
+
+.childdataset.even {
+  background: #eeccff;
 }
+
 /*
 .ext_data_source {
     font-size: 5px;
@@ -15,12 +17,14 @@
 */
 
 table.sticky-header {
-    z-index: 10;
+  z-index: 10;
 }
+
 table tr td {
-    vertical-align: top;
-    font-size: 80%;
+  vertical-align: top;
+  font-size: 80%;
 }
+
 /* For chaning background color when table element are selected */
 tr.selected td {
   background: #ffc;

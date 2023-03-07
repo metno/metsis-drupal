@@ -1,7 +1,7 @@
 (function ($) {
 
   function throbberActivate() {
-    if($.trim($("#dash-loader-wrapper").html())=='') {
+    if ($.trim($("#dash-loader-wrapper").html()) == '') {
       $('#dash-loader-wrapper').append('Dashboard is loading... <img id="dashTrobber" src="/core/misc/throbber-active.gif">');
     }
   }
@@ -27,71 +27,58 @@ console.log("event target complete");
 }
 
 });*/
-    Drupal.behaviors.bokehDashLoader = {
-        attach: function(context, settings) {
-          $('#bokeh-dashboard').once('throbber-bokeh').each(function() {
-            //
-            console.log("Initializing throbber bokeh behavior...");
-          //Variable to hold dasbord/bokeh initialized or not
-          var dash_init = false;
+  Drupal.behaviors.bokehDashLoader = {
+    attach: function (context, settings) {
+      $('#bokeh-dashboard').once('throbber-bokeh').each(function () {
+        //
+        console.log("Initializing throbber bokeh behavior...");
+        //Variable to hold dasbord/bokeh initialized or not
+        var dash_init = FALSE;
 
-          //Override console log to add events when bokeh logs something
-          var logFn = console.log;
+        //Override console log to add events when bokeh logs something
+        var logFn = console.log;
+        //The log function override
+        console.log = function (arg1) {
 
-
-
-
-          //The log function override
-          console.log = function(arg1) {
-
-            //First event if dashboard is not initalized
-            if(!dash_init) {
-              //Check if bokeh libraries are loaded and we have the bokeh object
-            if(typeof Bokeh != "undefined") {
+          //First event if dashboard is not initalized
+          if (!dash_init) {
+            //Check if bokeh libraries are loaded and we have the bokeh object
+            if (typeof Bokeh != "undefined") {
               logFn("Bokeh initialized");
               //logFn(Bokeh);
               //Set dashboard initialized to true.
-              dash_init = true;
-
-
+              dash_init = TRUE;
             }
           }
           //If Dasboard is initialized. we add some event listeners.
-          if(dash_init) {
+          if (dash_init) {
             let docs = Bokeh.documents;
             let doc = docs[0];
             //Check if we have the document object
-            if(typeof doc != "undefined") {
+            if (typeof doc != "undefined") {
               //logFn(doc);
               //logFn("Is doc idle? " + doc.is_idle);
               //Add the document ready event listender
-            if(doc.is_idle) {
-              throbberDeactivate();
+              if (doc.is_idle) {
+                throbberDeactivate();
+              }
+              else {
+                throbberActivate();
+              }
             }
-            else {
-              throbberActivate();
-            }
-          }
             //KEEEP for logging to work.
             logFn(arg1);
           }
         }
         //Console error log override
-        console.error = function(arg1) {
-       // do your work on error part
-       //logFn('error log');
-       logFn(arg1);
-       //logFn('your console hacked')
-    }
-
-
-
-
-
-
-        });
-        },
-        weight: 999
-    }
-
+        console.error = function (arg1) {
+          // do your work on error part
+          //logFn('error log');
+          logFn(arg1);
+          //logFn('your console hacked')
+        }
+      });
+    },
+    weight: 999
+  }
 })(jQuery);

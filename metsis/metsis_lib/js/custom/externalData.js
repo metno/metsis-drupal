@@ -1,18 +1,17 @@
 (function ($) {
     $().ready(function () {
 
-
         //alert("externalData.js is loaded");
         //Examples of how to assign the Colorbox event to elements
-        $(".group1").colorbox({rel: 'group1'});
-        $(".group2").colorbox({rel: 'group2', transition: "fade"});
-        $(".group3").colorbox({rel: 'group3', transition: "none", width: "75%", height: "75%"});
-        $(".group4").colorbox({rel: 'group4', slideshow: true});
+        $(".group1").colorbox({ rel: 'group1' });
+        $(".group2").colorbox({ rel: 'group2', transition: "fade" });
+        $(".group3").colorbox({ rel: 'group3', transition: "none", width: "75%", height: "75%" });
+        $(".group4").colorbox({ rel: 'group4', slideshow: TRUE });
         $(".ajax").colorbox();
-        $(".youtube").colorbox({iframe: true, innerWidth: 640, innerHeight: 390});
-        $(".vimeo").colorbox({iframe: true, innerWidth: 500, innerHeight: 409});
-        $(".iframe").colorbox({iframe: true, width: "80%", height: "80%"});
-        $(".inline").colorbox({inline: true, width: "50%"});
+        $(".youtube").colorbox({ iframe: TRUE, innerWidth: 640, innerHeight: 390 });
+        $(".vimeo").colorbox({ iframe: TRUE, innerWidth: 500, innerHeight: 409 });
+        $(".iframe").colorbox({ iframe: TRUE, width: "80%", height: "80%" });
+        $(".inline").colorbox({ inline: TRUE, width: "50%" });
         $(".callbacks").colorbox({
             onOpen: function () {
                 alert('onOpen: colorbox is about to open');
@@ -31,13 +30,13 @@
             }
         });
 
-        $('.non-retina').colorbox({rel: 'group5', transition: 'none'})
-        $('.retina').colorbox({rel: 'group5', transition: 'none', retinaImage: true, retinaUrl: true});
+        $('.non-retina').colorbox({ rel: 'group5', transition: 'none' })
+        $('.retina').colorbox({ rel: 'group5', transition: 'none', retinaImage: TRUE, retinaUrl: TRUE });
 
         //Example of preserving a JavaScript event for inline calls.
         $("#click").click(function () {
-            $('#click').css({"background-color": "#f00", "color": "#fff", "cursor": "inherit"}).text("Open this window again and this message will still be here.");
-            return false;
+            $('#click').css({ "background-color": "#f00", "color": "#fff", "cursor": "inherit" }).text("Open this window again and this message will still be here.");
+            return FALSE;
         });
     });
 })(jQuery);

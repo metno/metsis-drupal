@@ -11,7 +11,7 @@ dashboard:
 dashboard.testpost:
   path: '/metsis/bokeh/dashboard/post'
   defaults:
-    _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::post_datasource
+    _controller: \Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController::postDatasource
     _title: "Bokeh Dashboard"
   options:
     query:

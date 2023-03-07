@@ -3,7 +3,7 @@
 namespace Drupal\metsis_basket;
 
 /**
- * Class MetsisBasketService.
+ * Class implementing the basket service interface.
  */
 class MetsisBasketService implements MetsisBasketServiceInterface {
 

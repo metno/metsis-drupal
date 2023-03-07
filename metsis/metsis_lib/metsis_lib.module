@@ -1,16 +1,16 @@
 <?php
 
-use Drupal\Core\Url;
-use Drual\metsis_lib;
+/**
+ * @file
+ */
 
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_help().
  */
-function metsis_lib_help($route_name, RouteMatchInterface $route_match)
-{
-    switch ($route_name) {
+function metsis_lib_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
     // Main module help for the metsis_search module.
     /** TODO: Read help from module's README.md */
     case 'help.page.metsis_lib':
@@ -21,48 +21,44 @@ function metsis_lib_help($route_name, RouteMatchInterface $route_match)
 
     default:
 
+  }
 }
-}
-
 
 /**
  * Implements hook_theme_suggestions_HOOK_alter().
  *
  * This hook adds a new theme suggestion for all radio form elements.
  */
-function metsis_lib_theme_suggestions_details_alter(array &$suggestions, array $variables)
-{
-    $routename = \Drupal::routeMatch()->getRouteName();
-    //\Drupal::logger('quicklooks_suggest_fieldset')->debug($routename);
-    if ($routename === 'metsis_lib.dynamic_landing_pages_controller_getLandingPage') {
-        if ($variables['element']['#type'] == 'details') {
-            // && in_array('quickcont', $variables['element']['#attributes']['class'])
-            $suggestions[] = 'details__personnel';
-        }
+function metsis_lib_theme_suggestions_details_alter(array &$suggestions, array $variables) {
+  $routename = \Drupal::routeMatch()->getRouteName();
+  // \Drupal::logger('quicklooks_suggest_fieldset')->debug($routename);
+  if ($routename === 'metsis_lib.dynamic_landing_pages_controller_getLandingPage') {
+    if ($variables['element']['#type'] == 'details') {
+      // && in_array('quickcont', $variables['element']['#attributes']['class'])
+      $suggestions[] = 'details__personnel';
     }
+  }
 }
 
 /**
  * Implements hook_theme().
  */
-
-function metsis_lib_theme($existing, $type, $theme, $path)
-{
-    $routename = \Drupal::routeMatch()->getRouteName();
-    //\Drupal::logger('quicklooks_hook_theme')->debug($routename);
-    //\Drupal::logger('quicklooks_hook_theme')->debug($path);
-    if ($routename === 'metsis_lib.dynamic_landing_pages_controller_getLandingPage') {
-        return [
-    'details__personnel' => [
+function metsis_lib_theme($existing, $type, $theme, $path) {
+  $routename = \Drupal::routeMatch()->getRouteName();
+  // \Drupal::logger('quicklooks_hook_theme')->debug($routename);
+  // \Drupal::logger('quicklooks_hook_theme')->debug($path);
+  if ($routename === 'metsis_lib.dynamic_landing_pages_controller_getLandingPage') {
+    return [
+      'details__personnel' => [
       // base_hook is important!
       // Otherwise your template won't know what to render.
-      'template' => 'details--personnel',
-      'base hook' => 'details',
-      'path' => $path . '/templates',
-    ],
-  ];
-    }
-    else {
-      return [];
-    }
+        'template' => 'details--personnel',
+        'base hook' => 'details',
+        'path' => $path . '/templates',
+      ],
+    ];
+  }
+  else {
+    return [];
+  }
 }

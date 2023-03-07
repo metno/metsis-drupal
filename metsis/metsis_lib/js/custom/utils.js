@@ -1,4 +1,3 @@
-
 /**
  * Drupal AJAX forms are submitted by the mousedown event instead of the click
  * event to make these forms work with form fields like autocomplete. The
@@ -7,7 +6,7 @@
  * for more information.
  *
  * This jQuery v1.7+ solution uses .on() to bind the keypress event to *all*
- * input fields that are in the DOM right now or inserted later and as long as 
+ * input fields that are in the DOM right now or inserted later and as long as
  * they do not have the following CSS classes:
  *  - .prevent-submit-on-enter
  *  - .form-autocomplete
@@ -57,21 +56,21 @@
     jQuery(function ($) {
         jQuery('a.adc-back').click(function () {
             parent.history.back();
-            return false;
+            return FALSE;
         });
     });
-//
+    //
 })(jQuery);
 
 /**
  * test{
  * NOT ready for use.
- * 
+ *
  * needs
  * code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css
  * and
  * code.jquery.com/ui/1.12.1/jquery-ui.js
- * 
+ *
  */
 /*
 

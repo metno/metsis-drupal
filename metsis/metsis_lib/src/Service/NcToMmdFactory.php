@@ -2,10 +2,6 @@
 
 namespace Drupal\metsis_lib\Service;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Http\ClientFactory;
-
 /**
  * Class NcToMmdFactory.
  *

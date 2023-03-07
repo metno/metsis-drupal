@@ -1,8 +1,9 @@
 <?php
+
 namespace Drupal\metsis_lib;
 
 /**
- * should be moved out to its own file
+ * Should be moved out to its own file.
  */
 class HeaderList {
 
@@ -10,7 +11,10 @@ class HeaderList {
   private $response_code;
   private $linebreak;
 
-  public function __construct($headers = array(), $linebreak = "\n") {
+  /**
+   *
+   */
+  public function __construct($headers = [], $linebreak = "\n") {
 
     $this->linebreak = $linebreak;
 
@@ -22,6 +26,9 @@ class HeaderList {
     }
   }
 
+  /**
+   *
+   */
   public function to_s() {
 
     $headers = '';
@@ -34,31 +41,49 @@ class HeaderList {
     return $headers;
   }
 
+  /**
+   *
+   */
   public function to_a() {
 
     return $this->headers;
   }
 
+  /**
+   *
+   */
   public function __toString() {
 
     return $this->to_s();
   }
 
+  /**
+   *
+   */
   public function add($headers) {
 
     $this->headers = array_merge($this->headers, $headers);
   }
 
+  /**
+   *
+   */
   public function get($header) {
 
     return $this->headers[$header];
   }
 
+  /**
+   *
+   */
   public function get_response_code() {
 
     return $this->response_code;
   }
 
+  /**
+   *
+   */
   private function parse_headers_string() {
 
     $replace = ($this->linebreak == "\n" ? "\r\n" : "\n");
@@ -67,7 +92,7 @@ class HeaderList {
 
     $headers = explode($this->linebreak, $headers);
 
-    $this->headers = array();
+    $this->headers = [];
 
     if (preg_match('/^HTTP\/\d\.\d (\d{3})/', $headers[0], $matches)) {
 

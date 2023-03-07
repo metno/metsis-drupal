@@ -8,6 +8,5 @@
             // alert("click event on row");
         });
     });
-    //  
+    //
 })(jQuery);
-

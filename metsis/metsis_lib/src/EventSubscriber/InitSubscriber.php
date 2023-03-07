@@ -1,13 +1,13 @@
-<?php /**
- * @file
- * Contains \Drupal\metsis_lib\EventSubscriber\InitSubscriber.
- */
+<?php
 
 namespace Drupal\metsis_lib\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Listen to kernel request event.
+ */
 class InitSubscriber implements EventSubscriberInterface {
 
   /**
@@ -17,6 +17,9 @@ class InitSubscriber implements EventSubscriberInterface {
     return [KernelEvents::REQUEST => ['onEvent', 0]];
   }
 
+  /**
+   * Process on event.
+   */
   public function onEvent() {
 
   }

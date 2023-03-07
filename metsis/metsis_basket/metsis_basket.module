@@ -1,42 +1,50 @@
 <?php
 
+/**
+ * @file
+ */
 
-function metsis_basket_help($path, $arg)
-{
-    switch ($path) {
+/**
+ * Display help from this module
+ */
+function metsis_basket_help($path, $arg) {
+  switch ($path) {
     case 'admin/help#metsis_basket': $output = '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('Work in progress .<a href
-="@metsis_basket">Back to module admin.</a>.', array('@metsis_basket' => '/#overlay=admin/modules')) . '</p>';
+="@metsis_basket">Back to module admin.</a>.', ['@metsis_basket' => '/#overlay=admin/modules']) . '</p>';
       return $output;
-    case 'admin/content/metsis_basket': return '<p>' . t('The basket.') . '</p>';
+
+    case 'admin/content/metsis_basket':
+      return '<p>' . t('The basket.') . '</p>';
   }
 }
 
-// Implements hook_theme()
-function metsis_basket_theme($existing, $type, $theme, $path)
-{
-    return [
-        'metsis_basket-template' => [
-            'render element' => 'container', // To render a simple container element
-            'template' => 'metsis_basket', // My template file name
-            'variables' => [
-            ],
-        ],
-    ];
+/**
+ * Implements hook_theme()
+ */
+function metsis_basket_theme($existing, $type, $theme, $path) {
+  return [
+    'metsis_basket-template' => [
+  // To render a simple container element.
+      'render element' => 'container',
+  // My template file name.
+      'template' => 'metsis_basket',
+      'variables' => [],
+    ],
+  ];
 }
 
 /**
  * Map old settings permission to new permissions.
  */
-function metsis_basket_update_8007()
-{
-    $roles = \Drupal::entityTypeManager()->getStorage('user_role')->loadMultiple();
-    foreach ($roles as $role) {
-        /** @var \Drupal\user\RoleInterface $role */
-        if ($role->hasPermission('execute metsis_basket_delete_action metsis_basket_item')) {
-            $role->revokePermission('execute metsis_basket_delete_action metsis_basket_item');
-            $role->grantPermission('access metsis basket');
-            $role->save();
-        }
+function metsis_basket_update_8007() {
+  $roles = \Drupal::entityTypeManager()->getStorage('user_role')->loadMultiple();
+  foreach ($roles as $role) {
+    /** @var \Drupal\user\RoleInterface $role */
+    if ($role->hasPermission('execute metsis_basket_delete_action metsis_basket_item')) {
+      $role->revokePermission('execute metsis_basket_delete_action metsis_basket_item');
+      $role->grantPermission('access metsis basket');
+      $role->save();
     }
+  }
 }

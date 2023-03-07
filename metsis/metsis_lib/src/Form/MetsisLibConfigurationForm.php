@@ -1,44 +1,34 @@
 <?php
-/**
- *
- * @file
- * Contains \Drupal\metsis_lib\MetsisSearchConfigurationForm
- *
- * Form for Landing Page Creator Admin Configuration
- *
- */
+
 namespace Drupal\metsis_lib\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Url;
 
-/*
- *  * Class ConfigurationForm.
+/**
+ * Class ConfigurationForm.
  *
- *  {@inheritdoc}
- *
- *   */
+ * {@inheritdoc}
+ */
 class MetsisLibConfigurationForm extends ConfigFormBase {
 
-  /*
+  /**
    * {@inheritdoc}
-  */
+   */
   protected function getEditableConfigNames() {
     return [
       'metsis_lib.settings',
-      ];
+    ];
   }
 
-  /*
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'metsis_lib.admin_config_form';
   }
 
-  /*
+  /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
@@ -57,47 +47,43 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
       '#default_value' => $config->get('landing_pages_prefix'),
       '#states' => [
         'visible' => [
-             ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
+          ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
         ],
         'required' => [
-             ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
+          ':input[name="enable_landing_pages"]' => ['checked' => TRUE],
+        ],
       ],
-    ],
     ];
 
+    return parent::buildForm($form, $form_state);
+  }
 
+  /**
+   * {@inheritdoc}
+   *
+   * NOTE: Implement form validation here.
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    // Get user and pass from admin configuration.
+    $values = $form_state->getValues();
 
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
 
-        return parent::buildForm($form, $form_state);
-     }
+    /*
+     * Save the configuration
+     */
 
-      /*
-       * {@inheritdoc}
-       *
-       * NOTE: Implement form validation here
-       */
-      public function validateForm(array &$form, FormStateInterface $form_state) {
-        //get user and pass from admin configuration
-        $values = $form_state->getValues();
+    $this->configFactory->getEditable('metsis_lib.settings')
+      ->set('enable_landing_pages', $form_state->getValue('enable_landing_pages'))
+      ->set('landing_pages_prefix', $form_state->getValue('landing_pages_prefix'))
+      ->save();
 
-      }
+    parent::submitForm($form, $form_state);
+  }
 
-      /*
-       * {@inheritdoc}
-       */
-      public function submitForm(array &$form, FormStateInterface $form_state) {
-
-        /**
-         * Save the configuration
-        */
-
-
-        $this->configFactory->getEditable('metsis_lib.settings')
-          ->set('enable_landing_pages', $form_state->getValue('enable_landing_pages'))
-          ->set('landing_pages_prefix', $form_state->getValue('landing_pages_prefix'))
-          ->save();
-
-        parent::submitForm($form, $form_state);
-      }
-    }
+}
