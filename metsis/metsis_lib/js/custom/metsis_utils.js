@@ -19,8 +19,6 @@
     }
 })(jQuery);
 
-
-
 //local helpers
 function $adc_get_GET(param) {
     var vars = {};

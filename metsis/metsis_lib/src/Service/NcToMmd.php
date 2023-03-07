@@ -3,7 +3,7 @@
 namespace Drupal\metsis_lib\Service;
 
 /**
- * Class NcToMmd.
+ * Wrapper class for the nc_to_mmd tool.
  *
  * @package Drupal\metsis_lib\Service
  */
@@ -18,7 +18,7 @@ class NcToMmd implements NcToMmdInterface {
   private $status;
 
   /**
-   * {@inheritDoc}.
+   * See {@inheritDoc}.
    */
   public function getMetadata(string $filepath, string $filename, string $output_path): array {
     $metadata = [];
@@ -38,7 +38,7 @@ class NcToMmd implements NcToMmdInterface {
       // $xml = simplexml_load_file($xml_content):
       // get xml object iterator with mmd namespaces.
       $xml_wns = $xml->children($xml->getNamespaces(TRUE)['mmd']);
-      $metadata[] = $this->depth_mmd("", $xml_wns);
+      $metadata[] = $this->depthMmd("", $xml_wns);
 
       $this->status = TRUE;
     }
@@ -53,7 +53,7 @@ class NcToMmd implements NcToMmdInterface {
   }
 
   /**
-   * @{inheritDoc}
+   * {@inheritDoc}
    */
   public function getStatus() {
     return $this->status;
@@ -62,11 +62,11 @@ class NcToMmd implements NcToMmdInterface {
   /**
    * Extract mmd to the last child.
    */
-  private function depth_mmd($prefix, $iterator) {
+  private function depthMmd($prefix, $iterator) {
     $kv_a = [];
     foreach ($iterator as $k => $v) {
       if ($iterator->hasChildren()) {
-        $kv_a = array_merge($kv_a, $this->depth_mmd($prefix . ' ' . $k, $v));
+        $kv_a = array_merge($kv_a, $this->depthMmd($prefix . ' ' . $k, $v));
       }
       else {
         // Add mmd keys and values to form_state to be passed to the second page.

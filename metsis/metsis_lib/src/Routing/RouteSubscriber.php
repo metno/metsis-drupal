@@ -17,7 +17,7 @@ class RouteSubscriber extends RouteSubscriberBase {
    */
   protected function alterRoutes(RouteCollection $collection) {
     // no_cache for a specific view
-    // Drupal::logger('metsis_lib')->debug('entering routesubscriber');
+    // Drupal::logger('metsis_lib')->debug('entering routesubscriber');.
     /*    if ($route = $collection->get('view.metsis_search.results')) {
     //\Drupal::logger('metsis_lib')->debug('turn of cache metsis search view');
 
