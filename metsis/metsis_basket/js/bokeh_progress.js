@@ -33,7 +33,7 @@ console.log("event target complete");
         //
         console.log("Initializing throbber bokeh behavior...");
         //Variable to hold dasbord/bokeh initialized or not
-        var dash_init = FALSE;
+        var dash_init = false;
 
         //Override console log to add events when bokeh logs something
         var logFn = console.log;
@@ -47,7 +47,7 @@ console.log("event target complete");
               logFn("Bokeh initialized");
               //logFn(Bokeh);
               //Set dashboard initialized to true.
-              dash_init = TRUE;
+              dash_init = true;
             }
           }
           //If Dasboard is initialized. we add some event listeners.
