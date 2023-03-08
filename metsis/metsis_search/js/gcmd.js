@@ -1,7 +1,7 @@
 (function ($, Drupal) {
     Drupal.behaviors.gcmdKeywords = {
       attach: function (context, settings) {
-          $('#gcmdblock',context).once('gcmdKeywords').each(function() {
+          $('#gcmdblock',context).once('gcmdKeywords').each(function () {
 
         //   $('#gcmd_l1').each(function() {
             //  if($('ul', context).hasClass('facet-active')) {

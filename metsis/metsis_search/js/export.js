@@ -1,12 +1,12 @@
 (function ($, Drupal, drupalSettings) {
   Drupal.behaviors.metsisExport = {
     attach: function (context, drupalSettings) {
-      $('#exportxml', context).once('metsisExport').each(function() {
+      $('#exportxml', context).once('metsisExport').each(function () {
         //  $(document).ready(function() {
         var xml = drupalSettings.metsis_export.xml;
         //$('#exportxml').append('<script> download(' + xml +', "export_mmd.xml", "text/xml")</script>')
-    function    downloadBase64File(contentBase64, fileName) {
-    const linkSource = `data:application/pdf;base64,${contentBase64}`;
+    function downloadBase64File(contentBase64, fileName) {
+    const linkSource = `data:application / pdf;base64,${contentBase64}`;
     const downloadLink = document.createElement('a');
     document.body.appendChild(downloadLink);
 

@@ -1,4 +1,4 @@
-(function  ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
 //Drupal.behaviors.metsismapsearch = {
 //  attach: function (context, drupalSettings) {
 //    $('.map-search', context).once('example-behavior').each(function() {
@@ -13,13 +13,12 @@ var init_proj = drupalSettings.metsis_search.init_proj;
 var additional_layers = drupalSettings.metsis_search.additional_layers;
 console.log("Start of searchmap.js script");
 
-
 //jQuery.extend(drupalSettings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"corporateclean","theme_token":"gNMyXZLSUEwumabm8batFwoR_gUi8IjMk43e7oh5vKQ","js":{"0":1,"sites\/all\/modules\/jquery_update\/replace\/jquery\/1.10\/jquery.min.js":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/jquery_update\/replace\/ui\/ui\/minified\/jquery.ui.core.min.js":1,"sites\/all\/modules\/jquery_update\/replace\/misc\/1.9\/jquery.ba-bbq.min.js":1,"sites\/all\/modules\/jquery_update\/replace\/misc\/1.9\/overlay-parent.js":1,"sites\/all\/modules\/jquery_update\/replace\/ui\/ui\/minified\/jquery.ui.datepicker.min.js":1,"sites\/all\/modules\/date\/date_popup\/jquery.timeentry.pack.js":1,"modules\/contextual\/contextual.js":1,"sites\/all\/modules\/jquery_update\/replace\/ui\/external\/jquery.cookie.js":1,"misc\/form.js":1,"sites\/all\/modules\/project_issue\/js\/project-issue.js":1,"sites\/adc.met.no\/themes\/corporateclean\/js\/jquery.cycle.all.js":1,"sites\/all\/modules\/metsis\/metsis_lib\/js\/custom\/utils.js":1,"sites\/all\/modules\/metsis\/metsis_lib\/js\/custom\/metsis_utils.js":1,"sites\/all\/modules\/metsis\/metsis_wms\/js\/bundle.js":1,"sites\/all\/libraries\/openlayers6\/build\/ol.js":1,"https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/proj4js\/2.3.15\/proj4.js":1,"sites\/all\/modules\/date\/date_popup\/date_popup.js":1,"misc\/collapse.js":1,"misc\/autocomplete.js":1,"\/sites\/all\/modules\/jquery_update\/replace\/jquery\/1.10\/jquery.min.js":1,"file":1,"sites\/all\/modules\/metsis\/metsis_qsearch\/js\/metsis_qsearch.js":1,"modules\/toolbar\/toolbar.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"modules\/overlay\/overlay-parent.css":1,"misc\/ui\/jquery.ui.datepicker.css":1,"sites\/all\/modules\/date\/date_popup\/themes\/jquery.timeentry.css":1,"modules\/contextual\/contextual.css":1,"sites\/all\/modules\/calendar\/css\/calendar_multiday.css":1,"modules\/comment\/comment.css":1,"sites\/all\/modules\/date\/date_api\/date.css":1,"sites\/all\/modules\/date\/date_popup\/themes\/datepicker.1.7.css":1,"modules\/field\/theme\/field.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/project_issue\/project_issue.css":1,"sites\/all\/modules\/project\/release\/project_release.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/dataset_validation\/css\/dataset_validation_style_cc.css":1,"sites\/adc.met.no\/modules\/landing_page_creator\/css\/landing_page_creator.css":1,"sites\/all\/modules\/metsis\/metsis_csv\/css\/metsis_csv_responsive.css":1,"sites\/all\/modules\/metsis\/metsis_csv_bokeh\/css\/metsis_csv_bokeh.css":1,"sites\/all\/modules\/metsis\/metsis_wms\/css\/style.min.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/tables.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/metsis_lib.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/icons.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/adc-buttons.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/autocomplete.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/map_thumbnails.css":1,"sites\/all\/modules\/metsis\/metsis_lib\/css\/popups.css":1,"sites\/all\/modules\/metsis\/metsis_qsearch\/css\/qstyles.css":1,"sites\/all\/modules\/metsis\/metsis_qsearch\/css\/metsis_qsearch_misc.css":1,"sites\/all\/modules\/metsis\/metsis_timeseries\/css\/metsis_timeseries_responsive.css":1,"sites\/all\/modules\/metsis\/metsis_ts_bokeh\/css\/metsis_ts_bokeh.css":1,"sites\/all\/libraries\/openlayers6\/css\/ol.css":1,"file":1,"sites\/all\/modules\/metsis\/metsis_qsearch\/css\/metsis_qsearch.css":1,"modules\/shortcut\/shortcut.css":1,"modules\/toolbar\/toolbar.css":1,"modules\/toolbar\/toolbar-print.css":1,"sites\/adc.met.no\/themes\/corporateclean\/css\/960.css":1,"sites\/adc.met.no\/themes\/corporateclean\/css\/720.css":1,"sites\/adc.met.no\/themes\/corporateclean\/css\/mobile.css":1,"sites\/adc.met.no\/themes\/corporateclean\/style.css":1,"sites\/adc.met.no\/themes\/corporateclean\/color\/colors.css":1,"sites\/adc.met.no\/themes\/corporateclean\/css\/basic-layout.css":1,"sites\/adc.met.no\/themes\/corporateclean\/css\/ie.css":1}},"overlay":{"paths":{"admin":"node\/*\/webform\nnode\/*\/webform\/*\nnode\/*\/webform-results\nnode\/*\/webform-results\/*\nnode\/*\/submission\/*\nfield-collection\/*\/*\/edit\nfield-collection\/*\/*\/delete\nfield-collection\/*\/add\/*\/*\nnode\/*\/edit\nnode\/*\/delete\nnode\/*\/revisions\nnode\/*\/revisions\/*\/revert\nnode\/*\/revisions\/*\/delete\nnode\/add\nnode\/add\/*\noverlay\/dismiss-message\nuser\/*\/shortcuts\nadmin\nadmin\/*\nbatch\ntaxonomy\/term\/*\/edit\nuser\/*\/cancel\nuser\/*\/edit\nuser\/*\/edit\/*","non_admin":"admin\/structure\/block\/demo\/*\nadmin\/reports\/status\/php"},"pathPrefixes":[],"ajaxCallback":"overlay-ajax"},"lon":15.64685556,"lat":78.22314167,"zoom":4,"init_proj_map":"EPSG:4326","additional_layers":false,"datePopup":{"edit-finished-after-datepicker-popup-0":{"func":"datepicker","settings":{"changeMonth":true,"changeYear":true,"autoPopUp":"focus","closeAtTop":false,"speed":"immediate","firstDay":1,"dateFormat":"yy-mm-dd","yearRange":"-50:+2","fromTo":false,"defaultDate":"0y"}},"edit-finished-before-datepicker-popup-0":{"func":"datepicker","settings":{"changeMonth":true,"changeYear":true,"autoPopUp":"focus","closeAtTop":false,"speed":"immediate","firstDay":1,"dateFormat":"yy-mm-dd","yearRange":"-50:+2","fromTo":false,"defaultDate":"0y"}}},"urlIsAjaxTrusted":{"\/":true},"tableHeaderOffset":"Drupal.toolbar.height"});
 
 // 32661
 proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
 ol.proj.proj4.register(proj4);
-var ext32661 = [-4e+06, -3e+06, 8e+06, 8e+06];
+var ext32661 = [-4e + 06, -3e + 06, 8e + 06, 8e + 06];
 var center32661 = [15, 70];
 var proj32661 = new ol.proj.Projection({
   code: 'EPSG:32661',
@@ -29,13 +28,12 @@ var proj32661 = new ol.proj.Projection({
 // 32761
 proj4.defs('EPSG:32761', '+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
 ol.proj.proj4.register(proj4);
-var ext32761 = [-8e+06, -8e+06, 12e+06, 10e+06];
+var ext32761 = [-8e + 06, -8e + 06, 12e + 06, 10e + 06];
 var center32761 = [15, -90];
 var proj32761 = new ol.proj.Projection({
   code: 'EPSG:32761',
   extent: ext32761
 });
-
 
 // 4326
 var ext4326 = [-350.0000, -90.0000, 350.0000, 90.0000];
@@ -51,10 +49,9 @@ projObjectforCode = {
   'EPSG:32761': {extent: ext32761, center: center32761, projection: proj32761}
 };
 
-
 var ch = document.getElementsByName('map-search-projection');
 
-document.getElementById(init_proj).checked = true;
+document.getElementById(init_proj).checked = TRUE;
 
 for (var i = ch.length; i--;) {
   ch[i].onchange = function change_projection() {
@@ -149,7 +146,6 @@ var mousePositionControl = new ol.control.MousePosition({
 });
 map.addControl(mousePositionControl);
 
-
 function build_draw(proj) {
 
   // Add drawing vector source
@@ -176,7 +172,6 @@ function build_draw(proj) {
 
     var left = ol.proj.transform(left_ll, 'EPSG:4326', projection);
     var right = ol.proj.transform(right_ll, 'EPSG:4326', projection);
-
 
     const boxCoordinates = [
       [
@@ -250,7 +245,7 @@ function build_draw(proj) {
     jQuery(brlat).attr('value', bottomRight[1]);
     jQuery(brlon).attr('value', bottomRight[0]);
 
-    var myurl = '/metsis/search/map?tllat='+topLeft[1]+'&tllon='+topLeft[0]+'&brlat='+bottomRight[1]+'&brlon='+bottomRight[0];
+    var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0];
     $.ajax({
       url: myurl
     });
@@ -289,7 +284,6 @@ function build_draw(proj) {
 
 build_draw(init_proj);
 
-
 function addExtraLayers(proj) {
 
   document.getElementById("droplayers").style.display = "none";
@@ -315,7 +309,7 @@ function addExtraLayers(proj) {
 
     layer['riksveg'] = new ol.layer.Tile({
       title: 'riksveg',
-      displayInLayerSwitcher: true,
+      displayInLayerSwitcher: TRUE,
       source: new ol.source.TileWMS({
         url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
         params: {
@@ -343,7 +337,6 @@ function addExtraLayers(proj) {
         crossOrigin: 'anonymous'
       })
     });
-
 
     var ald = document.getElementById("lrslist").children; //list of li
     for (var i = ald.length; i--;) {

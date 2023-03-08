@@ -17,13 +17,13 @@ class MetsisExportController extends ControllerBase {
    */
   public function export($id) {
 
-    /**
+    /*
      * Fetch the mmd_xml_file field from solr, given dataset id from $data
      */
 
-    /**
-      * Create render array for choosing different export methods
-      */
+    /*
+     * Create render array for choosing different export methods
+     */
 
     // Hidden field.
     /*  $build['mmd'] = [
@@ -72,7 +72,7 @@ class MetsisExportController extends ControllerBase {
   }
 
   /**
-   *
+   * Export as MMD.
    */
   public function exportMmd($id) {
     // Set the mmd.
@@ -93,7 +93,7 @@ class MetsisExportController extends ControllerBase {
   }
 
   /**
-   *
+   * Export as DIF.
    */
   public function exportDif($id) {
     // Set the mmd.
@@ -119,7 +119,7 @@ class MetsisExportController extends ControllerBase {
   }
 
   /**
-   *
+   * Export as ISO.
    */
   public function exportIso($id) {
     // Set the mmd.
@@ -179,7 +179,7 @@ class MetsisExportController extends ControllerBase {
   }
 
   /**
-   *
+   * Transform the XML given stylesheet.
    */
   public function transformXml($xml, $style) {
     $xslt = new \XSLTProcessor();

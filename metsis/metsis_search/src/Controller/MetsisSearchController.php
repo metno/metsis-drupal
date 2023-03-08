@@ -9,7 +9,7 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 
 /**
- *
+ * A Class with functions used by the search interface.
  */
 class MetsisSearchController extends ControllerBase {
 

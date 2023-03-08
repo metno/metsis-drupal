@@ -5,7 +5,7 @@
       //var metaIds = document.querySelectorAll('.views-field-id');
       //alert(metaIds);
   //    $(document, context).once('metsis_search').each(function() {
-  $(context).on('lazybeforeunveil', function(e){
+  $(context).on('lazybeforeunveil', function (e) {
     var ajax = $(e.target).data('ajax');
     if(ajax){
       Drupal.ajax({ url: ajax

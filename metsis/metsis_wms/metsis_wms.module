@@ -1,14 +1,19 @@
 <?php
 
+/**
+ * @file
+ * Plot wms using openlayers given wms endpoint.
+ */
+
 use Drupal\Core\Routing\RouteMatchInterface;
+
 /**
  * Implements hook_help().
  */
-function metsis_wms_help($route_name, RouteMatchInterface $route_match)
-{
-    switch ($route_name) {
+function metsis_wms_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
     // Main module help for the metsis_search module.
-    /** TODO: Read help from module's README.md */
+    /* TODO: Read help from module's README.md */
     case 'help.page.metsis_wms':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';

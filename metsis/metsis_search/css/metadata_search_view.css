@@ -1,8 +1,9 @@
 .dataset {
--webkit-box-shadow: 0px 0px 10px 6px rgba(49,65,95,0.22);
-box-shadow: 0px 0px 6px 6px rgba(49,65,95,0.22);
-background: #FAF8F8;
+  -webkit-box-shadow: 0px 0px 10px 6px rgba(49, 65, 95, 0.22);
+  box-shadow: 0px 0px 6px 6px rgba(49, 65, 95, 0.22);
+  background: #faf8f8;
 }
+
 /*
 .numberOfResults {
 text-shadow: 2px 2px 4px rgba(26,121,54,0.2), 2px 2px 4px rgba(26,121,54,0.2);
@@ -14,16 +15,15 @@ background: #10CF1B;
  * Order buttons inline and wrap in fieldset
 */
 fieldset.datasetops {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
+
 /*
 * Remove bullets from facet checkboxes
 */
 ul.js-facets-checkbox-links {
   list-style-type: none;
-
-
 }
 
 /*
@@ -50,7 +50,7 @@ section#block-gcmdkeywords li.is-active {
 }
 */
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .res-thumb {
@@ -62,4 +62,6 @@ a:hover {
   margin-left: 2px;
 }
 
+/*
 .views-field-fieldset-3 > span:nth-child(1) > details:nth-child(1)
+*/

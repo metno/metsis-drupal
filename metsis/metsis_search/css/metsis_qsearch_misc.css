@@ -1,4 +1,3 @@
-
 .quid-share-string {
   display: none;
   font-size: 75%;
@@ -6,9 +5,11 @@
   border: 1px solid green;
   overflow: auto;
 }
+
 #edit-full-text-search,
 #edit-data-collection-period,
-#edit-bounding-box, #edit-institutions,
+#edit-bounding-box,
+#edit-institutions,
 #edit-platform-long-name,
 #edit-topics-and-variables,
 #edit-collections,

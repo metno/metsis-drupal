@@ -1,20 +1,17 @@
 console.log("Start of wms map script:");
-(function($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
 
   console.log("Attaching WMS map script to drupal behaviours:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisWmsMap = {
-    attach: function(context, drupalSettings) {
-      $('#map-res', context).once('metsis-wms-map').each(function() {
+    attach: function (context, drupalSettings) {
+      $('#map-res', context).once('metsis-wms-map').each(function () {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS WMS Map...');
 
         //Default Zoom value
         var defzoom = 4;
-
-
-
 
         // Import variables from drupalSettings send by block build array
         var path = drupalSettings.metsis_wms_map.path;
@@ -30,7 +27,7 @@ console.log("Start of wms map script:");
         var additional_layers = drupalSettings.metsis_wms_map.additional_layers;
         var pywpsUrl = drupalSettings.metsis_wms_map.pywps_service;
         var wms_layers_skip = drupalSettings.metsis_wms_map.wms_layers_skip;
-        var wms_data =  drupalSettings.metsis_wms_map.wms_data;
+        var wms_data = drupalSettings.metsis_wms_map.wms_data;
         var selected_proj = drupalSettings.metsis_wms_map.selected_proj;
         // Some debugging
         var debug = true;
@@ -120,23 +117,23 @@ console.log("Start of wms map script:");
               $(document.createElement('li')).prop({
                 class: 'addl'
               })
-              .append(
-                $(document.createElement('input')).prop({
-                  id: value,
-                  class: 'check-layers',
-                  type: 'checkbox',
-                  value: value,
-                  name: "layers"
-                }))
-              .append(
-                $(document.createElement('label')).prop({
-                  class: "layer-labels",
-                  for: value
-                }).html(value))
+                .append(
+                  $(document.createElement('input')).prop({
+                    id: value,
+                    class: 'check-layers',
+                    type: 'checkbox',
+                    value: value,
+                    name: "layers"
+                  }))
+                .append(
+                  $(document.createElement('label')).prop({
+                    class: "layer-labels",
+                    for: value
+                  }).html(value))
             );
           }
           //Add event listener to layers button
-          $(".layers-button").click(function() {
+          $(".layers-button").click(function () {
             document.getElementById('lrs').classList.toggle('show');
           });
           //Do some styling
@@ -152,7 +149,6 @@ console.log("Start of wms map script:");
           });
 
         }
-
 
         /**
          * Define the proj4 map_projections
@@ -178,7 +174,6 @@ console.log("Start of wms map script:");
           code: 'EPSG:32761',
           extent: ext32761
         });
-
 
         // 4326
         var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000];
@@ -220,7 +215,6 @@ console.log("Start of wms map script:");
                 }
         */
 
-
         /** Register event listner when Projection is changed.
          * Rebuild pins and polygons and update map view */
         var ch = document.getElementsByName('map-res-projection');
@@ -237,9 +231,6 @@ console.log("Start of wms map script:");
             selected_proj = this.value;
             console.log("change projection event: " + selected_proj);
 
-
-
-
             console.log("Update view to new selected projection: " + selected_proj);
             //console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
@@ -252,22 +243,21 @@ console.log("Start of wms map script:");
               projection: projObjectforCode[selected_proj].projection,
               //projection: selected_proj,
             }));
-
-    /*        map.getView().setZoom(map.getView().getZoom());
-            wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
-              if ( layer instanceof ol.layer.Tile ) {
-                layer.getSource().refresh();
-              }
-              else {
-                layer.getLayers().forEach(function(layer,index, array) {
-                  if ( layer instanceof ol.layer.Tile ) {
-                    layer.getSource().refresh();
+            /*        map.getView().setZoom(map.getView().getZoom());
+                    wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
+                      if ( layer instanceof ol.layer.Tile ) {
+                        layer.getSource().refresh();
+                      }
+                      else {
+                        layer.getLayers().forEach(function(layer,index, array) {
+                          if ( layer instanceof ol.layer.Tile ) {
+                            layer.getSource().refresh();
+                          }
+                    });
                   }
-            });
-          }
-        });*/
-        //progress_bar()
-        map.getView().setZoom(map.getView().getZoom());
+                });*/
+            //progress_bar()
+            map.getView().setZoom(map.getView().getZoom());
           }
 
         }
@@ -298,14 +288,12 @@ console.log("Start of wms map script:");
          * @return {boolean} Don't follow the href.
          */
         console.log("Register popUp closer event");
-        popUpCloser.onclick = function() {
+        popUpCloser.onclick = function () {
           popUpOverlay.setPosition(undefined);
           popUpCloser.blur();
           map.addOverlay(overlayh);
           return false;
         };
-
-
         /** Add tooltip overlay to map */
         if (debug) {
           console.log("Creating tooltip overlay");
@@ -319,9 +307,7 @@ console.log("Start of wms map script:");
         });
         //  map.addLayer(layer['OSM']);
         //map.addOverlay(overlayh);
-
         /** Create custom features and styles */
-
         //in nbs s1-ew
         var featureStyleBl = new ol.style.Style({
           fill: new ol.style.Fill({
@@ -375,7 +361,6 @@ console.log("Start of wms map script:");
             src: '/' + path + '/icons/pinBk.png'
           }))
         });
-
 
         /**
          * Define different basemaps layers to choose from here.
@@ -493,7 +478,7 @@ console.log("Start of wms map script:");
           //className: 'fullscreen',
         });
 
-        fullScreenControl.on('enterfullscreen', function() {
+        fullScreenControl.on('enterfullscreen', function () {
           console.log("Entered fullscreen");
           //Update the mapsize
           if (timeDimensions.length > 0) {
@@ -503,7 +488,7 @@ console.log("Start of wms map script:");
             $('#map-res').height($('.mapcontainer:fullscreen').height());
             $('.map-sidepanel').height($('.mapcontainer:fullscreen').height());
           }
-          setTimeout(function() {
+          setTimeout(function () {
 
             map.updateSize();
             //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
@@ -526,12 +511,12 @@ console.log("Start of wms map script:");
           */
           //  map.updateSize();
         });
-        fullScreenControl.on('leavefullscreen', function() {
+        fullScreenControl.on('leavefullscreen', function () {
           console.log("Leaved fullscreen");
           //Update the mapsize
           $('#map-res').height("450px");
           $('#map-sidepanel').height("450px");
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
             //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
             //map.getView().fit(featuresExtent, { size: map.getSize() });
@@ -557,7 +542,7 @@ console.log("Start of wms map script:");
 
         //Mouseposition lat lon
         var mousePositionControl = new ol.control.MousePosition({
-          coordinateFormat: function(co) {
+          coordinateFormat: function (co) {
             return ol.coordinate.format(co, template = 'lon: {x}, lat: {y}', 2);
           },
           projection: 'EPSG:4326',
@@ -565,7 +550,7 @@ console.log("Start of wms map script:");
 
 
         /* Define the custom sidebar / layerswitcher control */
-        var OpenSideBarControl = /*@__PURE__*/ (function(Control) {
+        var OpenSideBarControl = /*@__PURE__*/ (function (Control) {
           function OpenSideBarControl(opt_options) {
             var options = opt_options || {};
 
@@ -604,12 +589,12 @@ console.log("Start of wms map script:");
                 $('.map-res').width("70%");
               }
               //Update the mapsize
-              setTimeout(function() {
+              setTimeout(function () {
                 map.updateSize();
 
 
               }, 250);
-              setTimeout(function() {
+              setTimeout(function () {
 
                 $('#map-sidepanel').show();
               }, 300);
@@ -665,55 +650,55 @@ console.log("Start of wms map script:");
           var tilesLoaded = 0;
           var tilesPending = 0;
           //load all S1 and S2 entries
-          map.getLayers().forEach(function(layer, index, array) {
+          map.getLayers().forEach(function (layer, index, array) {
 
-            if (layer.get('title') === 'WMS Layers' &&  layer instanceof ol.layer.Group) {
-              console.log( layer instanceof ol.layer.Group);
-              layer.getLayers().forEach(function(layer,index, array) {
+            if (layer.get('title') === 'WMS Layers' && layer instanceof ol.layer.Group) {
+              console.log(layer instanceof ol.layer.Group);
+              layer.getLayers().forEach(function (layer, index, array) {
                 //console.log(array.length);
                 //console.log(Object.getPrototypeOf(layer));
-                if( layer instanceof ol.layer.Group ) {
-                layer.getLayers().forEach(function(layer,index, array) {
-                //for all tiles that are done loading update the progress bar
-                //layer.getSource().refresh();
-                layer.getSource().on('tileloadend', function() {
-                  tilesLoaded += 1;
-                  var percentage = Math.round(tilesLoaded / tilesPending * 100);
-                  document.getElementById('progress').style.width = percentage + '%';
-                  // fill the bar to the end
-                  if (percentage >= 100) {
-                    document.getElementById('progress').style.width = '100%';
-                    tilesLoaded = 0;
-                    tilesPending = 0;
-                  }
-                });
+                if (layer instanceof ol.layer.Group) {
+                  layer.getLayers().forEach(function (layer, index, array) {
+                    //for all tiles that are done loading update the progress bar
+                    //layer.getSource().refresh();
+                    layer.getSource().on('tileloadend', function () {
+                      tilesLoaded += 1;
+                      var percentage = Math.round(tilesLoaded / tilesPending * 100);
+                      document.getElementById('progress').style.width = percentage + '%';
+                      // fill the bar to the end
+                      if (percentage >= 100) {
+                        document.getElementById('progress').style.width = '100%';
+                        tilesLoaded = 0;
+                        tilesPending = 0;
+                      }
+                    });
 
-                //for all tiles that are staring to load update the number of pending tiles
-                layer.getSource().on('tileloadstart', function() {
-                  ++tilesPending;
-                });
-              });
-            }
-            else {
-              layer.getSource().on('tileloadend', function() {
-                tilesLoaded += 1;
-                var percentage = Math.round(tilesLoaded / tilesPending * 100);
-                document.getElementById('progress').style.width = percentage + '%';
-                // fill the bar to the end
-                if (percentage >= 100) {
-                  document.getElementById('progress').style.width = '100%';
-                  tilesLoaded = 0;
-                  tilesPending = 0;
+                    //for all tiles that are staring to load update the number of pending tiles
+                    layer.getSource().on('tileloadstart', function () {
+                      ++tilesPending;
+                    });
+                  });
+                }
+                else {
+                  layer.getSource().on('tileloadend', function () {
+                    tilesLoaded += 1;
+                    var percentage = Math.round(tilesLoaded / tilesPending * 100);
+                    document.getElementById('progress').style.width = percentage + '%';
+                    // fill the bar to the end
+                    if (percentage >= 100) {
+                      document.getElementById('progress').style.width = '100%';
+                      tilesLoaded = 0;
+                      tilesPending = 0;
+                    }
+                  });
+
+                  //for all tiles that are staring to load update the number of pending tiles
+                  layer.getSource().on('tileloadstart', function () {
+                    ++tilesPending;
+                  });
                 }
               });
-
-              //for all tiles that are staring to load update the number of pending tiles
-              layer.getSource().on('tileloadstart', function() {
-                ++tilesPending;
-              });
             }
-            });
-          }
           });
           $('#bottomMapPanel').show();
 
@@ -724,11 +709,11 @@ console.log("Start of wms map script:");
 
 
         function init() {
-          $('#map-sidepanel').bind('resize', function(e) {
+          $('#map-sidepanel').bind('resize', function (e) {
             console.log('Sidepanel resize');
           });
 
-          $('.ol-viewport').bind('resize', function(e) {
+          $('.ol-viewport').bind('resize', function (e) {
             console.log('OL viewport resize');
             map.updateSize();
 
@@ -754,12 +739,12 @@ console.log("Start of wms map script:");
           }
 
           //Update the mapsize
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
 
 
           }, 250);
-          setTimeout(function() {
+          setTimeout(function () {
 
             $('#map-sidepanel').show();
           }, 300);
@@ -778,7 +763,7 @@ console.log("Start of wms map script:");
           $('.map-res').width("100%");
 
           //Update the mapsize
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
           }, 350);
           //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
@@ -816,7 +801,7 @@ console.log("Start of wms map script:");
         );
 
         //Register click event listeners for sidebar buttons
-        $('#sidepanel-expand').on('click', function() {
+        $('#sidepanel-expand').on('click', function () {
           if ($('#map-sidepanel').css('display') == 'none') {
             openSideBar()
           } else {
@@ -838,10 +823,10 @@ console.log("Start of wms map script:");
          Display the title */
         function id_tooltip_h() {
           console.log("Register tooltip hover function.")
-          map.on('pointermove', function(evt) {
+          map.on('pointermove', function (evt) {
             var coordinate = evt.coordinate;
             var feature_ids = {};
-            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
               //console.log(feature);
               feature_ids[feature.get('id')] = {
                 title: feature.get('title'),
@@ -877,7 +862,7 @@ console.log("Start of wms map script:");
 
 
         //Back in time button function
-        var back = function() {
+        var back = function () {
           var val = $("#map-timeslider-id").slider("option", "value");
           var newVal = val - 1;
           if (newVal < 0) {
@@ -887,7 +872,7 @@ console.log("Start of wms map script:");
         };
 
         //Forward in time button function
-        var forward = function() {
+        var forward = function () {
           var val = $("#map-timeslider-id").slider("option", "value");
           var newVal = val + 1;
           if (newVal === timeDimensions.length) {
@@ -897,54 +882,54 @@ console.log("Start of wms map script:");
 
         };
         //Up in elevation button function
-        var up = function() {
+        var up = function () {
           var val = parseInt($("#elevation").attr("data-current"));
           //wmsLayerGroup.setOpacity(ui.value / 100);
-          let newVal = val+1;
-          if(newVal > elevationDimensions.length) {
+          let newVal = val + 1;
+          if (newVal > elevationDimensions.length) {
             newVal = elevationDimensions.length;
           }
-          if(debug) {console.log("Change elevation up: " +newVal+', elevation: '+elevationDimensions[newVal]);}
+          if (debug) { console.log("Change elevation up: " + newVal + ', elevation: ' + elevationDimensions[newVal]); }
           var currentElevation = elevationDimensions[newVal];
-          wmsLayerGroup.getLayers().forEach(function(element, index, array) {
+          wmsLayerGroup.getLayers().forEach(function (element, index, array) {
             //    if(element.getVisible())  {
-            element.getLayers().forEach(function(element, index, array) {
-            element.getSource().updateParams({
-              'ELEVATION': currentElevation,
-            });
-            element.getSource().refresh();
+            element.getLayers().forEach(function (element, index, array) {
+              element.getSource().updateParams({
+                'ELEVATION': currentElevation,
+              });
+              element.getSource().refresh();
             });
             //}
             //element.getSource().refresh();
           });
-          $("#elevation").attr("data-current",newVal);
-          $("#elevation").text(elevationDimensions[newVal] + " "+elevationUnits);
+          $("#elevation").attr("data-current", newVal);
+          $("#elevation").text(elevationDimensions[newVal] + " " + elevationUnits);
         };
 
         //Down in elevation button function
-        var down = function() {
+        var down = function () {
           var val = parseInt($("#elevation").attr("data-current"));
 
           //wmsLayerGroup.setOpacity(ui.value / 100);
-          let newVal = val-1;
-          if(newVal < 0) {
+          let newVal = val - 1;
+          if (newVal < 0) {
             newVal = 0;
           }
-          if(debug){console.log("Change elevation down: " +newVal+', elevation: '+elevationDimensions[newVal]); }
+          if (debug) { console.log("Change elevation down: " + newVal + ', elevation: ' + elevationDimensions[newVal]); }
           var currentElevation = elevationDimensions[newVal];
-          wmsLayerGroup.getLayers().forEach(function(element, index, array) {
+          wmsLayerGroup.getLayers().forEach(function (element, index, array) {
             //    if(element.getVisible())  {
-            element.getLayers().forEach(function(element, index, array) {
-            element.getSource().updateParams({
-              'ELEVATION': currentElevation,
-            });
-            element.getSource().refresh();
+            element.getLayers().forEach(function (element, index, array) {
+              element.getSource().updateParams({
+                'ELEVATION': currentElevation,
+              });
+              element.getSource().refresh();
             });
             //}
             //element.getSource().refresh();
           });
-          $("#elevation").attr("data-current",newVal);
-          $("#elevation").text(elevationDimensions[newVal] + " "+elevationUnits);
+          $("#elevation").attr("data-current", newVal);
+          $("#elevation").text(elevationDimensions[newVal] + " " + elevationUnits);
         };
 
         //Register back forward time button function to buttons
@@ -988,7 +973,7 @@ console.log("Start of wms map script:");
             xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
             xhr.send()
             // 4. This will be called after the response is received
-            xhr.onload = function() {
+            xhr.onload = function () {
               if (xhr.status != 200) { // analyze HTTP status of the response
                 console.log(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
               } else { // show the result
@@ -1006,7 +991,7 @@ console.log("Start of wms map script:");
                   var ls = layers[idx].Layer;
                   if (ls) {
                     for (var i = 0; i < ls.length; i++) {
-                      var getTimeDimensions = function() {
+                      var getTimeDimensions = function () {
                         var dimensions = ls[i].Dimension;
                         if (ls[i].Dimension) {
                           for (var j = 0; j < dimensions.length; j++) {
@@ -1018,7 +1003,7 @@ console.log("Start of wms map script:");
                         }
                         return [];
                       };
-                      var makeAxisAwareExtent = function() {
+                      var makeAxisAwareExtent = function () {
                         var bboxs = ls[i].BoundingBox;
                         if (bboxs) {
                           for (var k = 0; k < bboxs.length; k++) {
@@ -1084,7 +1069,7 @@ console.log("Start of wms map script:");
               }
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
               alert("Request failed");
             };
             //console.log(layers);
@@ -1148,9 +1133,9 @@ console.log("Start of wms map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
-                if(!ls) {
+                if (!ls) {
                   lst = layers[idx]
-                  if(lst) {
+                  if (lst) {
                     ls = [lst];
                   }
 
@@ -1158,7 +1143,7 @@ console.log("Start of wms map script:");
                 if (ls) {
                   console.log(ls.Name);
                   for (var i = 0; i < ls.length; i++) {
-                    var getTimeDimensions = function() {
+                    var getTimeDimensions = function () {
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
@@ -1170,7 +1155,7 @@ console.log("Start of wms map script:");
                       }
                       return [];
                     };
-                    var getElevationDimensions = function() {
+                    var getElevationDimensions = function () {
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
@@ -1183,7 +1168,7 @@ console.log("Start of wms map script:");
                       }
                       return [];
                     };
-                    var makeAxisAwareExtent = function() {
+                    var makeAxisAwareExtent = function () {
                       var bboxs = ls[i].BoundingBox;
                       if (bboxs) {
                         for (var k = 0; k < bboxs.length; k++) {
@@ -1223,7 +1208,7 @@ console.log("Start of wms map script:");
                     if (layerName === 'lon' || layerName === 'lat') {
                       visible = false;
                     }
-                    if(layerName === wmsLayerMmd || title === wmsLayerMmd) {
+                    if (layerName === wmsLayerMmd || title === wmsLayerMmd) {
                       visible = true;
                     }
                     else {
@@ -1243,37 +1228,37 @@ console.log("Start of wms map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    console.log("i="+i+" layer_name: " + ls[i].Name);
-                    if ( $.inArray(ls[i].Name, wms_layers_skip) === -1 ) {
-                    wmsGroup.getLayers().insertAt(i,
-                      new ol.layer.Tile({
-                        title: title,
-                        visible: visible,
-                        //extent: extent,
+                    console.log("i=" + i + " layer_name: " + ls[i].Name);
+                    if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
+                      wmsGroup.getLayers().insertAt(i,
+                        new ol.layer.Tile({
+                          title: title,
+                          visible: visible,
+                          //extent: extent,
 
-                        //keepVisible: false,
-                        //preload: 5,
-                        //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
-                        dimensions: getTimeDimensions(),
-                        styles: ls[i].Style,
-                        source: new ol.source.TileWMS(({
-                          url: wmsUrl,
-                          reprojectionErrorThreshold: 0.1,
-                          projection: selected_proj,
-                          params: {
-                            'LAYERS': ls[i].Name,
-                            'VERSION': result.version,
-                            'FORMAT': 'image/png',
-                            'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
-                            'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
-                            'TRANSPARENT': true,
-                          },
-                          crossOrigin: 'anonymous',
+                          //keepVisible: false,
+                          //preload: 5,
+                          //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
+                          dimensions: getTimeDimensions(),
+                          styles: ls[i].Style,
+                          source: new ol.source.TileWMS(({
+                            url: wmsUrl,
+                            reprojectionErrorThreshold: 0.1,
+                            projection: selected_proj,
+                            params: {
+                              'LAYERS': ls[i].Name,
+                              'VERSION': result.version,
+                              'FORMAT': 'image/png',
+                              'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
+                              'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
+                              'TRANSPARENT': true,
+                            },
+                            crossOrigin: 'anonymous',
 
-                        })),
-                      }));
+                          })),
+                        }));
+                    }
                   }
-                }
                   //Update timedimension variables for animation
                   //hasTimeDimension = false;
 
@@ -1292,7 +1277,7 @@ console.log("Start of wms map script:");
                 console.log("Processing wms with timedimensons");
                 $('#animatedWmsControls').show();
                 console.log(timeDimensions);
-                var maxValue = timeDimensions.length-1;
+                var maxValue = timeDimensions.length - 1;
                 console.log('MAXVALUE=' + maxValue);
                 //Add timeSlider
                 $("#map-timeslider-id").slider({
@@ -1302,11 +1287,11 @@ console.log("Start of wms map script:");
                   max: maxValue,
                   step: 1,
                   animate: true,
-                  slide: function(e, ui) {
+                  slide: function (e, ui) {
                     //wmsLayerGroup.setOpacity(ui.value / 100);
                     var currentTime = timeDimensions[ui.value];
                     //console.log("currentTime: " +timeDimensions[ui.value])
-                    wmsGroup.getLayers().forEach(function(element, index, array) {
+                    wmsGroup.getLayers().forEach(function (element, index, array) {
                       //    if(element.getVisible())  {
                       element.getSource().updateParams({
                         'TIME': currentTime,
@@ -1316,11 +1301,11 @@ console.log("Start of wms map script:");
                     });
                     $('#time').text(timeDimensions[ui.value]);
                   },
-                  change: function(e, ui) {
+                  change: function (e, ui) {
                     //wmsLayerGroup.setOpacity(ui.value / 100);
                     var currentTime = timeDimensions[ui.value];
                     //console.log("currentTime: " +timeDimensions[ui.value])
-                    wmsGroup.getLayers().forEach(function(element, index, array) {
+                    wmsGroup.getLayers().forEach(function (element, index, array) {
                       //console.log(element);
                       element.getSource().updateParams({
                         'TIME': currentTime,
@@ -1332,23 +1317,23 @@ console.log("Start of wms map script:");
                 });
                 $('#time').text(timeDimensions[0]);
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
-                 try {
-                   var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
-                   var img = document.getElementById('map-wms-legend');
-                   img.src = legendUrl;
-                 }
-                 catch {
-                   console.log("No legendUrl info for layer");
-                 }
+                try {
+                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
+                  var img = document.getElementById('map-wms-legend');
+                  img.src = legendUrl;
+                }
+                catch {
+                  console.log("No legendUrl info for layer");
+                }
                 //$('#bottomMapPanel').show();
                 map.updateSize();
               }
-              if(hasElevationDimension) {
+              if (hasElevationDimension) {
                 console.log("WMS Layer have elevation dimension");
                 console.log(elevationDimensions);
                 var currentElevation = elevationDimensions[0];
                 //console.log("currentTime: " +timeDimensions[ui.value])
-                wmsGroup.getLayers().forEach(function(element, index, array) {
+                wmsGroup.getLayers().forEach(function (element, index, array) {
                   //    if(element.getVisible())  {
                   element.getSource().updateParams({
                     'ELEVATION': currentElevation,
@@ -1356,8 +1341,8 @@ console.log("Start of wms map script:");
                   //}
                   element.getSource().refresh();
                 });
-                  val = $("#elevation").attr("data-current",0);
-                  $("#elevation").text(elevationDimensions[0] + " "+elevationUnits);
+                val = $("#elevation").attr("data-current", 0);
+                $("#elevation").text(elevationDimensions[0] + " " + elevationUnits);
                 $('#elevationWmsControls').show();
               }
               //Fit to feature geometry
@@ -1380,11 +1365,11 @@ console.log("Start of wms map script:");
                 url: proxyURL + wmsUrlOrig,
                 dataType: 'xml',
                 //async: false,
-                error: function() {
+                error: function () {
                   console.log("Request failed: " + proxyURL + wmsUrlOrig);
 
                 },
-                success: function(response) {
+                success: function (response) {
                   onGetCapSuccess(response)
                 },
               });
@@ -1395,12 +1380,12 @@ console.log("Start of wms map script:");
               url: wmsUrl + getCapString,
               dataType: 'xml',
               //async: false,
-              error: function() {
+              error: function () {
                 console.log("Request failed: " + wmsUrl + getCapString);
                 console.log("Trying getCapProxy....");
                 tryProxy(proxyURL, wmsUrlOrig)
               },
-              success: function(response) {
+              success: function (response) {
                 onGetCapSuccess(response)
               },
             });
@@ -1431,22 +1416,22 @@ console.log("Start of wms map script:");
               layer_name = 'true_color_vegetation';
             }
             else if (wms_layers === "Amplitude HH polarisation") {
-               layer_name = 'amplitude_hh';
+              layer_name = 'amplitude_hh';
             }
             else if (wms_layers === "Amplitude HV polarisation") {
-               layer_name = 'amplitude_hv';
+              layer_name = 'amplitude_hv';
             }
             else if (wms_layers === "Amplitude VV polarisation") {
-               layer_name = 'amplitude_vv';
+              layer_name = 'amplitude_vv';
             }
             else if (wms_layers === "Amplitude VH polarisation") {
-               layer_name = 'amplitude_vh';
+              layer_name = 'amplitude_vh';
             }
             else if (wms_layers === "True Color Vegetation Composite") {
-               layer_name = 'true_color_vegetation';
+              layer_name = 'true_color_vegetation';
             }
             else {
-              layer_name =  'Composites';
+              layer_name = 'Composites';
             }
             var wmsUrl = wmsResource;
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
@@ -1560,7 +1545,7 @@ console.log("Start of wms map script:");
               } */
           //overlayh.setPosition([coordinate[0] + coordinate[0] * 20 / 100, coordinate[1] + coordinate[1] * 20 / 100]);
           //Foreach feature selected. do the following
-          map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+          map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             console.log("Clicked feature: " + feature.get('name'));
             /* Show / Hide results depending on selected dataset in map */
             id = feature.get('id');
@@ -1646,7 +1631,7 @@ console.log("Start of wms map script:");
 
                 console.log("Alter the popUpOverlay position.");
                 popUpOverlay.setPosition(coordinate);
-                button.on('click', function() {
+                button.on('click', function () {
                   plotTimeseries(odResource)
                 });
               }
@@ -1731,7 +1716,7 @@ console.log("Start of wms map script:");
             //$('#popup-content').append('</div>');
             $('#popup-content').append(markup);
 
-            $('#popupSelectProductBack').on('click', function() {
+            $('#popupSelectProductBack').on('click', function () {
               $('#popup-content-div').show();
               $('#popupSelectedProduct').hide();
               $('#popupSelectedProductContent').empty();
@@ -1739,7 +1724,7 @@ console.log("Start of wms map script:");
             });
             $('.popupProductItem').on(
               'click',
-              function() {
+              function () {
                 let selected_id = $(this).data('id');
                 let selected_title = feature_ids[selected_id].title;
                 let wmsResource = feature_ids[selected_id].url_w;
@@ -1775,7 +1760,7 @@ console.log("Start of wms map script:");
                     maxHeight: '95%'
                   },
                 };
-                $('#popupShowMetadata').on('click', function() {
+                $('#popupShowMetadata').on('click', function () {
                   var myAjaxObject = Drupal.ajax(ajaxSettings);
                   myAjaxObject.execute();
 
@@ -1788,7 +1773,7 @@ console.log("Start of wms map script:");
                       class: "w3-button w3-small",
                     }).html('Visualise WMS')
                   );
-                  $('#popup-wms-button').on('click', function() {
+                  $('#popup-wms-button').on('click', function () {
                     //$('.ol-popup').hide();
                     popUpOverlay.setPosition(undefined);
                     //visualiseWmsLayer(wmsResource,id,title, geom)
@@ -1817,7 +1802,7 @@ console.log("Start of wms map script:");
                     );
 
                     console.log("Alter the popUpOverlay position.");
-                    $('#popup-ts-button').on('click', function() {
+                    $('#popup-ts-button').on('click', function () {
                       popUpOverlay.setPosition(undefined);
                       plotTimeseries(odResource)
                     });
@@ -1989,7 +1974,7 @@ console.log("Start of wms map script:");
 
           //Fit to extent of features
           var featuresExtent = new ol.extent.createEmpty();
-          allFeatures.forEach(function(feature) {
+          allFeatures.forEach(function (feature) {
             featuresExtent = new ol.extent.extend(featuresExtent, feature.getGeometry().getExtent());
           });
           //var maxExt = extent.getExtent();
@@ -2018,12 +2003,12 @@ console.log("Start of wms map script:");
         //Function to zoom to extent of all features:
         function zoomToProductsExtent() {
           console.log("Zoom back to features extent");
-          map.getLayers().forEach(function(element, index, array) {
+          map.getLayers().forEach(function (element, index, array) {
             if (element.get('title') === 'pins') {
               console.log("Set pins layer visible");
               element.setVisible(true);
               element.getSource().refresh();
-              if (element.get('title') === 'polygons') {}
+              if (element.get('title') === 'polygons') { }
               console.log("Set polygon layer visible");
               element.setVisible(true);
               element.getSource().refresh();
@@ -2039,7 +2024,7 @@ console.log("Start of wms map script:");
         //Function to rebuild features:
         function rebuildbuildFeatures(prj) {
           console.log("transform features gemetry from: " + init_proj + ' to ' + selected_proj);
-          featureLayersGroup.getLayers().forEach(function(element, index, array) {
+          featureLayersGroup.getLayers().forEach(function (element, index, array) {
             let features = element.getSource().getFeatures();
             for (let feature of features) {
               //console.log(feature);
@@ -2082,14 +2067,14 @@ console.log("Start of wms map script:");
           trash: function (l) {
             console.log("Trash function");
             console.log(l);
-            if(l.get('baseLayer') === true) {
+            if (l.get('baseLayer') === true) {
               return false;
             }
             else {
               return true;
             }
           },
-          oninfo: function(l) {
+          oninfo: function (l) {
             var title = l.get('title');
             try {
               var legendUrl = l.getSource().getLegendUrl();
@@ -2102,7 +2087,7 @@ console.log("Start of wms map script:");
             }
           }
         });
-        switcher.on('toggle', function(e) {
+        switcher.on('toggle', function (e) {
           console.log(e);
 
         });
@@ -2110,62 +2095,62 @@ console.log("Start of wms map script:");
 
 
         //Map reset button:
-            $('#resetMapButton').on("click", function(e) {
-              //wmsLayerGroup.getLayers().clear();
-              //featureLayersGroup.getLayers().clear();
+        $('#resetMapButton').on("click", function (e) {
+          //wmsLayerGroup.getLayers().clear();
+          //featureLayersGroup.getLayers().clear();
 
-              //featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
-              //featureLayersGroup.setVisible(true);
-              //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
-              //map.getView().fit(featuresExtent);
-              map.getView().setZoom(map.getView().getZoom() - 0.3);
-            });
+          //featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
+          //featureLayersGroup.setVisible(true);
+          //map.getView().setCenter(ol.extent.getCenter(featuresExtent));
+          //map.getView().fit(featuresExtent);
+          map.getView().setZoom(map.getView().getZoom() - 0.3);
+        });
 
         /** WMS LAYERS - Visualize all **/
         //Loop over the extracted info, and check how many wms resources we have
         var wmsProducts = [];
         var wmsProductLayers = [];
         var wmsLayersFromMmd = []
-    /*    for (var i = 0; i < extracted_info.length; i++) {
-          id = extracted_info[i][1];
-          wms = extracted_info[i][0][1];
-          wmslayer = extracted_info[i][17];
-          //if(debug) {console.log("id: "+id+ ",wms:" +wms)};
-          if (wms != null && wms != "" && isSentinelProduct(id, ['S1B', 'S1A', 'S2B', 'S2A'])) {
-            wmsProducts.push(id);
-            wmsProductLayers.push(wms);
-            if(wmslayer != null) {
-              wmsLayersFromMmd.push(wmslayer);
+        /*    for (var i = 0; i < extracted_info.length; i++) {
+              id = extracted_info[i][1];
+              wms = extracted_info[i][0][1];
+              wmslayer = extracted_info[i][17];
+              //if(debug) {console.log("id: "+id+ ",wms:" +wms)};
+              if (wms != null && wms != "" && isSentinelProduct(id, ['S1B', 'S1A', 'S2B', 'S2A'])) {
+                wmsProducts.push(id);
+                wmsProductLayers.push(wms);
+                if(wmslayer != null) {
+                  wmsLayersFromMmd.push(wmslayer);
+                }
+                else {
+                  wmsLayersFromMmd.push('NA');
+                }
+              }
             }
-            else {
-              wmsLayersFromMmd.push('NA');
-            }
-          }
-        }
 
-*/
+    */
         //LOOP WMS ARRAY
         var wmsUrls = [];
-        var layers =[];
+        var layers = [];
         var titles = [];
         var ids = [];
         var geoms = [];
-        Object.keys(wms_data).forEach(key=>{
+        Object.keys(wms_data).forEach(key => {
 
           console.log(`${key} : ${wms_data[key]}`);
           var id = key;
           ids.push(id);
-          Object.keys(wms_data[key]).forEach(key2=>{
-            if(key2 === 'dar') {
-               var wmsUrl = wms_data[key][key2];
-               wmsUrls.push(wmsUrl);
+          Object.keys(wms_data[key]).forEach(key2 => {
+            if (key2 === 'dar') {
+              var wmsUrl = wms_data[key][key2];
+              wmsUrls.push(wmsUrl);
             }
-            if(key2 === 'layers') {
+            if (key2 === 'layers') {
               //console.log(`${key2} : ${wms_data[key][key2]}`);
               var layer = wms_data[key][key2];
               layers.push(layer);
             }
-            if(key2 === 'geom') {
+            if (key2 === 'geom') {
               //console.log(`${key2} : ${wms_data[key][key2]}`);
               var bbox = wms_data[key][key2];
               box_tl = ol.proj.transform([bbox[3], bbox[0]], 'EPSG:4326', selected_proj);
@@ -2177,10 +2162,10 @@ console.log("Start of wms map script:");
               ]);
               geoms.push(geom);
             }
-           if(key2 === 'title') {
-             var title = wms_data[key][key2];
-             titles.push(title);
-           }
+            if (key2 === 'title') {
+              var title = wms_data[key][key2];
+              titles.push(title);
+            }
 
           });
         });
@@ -2202,14 +2187,14 @@ console.log("Start of wms map script:");
         if (wmsProducts.length > 0) {
           $('#vizAllButton').css('display', 'block');
           $('#vizAllButton').append().text('Visualise all Sentinel products in Map');
-          $('#vizAllButton').on("click", function(e) {
+          $('#vizAllButton').on("click", function (e) {
             console.log("Visualize all wms click event");
             console.log("current projection" + selected_proj);
 
             //Loop over the wmsLayers and render them on map.
             for (let i = 0; i < wmsProductLayers.length; i++) {
-              if(debug){console.log(i + " - " + wmsProducts[i]);}
-              if(debug){console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]);}
+              if (debug) { console.log(i + " - " + wmsProducts[i]); }
+              if (debug) { console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]); }
               //alert(wmsProducts[i]);
               var myGroup = new ol.layer.Group({
                 title: titles[i],
@@ -2219,22 +2204,22 @@ console.log("Start of wms map script:");
                 layer_name = 'true_color_vegetation';
               }
               else if (wmsLayersFromMmd[i] === "Amplitude HH polarisation") {
-                 layer_name = 'amplitude_hh';
+                layer_name = 'amplitude_hh';
               }
               else if (wmsLayersFromMmd[i] === "Amplitude HV polarisation") {
-                 layer_name = 'amplitude_hv';
+                layer_name = 'amplitude_hv';
               }
               else if (wmsLayersFromMmd[i] === "Amplitude VV polarisation") {
-                 layer_name = 'amplitude_vv';
+                layer_name = 'amplitude_vv';
               }
               else if (wmsLayersFromMmd[i] === "Amplitude VH polarisation") {
-                 layer_name = 'amplitude_vh';
+                layer_name = 'amplitude_vh';
               }
               else if (wmsLayersFromMmd[i] === "True Color Vegetation Composite") {
-                 layer_name = 'true_color_vegetation';
+                layer_name = 'true_color_vegetation';
               }
               else {
-                layer_name =  'Composites';
+                layer_name = 'Composites';
               }
               myGroup.getLayers().push(
                 //map.addLayer(

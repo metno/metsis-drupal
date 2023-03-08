@@ -55,8 +55,8 @@ search_map_block:
     - core/drupal.dialog
     - core/drupal.dialog.ajax
     - jquery_ui_slider/slider
-    - metsis_search/map_projs
     - metsis_search/map_ol
+    - metsis_search/map_projs
     - metsis_search/map_ol_ext
     - metsis_search/map_geocoder
 
@@ -68,7 +68,8 @@ map_ol:
       /libraries/openlayers-6.5.0/ol.css: {}
   js:
     /libraries/openlayers-6.5.0/ol.js: {}
-
+  dependencies:
+    - metsis_search/map_projs
 
 map_projs:
   version: 2.6.3

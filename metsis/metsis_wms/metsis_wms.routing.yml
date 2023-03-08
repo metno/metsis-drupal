@@ -2,7 +2,7 @@ metsis_wms.get_custom_content:
   path: '/metsis/map/wmscustom'
   defaults:
   #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
-    _controller: '\Drupal\metsis_wms\Controller\DefaultController::get_custom_content'
+    _controller: '\Drupal\metsis_wms\Controller\DefaultController::getCustomContent'
     _title: 'METSIS OL6 WMS custom content'
   #    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
   options:

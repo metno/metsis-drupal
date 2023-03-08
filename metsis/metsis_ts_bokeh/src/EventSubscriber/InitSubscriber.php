@@ -1,13 +1,13 @@
-<?php /**
- * @file
- * Contains \Drupal\metsis_ts_bokeh\EventSubscriber\InitSubscriber.
- */
+<?php
 
 namespace Drupal\metsis_ts_bokeh\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Subscribe to events.
+ */
 class InitSubscriber implements EventSubscriberInterface {
 
   /**
@@ -17,9 +17,11 @@ class InitSubscriber implements EventSubscriberInterface {
     return [KernelEvents::REQUEST => ['onEvent', 0]];
   }
 
+  /**
+   * On a partivular event do the following.
+   */
   public function onEvent() {
-/* DEPRECTAED    drupal_add_css(drupal_get_path('module', 'metsis_ts_bokeh') . '/css/metsis_ts_bokeh.css'); */
-  return;
+    /* DEPRECTAED    drupal_add_css(drupal_get_path('module', 'metsis_ts_bokeh') . '/css/metsis_ts_bokeh.css'); */
   }
 
 }

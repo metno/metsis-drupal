@@ -9,7 +9,7 @@ use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Ajax\RemoveCommand;
 
 /**
- *
+ * Controller for handeling thumbnails and lazy loading.
  */
 class MetsisThumbnailController extends ControllerBase {
 
@@ -49,7 +49,7 @@ class MetsisThumbnailController extends ControllerBase {
 
     if ($found > 0) {
       foreach ($result as $doc) {
-        if (sizeof($doc->getFields()) > 0) {
+        if (count($doc->getFields()) > 0) {
           foreach ($doc as $field => $value) {
             if ($field === 'thumbnail_data') {
               $thumb = $value;

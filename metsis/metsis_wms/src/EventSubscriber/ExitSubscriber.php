@@ -1,14 +1,13 @@
 <?php
-/**
- * @file
- * Contains \Drupal\metsis_wms\EventSubscriber\ExitSubscriber.
- */
 
 namespace Drupal\metsis_wms\EventSubscriber;
 
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * Terminate event subscriber.
+ */
 class ExitSubscriber implements EventSubscriberInterface {
 
   /**
@@ -18,6 +17,9 @@ class ExitSubscriber implements EventSubscriberInterface {
     return [KernelEvents::TERMINATE => ['onEvent', 0]];
   }
 
+  /**
+   * Handle event.
+   */
   public function onEvent() {
 
   }

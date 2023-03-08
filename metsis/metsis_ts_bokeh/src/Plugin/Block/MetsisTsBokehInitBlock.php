@@ -1,4 +1,7 @@
 <?php
+
+namespace Drupal\metsis_ts_bokeh\Plugin\Block;
+
 /*
  * @file
  * Contains \Drupal\metsis_ts_bokeh\Plugin\Block\MetsisTsBokehInitBlock
@@ -6,12 +9,8 @@
  * BLock to show TS bokeh Init form
  *
  */
-namespace Drupal\metsis_ts_bokeh\Plugin\Block;
-
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\Core\Form\FormStateInterface;
-
 
 /**
  * Provides a Block.
@@ -25,11 +24,13 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class MetsisTsBokehInitBlock extends BlockBase implements BlockPluginInterface {
 
-  /*
+  /**
    * {@inheritdoc}
-   * Add Form to block
+   *
+   * Add Form to block.
    */
   public function build() {
-  return \Drupal::formBuilder()->getForm('Drupal\metsis_ts_bokeh\Form\MetsisTsBokehInitForm');
- }
+    return \Drupal::formBuilder()->getForm('Drupal\metsis_ts_bokeh\Form\MetsisTsBokehInitForm');
+  }
+
 }

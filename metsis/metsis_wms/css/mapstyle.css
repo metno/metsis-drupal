@@ -35,7 +35,7 @@ in fullscreen by openlayers fullScreenControl */
 }
 
 .mapcontainer {
-/*  clear: both; */
+  /*  clear: both; */
   padding: 0;
   height: 100%;
   width: 100%;
@@ -61,11 +61,13 @@ in fullscreen by openlayers fullScreenControl */
   height: 100%;
   width: 100%;
 }
+
 /* The main div to put the openlayers map canvas */
 .map-res {
   width: 100%;
   float: left;
-  height: 50em; /* 450px */
+  height: 50em;
+  /* 450px */
   border-top: 1px;
   border-bottom: 1px;
   border-left: 0;
@@ -86,7 +88,7 @@ in fullscreen by openlayers fullScreenControl */
   width: 0;
   /*height: 450px;*/
   height: 50em;
-/*  min-height: 100%; */
+  /*  min-height: 100%; */
   float: right;
 
   overflow-y: scroll;
@@ -159,7 +161,7 @@ in fullscreen by openlayers fullScreenControl */
 }
 
 .map-closebtn-wrapper {
-  float left;
+  float: left;
   padding: 5px;
 }
 
@@ -183,6 +185,7 @@ in fullscreen by openlayers fullScreenControl */
   margin-bottom: 16px;
   margin-top: 16px;
 }
+
 /* Style the button that is used to open the sidepanel */
 .map-openbtn-wrapper {
   left: 0.5em;
@@ -303,6 +306,7 @@ user-select: none
   margin-right: auto;
   margin-bottom: 5px;
 }
+
 #map-timeslider-id {
   margin-left: 16px;
   margin-right: 26px;
@@ -313,11 +317,13 @@ user-select: none
   margin-top: 10px;
   text-align: center;
 }
- .progress-container {
-  width:100%;
+
+.progress-container {
+  width: 100%;
   height: 15px;
 }
- #progress {
+
+#progress {
   position: relative;
   height: 15px;
   background: -webkit-linear-gradient(left, #dcdcdc 0%, #7593b9 100%);
@@ -325,6 +331,7 @@ user-select: none
   max-width: 100%;
   transition: width 250ms;
 }
+
 /*
 i.icon.backward {
   content: &#xf100;
@@ -354,7 +361,8 @@ i.icon.forward:before {
   content: &#xf101;
 }
 */
-.controls button, .ui.label {
+.controls button,
+.ui.label {
   font-weight: bolder;
   text-decoration: none;
   text-align: center
@@ -371,6 +379,7 @@ i.icon.forward:before {
 
 
 }
+
 #time {
   text-align: center;
   margin-left: 5px;
@@ -381,6 +390,7 @@ i.icon.forward:before {
   border-radius: 1em;
 
 }
+
 .elevationButton {
   background-color: #008CBA;
   /* Green */
@@ -392,6 +402,7 @@ i.icon.forward:before {
 
 
 }
+
 #elevation {
   text-align: center;
   margin-left: 5px;
@@ -402,8 +413,8 @@ i.icon.forward:before {
   border-radius: 1em;
 
 }
-.timeControlWrapper {
-}
+
+.timeControlWrapper {}
 
 
 .controls {
@@ -468,7 +479,8 @@ div.ui-slider span.ui-slider-handle {
   overflow: scroll;
 }
 
-.ol-popup:after, .ol-popup:before {
+.ol-popup:after,
+.ol-popup:before {
   top: 100%;
   border: solid transparent;
   content: " ";
@@ -750,7 +762,7 @@ button#vizAllButton {
   font-size: 11px;
   margin: 2px 1px;
   cursor: pointer;
-  -webkit-transition-duration: 0.4s; //Safari
+  -webkit-transition-duration: 0.4s;
   transition-duration: 0.4s;
   border-radius: 6px;
 }

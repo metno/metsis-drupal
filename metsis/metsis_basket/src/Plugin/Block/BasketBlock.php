@@ -3,8 +3,9 @@
 namespace Drupal\metsis_basket\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\metsis_basket\Controller\MetsisBasketController;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 
 /**
@@ -14,7 +15,6 @@ use Drupal\Core\Session\AccountProxyInterface;
  *
  * BLock to show basket button and number of items
  */
-
 
 /**
  * Provides a Block.
@@ -26,7 +26,7 @@ use Drupal\Core\Session\AccountProxyInterface;
  * )
  * {@inheritdoc}
  */
-class BasketBlock extends BlockBase implements BlockPluginInterface {
+class BasketBlock extends BlockBase implements ContainerFactoryPluginInterface {
 
   /**
    * The current user.
@@ -38,11 +38,30 @@ class BasketBlock extends BlockBase implements BlockPluginInterface {
   /**
    * Construct an example service instance.
    *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   Account proxy for the currently logged-in user.
    */
-  public function __construct(AccountProxyInterface $current_user) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, AccountProxyInterface $current_user) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->currentUser = $current_user;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('current_user')
+    );
   }
 
   /**
@@ -90,7 +109,7 @@ class BasketBlock extends BlockBase implements BlockPluginInterface {
    * Get the user item count frontend.
    */
   public function getUserItemCount() {
-    $user_id = (int) this->currentUser->id();
+    $user_id = (int) $this->currentUser->id();
     return MetsisBasketController::getUserItemCount($user_id);
   }
 

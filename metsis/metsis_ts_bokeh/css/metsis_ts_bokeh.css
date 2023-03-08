@@ -1,15 +1,16 @@
-.plot-container {
-}
 .vars-container {
   font-family: Tahoma, Verdana, Segoe, sans-serif;
   display: flex;
 }
+
 .fixed-width {
   width: 80px;
 }
+
 .flex-width {
   flex-grow: 1;
 }
+
 .plot-submit {
   flex-grow: 1;
 }
@@ -19,6 +20,7 @@ form#metsis-tsform {
   width: 100%;
   max-width: unset;
 }
+
 .plot-input {
   width: 45%;
 }
@@ -31,22 +33,25 @@ iframe.bokehplot {
   height: 720px;
   margin: 0;
 }
+
 .iframe_container {
-    background-image: url('/modules/metsis/metsis_search/icons/loader.gif');
-    background-position: center;
-    background-repeat: no-repeat;
-}
-.iframe_container iframe {
-    background: transparent;
+  background-image: url('/modules/metsis/metsis_search/icons/loader.gif');
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.ts-dialog{
-    width: 100% !important;
-    left: 0 !important;
-    top: 0 !important;
-    z-index: 9980;
-    height: 100% !important;
-    .ui-dialog-content{
-        max-height: 100% !important;
-    }
+.iframe_container iframe {
+  background: transparent;
+}
+
+.ts-dialog {
+  width: 100% !important;
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 9980;
+  height: 100% !important;
+}
+
+.ui-dialog-content {
+  max-height: 100% !important;
 }

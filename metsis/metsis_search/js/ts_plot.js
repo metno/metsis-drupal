@@ -1,4 +1,4 @@
-(function($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
 
   function plot_ts(url_o, md_ts_id, path, pywps) {
     let loader = '<img class="ts-plot-loader" src="/' + path + '/icons/loader.gif">';
@@ -9,7 +9,7 @@
     }
 
     fetch(pywps + '?get=plot&resource_url=' + url_o + '&variable=' + variable + '&axis=' + $('.bokeh-ts-plot[reference="' + md_ts_id + '"]').find('#axis').val())
-      .then(function(response) {
+      .then(function (response) {
         if(response.ok) {
         return response.json();
       }
@@ -17,7 +17,7 @@
           throw new Error("Error fetching opendap from url: " + url_o);
       }
       })
-      .then(function(item) {
+      .then(function (item) {
         var idplaceholder = $('.ts-plot[reference="' + md_ts_id + '"]').attr('id');
         //console.log(idplaceholder);
         item.target_id = idplaceholder;
@@ -32,15 +32,15 @@
       });
   }
   Drupal.behaviors.metsisSearchTsPlot = {
-    attach: function(context, drupalSettings) {
+    attach: function (context, drupalSettings) {
       var pywpsUrl = drupalSettings.metsis_search_ts_plot.pywps_service;
       var path = drupalSettings.metsis_search_ts_plot.module_path;
-      $('.visualise-ts-div').once().each(function() {
+      $('.visualise-ts-div').once().each(function () {
         var opendap_url = $('#opendap-url', this).text();
         var id = $('#opendap-id', this).text();
 
         console.log('Got timeseries id: ' + id);
-        $('#ts-plot-button', this).once().each(function() {
+        $('#ts-plot-button', this).once().each(function () {
 
 /*
 

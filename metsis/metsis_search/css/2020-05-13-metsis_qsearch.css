@@ -2,58 +2,76 @@
   float: left;
   width: 39%;
 }
+
 .map-div {
   float: left;
   width: 59%;
 }
+
 .full-text-search-div {
   width: 100%;
 }
+
 #edit-chosen-full-text-search {
   width: 100%;
 }
+
 .investigator-div {
   width: 100%;
 }
+
 #edit-chosen-investigator {
   width: 100%;
 }
+
 .topics-and-variables-div {
   width: 100%;
 }
+
 #edit-chosen-topics-and-variables-a {
   width: 100%;
 }
+
 .operational-status-div {
   width: 100%;
 }
+
 .institutions-div {
   width: 100%;
 }
+
 .data-collection-period-div {
   width: 100%;
 }
+
 #edit-finished-after {
   width: 100%;
 }
+
 #edit-finished-before {
   width: 100%;
 }
+
 .bounding-box-div {
   width: 100%;
 }
+
 #edit-bbox-top-left-lon {
   width: 100%;
 }
+
 #edit-bbox-top-left-lat {
   width: 100%;
 }
+
 #edit-bbox-bottom-right-lon {
   width: 100%;
 }
+
 #edit-bbox-bottom-right-lat {
   width: 100%;
 }
+
 .geographical-search-div {
   width: 100%;
 }
@@ -74,12 +92,15 @@ div.clear {
   width: 100%;
   height: 450px;
 }
+
 .product_type_details {
   margin-left: 50px;
 }
+
 .map_base_layer-div {
   background-color: #912d2b;
 }
+
 /*label {
 
     padding:10px;
@@ -101,6 +122,7 @@ div.clear {
 .form-item-zzplatform-long-name-zzchosen-platform-long-name-sentinel-2a {
   display: none;
 }
+
 .form-item-zzplatform-long-name-zzchosen-platform-long-name-sentinel-2b-option2-option1 {
   background-color: red;
 }

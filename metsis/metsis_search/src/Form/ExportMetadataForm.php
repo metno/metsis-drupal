@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\metsis_search\Form;
+
 /*
  * @file
  * Contains \Drupal\metsis_search/ExportMetadataForm
@@ -8,7 +10,6 @@
  *
  */
 
-namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Drupal\search_api\Entity\Index;
 
 /**
- *
+ * Form for exporting metadata.
  */
 class ExportMetadataForm extends FormBase {
   /**
@@ -49,12 +50,9 @@ class ExportMetadataForm extends FormBase {
   }
 
   /**
-   * @param $form
-   * @param $form_state
+   * Build the export form.
    *
-   * @return mixed
-   *
-   *   {@inheritdoc}
+   * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, string $id = '') {
     $form['#prefix'] = '<div id="metsis-export-form">';
@@ -108,7 +106,7 @@ class ExportMetadataForm extends FormBase {
       '#type' => 'submit',
       '#value' => 'Export ' . $options[$def_export],
       // '#ajax' => [
-      //  'wrapper' => 'metsis-export-form',
+      // 'wrapper' => 'metsis-export-form',
       // ],
     ];
 

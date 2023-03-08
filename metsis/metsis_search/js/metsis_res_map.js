@@ -1,20 +1,17 @@
 console.log("Start of metsis search map script:");
-(function($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
 
   console.log("Attaching map script to drupal behaviours:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisSearchBlock = {
-    attach: function(context, drupalSettings) {
-      $('#map-res', context).once('metsis-search-map').each(function() {
+    attach: function (context, drupalSettings) {
+      $('#map-res', context).once('metsis-search-map').each(function () {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS Map...');
 
         //Default Zoom value
         var defzoom = 4;
-
-
-
 
         // Import variables from drupalSettings send by block build array
         var extracted_info = drupalSettings.metsis_search_map_block.extracted_info;
@@ -212,15 +209,13 @@ console.log("Start of metsis search map script:");
           }).html('Intersects')
         );
 
-
         //Set default checked filter
         //var flt = document.getElementsByName('map-filter');
         selected_filter = selected_filter.toLowerCase();
         console.log('selected filter: ' + selected_filter.toLowerCase());
-        if(selected_filter !== 'contains') {
+        if (selected_filter !== 'contains') {
           document.getElementById(selected_filter.toLowerCase()).checked = true;
         }
-
 
         //If additional lyers are set, create the layers dropdown button list
         if (additional_layers) {
@@ -252,23 +247,23 @@ console.log("Start of metsis search map script:");
               $(document.createElement('li')).prop({
                 class: 'addl'
               })
-              .append(
-                $(document.createElement('input')).prop({
-                  id: value,
-                  class: 'check-layers',
-                  type: 'checkbox',
-                  value: value,
-                  name: "layers"
-                }))
-              .append(
-                $(document.createElement('label')).prop({
-                  class: "layer-labels",
-                  for: value
-                }).html(value))
+                .append(
+                  $(document.createElement('input')).prop({
+                    id: value,
+                    class: 'check-layers',
+                    type: 'checkbox',
+                    value: value,
+                    name: "layers"
+                  }))
+                .append(
+                  $(document.createElement('label')).prop({
+                    class: "layer-labels",
+                    for: value
+                  }).html(value))
             );
           }
           //Add event listener to layers button
-          $(".layers-button").click(function() {
+          $(".layers-button").click(function () {
             document.getElementById('lrs').classList.toggle('show');
           });
           //Do some styling
@@ -289,30 +284,23 @@ console.log("Start of metsis search map script:");
 
         const mapFilterInfo = selected_filter.charAt(0).toUpperCase() + selected_filter.slice(1)
         if (bboxFilter != null) {
-          $('.current-bbox-filter').text('Spatial filter: '+mapFilterInfo+' ');
+          $('.current-bbox-filter').text('Spatial filter: ' + mapFilterInfo + ' ');
           $('.current-bbox-select').text(bboxFilter);
         }
 
-
         //Reset search button
-    /*    $('#resetButton').on('click', function() {
-          var myurl = '/metsis/search/reset';
-          console.log('calling controller url: ' + myurl);
-          data = Drupal.ajax({
-            url: myurl,
-            async: false,
-            success: function(response) {
-
-
-
-                 location.href = '/metsis/search?op=Reset'; //Redirect
-            }
-          }).execute();
-
-
-
-        })
-        */
+        /*    $('#resetButton').on('click', function() {
+              var myurl = '/metsis/search/reset';
+              console.log('calling controller url: ' + myurl);
+              data = Drupal.ajax({
+                url: myurl,
+                async: false,
+                success: function(response) {
+                     location.href = '/metsis/search?op=Reset'; //Redirect
+                }
+              }).execute();
+            })
+            */
         /**
          * Define the proj4 map_projections
          */
@@ -338,7 +326,6 @@ console.log("Start of metsis search map script:");
           code: 'EPSG:32761',
           extent: ext32761
         });
-
 
         // 4326
         var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000];
@@ -380,7 +367,6 @@ console.log("Start of metsis search map script:");
                 }
         */
 
-
         /** Register event listner when Projection is changed.
          * Rebuild pins and polygons and update map view */
         var ch = document.getElementsByName('map-res-projection');
@@ -396,7 +382,6 @@ console.log("Start of metsis search map script:");
             proj = prj;
             selected_proj = prj;
             console.log("change projection event: " + prj);
-
 
             //Update session information with user selected projection
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
@@ -414,11 +399,9 @@ console.log("Start of metsis search map script:");
 
             //});
 
-
             //Remove pins ans polygons
             console.log("Remove pins and polygons layers");
             featureLayersGroup.getLayers().clear();
-
 
             console.log("Update view to new selected projection: " + prj);
             console.log(projObjectforCode[prj].projection);
@@ -439,25 +422,24 @@ console.log("Start of metsis search map script:");
             //Zoom to new extent
             map.getView().fit(featuresExtent);
             map.getView().setZoom(map.getView().getZoom() - 0.3);
-            wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
-              if ( layer instanceof ol.layer.Tile ) {
-                layer.getSource().updateParams({'CRS': selected_proj});
+            wmsLayerGroup.getLayers().forEach(function (layer, index, array) {
+              if (layer instanceof ol.layer.Tile) {
+                layer.getSource().updateParams({ 'CRS': selected_proj });
                 layer.getSource().refresh();
               }
               else {
-                layer.getLayers().forEach(function(layer,index, array) {
-                  if ( layer instanceof ol.layer.Tile ) {
-                    layer.getSource().updateParams({'CRS': selected_proj});
+                layer.getLayers().forEach(function (layer, index, array) {
+                  if (layer instanceof ol.layer.Tile) {
+                    layer.getSource().updateParams({ 'CRS': selected_proj });
                     layer.getSource().refresh();
                   }
+                });
+              }
             });
-          }
-        });
-              progress_bar()
+            progress_bar()
           }
 
         }
-
         //Create a popup with information:
         /**
          * Elements that make up the popup.
@@ -484,13 +466,12 @@ console.log("Start of metsis search map script:");
          * @return {boolean} Don't follow the href.
          */
         console.log("Register popUp closer event");
-        popUpCloser.onclick = function() {
+        popUpCloser.onclick = function () {
           popUpOverlay.setPosition(undefined);
           popUpCloser.blur();
           map.addOverlay(overlayh);
           return false;
         };
-
 
         /** Add tooltip overlay to map */
         if (debug) {
@@ -505,7 +486,6 @@ console.log("Start of metsis search map script:");
         });
         //  map.addLayer(layer['OSM']);
         //map.addOverlay(overlayh);
-
         /** Create custom features and styles */
 
         //in nbs s1-ew
@@ -549,17 +529,16 @@ console.log("Start of metsis search map script:");
             opacity: 1.00,
             src: '/' + path + '/icons/pinGr.png'
           }))
-        });var iconStyleBk = new ol.style.Style({
-      image: new ol.style.Icon(({
-              anchor: [0.5, 0.0],
-              anchorOrigin: 'bottom-left',
-              anchorXUnits: 'fraction',
-              anchorYUnits: 'fraction',
-              opacity: 1.00,
+        }); var iconStyleBk = new ol.style.Style({
+          image: new ol.style.Icon(({
+            anchor: [0.5, 0.0],
+            anchorOrigin: 'bottom-left',
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            opacity: 1.00,
             src: '/' + path + '/icons/pinBk.png'
           }))
         });
-
 
         /**
          * Define different basemaps layers to choose from here.
@@ -682,7 +661,7 @@ console.log("Start of metsis search map script:");
           //className: 'fullscreen',
         });
 
-        fullScreenControl.on('enterfullscreen', function() {
+        fullScreenControl.on('enterfullscreen', function () {
           console.log("Entered fullscreen");
           //Update the mapsize
           if (timeDimensions.length > 0) {
@@ -692,17 +671,14 @@ console.log("Start of metsis search map script:");
             $('#map-res').height($('.mapcontainer:fullscreen').height());
             $('.map-sidepanel').height($('.mapcontainer:fullscreen').height());
           }
-          setTimeout(function() {
+          setTimeout(function () {
 
             map.updateSize();
             map.getView().setCenter(ol.extent.getCenter(featuresExtent));
             //map.getView().fit(featuresExtent, { size: map.getSize() });
             map.getView().fit(featuresExtent);
             map.getView().setZoom(map.getView().getZoom() - 0.1);
-
-
           }, 200);
-
 
           //Update the position of the layer control button
           //$('.map-openbtn-wrapper').css("top", "8.8em");
@@ -715,12 +691,12 @@ console.log("Start of metsis search map script:");
           */
           //  map.updateSize();
         });
-        fullScreenControl.on('leavefullscreen', function() {
+        fullScreenControl.on('leavefullscreen', function () {
           console.log("Leaved fullscreen");
           //Update the mapsize
           $('#map-res').height("450px");
           $('#map-sidepanel').height("450px");
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
             map.getView().setCenter(ol.extent.getCenter(featuresExtent));
             //map.getView().fit(featuresExtent, { size: map.getSize() });
@@ -746,15 +722,14 @@ console.log("Start of metsis search map script:");
 
         //Mouseposition lat lon
         var mousePositionControl = new ol.control.MousePosition({
-          coordinateFormat: function(co) {
+          coordinateFormat: function (co) {
             return ol.coordinate.format(co, template = 'lon: {x}, lat: {y}', 2);
           },
           projection: 'EPSG:4326',
         });
 
-
         /* Define the custom sidebar / layerswitcher control */
-        var OpenSideBarControl = /*@__PURE__*/ (function(Control) {
+        var OpenSideBarControl = /*@__PURE__*/ (function (Control) {
           function OpenSideBarControl(opt_options) {
             var options = opt_options || {};
 
@@ -780,7 +755,6 @@ console.log("Start of metsis search map script:");
           OpenSideBarControl.prototype.handleOpenSideBar = function handleOpenSideBar() {
             function openSideBar() {
               console.log("Opening the sidebar");
-
               //Check if we are in fullscreen mode or not
               var full_screen_element = document.fullscreenElement;
               if (full_screen_element !== null) {
@@ -793,12 +767,10 @@ console.log("Start of metsis search map script:");
                 $('.map-res').width("70%");
               }
               //Update the mapsize
-              setTimeout(function() {
+              setTimeout(function () {
                 map.updateSize();
-
-
               }, 250);
-              setTimeout(function() {
+              setTimeout(function () {
 
                 $('#map-sidepanel').show();
               }, 300);
@@ -846,9 +818,6 @@ console.log("Start of metsis search map script:");
           });
         }
 
-
-
-
         //Unset overflow on canvas (ol-viewport)
 
         // create a progress bar to show the loading of tiles
@@ -857,55 +826,55 @@ console.log("Start of metsis search map script:");
           var tilesLoaded = 0;
           var tilesPending = 0;
           //load all S1 and S2 entries
-          map.getLayers().forEach(function(layer, index, array) {
+          map.getLayers().forEach(function (layer, index, array) {
 
-            if (layer.get('title') === 'WMS Layers' &&  layer instanceof ol.layer.Group) {
-              console.log( layer instanceof ol.layer.Group);
-              layer.getLayers().forEach(function(layer,index, array) {
+            if (layer.get('title') === 'WMS Layers' && layer instanceof ol.layer.Group) {
+              console.log(layer instanceof ol.layer.Group);
+              layer.getLayers().forEach(function (layer, index, array) {
                 //console.log(array.length);
                 //console.log(Object.getPrototypeOf(layer));
-                if( layer instanceof ol.layer.Group ) {
-                layer.getLayers().forEach(function(layer,index, array) {
-                //for all tiles that are done loading update the progress bar
-                //layer.getSource().refresh();
-                layer.getSource().on('tileloadend', function() {
-                  tilesLoaded += 1;
-                  var percentage = Math.round(tilesLoaded / tilesPending * 100);
-                  document.getElementById('progress').style.width = percentage + '%';
-                  // fill the bar to the end
-                  if (percentage >= 100) {
-                    document.getElementById('progress').style.width = '100%';
-                    tilesLoaded = 0;
-                    tilesPending = 0;
-                  }
-                });
+                if (layer instanceof ol.layer.Group) {
+                  layer.getLayers().forEach(function (layer, index, array) {
+                    //for all tiles that are done loading update the progress bar
+                    //layer.getSource().refresh();
+                    layer.getSource().on('tileloadend', function () {
+                      tilesLoaded += 1;
+                      var percentage = Math.round(tilesLoaded / tilesPending * 100);
+                      document.getElementById('progress').style.width = percentage + '%';
+                      // fill the bar to the end
+                      if (percentage >= 100) {
+                        document.getElementById('progress').style.width = '100%';
+                        tilesLoaded = 0;
+                        tilesPending = 0;
+                      }
+                    });
 
-                //for all tiles that are staring to load update the number of pending tiles
-                layer.getSource().on('tileloadstart', function() {
-                  ++tilesPending;
-                });
-              });
-            }
-            else {
-              layer.getSource().on('tileloadend', function() {
-                tilesLoaded += 1;
-                var percentage = Math.round(tilesLoaded / tilesPending * 100);
-                document.getElementById('progress').style.width = percentage + '%';
-                // fill the bar to the end
-                if (percentage >= 100) {
-                  document.getElementById('progress').style.width = '100%';
-                  tilesLoaded = 0;
-                  tilesPending = 0;
+                    //for all tiles that are staring to load update the number of pending tiles
+                    layer.getSource().on('tileloadstart', function () {
+                      ++tilesPending;
+                    });
+                  });
+                }
+                else {
+                  layer.getSource().on('tileloadend', function () {
+                    tilesLoaded += 1;
+                    var percentage = Math.round(tilesLoaded / tilesPending * 100);
+                    document.getElementById('progress').style.width = percentage + '%';
+                    // fill the bar to the end
+                    if (percentage >= 100) {
+                      document.getElementById('progress').style.width = '100%';
+                      tilesLoaded = 0;
+                      tilesPending = 0;
+                    }
+                  });
+
+                  //for all tiles that are staring to load update the number of pending tiles
+                  layer.getSource().on('tileloadstart', function () {
+                    ++tilesPending;
+                  });
                 }
               });
-
-              //for all tiles that are staring to load update the number of pending tiles
-              layer.getSource().on('tileloadstart', function() {
-                ++tilesPending;
-              });
             }
-            });
-          }
           });
           $('#bottomMapPanel').show();
 
@@ -920,11 +889,11 @@ console.log("Start of metsis search map script:");
         }
 
         function init() {
-          $('#map-sidepanel').bind('resize', function(e) {
+          $('#map-sidepanel').bind('resize', function (e) {
             console.log('Sidepanel resize');
           });
 
-          $('.ol-viewport').bind('resize', function(e) {
+          $('.ol-viewport').bind('resize', function (e) {
             console.log('OL viewport resize');
             map.updateSize();
 
@@ -950,12 +919,12 @@ console.log("Start of metsis search map script:");
           }
 
           //Update the mapsize
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
 
 
           }, 250);
-          setTimeout(function() {
+          setTimeout(function () {
 
             $('#map-sidepanel').show();
           }, 300);
@@ -974,17 +943,14 @@ console.log("Start of metsis search map script:");
           $('.map-res').width("100%");
 
           //Update the mapsize
-          setTimeout(function() {
+          setTimeout(function () {
             map.updateSize();
           }, 350);
           map.getView().setCenter(ol.extent.getCenter(featuresExtent));
           //map.getView().fit(featuresExtent);
           map.getView().setZoom(map.getView().getZoom());
-        //  console.log(map.getLayers()[0]);
+          //  console.log(map.getLayers()[0]);
         }
-
-
-
 
         //Create open button for sidepanel with click event
         /*        $('.map-openbtn-wrapper').append(
@@ -1012,7 +978,7 @@ console.log("Start of metsis search map script:");
         );
 
         //Register click event listeners for sidebar buttons
-        $('#sidepanel-expand').on('click', function() {
+        $('#sidepanel-expand').on('click', function () {
           if ($('#map-sidepanel').css('display') == 'none') {
             openSideBar()
           } else {
@@ -1027,17 +993,14 @@ console.log("Start of metsis search map script:");
                   map.updateSize();
                 });
         */
-
-
-
         /** Callback function for tooltip pointer move event
          Display the title */
         function id_tooltip_h() {
           console.log("Register tooltip hover function.")
-          map.on('pointermove', function(evt) {
+          map.on('pointermove', function (evt) {
             var coordinate = evt.coordinate;
             var feature_ids = {};
-            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
               //console.log(feature);
               feature_ids[feature.get('id')] = {
                 title: feature.get('title'),
@@ -1062,9 +1025,6 @@ console.log("Start of metsis search map script:");
             }
           });
         }
-
-
-
         /**
          * TODO: Read this helptext from metsis search configuration */
         //$('#bottomMapPanel').append().text('Interact directly with selected products from the map by clicking on the highlighted features.');
@@ -1076,15 +1036,13 @@ console.log("Start of metsis search map script:");
         var toolclickevent;
         var toolclickevent_new;
         var getProductInfo;
-
-
         //New plot service function. Add bokeh plot endpoint as iFrame
         function plot_ts_bokeh(url_o, pywps, selector) {
-          var url = pywps+'?url='+url_o;
+          var url = pywps + '?url=' + url_o;
           if ($('#map-ts-plot').html().length > 0) {
             $('#map-ts-plot').empty();
           }
-          $('#map-ts-plot').html('<iframe src="'+url+'" width="100%" height="725" frameborder=0 scrolling=no allowfullscreen> title="Timeseries Bokeh Plot"</iframe>');
+          $('#map-ts-plot').html('<iframe src="' + url + '" width="100%" height="725" frameborder=0 scrolling=no allowfullscreen> title="Timeseries Bokeh Plot"</iframe>');
 
         }
 
@@ -1098,10 +1056,10 @@ console.log("Start of metsis search map script:");
           }
 
           fetch(pywps + '?get=plot&resource_url=' + url_o + '&variable=' + variable + '&axis=' + $('#bokeh-map-ts-plot').find('#axis').val())
-            .then(function(response) {
+            .then(function (response) {
               return response.json();
             })
-            .then(function(item) {
+            .then(function (item) {
               item.target_id = 'map-ts-plot';
               Bokeh.embed.embed_item(item);
               $('#bokeh-map-ts-plot').find('.map-ts-loader').empty();
@@ -1131,7 +1089,7 @@ console.log("Start of metsis search map script:");
             }).html('Back to results map')
           );
           // Register action for click button:
-          button.on('click', function() {
+          button.on('click', function () {
             $('#bokeh-map-ts-plot').slideUp();
             $('.map-ts-header').css({
               display: 'none'
@@ -1179,7 +1137,7 @@ console.log("Start of metsis search map script:");
               }
               $('#bokeh-map-ts-plot').find('.map-ts-loader').empty();
 
-              $('#bokeh-map-ts-plot').find('#map-ts-var-list').on('change', function() {
+              $('#bokeh-map-ts-plot').find('#map-ts-var-list').on('change', function () {
                 plot_ts(opendap_url, id, path, pywpsUrl)
 
               });
@@ -1211,7 +1169,7 @@ console.log("Start of metsis search map script:");
             }).html('Back to results map')
           );
           // Register action for click button:
-          button.on('click', function() {
+          button.on('click', function () {
             $('#bokeh-map-ts-plot').slideUp();
             $('.map-ts-header').css({
               display: 'none'
@@ -1225,37 +1183,35 @@ console.log("Start of metsis search map script:");
             $('#bokeh-map-ts-plot').css("width", $(window).width());
             $('#bokeh-map-ts-plot').css("height", $(window).height());
             // if already full screen; exit
-  // else go fullscreen
-  /*if (
-    document.fullscreenElement ||
-    document.webkitFullscreenElement ||
-    document.mozFullScreenElement ||
-    document.msFullscreenElement
-  ) {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    }
-  } else {
-    element = $('#bokeh-map-ts-plot').get(0);
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    } else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    } else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-    } else if (element.msRequestFullscreen) {
-      element.msRequestFullscreen();
-    }
-  }*/
-});
-
-
+            // else go fullscreen
+            /*if (
+              document.fullscreenElement ||
+              document.webkitFullscreenElement ||
+              document.mozFullScreenElement ||
+              document.msFullscreenElement
+            ) {
+              if (document.exitFullscreen) {
+                document.exitFullscreen();
+              } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+              } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+              } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+              }
+            } else {
+              element = $('#bokeh-map-ts-plot').get(0);
+              if (element.requestFullscreen) {
+                element.requestFullscreen();
+              } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+              } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+              } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+              }
+            }*/
+          });
           /*  $('#bokeh-map-ts-plot').css({
                 position: 'fixed',
                 top: '0',
@@ -1263,49 +1219,49 @@ console.log("Start of metsis search map script:");
                 bottom: '0',
                 left: '0'
             }); */
-        //  });
+          //  });
 
           /*  if ($('#map-ts-plot').html().length > 0 || $('#bokeh-map-ts-plot').find('.map-ts-vars').html().length > 0) {
               $('#map-ts-plot').empty();
               $('#bokeh-map-ts-plot').find('.map-ts-vars').empty();
             } else {*/
-/*          let loader = '<img class="ts-click-loader" src="/core/misc/throbber-active.gif">';
-          $('#bokeh-map-ts-plot').find('.map-ts-loader').append(loader);
-          console.log('fetching variables');
-          fetch(pywpsUrl + '?get=param&resource_url=' + opendap_url)
-            .then(response => response.json())
-            .then(data => {
-              $('#bokeh-map-ts-plot').find('.map-ts-vars').html(
-                $(document.createElement('input')).prop({
-                  id: 'axis',
-                  name: 'axis',
-                  value: Object.keys(data),
-                  type: 'hidden',
-                })
-              ).append(
-                $(document.createElement('select')).prop({
-                  id: 'map-ts-var-list',
-                  name: 'var_list',
+          /*          let loader = '<img class="ts-click-loader" src="/core/misc/throbber-active.gif">';
+                    $('#bokeh-map-ts-plot').find('.map-ts-loader').append(loader);
+                    console.log('fetching variables');
+                    fetch(pywpsUrl + '?get=param&resource_url=' + opendap_url)
+                      .then(response => response.json())
+                      .then(data => {
+                        $('#bokeh-map-ts-plot').find('.map-ts-vars').html(
+                          $(document.createElement('input')).prop({
+                            id: 'axis',
+                            name: 'axis',
+                            value: Object.keys(data),
+                            type: 'hidden',
+                          })
+                        ).append(
+                          $(document.createElement('select')).prop({
+                            id: 'map-ts-var-list',
+                            name: 'var_list',
 
-                }).append(
-                  $(document.createElement('option')).text('Choose variable')
-                )
-              );
-              console.log('looping variables');
-              for (const variable of data[Object.keys(data)]) {
-                var el = document.createElement("option");
-                el.textContent = variable;
-                el.value = variable;
-                $('#bokeh-map-ts-plot').find('#map-ts-var-list').append(el);
-              }
-              $('#bokeh-map-ts-plot').find('.map-ts-loader').empty();
-*/
-  //            $('#bokeh-map-ts-plot').find('#map-ts-var-list').on('change', function() {
-                plot_ts_bokeh(opendap_url, pywpsUrl, '#map-ts_plot');
+                          }).append(
+                            $(document.createElement('option')).text('Choose variable')
+                          )
+                        );
+                        console.log('looping variables');
+                        for (const variable of data[Object.keys(data)]) {
+                          var el = document.createElement("option");
+                          el.textContent = variable;
+                          el.value = variable;
+                          $('#bokeh-map-ts-plot').find('#map-ts-var-list').append(el);
+                        }
+                        $('#bokeh-map-ts-plot').find('.map-ts-loader').empty();
+          */
+          //            $('#bokeh-map-ts-plot').find('#map-ts-var-list').on('change', function() {
+          plot_ts_bokeh(opendap_url, pywpsUrl, '#map-ts_plot');
 
-    //          });
+          //          });
 
-            //});
+          //});
           //}
         }
         //Hide the animation controls per default
@@ -1314,7 +1270,7 @@ console.log("Start of metsis search map script:");
 
 
         //Back in time button function
-        var back = function() {
+        var back = function () {
           var val = $("#map-timeslider-id").slider("option", "value");
           var newVal = val - 1;
           if (newVal < 0) {
@@ -1324,7 +1280,7 @@ console.log("Start of metsis search map script:");
         };
 
         //Forward in time button function
-        var forward = function() {
+        var forward = function () {
           var val = $("#map-timeslider-id").slider("option", "value");
           var newVal = val + 1;
           if (newVal === timeDimensions.length) {
@@ -1334,54 +1290,54 @@ console.log("Start of metsis search map script:");
 
         };
         //Up in elevation button function
-        var up = function() {
+        var up = function () {
           var val = parseInt($("#elevation").attr("data-current"));
           //wmsLayerGroup.setOpacity(ui.value / 100);
-          let newVal = val+1;
-          if(newVal > elevationDimensions.length) {
+          let newVal = val + 1;
+          if (newVal > elevationDimensions.length) {
             newVal = elevationDimensions.length;
           }
-          if(debug) {console.log("Change elevation up: " +newVal+', elevation: '+elevationDimensions[newVal]);}
+          if (debug) { console.log("Change elevation up: " + newVal + ', elevation: ' + elevationDimensions[newVal]); }
           var currentElevation = elevationDimensions[newVal];
-          wmsLayerGroup.getLayers().forEach(function(element, index, array) {
+          wmsLayerGroup.getLayers().forEach(function (element, index, array) {
             //    if(element.getVisible())  {
-            element.getLayers().forEach(function(element, index, array) {
-            element.getSource().updateParams({
-              'ELEVATION': currentElevation,
-            });
-            element.getSource().refresh();
+            element.getLayers().forEach(function (element, index, array) {
+              element.getSource().updateParams({
+                'ELEVATION': currentElevation,
+              });
+              element.getSource().refresh();
             });
             //}
             //element.getSource().refresh();
           });
-          $("#elevation").attr("data-current",newVal);
-          $("#elevation").text(elevationDimensions[newVal] + " "+elevationUnits);
+          $("#elevation").attr("data-current", newVal);
+          $("#elevation").text(elevationDimensions[newVal] + " " + elevationUnits);
         };
 
         //Down in elevation button function
-        var down = function() {
+        var down = function () {
           var val = parseInt($("#elevation").attr("data-current"));
 
           //wmsLayerGroup.setOpacity(ui.value / 100);
-          let newVal = val-1;
-          if(newVal < 0) {
+          let newVal = val - 1;
+          if (newVal < 0) {
             newVal = 0;
           }
-          if(debug){console.log("Change elevation down: " +newVal+', elevation: '+elevationDimensions[newVal]); }
+          if (debug) { console.log("Change elevation down: " + newVal + ', elevation: ' + elevationDimensions[newVal]); }
           var currentElevation = elevationDimensions[newVal];
-          wmsLayerGroup.getLayers().forEach(function(element, index, array) {
+          wmsLayerGroup.getLayers().forEach(function (element, index, array) {
             //    if(element.getVisible())  {
-            element.getLayers().forEach(function(element, index, array) {
-            element.getSource().updateParams({
-              'ELEVATION': currentElevation,
-            });
-            element.getSource().refresh();
+            element.getLayers().forEach(function (element, index, array) {
+              element.getSource().updateParams({
+                'ELEVATION': currentElevation,
+              });
+              element.getSource().refresh();
             });
             //}
             //element.getSource().refresh();
           });
-          $("#elevation").attr("data-current",newVal);
-          $("#elevation").text(elevationDimensions[newVal] + " "+elevationUnits);
+          $("#elevation").attr("data-current", newVal);
+          $("#elevation").text(elevationDimensions[newVal] + " " + elevationUnits);
         };
 
         //Register back forward time button function to buttons
@@ -1411,7 +1367,7 @@ console.log("Start of metsis search map script:");
         //TS plot as ajax dialog
         function plotTsDialog(url) {
           var ajaxSettings = {
-            url: '/metsis/tsplot/form?url=' +url,
+            url: '/metsis/tsplot/form?url=' + url,
             dialogType: 'modal',
             dialog: { width: '100%', height: window.innerHeight },
           };
@@ -1437,7 +1393,7 @@ console.log("Start of metsis search map script:");
             xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
             xhr.send()
             // 4. This will be called after the response is received
-            xhr.onload = function() {
+            xhr.onload = function () {
               if (xhr.status != 200) { // analyze HTTP status of the response
                 console.log(`Error ${xhr.status}: ${xhr.statusText}`); // e.g. 404: Not Found
               } else { // show the result
@@ -1455,7 +1411,7 @@ console.log("Start of metsis search map script:");
                   var ls = layers[idx].Layer;
                   if (ls) {
                     for (var i = 0; i < ls.length; i++) {
-                      var getTimeDimensions = function() {
+                      var getTimeDimensions = function () {
                         var dimensions = ls[i].Dimension;
                         if (ls[i].Dimension) {
                           for (var j = 0; j < dimensions.length; j++) {
@@ -1467,7 +1423,7 @@ console.log("Start of metsis search map script:");
                         }
                         return [];
                       };
-                      var makeAxisAwareExtent = function() {
+                      var makeAxisAwareExtent = function () {
                         var bboxs = ls[i].BoundingBox;
                         if (bboxs) {
                           for (var k = 0; k < bboxs.length; k++) {
@@ -1487,7 +1443,6 @@ console.log("Start of metsis search map script:");
                       if (getTimeDimensions().length > 0) {
                         hasTimeDimension = true;
                       }
-
                       var layerProjections = ls[i].CRS;
                       wmsLayerGroup.getLayers().push(
                         new ol.layer.Tile({
@@ -1511,7 +1466,6 @@ console.log("Start of metsis search map script:");
                               'TRANSPARENT': true,
                             },
                             crossOrigin: 'anonymous',
-
                           })),
                         }));
                     }
@@ -1530,11 +1484,11 @@ console.log("Start of metsis search map script:");
                 map.getView().fit(geom.getExtent());
                 //map.getView().fit(wmsLayer.getExtent())
                 map.getView().setZoom(map.getView().getZoom());
-                  progress_bar()
+                progress_bar()
               }
             };
 
-            xhr.onerror = function() {
+            xhr.onerror = function () {
               alert("Request failed");
             };
             //console.log(layers);
@@ -1580,9 +1534,6 @@ console.log("Start of metsis search map script:");
               result = parser.read(response);
               console.log(result);
               //var options = ol.source.WMS.optionsFromCapabilities(result);
-
-
-
               var defaultProjection = result.Capability.Layer.CRS;
               var layers = result.Capability.Layer.Layer;
               var bbox = result.Capability.Layer.EX_GeographicBoundingBox;
@@ -1598,17 +1549,16 @@ console.log("Start of metsis search map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
-                if(!ls) {
+                if (!ls) {
                   lst = layers[idx]
-                  if(lst) {
+                  if (lst) {
                     ls = [lst];
                   }
-
                 }
                 if (ls) {
 
                   for (var i = 0; i < ls.length; i++) {
-                    var getTimeDimensions = function() {
+                    var getTimeDimensions = function () {
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
@@ -1620,7 +1570,7 @@ console.log("Start of metsis search map script:");
                       }
                       return [];
                     };
-                    var getElevationDimensions = function() {
+                    var getElevationDimensions = function () {
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
@@ -1633,7 +1583,7 @@ console.log("Start of metsis search map script:");
                       }
                       return [];
                     };
-                    var makeAxisAwareExtent = function() {
+                    var makeAxisAwareExtent = function () {
                       var bboxs = ls[i].BoundingBox;
                       if (bboxs) {
                         for (var k = 0; k < bboxs.length; k++) {
@@ -1660,19 +1610,17 @@ console.log("Start of metsis search map script:");
                       //console.log(timedim);
                       hasElevationDimension = true;
                     }
-
                     var layerProjections = ls[i].CRS;
                     console.log(layerProjections);
                     var visible = false;
                     //var extent = ol.proj.transformExtent(makeAxisAwareExtent(), 'EPSG:4326', selected_proj);
                     //var extent = ol.proj.transformExtent(geom.getExtent(), 'EPSG:4326', selected_proj);
-
                     var title = ls[i].Title;
                     var layerName = ls[i].Name;
                     if (layerName === 'lon' || layerName === 'lat') {
                       visible = false;
                     }
-                    if(layerName === wmsLayerMmd || title === wmsLayerMmd) {
+                    if (layerName === wmsLayerMmd || title === wmsLayerMmd) {
                       visible = true;
                     }
                     else {
@@ -1692,55 +1640,51 @@ console.log("Start of metsis search map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    console.log("i="+i+" layer_name: " + layerName);
-                    if ( $.inArray(ls[i].Name, wms_layers_skip) === -1 ) {
-                    wmsGroup.getLayers().insertAt(i,
-                      new ol.layer.Tile({
-                        title: title,
-                        visible: visible,
-                        //extent: extent,
+                    console.log("i=" + i + " layer_name: " + layerName);
+                    if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
+                      wmsGroup.getLayers().insertAt(i,
+                        new ol.layer.Tile({
+                          title: title,
+                          visible: visible,
+                          //extent: extent,
+                          //keepVisible: false,
+                          //preload: 5,
+                          //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
+                          dimensions: getTimeDimensions(),
+                          styles: ls[i].Style,
+                          source: new ol.source.TileWMS(({
+                            url: wmsUrl,
+                            reprojectionErrorThreshold: 0.1,
+                            //projection: selected_proj,
+                            params: {
+                              'LAYERS': ls[i].Name,
+                              'VERSION': result.version,
+                              'FORMAT': 'image/png',
+                              'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
+                              'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
+                              'TRANSPARENT': true,
+                            },
+                            crossOrigin: 'anonymous',
 
-                        //keepVisible: false,
-                        //preload: 5,
-                        //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
-                        dimensions: getTimeDimensions(),
-                        styles: ls[i].Style,
-                        source: new ol.source.TileWMS(({
-                          url: wmsUrl,
-                          reprojectionErrorThreshold: 0.1,
-                          //projection: selected_proj,
-                          params: {
-                            'LAYERS': ls[i].Name,
-                            'VERSION': result.version,
-                            'FORMAT': 'image/png',
-                            'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
-                            'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
-                            'TRANSPARENT': true,
-                          },
-                          crossOrigin: 'anonymous',
-
-                        })),
-                      }));
+                          })),
+                        }));
+                    }
                   }
-                }
                   //Update timedimension variables for animation
                   //hasTimeDimension = false;
-
                 }
-
               }
               //})
               wmsGroup.getLayers().getArray().reverse();
               wmsLayerGroup.getLayers().push(wmsGroup);
               //wmsLayerGroup.set('title', productTitle, false);
               featureLayersGroup.setVisible(false);
-
               //Add timeDimension controls if we have timeDimension
               if (hasTimeDimension) {
                 console.log("Processing wms with timedimensons");
                 $('#animatedWmsControls').show();
                 console.log(timeDimensions);
-                var maxValue = timeDimensions.length-1;
+                var maxValue = timeDimensions.length - 1;
                 console.log('MAXVALUE=' + maxValue);
                 //Add timeSlider
                 $("#map-timeslider-id").slider({
@@ -1750,11 +1694,11 @@ console.log("Start of metsis search map script:");
                   max: maxValue,
                   step: 1,
                   animate: true,
-                  slide: function(e, ui) {
+                  slide: function (e, ui) {
                     //wmsLayerGroup.setOpacity(ui.value / 100);
                     var currentTime = timeDimensions[ui.value];
                     //console.log("currentTime: " +timeDimensions[ui.value])
-                    wmsGroup.getLayers().forEach(function(element, index, array) {
+                    wmsGroup.getLayers().forEach(function (element, index, array) {
                       //    if(element.getVisible())  {
                       element.getSource().updateParams({
                         'TIME': currentTime,
@@ -1764,11 +1708,11 @@ console.log("Start of metsis search map script:");
                     });
                     $('#time').text(timeDimensions[ui.value]);
                   },
-                  change: function(e, ui) {
+                  change: function (e, ui) {
                     //wmsLayerGroup.setOpacity(ui.value / 100);
                     var currentTime = timeDimensions[ui.value];
                     //console.log("currentTime: " +timeDimensions[ui.value])
-                    wmsGroup.getLayers().forEach(function(element, index, array) {
+                    wmsGroup.getLayers().forEach(function (element, index, array) {
                       //console.log(element);
                       element.getSource().updateParams({
                         'TIME': currentTime,
@@ -1776,23 +1720,21 @@ console.log("Start of metsis search map script:");
                     });
                     $('#time').text(timeDimensions[ui.value]);
                   },
-
                 });
                 $('#time').text(timeDimensions[0]);
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 var img = document.getElementById('map-wms-legend');
                 img.src = legendUrl;
-
                 //$('#bottomMapPanel').show();
                 map.updateSize();
               }
-              if(hasElevationDimension) {
+              if (hasElevationDimension) {
                 console.log("WMS Layer have elevation dimension");
                 console.log(elevationDimensions);
                 var currentElevation = elevationDimensions[0];
                 //console.log("currentTime: " +timeDimensions[ui.value])
-                wmsGroup.getLayers().forEach(function(element, index, array) {
+                wmsGroup.getLayers().forEach(function (element, index, array) {
                   //    if(element.getVisible())  {
                   element.getSource().updateParams({
                     'ELEVATION': currentElevation,
@@ -1800,8 +1742,8 @@ console.log("Start of metsis search map script:");
                   //}
                   element.getSource().refresh();
                 });
-                  val = $("#elevation").attr("data-current",0);
-                  $("#elevation").text(elevationDimensions[0] + " "+elevationUnits);
+                val = $("#elevation").attr("data-current", 0);
+                $("#elevation").text(elevationDimensions[0] + " " + elevationUnits);
                 $('#elevationWmsControls').show();
               }
               //Fit to feature geometry
@@ -1809,58 +1751,46 @@ console.log("Start of metsis search map script:");
               map.getView().fit(geom.getExtent());
               //map.getView().fit(wmsLayer.getExtent())
               map.getView().setZoom(map.getView().getZoom());
-
               //Stop the loader:
               //$('#mapLoader').empty();
               console.log("Empty loader");
               document.getElementById('mapLoader').removeAttribute('src');
               $('mapLoaderSpan').text('');
               progress_bar()
-
             }
-
             function tryProxy(proxyURL, wmsUrlOrig) {
               $.ajax({
                 type: 'GET',
                 url: proxyURL + wmsUrlOrig,
                 dataType: 'xml',
                 //async: false,
-                error: function() {
+                error: function () {
                   console.log("Request failed: " + proxyURL + wmsUrlOrig);
-
                 },
-                success: function(response) {
+                success: function (response) {
                   onGetCapSuccess(response)
                 },
               });
             }
-
             $.ajax({
               type: 'GET',
               url: wmsUrl + getCapString,
               dataType: 'xml',
-              cache:true,
-              timeout:8000,
+              cache: true,
+              timeout: 8000,
               //async: false,
-              error: function() {
+              error: function () {
                 console.log("Request failed: " + wmsUrl + getCapString);
                 console.log("Trying getCapProxy....");
                 tryProxy(proxyURL, wmsUrlOrig)
               },
-              success: function(response) {
+              success: function (response) {
                 onGetCapSuccess(response)
               },
             });
           }
-
-
-
-
           //console.log(layers);
-
-
         }
-
         function visualiseWmsLayer(wmsResource, id, title, geom, wms_layers) {
           //Check WMS product:
           if (wmsResource != null && wmsResource != "") {
@@ -1868,33 +1798,31 @@ console.log("Start of metsis search map script:");
             console.log("Default wms layer: " + wms_layers);
             //TODO: Do more stuff here with the WMS product
             //var wmsLayers = getWmsLayers(wmsResource, title);
-
             //wmsResource = wmsResource.replace(/(^\w+:|^)\/\//, '//');
             //console.log("New wmsResource url: " + wmsResource);
             var sentinel1Layers = ['Composites'];
             var sentinel2Layers = ['true_color_vegetation', 'false_color_vegetation', 'false_color_glacier', 'false_color_glacier', 'opaque_clouds', 'cirrus_clouds'];
-
             var layer_name = 'Composites';
             if (wmsResource.includes("S2")) {
               layer_name = 'true_color_vegetation';
             }
             else if (wms_layers === "Amplitude HH polarisation") {
-               layer_name = 'amplitude_hh';
+              layer_name = 'amplitude_hh';
             }
             else if (wms_layers === "Amplitude HV polarisation") {
-               layer_name = 'amplitude_hv';
+              layer_name = 'amplitude_hv';
             }
             else if (wms_layers === "Amplitude VV polarisation") {
-               layer_name = 'amplitude_vv';
+              layer_name = 'amplitude_vv';
             }
             else if (wms_layers === "Amplitude VH polarisation") {
-               layer_name = 'amplitude_vh';
+              layer_name = 'amplitude_vh';
             }
             else if (wms_layers === "True Color Vegetation Composite") {
-               layer_name = 'true_color_vegetation';
+              layer_name = 'true_color_vegetation';
             }
             else {
-              layer_name =  'Composites';
+              layer_name = 'Composites';
             }
             var wmsUrl = wmsResource;
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
@@ -1926,17 +1854,14 @@ console.log("Start of metsis search map script:");
                 })),
               }));
             featureLayersGroup.setVisible(false);
-
-
             //Fit to feature geometry
             //console.log(feature_ids[id]);
             map.getView().fit(geom.getExtent());
             //map.getView().fit(wmsLayer.getExtent())
             map.getView().setZoom(map.getView().getZoom());
-              progress_bar()
+            progress_bar()
           }
         }
-
         /** Action when product is selected on map
          * Show /Hide datasets in results list on search pages
          *
@@ -2009,7 +1934,7 @@ console.log("Start of metsis search map script:");
               } */
           //overlayh.setPosition([coordinate[0] + coordinate[0] * 20 / 100, coordinate[1] + coordinate[1] * 20 / 100]);
           //Foreach feature selected. do the following
-          map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+          map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             console.log("Clicked feature: " + feature.get('name'));
             /* Show / Hide results depending on selected dataset in map */
             id = feature.get('id');
@@ -2028,12 +1953,9 @@ console.log("Start of metsis search map script:");
             //$(this).css('display', 'block');
             //});
             //});
-
             //Reload the lazy loading of thumbnails
             //var bLazy = new Blazy();
             //bLazy.revalidate();
-
-
             //console.log("Got " + feature.get('name') + " at coordinate:");
             //console.log(coordinate);
             //overlay.setPosition([coordinate[0] + coordinate[0] * 20 / 100, coordinate[1] + coordinate[1] * 20 / 100]);
@@ -2087,7 +2009,7 @@ console.log("Start of metsis search map script:");
 
             //Check for timeseries product
             if (odResource != null && odResource != "") {
-              if (featureType === 'timeSeries' || featureType === 'timeSeriesProfile'|| featureType === 'profile') {
+              if (featureType === 'timeSeries' || featureType === 'timeSeriesProfile' || featureType === 'profile') {
                 console.log("Got timeseries product: " + feature_ids[id].id);
                 $('#popup-content').append("<p>" + feature_ids[id].title + "</p>");
                 var button = $('#popup-content').append(
@@ -2099,7 +2021,7 @@ console.log("Start of metsis search map script:");
 
                 console.log("Alter the popUpOverlay position.");
                 popUpOverlay.setPosition(coordinate);
-                button.on('click', function() {
+                button.on('click', function () {
                   plotTsDialog(odResource)
                   //plotTimeseries2(odResource)
                   //plotTimeseries(odResource)
@@ -2162,7 +2084,6 @@ console.log("Start of metsis search map script:");
                 console.log("Creating wms layers for general products");
                 getWmsLayers2(wmsResource, title, feature_ids[id].geom, wmsLayer)
               }
-
             }
           }
           if (numberOfFeatures > 1) {
@@ -2188,7 +2109,7 @@ console.log("Start of metsis search map script:");
             //$('#popup-content').append('</div>');
             $('#popup-content').append(markup);
 
-            $('#popupSelectProductBack').on('click', function() {
+            $('#popupSelectProductBack').on('click', function () {
               $('#popup-content-div').show();
               $('#popupSelectedProduct').hide();
               $('#popupSelectedProductContent').empty();
@@ -2196,7 +2117,7 @@ console.log("Start of metsis search map script:");
             });
             $('.popupProductItem').on(
               'click',
-              function() {
+              function () {
                 let selected_id = $(this).data('id');
                 let selected_title = feature_ids[selected_id].title;
                 let wmsResource = feature_ids[selected_id].url_w;
@@ -2232,7 +2153,7 @@ console.log("Start of metsis search map script:");
                     maxHeight: '95%'
                   },
                 };
-                $('#popupShowMetadata').on('click', function() {
+                $('#popupShowMetadata').on('click', function () {
                   var myAjaxObject = Drupal.ajax(ajaxSettings);
                   myAjaxObject.execute();
 
@@ -2245,7 +2166,7 @@ console.log("Start of metsis search map script:");
                       class: "w3-button w3-small",
                     }).html('Visualise WMS')
                   );
-                  $('#popup-wms-button').on('click', function() {
+                  $('#popup-wms-button').on('click', function () {
                     //$('.ol-popup').hide();
                     popUpOverlay.setPosition(undefined);
                     //visualiseWmsLayer(wmsResource,id,title, geom)
@@ -2274,7 +2195,7 @@ console.log("Start of metsis search map script:");
                     );
 
                     console.log("Alter the popUpOverlay position.");
-                    $('#popup-ts-button').on('click', function() {
+                    $('#popup-ts-button').on('click', function () {
                       popUpOverlay.setPosition(undefined);
                       plotTsDialog(odResource)
                       //plotTimeseries2(odResource)
@@ -2300,7 +2221,6 @@ console.log("Start of metsis search map script:");
 
           //});
         }
-
 
         function id_tooltip() {
           //var tooltip = document.getElementById('tlp-map-res');
@@ -2367,7 +2287,6 @@ console.log("Start of metsis search map script:");
 
               iconFeaturePol.setStyle(featureStyleBl);
 
-
             }
             // Else we assume geographic extent is a point, and create a pin feature
             else {
@@ -2408,7 +2327,6 @@ console.log("Start of metsis search map script:");
 
           }
 
-
           //create a vector source with all points
           var vectorSourcePol = new ol.source.Vector({
             features: iconFeaturesPol,
@@ -2424,8 +2342,6 @@ console.log("Start of metsis search map script:");
             //projection: prj,
             source: vectorSourcePol,
           });
-
-
 
           //create a vector source with all points
           var vectorSourcePin = new ol.source.Vector({
@@ -2448,7 +2364,7 @@ console.log("Start of metsis search map script:");
 
           //Fit to extent of features
           var featuresExtent = new ol.extent.createEmpty();
-          allFeatures.forEach(function(feature) {
+          allFeatures.forEach(function (feature) {
             featuresExtent = new ol.extent.extend(featuresExtent, feature.getGeometry().getExtent());
           });
           //var maxExt = extent.getExtent();
@@ -2477,67 +2393,65 @@ console.log("Start of metsis search map script:");
         $('#map-sidepanel').hide();
         $('#bottomMapPanel').hide();
 
-/*var provider = new OpenStreet({
-  params: {
-    countrycodes: "no,sj,se,dk,is"
-  }
-})*/
+        /*var provider = new OpenStreet({
+          params: {
+            countrycodes: "no,sj,se,dk,is"
+          }
+        })*/
 
-//Kartverket provider
-const geonorgeProvider = geoNorgeSearch({
-    url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok?',
-  });
-
-
+        //Kartverket provider
+        const geonorgeProvider = geoNorgeSearch({
+          url: 'https://ws.geonorge.no/SKWS3Index/ssr/sok?',
+        });
 
         //Add geocoder search
- var geocoder = new Geocoder('nominatim', {
-  provider: 'osm',
-  //geonorgeProvider,
-  lang: 'nb-NO', //en-US, fr-FR
-  placeholder: 'Search for ...',
-  targetType: 'glass-button',
-  limit: 5,
-  keepOpen: true,
-  autoComplete: true,
-  countrycodes: 'no,sj,se,dk,is,fo,fi,gb'
-});
+        var geocoder = new Geocoder('nominatim', {
+          provider: 'osm',
+          //geonorgeProvider,
+          lang: 'nb-NO', //en-US, fr-FR
+          placeholder: 'Search for ...',
+          targetType: 'glass-button',
+          limit: 5,
+          keepOpen: true,
+          autoComplete: true,
+          countrycodes: 'no,sj,se,dk,is,fo,fi,gb'
+        });
 
-geocoder.on('addresschosen', function(evt) {
-  // it's up to you
-  console.info(evt);
-  var bbox = evt.place.bbox;
-  /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-  var myurl = '/metsis/search/place?tllat=' + bbox[1] + '&tllon=' + bbox[2] + '&brlat=' + bbox[0] + '&brlon=' + bbox[3] + '&proj=' + selected_proj;
-  console.log('calling controller url: ' + myurl);
-  data = Drupal.ajax({
-    url: myurl,
-    async: false,
-    success: function(response) {
+        geocoder.on('addresschosen', function (evt) {
+          // it's up to you
+          console.info(evt);
+          var bbox = evt.place.bbox;
+          /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
+          var myurl = '/metsis/search/place?tllat=' + bbox[1] + '&tllon=' + bbox[2] + '&brlat=' + bbox[0] + '&brlon=' + bbox[3] + '&proj=' + selected_proj;
+          console.log('calling controller url: ' + myurl);
+          data = Drupal.ajax({
+            url: myurl,
+            async: false,
+            success: function (response) {
 
-          //Store place in browser session
-         //sessionStorage.setItem("place_lat", evt.place.lat);
-         //sessionStorage.setItem("place_lon", evt.place.lon);
+              //Store place in browser session
+              //sessionStorage.setItem("place_lat", evt.place.lat);
+              //sessionStorage.setItem("place_lon", evt.place.lon);
 
-         console.log(window.location.href);
+              console.log(window.location.href);
 
-         location.href = window.location.href; //Redirect
-    }
-  }).execute();
+              location.href = window.location.href; //Redirect
+            }
+          }).execute();
 
-});
-map.addControl(geocoder);
+        });
+        map.addControl(geocoder);
         //createOverViewMap(selected_proj)
 
         //Function to zoom to extent of all features:
         function zoomToProductsExtent() {
           console.log("Zoom back to features extent");
-          map.getLayers().forEach(function(element, index, array) {
+          map.getLayers().forEach(function (element, index, array) {
             if (element.get('title') === 'pins') {
               console.log("Set pins layer visible");
               element.setVisible(true);
               element.getSource().refresh();
-              if (element.get('title') === 'polygons') {}
+              if (element.get('title') === 'polygons') { }
               console.log("Set polygon layer visible");
               element.setVisible(true);
               element.getSource().refresh();
@@ -2546,14 +2460,12 @@ map.addControl(geocoder);
           map.getView().setCenter(ol.extent.getCenter(featuresExtent));
           map.getView().fit(featuresExtent);
           map.getView().setZoom(map.getView().getZoom() - 0.3);
-
-
         }
 
         //Function to rebuild features:
         function rebuildbuildFeatures(prj) {
           console.log("transform features gemetry from: " + init_proj + ' to ' + selected_proj);
-          featureLayersGroup.getLayers().forEach(function(element, index, array) {
+          featureLayersGroup.getLayers().forEach(function (element, index, array) {
             let features = element.getSource().getFeatures();
             for (let feature of features) {
               //console.log(feature);
@@ -2562,7 +2474,6 @@ map.addControl(geocoder);
             element.getSource().refresh();
           })
         }
-
 
         /* Create a bbox vector layer of the current bboxFilter in use */
         // recreate drawings when fields are filled
@@ -2573,17 +2484,14 @@ map.addControl(geocoder);
             if (bottomRight[0] < topLeft[0]) {
               topLeft[0] -= 360;
             }
-
             var points = [
               [
-                ol.proj.transform(topLeft, 'EPSG:4326', proj),
-                ol.proj.transform([bottomRight[0], topLeft[1]], 'EPSG:4326', proj),
+                ol.proj.transform(topLeft, 'EPSG:4326', selected_proj),
+                ol.proj.transform([bottomRight[0], topLeft[1]], 'EPSG:4326', selected_proj),
                 ol.proj.transform(bottomRight, 'EPSG:4326', proj),
-                ol.proj.transform([topLeft[0], bottomRight[1]], 'EPSG:4326', proj),
+                ol.proj.transform([topLeft[0], bottomRight[1]], 'EPSG:4326', selected_proj),
               ]
             ];
-
-
             //Create bbox draw style
             var bboxStyle = new ol.style.Style({
               stroke: new ol.style.Stroke({
@@ -2631,7 +2539,7 @@ map.addControl(geocoder);
 
 
         //Zoom to extent
-        var zoomToExtent = function zoomToExtent(){
+        var zoomToExtent = function zoomToExtent() {
           console.log("ZoomToExtent function.");
           return featuresExtent;
         }
@@ -2640,7 +2548,6 @@ map.addControl(geocoder);
           extent: featuresExtent,
         });
         map.addControl(zoomToExtentControl);
-
 
         //Add LayerSwitcher control
         /*        var layerSwitcher = new ol.control.LayerSwitcher({
@@ -2658,14 +2565,14 @@ map.addControl(geocoder);
           trash: function (l) {
             console.log("Trash function");
             console.log(l);
-            if(l.get('baseLayer') === true) {
+            if (l.get('baseLayer') === true) {
               return false;
             }
             else {
               return true;
             }
           },
-          oninfo: function(l) {
+          oninfo: function (l) {
             var title = l.get('title');
             try {
               var legendUrl = l.getSource().getLegendUrl();
@@ -2678,24 +2585,23 @@ map.addControl(geocoder);
             }
           }
         });
-        switcher.on('toggle', function(e) {
+        switcher.on('toggle', function (e) {
           console.log(e);
 
         });
         map.addControl(switcher);
 
-
         //Map reset button:
-            $('#resetMapButton').on("click", function(e) {
-              wmsLayerGroup.getLayers().clear();
-              featureLayersGroup.getLayers().clear();
+        $('#resetMapButton').on("click", function (e) {
+          wmsLayerGroup.getLayers().clear();
+          featureLayersGroup.getLayers().clear();
 
-              featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
-              featureLayersGroup.setVisible(true);
-              map.getView().setCenter(ol.extent.getCenter(featuresExtent));
-              map.getView().fit(featuresExtent);
-              map.getView().setZoom(map.getView().getZoom() - 0.3);
-            });
+          featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
+          featureLayersGroup.setVisible(true);
+          map.getView().setCenter(ol.extent.getCenter(featuresExtent));
+          map.getView().fit(featuresExtent);
+          map.getView().setZoom(map.getView().getZoom() - 0.3);
+        });
 
         /** WMS LAYERS - Visualize all **/
         //Loop over the extracted info, and check how many wms resources we have
@@ -2711,7 +2617,7 @@ map.addControl(geocoder);
           if (wms != null && wms != "" && isSentinelProduct(wms, ['S1B', 'S1A', 'S2B', 'S2A'])) {
             wmsProducts.push(title);
             wmsProductLayers.push(wms);
-            if(wmslayer != null) {
+            if (wmslayer != null) {
               wmsLayersFromMmd.push(wmslayer);
             }
             else {
@@ -2720,23 +2626,20 @@ map.addControl(geocoder);
           }
         }
 
-
-
-
         // If we have wms datasets in map, show the visualise all button
         //list of olWMALayers to be added and rendered
         var wmsLayers = [];
         if (wmsProducts.length > 0) {
           $('#vizAllButton').css('display', 'block');
           $('#vizAllButton').append().text('Visualise all Sentinel products in Map');
-          $('#vizAllButton').on("click", function(e) {
+          $('#vizAllButton').on("click", function (e) {
             console.log("Visualize all wms click event");
             console.log("current projection" + selected_proj);
 
             //Loop over the wmsLayers and render them on map.
             for (let i = 0; i < wmsProductLayers.length; i++) {
-              if(debug){console.log(i + " - " + wmsProducts[i]);}
-              if(debug){console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]);}
+              if (debug) { console.log(i + " - " + wmsProducts[i]); }
+              if (debug) { console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]); }
               //alert(wmsProducts[i]);
 
               var wmsUrl = wmsProductLayers[i];
@@ -2749,24 +2652,24 @@ map.addControl(geocoder);
               if (wmsLayersFromMmd[i] == "True Color Vegetation Composite") {
                 layer_name = 'true_color_vegetation';
               }
-                else if (wmsLayersFromMmd[i] == "Amplitude HH polarisation") {
-                   layer_name = 'amplitude_hh';
-                }
-                else if (wmsLayersFromMmd[i] == "Amplitude HV polarisation") {
-                   layer_name = 'amplitude_hv';
-                }
-                else if (wmsLayersFromMmd[i] == "Amplitude VV polarisation") {
-                   layer_name = 'amplitude_vv';
-                }
-                else if (wmsLayersFromMmd[i] == "Amplitude VH polarisation") {
-                   layer_name = 'amplitude_vh';
-                }
-                else if (wmsLayersFromMmd[i] == "True Color Vegetation Composite") {
-                   layer_name = 'true_color_vegetation';
-                }
-                else {
-                  layer_name =  'Composites';
-                }
+              else if (wmsLayersFromMmd[i] == "Amplitude HH polarisation") {
+                layer_name = 'amplitude_hh';
+              }
+              else if (wmsLayersFromMmd[i] == "Amplitude HV polarisation") {
+                layer_name = 'amplitude_hv';
+              }
+              else if (wmsLayersFromMmd[i] == "Amplitude VV polarisation") {
+                layer_name = 'amplitude_vv';
+              }
+              else if (wmsLayersFromMmd[i] == "Amplitude VH polarisation") {
+                layer_name = 'amplitude_vh';
+              }
+              else if (wmsLayersFromMmd[i] == "True Color Vegetation Composite") {
+                layer_name = 'true_color_vegetation';
+              }
+              else {
+                layer_name = 'Composites';
+              }
               myGroup.getLayers().push(
                 //map.addLayer(
                 new ol.layer.Tile({
@@ -2818,11 +2721,9 @@ map.addControl(geocoder);
           });
           //id_tooltip_h()
         }
-
-
         /* Draw bounding box filter event */
         // Search bbox filter
-        $('#bboxButton').click(function() {
+        $('#bboxButton').click(function () {
           console.log('Creating bbox filter with projection: ' + proj);
 
           //hide layers
@@ -2837,10 +2738,9 @@ map.addControl(geocoder);
           //Remove overlay
           map.removeOverlay(overlayh);
 
-
           //New draw Mouseposition control
           var mousePositionControl = new ol.control.MousePosition({
-            coordinateFormat: function(co) {
+            coordinateFormat: function (co) {
               return ol.coordinate.format(co, template = 'lon: {x}, lat: {y}', 2);
             },
             projection: 'EPSG:4326',
@@ -2849,8 +2749,6 @@ map.addControl(geocoder);
 
           // Build the draw of bbox
           build_draw(selected_proj)
-
-
         });
 
         //Draw bbox function
@@ -2868,7 +2766,7 @@ map.addControl(geocoder);
           });
           map.addLayer(drawingLayer);
 
-          var geometryFunction = function(coordinates, geometry, projection) {
+          var geometryFunction = function (coordinates, geometry, projection) {
             var start = coordinates[0]; //x,y
             var end = coordinates[1];
 
@@ -2880,8 +2778,6 @@ map.addControl(geocoder);
 
             var left = ol.proj.transform(left_ll, 'EPSG:4326', projection);
             var right = ol.proj.transform(right_ll, 'EPSG:4326', projection);
-
-
             const boxCoordinates = [
               [
                 start, left, end, right, start,
@@ -2903,16 +2799,11 @@ map.addControl(geocoder);
             geometryFunction: geometryFunction,
             maxPoints: 2
           });
-
-
           var mapFilter = drupalSettings.metsis_search_map_block.mapFilter;
-
-          draw.on('drawstart', function(e) {
+          draw.on('drawstart', function (e) {
             drawingSource.clear();
           });
-
-          draw.on('drawend', function(e) {
-
+          draw.on('drawend', function (e) {
             coords = e.feature.getGeometry().getCoordinates();
             var a = ol.proj.transform(coords[0][0], map.getView().getProjection().getCode(), 'EPSG:4326');
             var b = ol.proj.transform(coords[0][1], map.getView().getProjection().getCode(), 'EPSG:4326');
@@ -2940,14 +2831,14 @@ map.addControl(geocoder);
 
             //Get the current selected filter
             var choices = [];
-            $("input[name='map-filter']:checked").each(function() {
+            $("input[name='map-filter']:checked").each(function () {
               choices.push($(this).attr('value'));
             });
-             selected_filter = choices[0];
+            selected_filter = choices[0];
             //var flt = document.getElementsByName('map-filter');
             //console.log(flt);
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj+ '&cond=' + selected_filter;
+            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj + '&cond=' + selected_filter;
             console.log('calling controller url: ' + myurl);
 
             data = Drupal.ajax({
@@ -2956,7 +2847,7 @@ map.addControl(geocoder);
             }).execute();
 
             //Do something after ajax call are complete
-            $(document).ajaxComplete(function(event, xhr, settings) {
+            $(document).ajaxComplete(function (event, xhr, settings) {
               console.log('ajax complete:' + drupalSettings.metsis_search_map_block.bboxFilter);
               var bboxFilter = drupalSettings.metsis_search_map_block.bboxFilter;
               $('.current-bbox-select').text(bboxFilter);
@@ -2985,29 +2876,20 @@ map.addControl(geocoder);
                           window.location.replace(current_search);
                           return false;
                         });
-
             */
-
           });
           console.log('Adding draw bbox interaction');
           map.addInteraction(draw);
-
-
-
           /*
-          tllat = drupalSettings.metsis_search_map_block.tllat;
-          tllon = drupalSettings.metsis_search_map_block.tllon;
-          brlat = drupalSettings.metsis_search_map_block.brlat;
-          brlon = drupalSettings.metsis_search_map_block.brlon;
-          */
+           tllat = drupalSettings.metsis_search_map_block.tllat;
+           tllon = drupalSettings.metsis_search_map_block.tllon;
+           brlat = drupalSettings.metsis_search_map_block.brlat;
+           brlon = drupalSettings.metsis_search_map_block.brlon;
+           */
           console.log('tllat before draw existing filter' + tllat);
 
           // two proj
-
-
-
         }
-
         //Add extra layers function
         function addExtraLayers(proj) {
 
@@ -3091,60 +2973,60 @@ map.addControl(geocoder);
   * Factory function which returns an object with the methods getParameters
   * and handleResponse called by the Geocoder
   */
- function geoNorgeSearch(options) {
-   const { url } = options;
+        function geoNorgeSearch(options) {
+          const { url } = options;
 
-   return {
-     /**
-      * Get the url, query string parameters and optional JSONP callback
-      * name to be used to perform a search.
-      * @param {object} options Options object with query, key, lang,
-      * countrycodes and limit properties.
-      * @return {object} Parameters for search request
-      */
-     getParameters(opt) {
-       return {
-         url,
-         callbackName: 'callback',
+          return {
+            /**
+             * Get the url, query string parameters and optional JSONP callback
+             * name to be used to perform a search.
+             * @param {object} options Options object with query, key, lang,
+             * countrycodes and limit properties.
+             * @return {object} Parameters for search request
+             */
+            getParameters(opt) {
+              return {
+                url,
+                callbackName: 'callback',
 
-         params: {
-           navn: opt.query,
-           eksakteForst: 'true',
-           json: 'json',
-           antPerSide: 10,
-         },
-       };
-     },
+                params: {
+                  navn: opt.query,
+                  eksakteForst: 'true',
+                  json: 'json',
+                  antPerSide: 10,
+                },
+              };
+            },
 
-     /**
-      * Given the results of performing a search return an array of results
-      * @param {object} data returned following a search request
-      * @return {Array} Array of search results
-      */
-     handleResponse(results) {
-       // The API returns a GeoJSON FeatureCollection
-       if (results && results.totaltAntallTreff > 0) {
-         return results.stedsnavn.map((feature) => {
-           return {
-             lon: feature.aust,
-             lat: feature.nord,
+            /**
+             * Given the results of performing a search return an array of results
+             * @param {object} data returned following a search request
+             * @return {Array} Array of search results
+             */
+            handleResponse(results) {
+              // The API returns a GeoJSON FeatureCollection
+              if (results && results.totaltAntallTreff > 0) {
+                return results.stedsnavn.map((feature) => {
+                  return {
+                    lon: feature.aust,
+                    lat: feature.nord,
 
-             address: {
-               // Simply return a name in this case, could also return road,
-               // building, house_number, city, town, village, state,
-               // country
-               name: feature.stedsnavn,
-             },
+                    address: {
+                      // Simply return a name in this case, could also return road,
+                      // building, house_number, city, town, village, state,
+                      // country
+                      name: feature.stedsnavn,
+                    },
 
-             //bbox: feature.bbox,
-           };
-         });
-       }
+                    //bbox: feature.bbox,
+                  };
+                });
+              }
 
-       return [];
-     },
-   };
- }
+              return [];
+            },
+          };
+        }
       });
     },
   };
