@@ -1,0 +1,9 @@
+{
+    "name": "metsis/metsis-drupal",
+    "type": "drupal-custom-module",
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}
