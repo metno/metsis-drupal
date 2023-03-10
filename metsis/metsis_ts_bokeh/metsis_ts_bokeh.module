@@ -1,31 +1,24 @@
 <?php
-/*
- * This modules provides a blocks with forms for plotting time series using
- * METSIS web services that offer JS Bokeh ploting.
+
+/**
+ * @file
+ * Provides timeseries plotting functionality.
  */
 
-
-/*
- *
- * Implements hook_help()
- *
- * @param $path
- * @param $arg
- *
- * @return string
+/**
+ * Implements hook_help().
  */
 function metsis_ts_bokeh_help($path, $arg) {
   switch ($path) {
     case 'help.page.metsis_ts_bokeh':
-      $output = '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('This METSIS module provides blocks for configuring and displaying
-                            a time series plot using the METSIS web services offering JS Bokeh library.
-                            Configure the block from
-                <a href="@metsis_ts_bokeh">blocks admin page</a>', [
-          '@metsis_ts_bokeh' => '/metsis_ts_bokeh#overlay=admin/structure/block',
-        ]) . ' to activate and configure METSIS time series Bokeh.</p>';
+      $output = '<h3>About</h3>';
+      $output .= '<p>This METSIS module provides blocks for configuring and displaying
+        a time series plot using the METSIS web services offering JS Bokeh library.
+        Configure the block from <a href="/metsis_ts_bokeh#overlay=admin/structure/block">blocks admin page</a>
+        to activate and configure METSIS time series Bokeh.</p>';
       return $output;
+
     case 'admin/content/metsis_ts_bokeh':
-      return '<p>' . t('METSIS time series Bokeh.') . '</p>';
+      return '<p>METSIS time series Bokeh.</p>';
   }
 }

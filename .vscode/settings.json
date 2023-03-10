@@ -38,11 +38,15 @@
   "emptyIndent.highlightColor": "rgba(246,36,89,0.6)",
   "phpcs.enable": true,
   "phpcs.standard": "Drupal,DrupalPractice",
+  "phpcs.executablePath": "/home/magnarem/.config/composer/vendor/bin/phpcs",
   "phpsab.fixerEnable": true,
   "[php]": {
     "editor.defaultFormatter": "valeryanm.vscode-phpsab"
   },
   "phpsab.executablePathCBF": "/home/magnarem/.config/composer/vendor/bin/phpcbf",
+  "phpsab.allowedAutoRulesets": [
+    "phpcs.xml"
+  ],
   "phpcbf.enable": true,
   "phpcbf.executablePath": "phpcbf",
   "phpcbf.documentFormattingProvider": true,

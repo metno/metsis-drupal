@@ -2,33 +2,29 @@
 
 /**
  * @file
- * Contains metsis_search.module for drupal8.
+ * Contains Metsis search module.
  */
 
+use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\views\ViewExecutable;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
-use Solarium\QueryType\Select\Result\Document;
-use Solarium\Core\Query\DocumentInterface;
-use Solarium\Core\Query\Result\ResultInterface;
-use Drupal\metsis_search\SearchUtils;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_help().
  */
-function metsis_search_help($route_name, RouteMatchInterface $route_match)
-{
-    switch ($route_name) {
+function metsis_search_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
     // Main module help for the metsis_search module.
-    /** TODO: Read help from module's README.md */
+    /* @todo Something: Read help from module's README.md */
     case 'help.page.metsis_search':
       $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('METSIS Metadata Search') . '</p>';
+      $output .= '<h3>About</h3>';
+      $output .= '<p>METSIS Metadata Search</p>';
       return $output;
 
     default:
@@ -36,622 +32,305 @@ function metsis_search_help($route_name, RouteMatchInterface $route_match)
 }
 
 /**
-* Implements hook_views_pre_view().
-*
-* Add back to search link on children (elements) view
-*/
+ * Implements hook_views_pre_view().
+ *
+ * Add back to search link on children (elements) view.
+ */
+function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
+  // Get the current request object.
+  $request = \Drupal::request();
+  $referer = $request->headers->get('referer');
 
-function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &$args)
-{
-    //Get the current request object.
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
+  $config = \Drupal::config('metsis_search.settings');
+  $disable_basket = $config->get('hide_add_to_basket');
 
-    $config = \Drupal::config('metsis_search.settings');
-    $disable_basket = $config->get('hide_add_to_basket');
+  $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer . '">Go back to parent search</a></span>';
 
-    $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span>';
-
-    if ($view->id() == 'metsis_elements' && $display_id === 'results') {
-        $options = array(
+  if ($view->id() == 'metsis_elements' && $display_id === 'results') {
+    $options = [
       'id' => 'area_text_custom',
       'table' => 'views',
       'field' => 'area_text_custom',
       'relationship' => 'none',
       'group_type' => 'none',
       'admin_label' => '',
-      'empty' => true,
-      'tokenize' => false,
+      'empty' => TRUE,
+      'tokenize' => FALSE,
       'content' => $new_value,
       'plugin_id' => 'text_custom',
-    );
-        $view->setHandler('results', 'header', 'area_text_custom', $options);
-        if ($disable_basket) {
-            $fields = $view->display_handler->getOption('fields');
-            $fields['nothing_2']['exclude'] = true;
-            $view->display_handler->overrideOption('fields', $fields);
-        }
-    }
-    if ($view->id() == 'metsis_search' && $display_id === 'results') {
-        if ($disable_basket) {
-            $fields = $view->display_handler->getOption('fields');
-            $fields['nothing_2']['exclude'] = true;
-            $view->display_handler->overrideOption('fields', $fields);
-        }
-    }
-}
-
-/**
-* Implements hook_views_pre_render().
-*
-* Adding  our custom css to the search view
-*/
-function metsis_search_views_pre_render(ViewExecutable $view)
-{
-    // Get the module path
-    $module_handler = \Drupal::service('module_handler');
-    $module_path = $module_handler->getModule('metsis_search')->getPath();
-    // Get the config
-    $config = \Drupal::config('metsis_search.settings');
-    $pywps_service = $config->get('pywps_service');
-
-    //Get the current request object.
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-
-    if (isset($view) && ($view->storage->id() == 'metsis_search')) {
-        $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
-        $view->element['#attached']['library'][] = 'metsis_search/children_count';
-        //$view->element['#attached']['library'][] = 'blazy/load';
-        $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
-        $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
-
-        //Use lazysizes for custom thumbnail lazy loading.
-        $view->element['#attached']['library'][] = 'metsis_search/thumbnail_lazy';
-        //$view->element['#attached']['library'][] = 'lazy/lazy';
-        //$view->element['#attached']['library'][] = 'lazy/lazysizes';
-
-        //$view->element['#cache']['max-age'] = 400;
-
-        //Attach ts plot javascript and settings to view
-        //$view->element['#attached']['library'][] = 'metsis_search/ts_plot';
-        $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
-          'pywps_service' => $pywps_service,
-          'module_path' => $module_path
-        ];
-        //$view->addCacheContext('url.query_args');
-        //\Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
-    }
-    if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
-        $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
-        $view->element['#attached']['library'][] = 'metsis_search/children_count';
-        //$view->element['#attached']['library'][] = 'blazy/load';
-        $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
-
-
-        //Attach ts plot javascript and settings to view
-        //$view->element['#attached']['library'][] = 'metsis_search/ts_plot';
-        $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
-          'pywps_service' => $pywps_service,
-          'module_path' => $module_path
-        ];
-        //$view->element['#cache']['max-age'] = 400;
-        //Add back to parent search button.
-        //$view->header['area']->options['alter']['text'] = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
-        //var_dump($view->header);
-      //  $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
-      //  $view->display['results']->handler->handlers['header']
-      //      ['area']->options['content'] = $new_value;
-    }
-
-    if (isset($view) && ($view->storage->id() == 'metsis_metadata_details')) {
-        $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
-    }
-}
-
-/**
- * Implements hook_entity_view().
- */
-/*function metsis_search_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
-  dpm('bla');
-  $excerpt_component = $display->getComponent('search_api_excerpt');
-  if ($excerpt_component !== NULL && isset($build['#search_api_excerpt'])) {
-    dpm($build['#search_api_excerpt']);
-    $build['search_api_excerpt'] = [
-      '#type' => 'markup',
-      '#markup' => $build['#search_api_excerpt'],
-      '#cache' => [
-        'contexts' => ['url.query_args']
-      ],
-      '#allowed_tags' => ['mark', 'strong'],
     ];
+    $view->setHandler('results', 'header', 'area_text_custom', $options);
+    if ($disable_basket) {
+      $fields = $view->display_handler->getOption('fields');
+      $fields['nothing_2']['exclude'] = TRUE;
+      $view->display_handler->overrideOption('fields', $fields);
+    }
+  }
+  if ($view->id() == 'metsis_search' && $display_id === 'results') {
+    if ($disable_basket) {
+      $fields = $view->display_handler->getOption('fields');
+      $fields['nothing_2']['exclude'] = TRUE;
+      $view->display_handler->overrideOption('fields', $fields);
+    }
   }
 }
-*/
 
-function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache)
-{
-    if (isset($view) && ($view->storage->id() == 'metsis_search')) {
-        $cache->options['results_lifespan'] = 400;
-        $cache->options['output_lifespan'] = 400;
-        //dpm($cache);
-        //dpm($output);
-    }
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Adding  our custom css to the search view.
+ */
+function metsis_search_views_pre_render(ViewExecutable $view) {
+  // Get the module path.
+  $module_handler = \Drupal::service('module_handler');
+  $module_path = $module_handler->getModule('metsis_search')->getPath();
+  // Get the config.
+  $config = \Drupal::config('metsis_search.settings');
+  $pywps_service = $config->get('pywps_service');
+
+  // Get the current request object.
+  $request = \Drupal::request();
+  $referer = $request->headers->get('referer');
+
+  if (isset($view) && ($view->storage->id() == 'metsis_search')) {
+    $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
+    $view->element['#attached']['library'][] = 'metsis_search/children_count';
+    // $view->element['#attached']['library'][] = 'blazy/load';
+    $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
+    $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+
+    // Use lazysizes for custom thumbnail lazy loading.
+    $view->element['#attached']['library'][] = 'metsis_search/thumbnail_lazy';
+    // $view->element['#attached']['library'][] = 'lazy/lazy';
+    // $view->element['#attached']['library'][] = 'lazy/lazysizes';
+
+    // $view->element['#cache']['max-age'] = 400;
+
+    // Attach ts plot javascript and settings to view
+    // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
+    $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
+        'pywps_service' => $pywps_service,
+        'module_path' => $module_path
+      ];
+    // $view->addCacheContext('url.query_args');
+    // \Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
+  }
+  if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
+    $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
+    $view->element['#attached']['library'][] = 'metsis_search/children_count';
+    // $view->element['#attached']['library'][] = 'blazy/load';
+    $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
+
+    // Attach ts plot javascript and settings to view
+    // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
+    $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
+        'pywps_service' => $pywps_service,
+        'module_path' => $module_path
+      ];
+    // $view->element['#cache']['max-age'] = 400;
+    // Add back to parent search button.
+    // $view->header['area']->options['alter']['text'] = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
+    // var_dump($view->header);
+    // $new_value = '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer .'">Go back to parent search</a></span><h2>Children</h2>';
+    // $view->display['results']->handler->handlers['header']
+    // ['area']->options['content'] = $new_value;
+  }
+
+  if (isset($view) && ($view->storage->id() == 'metsis_metadata_details')) {
+    $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+  }
 }
 
 /**
- * Implemets hook_theme()
+ * Implements hook_views_post_render().
  */
-function metsis_search_theme($existing, $type, $theme, $path)
-{
-    //Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);
+function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
+  if (isset($view) && ($view->storage->id() == 'metsis_search')) {
+    $cache->options['results_lifespan'] = 400;
+    $cache->options['output_lifespan'] = 400;
+    // dpm($cache);
+    // dpm($output);
+  }
+}
 
-    return [
-      'views_view_field__metsis_search__results__last_metadata_update_datetime' => [
-        //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
-          'render element' => 'elements',
-          'base hook' => 'views field',
-          'path' => 'modules/metsis/metsis_search/templates'
-      ],
-      'views_view_field__metsis_metadata_details__page_1__last_metadata_update_datetime' => [
-        //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
-          'render element' => 'elements',
-          'base hook' => 'views field',
-          'path' => 'modules/metsis/metsis_search/templates'
-      ],
-
-      'views_view_field__metsis_metadata_details__page_1__nothing_1' => [
-        //'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
-          'render element' => 'elements',
-          'base hook' => 'views field',
-          'path' => 'modules/metsis/metsis_search/templates'
-      ],
-      'views_fieldsets_details' => [
-        //'render element' => 'elements',
-        //'base hook' => 'views field',
-        'variables' =>['fields' => [], 'attributes' => [], 'legend' => '', 'collapsed' => false],
-        'template' => 'views-fieldsets-details',
-        'path' => 'modules/metsis/metsis_search/templates'
-      ],
-    ];
-
-    //return [];
-    //\Drupal::logger('metsis_search')->debug("Enter: hook_theme");
-
-    //Check if we already have an active bboxFilter
-    //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-  /*  $session = \Drupal::request()->getSession();
-    $bboxFilter = $session->get('bboxFilter');
-    $tllat = "";
-    $tllon = "";
-    $brlat = "";
-    $brlon = "";
-    if ($bboxFilter != null) {
-        $tllat = $session->get('tllat');
-        $tllon = $session->get('tllon');
-        $brlat = $session->get('brlat');
-        $brlon = $session->get('brlon');
-    }
-
-    //Get saved configuration
-    $config = \Drupal::config('metsis_search.settings');
-    $map_projections = $config->get('map_projections');
-    $map_init_proj =  $config->get('map_init_proj');
-    $map_search_text =  $config->get('map_search_text');
-    $map_layers_list =  $config->get('map_layers');
-    */
-    //return [
-
-  /*  'block__exposedformmetsis_search_viewresults' => [
-      'render element' => 'elements',
-      'base hook' => 'block',
-    ],
-    'views_view_fields__metsis_search_view__results' => [
+/**
+ * Implemets hook_theme().
+ */
+function metsis_search_theme($existing, $type, $theme, $path) {
+  // Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);.
+  return [
+    'views_view_field__metsis_search__results__last_metadata_update_datetime' => [
+      // 'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
       'render element' => 'elements',
       'base hook' => 'views field',
+      'path' => 'modules/metsis/metsis_search/templates',
     ],
-    'views_view__metsis_search_view__results' => [
+    'views_view_field__metsis_metadata_details__page_1__last_metadata_update_datetime' => [
+      // 'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
       'render element' => 'elements',
-      'base hook' => 'views view',
+      'base hook' => 'views field',
+      'path' => 'modules/metsis/metsis_search/templates',
     ],
-   'block__mapblockformetsissearch' => [
+
+    'views_view_field__metsis_metadata_details__page_1__nothing_1' => [
+      // 'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
       'render element' => 'elements',
-      'base hook' => 'block',
+      'base hook' => 'views field',
+      'path' => 'modules/metsis/metsis_search/templates',
+    ],
+    'views_fieldsets_details' => [
+      // 'render element' => 'elements',
+      // 'base hook' => 'views field',
       'variables' => [
-        'map_projections' => $map_projections,
-        'map_init_proj' => $map_init_proj,
-        'map_search_text' => $map_search_text,
-        'map_layers_list' => $map_layers_list,
+        'fields' => [],
+        'attributes' => [],
+        'legend' => '',
+        'collapsed' => FALSE
       ],
-      #'template' =>   'block--mapblockformetsissearch',
-    ], */
-  //];
-//}
-}
-/**
- * Implments hook_views_query_alter
- */
-function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $query)
-{
-    if ($view->id() == 'metsis_search') {
-        //Do something withe the veiws query here
-    }
-}
-
-function metsis_search_views_data_alter(array &$data)
-{
-    //if ($view->id() == 'metsis_search') {
-      //var_dump($data);
-        //Do something withe the veiws query here
-    //}
+      'template' => 'views-fieldsets-details',
+      'path' => 'modules/metsis/metsis_search/templates',
+    ],
+  ];
 }
 
 /**
- * Implements hook_preprocess_HOOK() for views-view-fields.html.twig.
+ * Implments hook_views_query_alter().
  */
-/**function metsis_search_preprocess_views_view_fields(&$variables)
-{
-    \Drupal::logger('metsis_search')->debug("executing views field hook");
-  $view = $variables['view'];
-  $curr_display = $view->current_display;
-  $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
-  $fields = $variables['fields'];
+function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  if ($view->id() == 'metsis_search') {
+    // Do something withe the veiws query here.
+  }
+}
 
-  if($view->id() == 'metsis_metadata_details') {
-    if($curr_display == 'page_1') {
+/**
+ * Implements hook_views_data_alter().
+ */
+function metsis_search_views_data_alter(array &$data) {
+  // If ($view->id() == 'metsis_search') {
+  // var_dump($data);
+  // Do something withe the veiws query here
+  // }.
+}
 
-      foreach ($fields as $key_f => $field) {
-        if(isset($field->class) && $field->class == 'fieldset') {
-          $variables['fields'][$key_f]->wrapper_element = '';
-          $variables['fields'][$key_f]->element_type = '';
-        }
+/**
+ * Implements hook_views_pre_build().
+ */
+function metsis_search_views_pre_build(ViewExecutable $view) {
+  if ($view->id() == 'metsis_search') {
+    // \Drupal::logger('metsis_search')->debug("hook_metsis_search_view_pre_build");
+    // Check if reset query and reset boundingbox if so.
+    \Drupal::cache()->invalidate('metsis_search_map');
+    $request = \Drupal::request();
+    $query_from_request = $request->query->all();
+
+    // Check if operator op is set in query and op=Reset to reset boundingbox.
+    if (isset($query_from_request['op'])) {
+      if ($query_from_request['op'] == "Reset" || $query_from_request['op'] == "Nullstill") {
+        \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
+        $session = \Drupal::request()->getSession();
+        // $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+        $session->remove('bboxFilter');
+        $session->remove('tllat');
+        $session->remove('tllon');
+        $session->remove('brlat');
+        $session->remove('brlon');
+        $session->remove('extracted_info');
+        $session->remove('proj');
+        $session->remove('gcmd');
+        $session->remove('keywords_level');
+        $session->remove('back_to_search');
+        $session->remove('place_filter');
+        $session->remove('cond');
+        $session->set('keywords_level', 1);
+
+        $session->remove('place_lat');
+        $session->remove('place_lon');
+
+        \Drupal::cache()->invalidate('block:metsis_search_map');
+        \Drupal::cache()->invalidate('block:metsis_search_map_block');
+        // $config = \Drupal::config('metsis_search.settings');
+        // $keep_parent_filter = $config->get('keep_parent_filter');
+        // dpm($keep_parent_filter);
+        /*    if ($keep_parent_filter) {
+        $session->set('back_to_search', '/metsis/search?f[0]=dataset_level%3ALevel-1');
+        return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?f[0]=dataset_level%3ALevel-1');
+        } else {
+        $session->set('back_to_search', '/metsis/search');
+        return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
+        }*/
       }
-
     }
   }
 }
-*/
 
-function metsis_search_search_api_solr_query_alter(\Solarium\Core\Query\QueryInterface $solarium_query, \Drupal\search_api\Query\QueryInterface $query)
-{
-    // \Drupal::cache()->invalidate('metsis_search_map');
-    // //dpm($query->getKeys());
-    // /*Get the current session */
-    // $request = \Drupal::request();
-    // //$session = $request->getSession();
-    // $session = \Drupal::service('session');
-    // //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("basepath: ". $request->getBasePath() . 'pathinfo: ' . $request->getPathInfo());
-    // //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-    // // Get the current bbox filter
-    // $search_path = $request->getPathInfo();
-    // $pattern = '/metsis/i';
-    //
-    // //Only alter the solr-query if the search-path contains the word metsis.
-    // // This is to aviod solr query to be cahnged for normal site search
-    // //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("preg match outcome:" . preg_match($pattern, $search_path));
-    // if (preg_match($pattern, $search_path)) {
-    //     //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("Alter solr query for " . $search_path);
-    //     if ($request->headers->has('referer')) {
-    //         $session->set('back_to_search', $request->headers->get('referer'));
-    //     }
-    //     if ($session->has('bboxFilter')) {
-    //         $bboxFilter = $session->get('bboxFilter');
-    //     } else {
-    //         $bboxFilter = null;
-    //     }
-    //     //Get filter predicate from config
-    //     $config = \Drupal::config('metsis_search.settings');
-    //     if ($session->has('cond')) {
-    //         $map_bbox_filter = ucfirst($session->get('cond'));
-    //     } else {
-    //         $map_bbox_filter = $config->get('map_bbox_filter');
-    //     }
-    //     if ($session->get("place_filter") === 'Contains') {
-    //         $map_bbox_filter = 'Contains';
-    //     }
-    //
-    //     //Add bbox filter query if drawn bbox on map
-    //     if ($bboxFilter != null && $bboxFilter != "") {
-    //         \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: ".$map_bbox_filter. '(' . $bboxFilter. ')');
-    //         $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' .$map_bbox_filter.'(' . $bboxFilter . ')');
-    //         $search_string = $map_bbox_filter. '(' . $bboxFilter. ')';
-    //         //$request->query->set('bboxFilter', $search_string);
-    //     //$request->request->set('bboxFilter', $search_string);
-    //     }
-    //
-    //     //Filter on selected collections from config
-    //     $selected_collections = $config->get('selected_collections');
-    //     if (isset($selected_collections) && $selected_collections != null) {
-    //         //\Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
-    //         $solarium_query->createFilterQuery('collection')->setQuery('collection:(' .implode(" ", array_keys($selected_collections)).')');
-    //     }
-    //     /**
-    //      * Parent boost results
-    //      */
-    //     $score_parent = $config->get('score_parent');
-    //     if ($score_parent) {
-    //         $def_sorts = $solarium_query->getSorts();
-    //         /*
-    //         if(isset($def_sorts['temporal_extent_start_date'])) {
-    //
-    //         }*/
-    //         $solarium_query->clearSorts();
-    //         $solarium_query->addSort('score', $solarium_query::SORT_DESC);
-    //         foreach ($def_sorts as $field => $order) {
-    //             $solarium_query->addSort($field, $order);
-    //         }
-    //
-    //         //dpm($solarium_query->getSorts());
-    //         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
-    //     }
-    //     /**
-    //      * Add fields not defined in search view but needed for
-    //      * other metsis search backends. I.E MapSearch
-    //      */
-    //     $fields = $solarium_query->getFields();
-    //
-    //     $fields[] = 'id';
-    //     $fields[] = 'personnel_organisation';
-    //     $fields[] = 'project_long_name';
-    //     $fields[] = 'project_short_name';
-    //     $fields[] = 'temporal_extent_start_date';
-    //     $fields[] = 'temporal_extent_end_date';
-    //     $fields[] =' last_metadata_update_datetime';
-    //     //$fields[] = 'abstract';
-    //     $fields[] = 'related_url_landing_page';
-    //     //$fields[] = 'thumbnail_data';
-    //     $fields[] = 'isParent';
-    //     $fields[] = 'data_access_url_opendap';
-    //     $fields[] = 'feature_type';
-    //     $fields[] = 'ss_access';
-    //     $fields[] = 'data_access_url_http';
-    //     $fields[] = 'data_access_url_odata';
-    //     $fields[] = 'uuid';
-    //     $fields[] = 'score';
-    //     $fields[] = 'hash';
-    //     $fields[] = 'geographic_extent_rectangle_south';
-    //     $fields[] = 'geographic_extent_rectangle_north';
-    //     $fields[] = 'geographic_extent_rectangle_west';
-    //     $fields[] = 'geographic_extent_rectangle_east';
-    //     $fields[] = 'use_constraint';
-    //     //$fields[] = 'iso_topic_category';
-    //     $fields[] = 'activity_type';
-    //     $fields[] = 'dataset_production_status';
-    //     $fields[] = 'metadata_status';
-    //     //$fields[] = 'data_center_long_name';
-    //     //$fields[] = 'data_center_short_name';
-    //     //$fields[] = 'data_center_url';
-    //     //$fields[] = 'personnel_datacenter_role';
-    //     //$fields[] = 'personnel_datacenter_name';
-    //     //$fields[] = 'personnel_datacenter_email';
-    //     $fields[] = 'personnel_name';
-    //     $fields[] = 'metadata_identifier';
-    //     $fields[] = 'collection';
-    //     //$fields[] = 'keywords_keyword';
-    //     $fields[] = 'data_access_url_ftp';
-    //     $fields[] = 'data_access_url_ogc_wms';
-    //     $fields[] = 'data_access_wms_layers';
-    //
-    //     //make sure the fields array contains unique fields
-    //     $uniq_fields = array_unique($fields);
-    //
-    //
-    //     /**
-    //      *  Hack to avoid users to have to use "" when searching for identifiers
-    //      * with nameing authrity prefixes.
-    //      */
-    //     $keys = $query->getKeys();
-    //     //dpm($keys);
-    //
-    //     if ($keys != null) {
-    //         if (substr($keys[0], 0, 6) === 'no.met') {
-    //             $new_keys = str_replace(':', '?', $keys[0]);
-    //             $query->keys($new_keys);
-    //             //dpm($query->getKeys());
-    //         }
-    //     }
-    //
-    //
-    //     $solarium_query->setFields($uniq_fields);
-    //     //We dont need to get the thumbnail data as we will lazy-load that later.
-    //     $solarium_query->removeField('thumbnail_data');
-        //dpm($solarium_query->getFields());
-        //dpm($solarium_query->getFilterQueries());
-        //dpm($solarium_query->getQuery());
-    //}
-    /**
-     * TODO:: Update url params and breadcrumbs
-     */
-
-     /* Create facet pivot for keywords */
-     // get the facetset component
-     //$facetSet = $solarium_query->getFacetSet();
-
-     // create two facet pivot instances
-     //PIVOT FACETS ARE SLOW maybe beause of cluttered data trying other approch for NoRewindIterator
-
-     //$facet = $facetSet->createFacetPivot('gcmd');
-     //$facet->addFields('keywords_level1, keywords_level2, keywords_level3');
-     //$facet->addFields('keywords_level1, keywords_level2, keywords_level3, keywords_level4, keywords_level5, keywords_level6, keywords_level7, ');
-     //$facet->setLimit(5);
-     //$facet->setMinCount(1);
-
-
-    //$facetSet->createFacetField('gcmd')->setField('keywords_level1'); //->setLimit(10);
+/**
+ * Implements hook_block_view().
+ */
+function metsis_search_block_view_alter(array &$build, BlockPluginInterface $block) {
+  // if( $block->id() == 'metsis_search_map_block') {
+  // \Drupal::logger('metsis_search')->debug("Entering hook_block_alter for MapSearchBlock");
+  // }.
 }
 
-function metsis_search_search_api_solr_search_results_alter(
-    \Drupal\search_api\Query\ResultSetInterface $result_set,
-    \Drupal\search_api\Query\QueryInterface $query,
-    \Solarium\QueryType\Select\Result\Result $result
-) {
-    //Get current session Object
-    // $session = \Drupal::request()->getSession();
-    //
-    // //Extract some info for the search map from the solr result
-    // $request = \Drupal::request();
-    // $referer = $request->headers->get('referer');
-    // //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - basepath @path: ", ['@path' => $request->getPathInfo()]);
-    // //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("before extracted info - referer: @path", ['@path' => $referer]);
-    // $search_path = $request->getPathInfo();
-    // $pattern1 = '/metsis\/.*search/i';
-    // //$pattern2 =  '/metsis\/elements/i';
-    //
-    // //Only alter the solr-query if the search-path contains the word metsis.
-    // // This is to aviod solr query to be cahnged for normal site search
-    // //if (preg_match($pattern1, $search_path) || preg_match($pattern2, $search_path)) {
-    // if (preg_match($pattern1, $search_path)) {
-    //     $extracted_info = SearchUtils::getExtractedInfo($result);
-    //     //\Drupal::logger('metsis_search-hook_search_results_alter')->debug("Got extracted info: " . count($extracted_info));
-    //     //$session->set('gcmd', $gcmd_facet);
-    //     //dpm($gcmd_facet);
-    //     //add the extracted info to the tempstores
-    //     //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-    //
-    //     $session->set('extracted_info', $extracted_info);
-    //     if ($session->has('basket_ref')) {
-    //         $session->remove('basket_ref');
-    //     }
-    //     //$session->set('back_to_search', $referer);
-    // }
-    //var_dump(count($extracted_info));
-//var_dump($extracted_info);
-}
-
-/*
- * Implements hook_views_post_render.
-*/
-/*function metsis_search_views_post_render(&$view) {
-  if( $view->id() == 'metsis_search') {
-
-     }
-  //  \Drupal::logger('metsis_search')->debug("Entering hook_views_post_render");
-  }
-*/
-
-
-function metsis_search_views_pre_build(ViewExecutable $view)
-{
-    if ($view->id() == 'metsis_search') {
-        //\Drupal::logger('metsis_search')->debug("hook_metsis_search_view_pre_build");
-        //Check if reset query and reset boundingbox if so.
-        \Drupal::cache()->invalidate('metsis_search_map');
-        $request = \Drupal::request();
-        $query_from_request = $request->query->all();
-
-        //Check if operator op is set in query and op=Reset to reset boundingbox
-        if (isset($query_from_request['op'])) {
-            if ($query_from_request['op'] == "Reset" || $query_from_request['op'] == "Nullstill") {
-                \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
-                $session = \Drupal::request()->getSession();
-                //$tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-                $session->remove('bboxFilter');
-                $session->remove('tllat');
-                $session->remove('tllon');
-                $session->remove('brlat');
-                $session->remove('brlon');
-                $session->remove('extracted_info');
-                $session->remove('proj');
-                $session->remove('gcmd');
-                $session->remove('keywords_level');
-                $session->remove('back_to_search');
-                $session->remove('place_filter');
-                $session->remove('cond');
-                $session->set('keywords_level', 1);
-
-                $session->remove('place_lat');
-                $session->remove('place_lon');
-
-
-
-                \Drupal::cache()->invalidate('block:metsis_search_map');
-                \Drupal::cache()->invalidate('block:metsis_search_map_block');
-                //$config = \Drupal::config('metsis_search.settings');
-                //$keep_parent_filter = $config->get('keep_parent_filter');
-                //dpm($keep_parent_filter);
-            /*    if ($keep_parent_filter) {
-                    $session->set('back_to_search', '/metsis/search?f[0]=dataset_level%3ALevel-1');
-                    return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?f[0]=dataset_level%3ALevel-1');
-                } else {
-                    $session->set('back_to_search', '/metsis/search');
-                    return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
-                }*/
-            }
-        }
-    }
-}
-
-function metsis_search_block_view_alter(array &$build, Drupal\Core\Block\BlockPluginInterface $block)
-{
-    //  if( $block->id() == 'metsis_search_map_block') {
-  //  \Drupal::logger('metsis_search')->debug("Entering hook_block_alter for MapSearchBlock");
-  //}
-}
 /**
  * Implements hook_form_alter().
  */
-function metsis_search_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id)
-{
-    //  \Drupal::logger('metsis_search')->debug("Entering hook_form_alter: form_id=" .$form_id );
-//if ($form_id == 'views_exposed_form') {
-//  $form['actions']['reset']['#ajax'] = [
-//    'callback' => '\Drupal\metsis_search\Controller\MapSearchController::resetCallback',
-//  ];
-//var_dump($form);
-//}
+function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // \Drupal::logger('metsis_search')->debug("Entering hook_form_alter: form_id=" .$form_id );
+  // if ($form_id == 'views_exposed_form') {
+  // $form['actions']['reset']['#ajax'] = [
+  // 'callback' => '\Drupal\metsis_search\Controller\MapSearchController::resetCallback',
+  // ];
+  // var_dump($form);
+  // }
 }
 
 /**
- * Implements hook_form_views_exposed_form_alter.
- * Manipulate the exposed search form
- *
- * @inheritdoc
+ * Implements hook_views_exposed_form_alter().
  */
+function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $view = $form_state->getStorage('view');
+  if (($view['view']->id() == 'metsis_search') && ($view['view']->current_display == 'results')) {
+    // $form['actions']['submit']['#value'] = t('Apply Nowx1');
 
-function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id)
-{
-    $view = $form_state->getStorage('view');
-    if (($view['view']->id() == 'metsis_search') && ($view['view']->current_display == 'results')) {
-        //$form['actions']['submit']['#value'] = t('Apply Nowx1');
+    // Always keep advanced options closed.
+    unset($form['secondary']['#open']);
 
-        //Always keep advanced options closed
-        unset($form['secondary']['#open']);
-
-        //Get the metsis earch config object
-        $config = \Drupal::config('metsis_search.settings');
-        $enable_cloud_coverage = $config->get('enable_cloud_coverage');
-        $cloud_coverage_details = $config->get('cloud_coverage_details');
-        $disable_children_filter = $config->get('disable_children_filter');
-        //dpm($form);
-        if (!$enable_cloud_coverage) {
-            //unset($form['#info']['filter-platform_ancillary_cloud_coverage']);
-            $form['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
-            $form['platform_ancillary_cloud_coverage']['#access'] = false;
-            $form['platform_ancillary_cloud_coverage']['#multiple'] = false;
-            $form['platform_ancillary_cloud_coverage_collapsible']['#type'] = 'hidden';
-            $form['platform_ancillary_cloud_coverage_collapsible']['#access'] = false;
-        }
-        if ($enable_cloud_coverage && (!$cloud_coverage_details)) {
-            unset($form['platform_ancillary_cloud_coverage_collapsible']);
-            unset($form['platform_ancillary_cloud_coverage']['#group']);
-        }
-
-        if ($disable_children_filter) {
-            $form['is_parent']['#type'] = 'hidden';
-            $form['is_parent']['#access'] = false;
-        }
-
-        //Hide the children filter if dataset_level/type are set to Child/Level-2
-        /*  $form['is_parent']['#states'] = [
-              'visible' => [
-                ':input[name="dataset_type"]' => [
-                  ['value' => 1],
-          ],
-        ],
-    ];*/
-        //dpm($form);
-        //dpm($form);
+    // Get the metsis earch config object.
+    $config = \Drupal::config('metsis_search.settings');
+    $enable_cloud_coverage = $config->get('enable_cloud_coverage');
+    $cloud_coverage_details = $config->get('cloud_coverage_details');
+    $disable_children_filter = $config->get('disable_children_filter');
+    // dpm($form);
+    if (!$enable_cloud_coverage) {
+      // unset($form['#info']['filter-platform_ancillary_cloud_coverage']);.
+      $form['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
+      $form['platform_ancillary_cloud_coverage']['#access'] = FALSE;
+      $form['platform_ancillary_cloud_coverage']['#multiple'] = FALSE;
+      $form['platform_ancillary_cloud_coverage_collapsible']['#type'] = 'hidden';
+      $form['platform_ancillary_cloud_coverage_collapsible']['#access'] = FALSE;
     }
+    if ($enable_cloud_coverage && (!$cloud_coverage_details)) {
+      unset($form['platform_ancillary_cloud_coverage_collapsible']);
+      unset($form['platform_ancillary_cloud_coverage']['#group']);
+    }
+
+    if ($disable_children_filter) {
+      $form['is_parent']['#type'] = 'hidden';
+      $form['is_parent']['#access'] = FALSE;
+    }
+
+    // Hide the children filter if dataset_level/type are set to Child/Level-2.
+    /*  $form['is_parent']['#states'] = [
+    'visible' => [
+    ':input[name="dataset_type"]' => [
+    ['value' => 1],
+    ],
+    ],
+    ];*/
+    // dpm($form);
+    // dpm($form);
+  }
 }
 
 /**
@@ -660,9 +339,8 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
  * @param array &$metadata
  *   An array representing the categories metadata.
  */
-function metsis_search_fontawesome_metadata_categories_alter(array &$metadata): void
-{
-    //dpm($metadata);
+function metsis_search_fontawesome_metadata_categories_alter(array &$metadata): void {
+  // dpm($metadata);
 }
 
 /**
@@ -671,16 +349,15 @@ function metsis_search_fontawesome_metadata_categories_alter(array &$metadata): 
  * @param array &$metadata
  *   An array representing the icon metadata.
  */
-function metsis_search_fontawesome_metadata_alter(array &$metadata): void
-{
-    // Alter the metadata as needed.
+function metsis_search_fontawesome_metadata_alter(array &$metadata): void {
+  // Alter the metadata as needed.
 
-    //dpm($metadata);
+  // dpm($metadata);
 }
 
-
-
-function metsis_search_update_9302()
-{
-    module_set_weight('metsis_search', 11);
+/**
+ * Update function, set weight.
+ */
+function metsis_search_update_9302() {
+  module_set_weight('metsis_search', 11);
 }

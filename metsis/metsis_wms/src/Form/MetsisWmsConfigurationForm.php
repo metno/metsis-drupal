@@ -42,29 +42,29 @@ class MetsisWmsConfigurationForm extends ConfigFormBase {
     ];
     $form['wmsmap']['base_layer'] = [
       '#type' => 'textfield',
-      '#title' => t('Enter name of base layer'),
-      '#description' => t("the name of the base layer"),
+      '#title' => $this->t('Enter name of base layer'),
+      '#description' => $this->t("the name of the base layer"),
       '#size' => 20,
       '#default_value' => $config->get('wms_base_layer'),
     ];
 
     $form['wmsmap']['overlay_border'] = [
       '#type' => 'select',
-      '#title' => t('Draw overlay border'),
-      '#description' => t("draw the overlay border or not"),
+      '#title' => $this->t('Draw overlay border'),
+      '#description' => $this->t("draw the overlay border or not"),
       '#options' => [
-        'true' => t('Yes'),
-        'false' => t('No'),
+        'true' => $this->t('Yes'),
+        'false' => $this->t('No'),
       ],
       '#default_value' => $config->get('wms_overlay_border'),
     ];
     $form['wmsmap']['product_select'] = [
       '#type' => 'select',
-      '#title' => t('Posibility to select products?'),
-      '#description' => t("Posibility to select products or not"),
+      '#title' => $this->t('Posibility to select products?'),
+      '#description' => $this->t("Posibility to select products or not"),
       '#options' => [
-        'true' => t('Yes'),
-        'false' => t('No'),
+        'true' => $this->t('Yes'),
+        'false' => $this->t('No'),
       ],
       '#default_value' => $config->get('wms_product_select'),
     ];
@@ -95,15 +95,15 @@ class MetsisWmsConfigurationForm extends ConfigFormBase {
      */
     $form['wmsmap']['zoom'] = [
       '#type' => 'textfield',
-      '#title' => t('Enter the initial zoom value of map'),
-      '#description' => t("the initial zoom of the map "),
+      '#title' => $this->t('Enter the initial zoom value of map'),
+      '#description' => $this->t("the initial zoom of the map"),
       '#size' => 20,
       '#default_value' => $config->get('wms_zoom'),
     ];
     $form['wmsmap']['location'] = [
       '#type' => 'select',
-      '#title' => t('Initial map location'),
-      '#description' => t("Select initial map location "),
+      '#title' => $this->t('Initial map location'),
+      '#description' => $this->t("Select initial map location"),
       '#options' =>
       array_combine(array_keys($config->get('wms_locations')), array_keys($config->get('wms_locations'))),
 
