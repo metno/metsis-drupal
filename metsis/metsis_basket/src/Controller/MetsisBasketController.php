@@ -6,7 +6,6 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
-
 use Drupal\search_api\Entity\Index;
 
 
@@ -176,7 +175,7 @@ class MetsisBasketController extends DashboardBokehController {
       $response = new AjaxResponse();
       $response->addCommand(new HtmlCommand('#addtobasket-' . $selector_id, 'Add to Basket &#10004;'));
       $response->addCommand(new HtmlCommand($selector, $markup));
-      $response->addCommand(new MessageCommand("Dataset %added to basket.", ['%added' => $metaid]));
+      // $response->addCommand(new MessageCommand("Dataset %added to basket.", ['%added' => $metaid]));
       Cache::invalidateTags(['basket:user:' . $user_id]);
       return $response;
     }
