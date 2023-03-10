@@ -12,6 +12,8 @@ jobs:
       - name: Install PHP Code Sniffer
         run: |
           cd .ci
+          composer init
+          composer config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
           composer require --dev dealerdirect/phpcodesniffer-composer-installer
           composer require --dev drupal/coder
 
