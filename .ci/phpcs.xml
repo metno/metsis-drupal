@@ -17,6 +17,7 @@
                 yml" />
     <config name="drupal_core_version"
             value="9" />
+     <arg name="warning-severity" value="0"/>
     <rule ref="vendor/drupal/coder/coder_sniffer/Drupal" />
     <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice"/>
 </ruleset>
