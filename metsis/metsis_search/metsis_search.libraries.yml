@@ -70,6 +70,7 @@ map_ol:
     /libraries/openlayers-6.5.0/ol.js: {}
   dependencies:
     - metsis_search/map_projs
+    - metsis_search/map_geocoder
 
 map_projs:
   version: 2.6.3
@@ -97,7 +98,7 @@ map_geocoder:
   dependencies:
   - core/jquery
   - jquery_ui/core
-  - metsis_search/map_ol
+ # - metsis_search/map_ol
 
 
 children_count:

@@ -120,6 +120,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'metsis_search/children_count';
     // $view->element['#attached']['library'][] = 'blazy/load';
     $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
+    $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
 
     // Attach ts plot javascript and settings to view
     // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
