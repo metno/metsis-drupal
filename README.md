@@ -1,7 +1,7 @@
 ![Drupal](https://img.shields.io/badge/Drupal-0678BE?style=for-the-badge&logo=drupal&logoColor=white)
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/metno/metsis-drupal/codeql.yml?label=javascript&logo=javascript&style=flat-square)
-
+![GitHub Workflow JS](https://img.shields.io/github/actions/workflow/status/metno/metsis-drupal/codeql.yml?label=javascript&logo=javascript&style=flat-square)
+![GitHub Workflow PHP](https://img.shields.io/github/actions/workflow/status/metno/metsis-drupal/phpcs.yml?label=php&logo=php&style=flat-square)
 
 # METSIS-Drupal
 
@@ -26,7 +26,7 @@ The design principle of METSIS are based on the following:
 * Service Oriented
 
 ## Environment
-This component is a module linking the METSIS backend services to the Drupal Content Management System. It is written primarily in PHP, with some Javascript elements. It is currently interfaced and tested against Drupal 7.
+This component is a module linking the METSIS backend services to the Drupal Content Management System. It is written primarily in PHP, with some Javascript elements. It is currently interfaced and tested against Drupal 9.5.
 
 ## Context
  See https://pm.met.no/arctic-data-centre. 
