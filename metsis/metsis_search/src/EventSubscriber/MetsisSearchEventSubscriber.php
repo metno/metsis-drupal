@@ -74,6 +74,13 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
 
 
   /**
+   * UUID Regexp pattern.
+   *
+   * @var string
+   */
+  protected $uuidRegexp = '/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i';
+
+  /**
    * Default solr search fields needed for metsis_search.
    *
    * @var array
@@ -275,6 +282,10 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           $query->keys($new_keys);
           // dpm($query->getKeys());
         }
+        if ($this->isValidUuid($keys[0])) {
+          $new_keys = '*' . $keys[0];
+          $query->keys($new_keys);
+        }
       }
 
       $solarium_query->setFields($uniq_fields);
@@ -297,10 +308,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
             if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
               $use_direct = TRUE;
             }
+            if ($this->isValidUuid($value)) {
+              $use_direct = TRUE;
+            }
           }
+
           else {
             foreach ($value as $key => $value2) {
               if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
+                $use_direct = TRUE;
+              }
+              if ($this->isValidUuid($value2)) {
                 $use_direct = TRUE;
               }
             }
@@ -381,6 +399,22 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $this->session->remove('basket_ref');
       }
     }
+  }
+
+  /**
+   * Check if a given string is a valid UUID.
+   *
+   * @param string $uuid
+   *   The string to check.
+   *
+   * @return bool
+   *   Return true or false.
+   */
+  public function isValidUuid($uuid) {
+    if (!is_string($uuid) || (preg_match($this->uuidRegexp, $uuid) !== 1)) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
 }
