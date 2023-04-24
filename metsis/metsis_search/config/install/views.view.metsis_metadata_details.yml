@@ -3467,8 +3467,8 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: false
-            path: ''
+            make_link: true
+            path: '{{ dataset_citation_url }} '
             absolute: false
             external: false
             replace_spaces: false
@@ -9465,6 +9465,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   page_1:
     id: page_1
     display_title: Page
@@ -9486,3 +9487,4 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
