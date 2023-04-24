@@ -2434,55 +2434,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        is_parent:
-          id: is_parent
-          table: search_api_index_metsis
-          field: is_parent
-          relationship: none
-          group_type: group
-          admin_label: 'Has Children'
-          plugin_id: search_api_boolean
-          operator: '='
-          value: '1'
-          group: 1
-          exposed: true
-          expose:
-            operator_id: ''
-            label: 'Has children'
-            description: 'Show only parent datasets that have children'
-            use_operator: false
-            operator: is_parent_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: is_parent
-            required: false
-            remember: false
-            multiple: true
-            remember_roles:
-              authenticated: authenticated
-              anonymous: anonymous
-              content_editor: '0'
-              administrator: '0'
-          is_grouped: true
-          group_info:
-            label: 'Has children'
-            description: 'Select whether datasets are parents with children (i.e. records of the same type)'
-            identifier: is_parent
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: 'Yes'
-                operator: '='
-                value: '1'
-              2:
-                title: 'No'
-                operator: '='
-                value: '0'
         platform_ancillary_cloud_coverage:
           id: platform_ancillary_cloud_coverage
           table: search_api_index_metsis
@@ -2641,10 +2592,87 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        is_parent:
+          id: is_parent
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'parent true'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '1'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        is_parent_1:
+          id: is_parent_1
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'paret false'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
           1: AND
+          2: OR
       style:
         type: html_list
         options:
@@ -2698,6 +2726,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   results:
     id: results
     display_title: Page
@@ -5054,6 +5083,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   simplesearch:
     id: simplesearch
     display_title: Page2
@@ -5312,3 +5342,4 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
