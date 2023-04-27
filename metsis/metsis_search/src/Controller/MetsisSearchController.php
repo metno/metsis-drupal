@@ -7,6 +7,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\search_api\Entity\Index;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
+use Drupal\Core\Ajax\RemoveCommand;
 
 /**
  * A Class with functions used by the search interface.
@@ -56,6 +57,9 @@ class MetsisSearchController extends ControllerBase {
       $markup = 'Child data..[' . $found . ']';
       // \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
       $response->addCommand(new HtmlCommand($selector, $markup));
+    }
+    if ($found == 0) {
+      $response->addCommand(new RemoveCommand($selector));
     }
     /*
     else {
