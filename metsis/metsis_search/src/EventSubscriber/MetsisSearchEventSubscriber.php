@@ -256,6 +256,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         // dpm($solarium_query->getSorts());
         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
       }
+
+      /*
+       * New score parents test.
+       *
+       * TODO: Add config posibility if this works well.
+       */
+      $solarium_query->addParam('bq',
+      [
+        'iParent' =>
+        '(isParent:true^3 OR isParent:false^1)',
+      ]);
       /*
        * Add fields not defined in search view but needed for
        * other metsis search backends. I.E MapSearch
