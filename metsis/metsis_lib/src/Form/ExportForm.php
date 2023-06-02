@@ -78,6 +78,16 @@ class ExportForm extends FormBase {
 
     ];
 
+    $form['export']['mmd'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('METNO MMD'),
+      '#export_type' => 'mmd',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
+
+    ];
+
     return $form;
   }
 
@@ -123,7 +133,12 @@ class ExportForm extends FormBase {
     }
     else {
       $mmd_xml = base64_decode($mmd);
-      $content = $this->transformXml($mmd_xml, $export_type);
+      if ($export_type === 'mmd') {
+        $content = $mmd_xml;
+      }
+      else {
+        $content = $this->transformXml($mmd_xml, $export_type);
+      }
       $response->setContent($content);
     }
 

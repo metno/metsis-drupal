@@ -31,7 +31,7 @@ class MetsisSearchController extends ControllerBase {
     $connector = $backend->getSolrConnector();
 
     $solarium_query = $connector->getSelectQuery();
-    $solarium_query->setQuery('related_dataset:' . $id);
+    $solarium_query->setQuery('related_dataset_id:' . $id);
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
     $solarium_query->setRows(1);
     $solarium_query->setFields('id');

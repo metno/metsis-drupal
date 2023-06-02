@@ -2184,13 +2184,13 @@ display:
       empty: {  }
       sorts: {  }
       arguments:
-        related_dataset:
-          id: related_dataset
+        related_dataset_id:
+          id: related_dataset_id
           table: search_api_index_metsis
-          field: related_dataset
+          field: related_dataset_id
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: 'related_dataset_id '
           plugin_id: search_api
           default_action: empty
           exception:
@@ -2446,6 +2446,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   results:
     id: results
     display_title: Page
@@ -2483,3 +2484,4 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'

@@ -817,6 +817,18 @@ class DynamicLandingPagesController extends ControllerBase {
    * Get json-ld.
    */
   public function getJsonld($fields, $host) {
+
+    $start_date = "";
+    $end_date = "";
+
+    if (isset($fields['temporal_extent_start_date'])) {
+      $start_date = $fields['temporal_extent_start_date'][0];
+    }
+
+    if (isset($fields['temporal_extent_end_date'])) {
+      $end_date = $fields['temporal_extent_end_date'][0];
+    }
+
     $json = [
       '@context' => 'https://schema.org/',
       '@type' => 'Dataset',
@@ -833,7 +845,7 @@ class DynamicLandingPagesController extends ControllerBase {
         '@type' => 'DataCatalog',
         'name:' => $host,
       ],
-      'temporalCoverage' => $fields['temporal_extent_start_date'][0] . '/' . $fields['temporal_extent_end_date'][0] ?? '',
+      'temporalCoverage' => $start_date . '/' . $start_date ?? '',
 
     ];
     $string = <<<EOF

@@ -2592,55 +2592,17 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        is_parent:
-          id: is_parent
+        is_child:
+          id: is_child
           table: search_api_index_metsis
-          field: is_parent
+          field: is_child
           relationship: none
           group_type: group
-          admin_label: 'parent true'
-          plugin_id: search_api_boolean
-          operator: '='
-          value: '1'
-          group: 2
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-        is_parent_1:
-          id: is_parent_1
-          table: search_api_index_metsis
-          field: is_parent
-          relationship: none
-          group_type: group
-          admin_label: 'paret false'
+          admin_label: 'child false'
           plugin_id: search_api_boolean
           operator: '='
           value: '0'
-          group: 2
+          group: 1
           exposed: false
           expose:
             operator_id: ''
@@ -2672,7 +2634,6 @@ display:
         operator: AND
         groups:
           1: AND
-          2: OR
       style:
         type: html_list
         options:
