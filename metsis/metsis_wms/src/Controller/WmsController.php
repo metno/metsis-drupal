@@ -4,8 +4,8 @@ namespace Drupal\metsis_wms\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\search_api\Entity\Index;
 use Drupal\Core\Render\Markup;
+use Drupal\search_api\Entity\Index;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 // Use Drupal\metsis_wms\WmsUtils;.
