@@ -6,10 +6,8 @@ use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Cache\Cache;
-use Drupal\search_api\Entity\Index;
-
-
 use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
+use Drupal\search_api\Entity\Index;
 
 /**
  * Default controller for the metsis_basket module.

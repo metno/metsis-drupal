@@ -3,11 +3,12 @@
 namespace Drupal\metsis_search\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Controller\ControllerBase;
-use Drupal\search_api\Entity\Index;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\RemoveCommand;
+
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\search_api\Entity\Index;
 
 /**
  * A Class with functions used by the search interface.

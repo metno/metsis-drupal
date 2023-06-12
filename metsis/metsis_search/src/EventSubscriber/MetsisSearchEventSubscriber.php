@@ -5,11 +5,6 @@ namespace Drupal\metsis_search\EventSubscriber;
 // Use Drupal\devel\DevelDumperManagerInterface;.
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Solarium\Core\Event\Events as SolariumEvents;
-use Solarium\Core\Event\PostCreateQuery;
-use Solarium\Core\Event\PostCreateResult;
-use Solarium\Core\Event\PostExecuteRequest;
-use Solarium\Core\Event\PreExecuteRequest;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
@@ -18,6 +13,12 @@ use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\PostExtractResultsEvent;
 use Drupal\search_api_solr\Event\PreQueryEvent;
 use Drupal\search_api_solr\Event\SearchApiSolrEvents;
+
+use Solarium\Core\Event\Events as SolariumEvents;
+use Solarium\Core\Event\PostCreateQuery;
+use Solarium\Core\Event\PostCreateResult;
+use Solarium\Core\Event\PostExecuteRequest;
+use Solarium\Core\Event\PreExecuteRequest;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

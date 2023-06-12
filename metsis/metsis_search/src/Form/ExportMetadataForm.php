@@ -13,12 +13,10 @@ namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-
-use Symfony\Component\HttpFoundation\Response;
-
 use Drupal\search_api\Entity\Index;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Form for exporting metadata.
