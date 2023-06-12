@@ -2,10 +2,10 @@
 
 namespace Drupal\metsis_dashboard_bokeh\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\MessageCommand;
+use Drupal\Core\Controller\ControllerBase;
 
 /**
  * Default controller for the metsis_basket module.

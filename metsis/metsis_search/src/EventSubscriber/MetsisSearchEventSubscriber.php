@@ -8,6 +8,8 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
+use Drupal\metsis_search\SearchUtils;
+
 use Drupal\search_api\LoggerTrait;
 use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\PostExtractResultsEvent;
@@ -22,9 +24,6 @@ use Solarium\Core\Event\PreExecuteRequest;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
-
-use Drupal\metsis_search\SearchUtils;
 
 /**
  * Event subscriber for listening to search api events and solr evnets.

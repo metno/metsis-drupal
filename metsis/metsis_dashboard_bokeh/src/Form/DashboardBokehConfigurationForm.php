@@ -2,9 +2,10 @@
 
 namespace Drupal\metsis_dashboard_bokeh\Form;
 
+use Drupal\Component\Utility\UrlHelper;
+
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Class ConfigurationForm.

@@ -10,10 +10,11 @@ namespace Drupal\metsis_ts_bokeh\Form;
  *
  */
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Form\FormBase;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
+
+use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Class for the TS bokeh Plot form.

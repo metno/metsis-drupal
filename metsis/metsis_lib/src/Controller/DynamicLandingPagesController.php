@@ -2,16 +2,14 @@
 
 namespace Drupal\metsis_lib\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\search_api\Entity\Index;
-use Drupal\Component\Serialization\Json;
-use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\Response;
-
-
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+use Drupal\search_api\Entity\Index;
 
 /**
  * Class DynamicLandingPagesController.
