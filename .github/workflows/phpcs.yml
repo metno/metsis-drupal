@@ -18,4 +18,4 @@ jobs:
       - name: Check coding standards
         run: |
           cd .ci
-          vendor/bin/phpcs -n
+          vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
