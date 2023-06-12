@@ -2,10 +2,10 @@
 
 namespace Drupal\metsis_basket\Controller;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Cache\Cache;
 use Drupal\search_api\Entity\Index;
 
 

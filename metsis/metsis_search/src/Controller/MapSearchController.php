@@ -2,11 +2,11 @@
 
 namespace Drupal\metsis_search\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\SettingsCommand;
+use Drupal\Core\Controller\ControllerBase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class for handeling map search related stuff.

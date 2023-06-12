@@ -2,10 +2,10 @@
 
 namespace Drupal\metsis_search\Controller;
 
-use Drupal\Core\Url;
 use Drupal\Core\Controller\ControllerBase;
-use Symfony\Component\HttpFoundation\Response;
+use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Use Drupal\serialization\Encoder\XmlEncoder as SerializationXMLEncoder;.
