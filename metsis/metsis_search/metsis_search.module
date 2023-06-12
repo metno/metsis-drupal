@@ -122,6 +122,9 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'metsis_lib/adc_buttons';
     $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
 
+     // Use lazysizes for custom thumbnail lazy loading.
+    $view->element['#attached']['library'][] = 'metsis_search/thumbnail_lazy';
+
     // Attach ts plot javascript and settings to view
     // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
     $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [

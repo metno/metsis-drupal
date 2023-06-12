@@ -199,7 +199,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div class=\"res-thumb w3-padding w3-left media media--blazy media--loading media--image\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  class=\"w3-image b-lazy media__image media__element img-responsive\" alt=\"Embedded Thumbnail\" data-src={{thumbnail_data}}\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\" style=\"width:70%;max-width:250px\"/>\r\n</a></div>"
+            text: "<div id=\"thumb-wrapper-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>"
             make_link: false
             path: ''
             absolute: false
