@@ -242,7 +242,17 @@ class DefaultController extends ControllerBase {
       $build['search-map']['map-fullscreen-wrapper']['side-panel']['legend'] = [
         '#type' => 'markup',
         '#prefix' => '<div class="w3-container w3-margin-left legend-placeholder">',
-        '#markup' => '<img id="map-wms-legend"/>',
+        '#markup' => '<span class="map-sidepanel-title">Legend</span><img id="map-wms-legend"/>',
+        '#suffix' => '</div>',
+        '#allowed_tags' => ['div', 'img'],
+
+      ];
+
+      // Wms Styles Dropdown.
+      $build['search-map']['map-fullscreen-wrapper']['side-panel']['wms-styles'] = [
+        '#type' => 'markup',
+        '#prefix' => '<div class="w3-container w3-margin-left wmsstyle-placeholder">',
+        '#markup' => '<div id="wms-style-id" class="wms-style-dropdown></div>',
         '#suffix' => '</div>',
         '#allowed_tags' => ['div', 'img'],
 
