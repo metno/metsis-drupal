@@ -842,6 +842,11 @@ field_settings:
     datasource_id: solr_document
     property_path: project_short_name
     type: string
+  quality_control:
+    label: 'Quality control'
+    datasource_id: solr_document
+    property_path: quality_control
+    type: string
   related_dataset:
     label: 'Related dataset'
     datasource_id: solr_document
@@ -946,6 +951,16 @@ field_settings:
     label: 'Related url scientific publication desc'
     datasource_id: solr_document
     property_path: related_url_scientific_publication_desc
+    type: string
+  related_url_software:
+    label: 'Related url software'
+    datasource_id: solr_document
+    property_path: related_url_software
+    type: string
+  related_url_software_desc:
+    label: 'Related url software desc'
+    datasource_id: solr_document
+    property_path: related_url_software_desc
     type: string
   related_url_user_guide:
     label: 'Related url user guide'

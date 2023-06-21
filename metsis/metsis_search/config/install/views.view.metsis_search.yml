@@ -3257,7 +3257,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''solr_format'')  }}'
+            text: "{% for date in last_metadata_update_datetime %}\r\n{% if loop.first %}\r\n{{ date }}\r\n{% endif %}\r\n{% endfor %}"
             make_link: false
             path: ''
             absolute: false
