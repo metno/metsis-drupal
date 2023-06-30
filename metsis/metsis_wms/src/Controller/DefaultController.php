@@ -176,7 +176,7 @@ class DefaultController extends ControllerBase {
       ];
       $build['search-map']['top-panel']['buttons-container']['go-back'] = [
         '#type' => 'markup',
-        '#markup' => '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" href="' . $referer . '">Go back to search</a></span>',
+        '#markup' => '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back to search</a></span>',
         '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span'],
       ];
       $build['search-map']['top-panel']['buttons-container']['reset-map'] = [
@@ -389,6 +389,7 @@ class DefaultController extends ControllerBase {
       $build['#attached'] = [
         'library' => [
           'metsis_lib/adc_buttons',
+          'metsis_lib/go_back',
           'metsis_wms/wms_ol6',
         ],
         'drupalSettings' => [

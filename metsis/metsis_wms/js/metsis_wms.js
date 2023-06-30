@@ -2432,7 +2432,9 @@ console.log("Start of wms map script:");
             document.getElementById("droplayers").style.display = "inline";
           }
         }
-
+        document.getElementById("goBackMapButton").addEventListener("click", () => {
+          history.back();
+        })
       });
     },
   };

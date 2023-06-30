@@ -323,7 +323,7 @@ class DynamicLandingPagesController extends ControllerBase {
       '#suffix' => '</div>',
     ];
 
-    if ((!NULL == $fields['access_constraint']) && (!NULL == $fields['use_constraint_identifier'])) {
+    if ((!NULL == $fields['access_constraint']) || (!NULL == $fields['use_constraint_identifier'])) {
       $renderArray['constraints_and_info']['constraints'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Use and Access Constraints'),
