@@ -69,14 +69,17 @@ class PersonnelForm extends FormBase {
           ],
           // '#suffix' => '</p>',.
         ];
-        if (array_key_exists($i, $fields['personnel_investigator_organisation'])) {
-          $form['investigator'][$i]['org'] = [
-            '#type' => 'item',
-            '#title' => $this->t('Organization:'),
-          // '#prefix' => '<p>',.
-            '#markup' => $fields['personnel_investigator_organisation'][$i],
-          // '#suffix' => '</div>',.
-          ];
+        $personnel_org = $fields['personnel_investigator_organisation'] ?? NULL;
+        if (!NULL == $personnel_org) {
+          if (array_key_exists($i, $fields['personnel_investigator_organisation'])) {
+            $form['investigator'][$i]['org'] = [
+              '#type' => 'item',
+              '#title' => $this->t('Organization:'),
+            // '#prefix' => '<p>',.
+              '#markup' => $fields['personnel_investigator_organisation'][$i],
+            // '#suffix' => '</div>',.
+            ];
+          }
         }
         $i++;
       }

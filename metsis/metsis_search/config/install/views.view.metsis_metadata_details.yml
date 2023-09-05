@@ -242,59 +242,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        related_dataset_id:
-          id: related_dataset_id
-          table: search_api_index_metsis
-          field: related_dataset_id
-          relationship: none
-          group_type: group
-          admin_label: related_dataset_id
-          plugin_id: search_api
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
         related_dataset:
           id: related_dataset
           table: search_api_index_metsis
@@ -609,59 +556,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        quality_control:
-          id: quality_control
-          table: search_api_index_metsis
-          field: quality_control
-          relationship: none
-          group_type: group
-          admin_label: 'Quality control'
-          plugin_id: search_api
-          label: 'Quality control'
-          exclude: false
-          alter:
-            alter_text: true
-            text: '<a class="ext" href="https://vocab.met.no/mmd/Quality_Control/{{ quality_control | title | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ quality_control }}</a>'
-            make_link: false
-            path: 'https://vocab.met.no/mmd/Quality_Control/{{ quality_control}}'
-            absolute: true
-            external: true
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: _blank
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
         nothing_5:
           id: nothing_5
           table: views
@@ -674,7 +568,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_child == 'True' %}\r\n<strong> Parent dataset:</strong><a href=\"/metsis/search?fulltext=id:{{ related_dataset_id}}\">\_{{ related_dataset }} </a>\r\n{% endif %}"
+            text: "{% if is_child == 'True' %}\r\n<strong> Parent dataset:</strong><a href=\"/metsis/search?fulltext=id:{{ related_dataset}}\">\_{{ related_dataset }} </a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1085,6 +979,7 @@ display:
           fields:
             - metadata_identifier
             - last_metadata_update_datetime
+            - timestamp
             - alternate_identifier_type
             - alternate_identifier
             - metadata_status
@@ -1207,6 +1102,62 @@ display:
           date_format: solr_format
           custom_date_format: ''
           timezone: UTC
+        timestamp:
+          id: timestamp
+          table: search_api_index_metsis
+          field: timestamp
+          relationship: none
+          group_type: group
+          admin_label: 'Last indexed'
+          plugin_id: search_api_date
+          label: 'Last indexed'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: strong
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          date_format: solr_format
+          custom_date_format: ''
+          timezone: UTC
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         alternate_identifier_type:
           id: alternate_identifier_type
           table: search_api_index_metsis
@@ -1848,7 +1799,6 @@ display:
             - related_url_ext_metadata_desc
             - related_url_data_management_plan_desc
             - related_url_data_paper_desc
-            - related_url_software_desc
             - related_url_home_page
             - related_url_landing_page
             - related_url_user_guide
@@ -1857,7 +1807,6 @@ display:
             - related_url_obs_facility
             - related_url_data_management_plan
             - related_url_ext_metadata
-            - related_url_software
             - related_url_other_documentation
           wrapper: details
           legend: 'Related resources'
@@ -2341,59 +2290,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        related_url_software_desc:
-          id: related_url_software_desc
-          table: search_api_index_metsis
-          field: related_url_software_desc
-          relationship: none
-          group_type: group
-          admin_label: 'related url software desc'
-          plugin_id: search_api
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
         related_url_home_page:
           id: related_url_home_page
           table: search_api_index_metsis
@@ -2818,59 +2714,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        related_url_software:
-          id: related_url_software
-          table: search_api_index_metsis
-          field: related_url_software
-          relationship: none
-          group_type: group
-          admin_label: 'related url software (Software)'
-          plugin_id: search_api
-          label: Software
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: true
-            path: '{{ related_url_software }}'
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: '{{ related_url_software_desc }}'
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: strong
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
         related_url_other_documentation:
           id: related_url_other_documentation
           table: search_api_index_metsis
@@ -3205,7 +3048,7 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          date_format: html_date
+          date_format: solr_format
           custom_date_format: ''
           timezone: UTC
         dataset_citation_publication_place:
@@ -3681,8 +3524,8 @@ display:
           alter:
             alter_text: false
             text: ''
-            make_link: true
-            path: '{{ dataset_citation_url }} '
+            make_link: false
+            path: ''
             absolute: false
             external: false
             replace_spaces: false

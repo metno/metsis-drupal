@@ -10,10 +10,11 @@ use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class DynamicLandingPagesController.
+ * Class DynamicLandingPagesController. Create dynamic landing pages.
  */
 class DynamicLandingPagesController extends ControllerBase {
 
@@ -47,6 +48,13 @@ class DynamicLandingPagesController extends ControllerBase {
    */
   protected $json;
 
+
+  /**
+   * Request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $request;
 
   /**
    * The geoPhpWrapper service.
@@ -97,6 +105,7 @@ class DynamicLandingPagesController extends ControllerBase {
       'url' => 'https://spdx.org/licenses/CC-BY-NC-ND-4.0',
       'img' => '/modules/metsis/metsis_search/icons/CCBYNCND.png',
     ],
+    'Not provided' => NULL,
   ];
 
   /**
@@ -109,6 +118,7 @@ class DynamicLandingPagesController extends ControllerBase {
     $instance->solariumQueryHelper = $container->get('solarium.query_helper');
     $instance->json = $container->get('serialization.json');
     $instance->geoPhpWrapper = $container->get('geofield.geophp');
+    $instance->request = $container->get('request_stack')->getCurrentRequest();
     return $instance;
   }
 
@@ -119,11 +129,12 @@ class DynamicLandingPagesController extends ControllerBase {
    *   Return Hello string.
    */
   public function getLandingPage($id) {
-
     // Get the host of this drupal instance.
-    $host = \Drupal::request()->getHost();
-    $fullhost = \Drupal::request()->getSchemeAndHttpHost();
-
+    $host = $this->request->getHost();
+    $fullhost = $this->request->getSchemeAndHttpHost();
+    // dpm($this->request);
+    // $host = \Drupal::request()->getHost();
+    // $fullhost = \Drupal::request()->getSchemeAndHttpHost();
     // Get the configured prefix for the landingpage lookup.
     $main_config = $this->configFactory->get('metsis_lib.settings');
     $id_prefix = $main_config->get('landing_pages_prefix');
@@ -144,7 +155,7 @@ class DynamicLandingPagesController extends ControllerBase {
     // $solarium_query->setFields($fields);
     $result = $connector->execute($solarium_query);
     // The total number of documents found by Solr.
-    $found = $result->getNumFound();
+    // $found = $result->getNumFound();
     // \Drupal::logger('found')->debug("found: " . $found);.
     foreach ($result as $doc) {
       $fields = $doc->getFields();
@@ -323,7 +334,9 @@ class DynamicLandingPagesController extends ControllerBase {
       '#suffix' => '</div>',
     ];
 
-    if ((!NULL == $fields['access_constraint']) && (!NULL == $fields['use_constraint_identifier'])) {
+    $access_constraint = $fields['access_constraint'] ?? NULL;
+    $use_constraint = $fields['use_constraint_identifier'] ?? NULL;
+    if ((!NULL == $access_constraint) || (!NULL == $use_constraint)) {
       $renderArray['constraints_and_info']['constraints'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Use and Access Constraints'),
@@ -359,6 +372,17 @@ class DynamicLandingPagesController extends ControllerBase {
           // '#suffix' => '</p>',.
             '#allowed_tags' => ['img'],
           ];
+        }
+        else {
+          if (isset($fields['use_constraint_license_text'])) {
+            $renderArray['constraints_and_info']['constraints']['licence_txt'] = [
+              '#type' => 'markup',
+            // '#prefix' => '<p>',.
+              '#markup' => '<span>' . $fields['use_constraint_license_text'] . '</span>',
+            // '#suffix' => '</p>',.
+              '#allowed_tags' => ['span'],
+            ];
+          }
         }
       }
     }

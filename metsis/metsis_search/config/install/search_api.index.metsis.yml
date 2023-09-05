@@ -842,11 +842,6 @@ field_settings:
     datasource_id: solr_document
     property_path: project_short_name
     type: string
-  quality_control:
-    label: 'Quality control'
-    datasource_id: solr_document
-    property_path: quality_control
-    type: string
   related_dataset:
     label: 'Related dataset'
     datasource_id: solr_document
@@ -951,16 +946,6 @@ field_settings:
     label: 'Related url scientific publication desc'
     datasource_id: solr_document
     property_path: related_url_scientific_publication_desc
-    type: string
-  related_url_software:
-    label: 'Related url software'
-    datasource_id: solr_document
-    property_path: related_url_software
-    type: string
-  related_url_software_desc:
-    label: 'Related url software desc'
-    datasource_id: solr_document
-    property_path: related_url_software_desc
     type: string
   related_url_user_guide:
     label: 'Related url user guide'
@@ -1183,6 +1168,16 @@ processor_settings:
     highlight_partial: true
   language_with_fallback: {  }
   rendered_item: {  }
+  solr_boost_more_recent:
+    weights:
+      preprocess_query: 0
+    boosts:
+      temporal_extent_start_date:
+        boost: 1.3
+        resolution: NOW/SECOND
+        m: '3.16e-11'
+        a: 0.1
+        b: 0.05
   solr_date_range:
     weights:
       preprocess_index: 0
