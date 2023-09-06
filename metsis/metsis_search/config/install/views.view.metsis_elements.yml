@@ -2456,6 +2456,19 @@ display:
           empty: false
           view_to_insert: 'metsis_metadata_details_parent:default'
           inherit_arguments: true
+        area_1:
+          id: area_1
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: 'go back'
+          plugin_id: text
+          empty: false
+          content:
+            value: '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back</a></span>'
+            format: full_html
+          tokenize: false
         area:
           id: area
           table: views
@@ -2466,7 +2479,7 @@ display:
           plugin_id: text
           empty: false
           content:
-            value: '<h2>Children</h2>'
+            value: '<h2>Child dataset(s)</h2>'
             format: basic_html
           tokenize: false
         result:

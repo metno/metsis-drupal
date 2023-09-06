@@ -2405,7 +2405,7 @@ console.log("Start of metsis search map script:");
         });
 
         //Add geocoder search
-        var geocoder = new Geocoder('nominatim', {
+        const geocoder = new Geocoder('nominatim', {
           provider: 'osm',
           //geonorgeProvider,
           lang: 'nb-NO', //en-US, fr-FR

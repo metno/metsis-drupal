@@ -224,9 +224,15 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       }
 
       // Add bbox filter query if drawn bbox on map.
+      $bbox_filter_overlap = $this->config->get('bbox_overlap_sort');
       if ($bboxFilter != NULL && $bboxFilter != "") {
         \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
-        $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+        if ($bbox_filter_overlap) {
+          $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+        }
+        else {
+          $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+        }
         $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
         // $request->query->set('bboxFilter', $search_string);
         // $request->request->set('bboxFilter', $search_string);
@@ -400,7 +406,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   public function postCreateResult(PostCreateResult $event) {
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
-    if (($this->searchId !== NULL) && ($this->searchId === 'views_page:metsis_search__results')) {
+    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results' || $this->searchId === 'views_page:metsis_elements__results'))) {
       // dpm($this->searchId);
       // $result = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfo($event->getResult());

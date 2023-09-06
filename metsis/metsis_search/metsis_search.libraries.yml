@@ -55,10 +55,10 @@ search_map_block:
     - core/drupal.dialog
     - core/drupal.dialog.ajax
     - jquery_ui_slider/slider
-    - metsis_search/map_ol
-    - metsis_search/map_projs
+   # - metsis_search/map_ol
+   # - metsis_search/map_projs
     - metsis_search/map_ol_ext
-    - metsis_search/map_geocoder
+
 
 
 map_ol:
@@ -70,7 +70,7 @@ map_ol:
     /libraries/openlayers-6.5.0/ol.js: {}
   dependencies:
     - metsis_search/map_projs
-    - metsis_search/map_geocoder
+   # - metsis_search/map_geocoder
 
 map_projs:
   version: 2.6.3
@@ -94,11 +94,12 @@ map_geocoder:
     component:
       https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
   js:
-    https://unpkg.com/ol-geocoder@4.1.2/dist/ol-geocoder.js:  { type: external, minified: true, attributes: {async: true}}
+    https://unpkg.com/ol-geocoder@4.3.0/dist/ol-geocoder.js:  { type: external, minified: true} #, attributes: {async: true}}
   dependencies:
+  - core/drupal
   - core/jquery
   - jquery_ui/core
- # - metsis_search/map_ol
+  - metsis_search/map_ol
 
 
 children_count:

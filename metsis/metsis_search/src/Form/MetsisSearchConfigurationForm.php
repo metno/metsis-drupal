@@ -130,6 +130,13 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
         ],
       ],
     ];
+
+    // Add cloud coverage filter.
+    $form['bbox_overlap_sort'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Sort results by overlap-ratio when using bounding box filter',
+      '#default_value' => $config->get('bbox_overlap_sort'),
+    ];
     /*
     $form['ts_button_text'] = [
     '#type' => 'textfield',
@@ -348,6 +355,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('enable_cloud_coverage', $values['enable_cloud_coverage'])
       ->set('cloud_coverage_details', $values['cloud_coverage_details'])
       ->set('disable_children_filter', $values['disable_children_filter'])
+      ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
           // ->set('keep_parent_filter', $values['keep_parent_filter'])
       ->save();
 
