@@ -1,2 +1,2 @@
 csv_bokeh_download_node: bdownload
-csv_bokeh_download_service: 'https://ncapi.adc-ncplot.met.no/ncplot/download'
+csv_bokeh_download_service: 'localhost'

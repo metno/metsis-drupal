@@ -36,7 +36,7 @@ backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: 157.249.74.44
+    host: localhost
     port: 8983
     path: /
     core: adc-d8-dev
