@@ -2663,10 +2663,18 @@ display:
             project_short_name: project_short_name
             nothing_2: nothing_2
             nothing_3: nothing_3
+            nothing_6: nothing_6
+            nothing_4: nothing_4
+            data_access_url_http: data_access_url_http
+            data_access_url_ftp: data_access_url_ftp
+            nothing_5: nothing_5
+            data_access_url_odata: data_access_url_odata
+            nothing_7: nothing_7
             nothing_1: nothing_1
+            nothing_11: nothing_11
             use_constraint_identifier: use_constraint_identifier
             access_constraint: access_constraint
-          separator: '<span>'
+          separator: '&nbsp;'
           hide_empty: true
       query:
         type: search_api_query
@@ -4706,7 +4714,7 @@ display:
           element_label_class: ''
           element_label_colon: false
           element_wrapper_type: ''
-          element_wrapper_class: 'ajax-wrapper metachild-wrapper inline inline-flex'
+          element_wrapper_class: 'ajax-wrapper metachild-wrapper'
           element_default_classes: true
           empty: ''
           hide_empty: true

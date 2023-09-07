@@ -52,21 +52,21 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     // dpm($fields);
 
     // $options = [
-    //   'id' => 'area_text_custom',
-    //   'table' => 'views',
-    //   'field' => 'area_text_custom',
-    //   'relationship' => 'none',
-    //   'group_type' => 'none',
-    //   'admin_label' => '',
-    //   'empty' => TRUE,
-    //   'tokenize' => FALSE,
-    //   'content' => [
-    //     'value' => $new_value,
-    //     'format' => 'full_html',
-    //   ],
-    //   'plugin_id' => 'unfiltered_text',
-    //   'attributes' => ['onclick' => 'go_back()'],
-    //   // 'alter' => ['text' => $new_value]
+    // 'id' => 'area_text_custom',
+    // 'table' => 'views',
+    // 'field' => 'area_text_custom',
+    // 'relationship' => 'none',
+    // 'group_type' => 'none',
+    // 'admin_label' => '',
+    // 'empty' => TRUE,
+    // 'tokenize' => FALSE,
+    // 'content' => [
+    // 'value' => $new_value,
+    // 'format' => 'full_html',
+    // ],
+    // 'plugin_id' => 'unfiltered_text',
+    // 'attributes' => ['onclick' => 'go_back()'],
+    // 'alter' => ['text' => $new_value]
     // ];
     // $view->setHandler('results', 'header', 'area_text_custom', $options);
     if ($disable_basket) {

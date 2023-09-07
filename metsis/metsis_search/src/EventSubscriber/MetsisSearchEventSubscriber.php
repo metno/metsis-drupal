@@ -194,7 +194,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $searchId = $query->getSearchId();
     $this->searchId = $searchId;
     // Only do something during this event if we have metsis search view.
-    if (($searchId !== NULL) && ($searchId === 'views_page:metsis_search__results')) {
+    if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results') || $this->searchId === 'views_page:metsis_elements__results')) {
       // dpm('Got metsis search query...');.
       /*
        * Invalidate the search result map cache
