@@ -822,6 +822,11 @@ field_settings:
     datasource_id: solr_document
     property_path: platform_resource
     type: string
+  platform_sentinel:
+    label: 'Platform sentinel'
+    datasource_id: solr_document
+    property_path: platform_sentinel
+    type: string
   platform_short_name:
     label: 'Platform short name'
     datasource_id: solr_document

@@ -166,8 +166,8 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
  */
 function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
   if (isset($view) && ($view->storage->id() == 'metsis_search')) {
-    $cache->options['results_lifespan'] = 400;
-    $cache->options['output_lifespan'] = 400;
+    // $cache->options['results_lifespan'] = 400;
+    // $cache->options['output_lifespan'] = 400;
 
     // dpm($cache);
     // dpm($output);
