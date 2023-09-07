@@ -1183,9 +1183,11 @@ console.log("Start of wms map script:");
                     var getWmsStyles = function () {
                       var styles = ls[i].Style;
                       let styleList = [];
-                      for (const val of styles) {
-                        styleList.push(val.Name);
+                      if (styles !== undefined) {
+                        for (const val of styles) {
+                          styleList.push(val.Name);
 
+                        }
                       }
                       console.log(styleList);
                       return styleList

@@ -3,6 +3,12 @@
   padding: 0 !important;
 }
 
+/* Make sure no bold labels in layerswitcher */
+label,
+.field__label {
+  font-weight: normal !important;
+}
+
 /* Define the main search map div. This can be toggeled
 in fullscreen by openlayers fullScreenControl */
 .search-map {

@@ -541,7 +541,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['related_information']['parent'] = [
           '#prefix' => '<div class="w3-container w3-bar">',
           '#type' => 'markup',
-          '#markup' => '<p><em>This is a child dataset. See the parent <a class="w3-text-blue" href="/dataset/' . $parent . '">Landing Page</a> for more information.</em></p>',
+          '#markup' => '<p><em>This is a child dataset. See the <a class="w3-text-blue" href="/dataset/' . $parent . '">Parent dataset landing page</a> for more information.</em></p>',
           '#suffix' => '</div>',
           '#allowed_tags' => ['a', 'em'],
         ];

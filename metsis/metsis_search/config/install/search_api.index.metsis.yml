@@ -842,6 +842,11 @@ field_settings:
     datasource_id: solr_document
     property_path: project_short_name
     type: string
+  quality_control:
+    label: 'Quality control'
+    datasource_id: solr_document
+    property_path: quality_control
+    type: string
   related_dataset:
     label: 'Related dataset'
     datasource_id: solr_document
