@@ -2371,22 +2371,26 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
             min_placeholder: ''
             max_placeholder: ''
             placeholder: ''
           is_grouped: false
           group_info:
-            label: ''
-            description: ''
-            identifier: ''
+            label: 'Temporal extent_start date'
+            description: null
+            identifier: temporal_extent_start_date
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -2641,10 +2645,125 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        is_child:
+          id: is_child
+          table: search_api_index_metsis
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: 'Do not show children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        is_parent_1:
+          id: is_parent_1
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'Show parents with children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '1'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        is_parent_2:
+          id: is_parent_2
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'Show regular datasets without children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
           1: AND
+          2: OR
       style:
         type: html_list
         options:
@@ -4887,7 +5006,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{% if use_constraint_license_text %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% endif %}"
+            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
