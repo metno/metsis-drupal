@@ -425,7 +425,8 @@ class DynamicLandingPagesController extends ControllerBase {
       '#title' => $this->t('Download Machine Readable Metadata:'),
       '#markup' => '<br><a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=iso">ISO-Inspire</a>
               <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=geonorge">ISO-Norge-Inspire</a>
-              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 9.8</a>',
+              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 9.8</a>
+              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=mmd">METNO MMD</a>',
     // Add br here for line break.
       '#allowed_tags' => ['a', 'strong', 'br'],
 
