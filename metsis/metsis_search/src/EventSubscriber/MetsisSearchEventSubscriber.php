@@ -194,7 +194,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $searchId = $query->getSearchId();
     $this->searchId = $searchId;
     // Only do something during this event if we have metsis search view.
-    if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results') || $this->searchId === 'views_page:metsis_elements__results')) {
+    if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results')
+      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results')) {
       // dpm('Got metsis search query...');.
       /*
        * Invalidate the search result map cache
@@ -406,7 +407,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   public function postCreateResult(PostCreateResult $event) {
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
-    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results' || $this->searchId === 'views_page:metsis_elements__results'))) {
+    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'
+      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'))) {
       // dpm($this->searchId);
       // $result = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfo($event->getResult());

@@ -155,3 +155,11 @@ system.admin_config_metsis:
 #    _title: 'METSIS Search Map'
 #  requirements:
 #    _permission: 'access content'
+
+metsis_search.download_dataset:
+  path: '/metsis/dataset/download'
+  defaults:
+    _title: 'Download dataset'
+    _form: 'Drupal\metsis_search\Form\DownloadDatasetForm'
+  requirements:
+    _permission: 'access content'
