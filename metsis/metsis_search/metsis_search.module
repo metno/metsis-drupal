@@ -43,6 +43,7 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
   // $referer = $request->headers->get('referer');.
 
   $config = \Drupal::config('metsis_search.settings');
+
   $disable_basket = $config->get('hide_add_to_basket');
 
   $new_value = '<div><span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back to main search</a></span></div>';
@@ -82,6 +83,7 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       $view->display_handler->overrideOption('fields', $fields);
     }
   }
+
 }
 
 /**
@@ -92,6 +94,7 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
 function metsis_search_views_pre_render(ViewExecutable $view) {
   // Get the module path.
   $module_handler = \Drupal::service('module_handler');
+
   $module_path = $module_handler->getModule('metsis_search')->getPath();
   // Get the config.
   $config = \Drupal::config('metsis_search.settings');
@@ -100,7 +103,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
   // Get the current request object.
   $request = \Drupal::request();
   $referer = $request->headers->get('referer');
-
+  // dpm($view->storage->id());
   if (isset($view) && (($view->storage->id() == 'metsis_search') || ($view->storage->id() == 'metsis_simple_search'))) {
     $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
     $view->element['#attached']['library'][] = 'metsis_search/children_count';
@@ -120,9 +123,9 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     // Attach ts plot javascript and settings to view
     // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
     $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
-        'pywps_service' => $pywps_service,
-        'module_path' => $module_path
-      ];
+      'pywps_service' => $pywps_service,
+      'module_path' => $module_path
+    ];
     // $view->addCacheContext('url.query_args');
     // \Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
   }
@@ -143,9 +146,9 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     // Attach ts plot javascript and settings to view
     // $view->element['#attached']['library'][] = 'metsis_search/ts_plot';.
     $view->element['#attached']['drupalSettings']['metsis_search_ts_plot'] = [
-        'pywps_service' => $pywps_service,
-        'module_path' => $module_path
-      ];
+      'pywps_service' => $pywps_service,
+      'module_path' => $module_path
+    ];
     // $view->element['#cache']['max-age'] = 400;
     // Add back to parent search button.
     // dpm($view->header['area_text_custom']);
@@ -158,6 +161,12 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 
   if (isset($view) && ($view->storage->id() == 'metsis_metadata_details')) {
     $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+  }
+
+  // For simple search.
+  if (isset($view) && ($view->storage->id() == 'metsis_simple_search')) {
+    // dpm($view->field);
+    // dpm($view->result);.
   }
 }
 
@@ -281,6 +290,17 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
         }*/
       }
     }
+  }
+}
+
+/**
+ * Implements hook_views_post_execute.
+ */
+function metsis_search_views_post_execute(ViewExecutable $view) {
+  dpm('hei');
+
+  if ($view->id() == 'metsis_simple_search') {
+    dpm($view->result);
   }
 }
 

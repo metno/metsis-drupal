@@ -300,7 +300,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: ''
+            text: '{{ dump(keywords_keyword) }}'
             make_link: false
             path: ''
             absolute: false
@@ -338,7 +338,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
-          use_highlighting: false
+          use_highlighting: true
           multi_type: separator
           multi_separator: ', '
         temporal_extent_start_date:
@@ -567,7 +567,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden w3-btn w3-border w3-border-grey\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -593,7 +593,7 @@ display:
             preserve_tags: ''
             html: false
           element_type: ''
-          element_class: 'w3-btn w3-border w3-border-grey'
+          element_class: ''
           element_label_type: ''
           element_label_class: ''
           element_label_colon: false
@@ -703,7 +703,7 @@ display:
           empty_zero: false
           hide_alter_empty: false
       pager:
-        type: mini
+        type: full
         options:
           offset: 0
           items_per_page: 10
@@ -712,6 +712,8 @@ display:
           tags:
             next: ››
             previous: ‹‹
+            first: '« First'
+            last: 'Last »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -720,6 +722,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
+          quantity: 9
       exposed_form:
         type: bef
         options:
@@ -1000,6 +1003,7 @@ display:
           preserve_facet_query_args: true
           query_tags: {  }
       relationships: {  }
+      css_class: metsis-simple-search
       header:
         result:
           id: result
