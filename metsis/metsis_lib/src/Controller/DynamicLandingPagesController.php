@@ -864,7 +864,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $fields['metadata_identifier'],
       ],
       'keywords' => $fields['keywords_keyword'],
-      'license' => $fields['use_constraint_resource'],
+      'license' => $fields['use_constraint_resource'] ?? "",
       'includedInDataCatalog' => [
         '@type' => 'DataCatalog',
         'name:' => $host,
