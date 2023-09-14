@@ -101,7 +101,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
   $request = \Drupal::request();
   $referer = $request->headers->get('referer');
 
-  if (isset($view) && (($view->storage->id() == 'metsis_search') || ($view->storage->id() == 'metsis_simple_search')) ) {
+  if (isset($view) && (($view->storage->id() == 'metsis_search') || ($view->storage->id() == 'metsis_simple_search'))) {
     $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
     $view->element['#attached']['library'][] = 'metsis_search/children_count';
     // $view->element['#attached']['library'][] = 'blazy/load';
