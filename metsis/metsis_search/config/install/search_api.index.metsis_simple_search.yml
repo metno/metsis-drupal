@@ -184,10 +184,6 @@ processor_settings:
     highlight_partial: false
   language_with_fallback: {  }
   rendered_item: {  }
-  solr_boost_more_recent:
-    weights:
-      preprocess_query: 0
-    boosts: {  }
   solr_date_range:
     weights:
       preprocess_index: 0
