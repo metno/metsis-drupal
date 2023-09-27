@@ -412,14 +412,15 @@ class DynamicLandingPagesController extends ControllerBase {
 
     ];
      */
-    $renderArray['constraints_and_info']['metadata_information']['metadata_update'] = [
-      '#type' => 'item',
-      '#title' => $this->t('Last Metadata Update:'),
-      '#markup' => end($fields['last_metadata_update_datetime'])  ,
-      '#allowed_tags' => ['a', 'strong'],
+    if (isset($fields['last_metadata_update_datetime'])) {
+      $renderArray['constraints_and_info']['metadata_information']['metadata_update'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Last Metadata Update:'),
+        '#markup' => end($fields['last_metadata_update_datetime'])  ,
+        '#allowed_tags' => ['a', 'strong'],
 
-    ];
-
+      ];
+    }
     $renderArray['constraints_and_info']['metadata_information']['metadata_download'] = [
       '#type' => 'item',
       '#title' => $this->t('Download Machine Readable Metadata:'),
