@@ -297,10 +297,10 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
  * Implements hook_views_post_execute.
  */
 function metsis_search_views_post_execute(ViewExecutable $view) {
-  dpm('hei');
+  // dpm('hei');.
 
   if ($view->id() == 'metsis_simple_search') {
-    dpm($view->result);
+    // dpm($view->result);.
   }
 }
 
