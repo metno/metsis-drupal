@@ -1117,8 +1117,13 @@ console.log("Start of wms map script:");
             //    }).then(function(response) {
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
             wmsUrl = wmsUrl.replace('//lustre', '/lustre');
-            wmsUrl = wmsUrl.split("?")[0];
-            wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
+              wmsUrlOrig = wmsUrl;
+            }
+            else {
+              wmsUrl = wmsUrl.split("?")[0];
+              wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            }
             console.log("trying wms with url: " + wmsUrl);
 
             function onGetCapSuccess(response) {
@@ -1425,7 +1430,13 @@ console.log("Start of wms map script:");
               }
               //Fit to feature geometry
               //console.log(feature_ids[id]);
-              map.getView().fit(geom.getExtent());
+              if (geom == undefined) {
+                //map.getView().fit(makeAxisAwareExtent)
+                console.log(bbox);
+              }
+              else {
+                map.getView().fit(geom.getExtent());
+              }
               //map.getView().fit(wmsLayer.getExtent())
               map.getView().setZoom(map.getView().getZoom());
 
@@ -1452,21 +1463,38 @@ console.log("Start of wms map script:");
                 },
               });
             }
-
-            $.ajax({
-              type: 'GET',
-              url: wmsUrl + getCapString,
-              dataType: 'xml',
-              //async: false,
-              error: function () {
-                console.log("Request failed: " + wmsUrl + getCapString);
-                console.log("Trying getCapProxy....");
-                tryProxy(proxyURL, wmsUrlOrig)
-              },
-              success: function (response) {
-                onGetCapSuccess(response)
-              },
-            });
+            if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl,
+                dataType: 'xml',
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl + getCapString);
+                  console.log("Trying getCapProxy....");
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+                  onGetCapSuccess(response)
+                },
+              });
+            }
+            else {
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl + getCapString,
+                dataType: 'xml',
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl + getCapString);
+                  console.log("Trying getCapProxy....");
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+                  onGetCapSuccess(response)
+                },
+              });
+            }
           }
 
 
@@ -1929,9 +1957,11 @@ console.log("Start of wms map script:");
           var iconFeaturesPin = [];
           var wmsProducts = [];
           for (var i12 = 0; i12 <= extracted_info.length - 1; i12++) {
-
+            if (!Array.isArray(extracted_info[i12][2])) {
+              geom = undefined;
+            }
             //If we have a geographic extent, create polygon feature
-            if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
+            else if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
               //Transform boundingbox to selected projection and create a polygon geometry
               box_tl = ol.proj.transform([extracted_info[i12][2][3], extracted_info[i12][2][0]], 'EPSG:4326', prj);
               box_tr = ol.proj.transform([extracted_info[i12][2][2], extracted_info[i12][2][0]], 'EPSG:4326', prj);

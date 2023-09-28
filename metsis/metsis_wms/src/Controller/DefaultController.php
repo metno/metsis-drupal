@@ -35,10 +35,14 @@ class DefaultController extends ControllerBase {
 
     $module_handler = \Drupal::service('module_handler');
     $module_path = $module_handler->getModule('metsis_search')->getPath();
-
+    dpm($query);
+    $ds_query = $query['dataset'] ?? NULL;
+    $url_query = $query['wms_url'] ?? NULL;
+    dpm($ds_query);
+    dpm($url_query);
     // Redirect back to search with message if no info are given.
-    if (!isset($query['dataset']) || $query['dataset'] == "") {
-      \Drupal::messenger()->addStatus($this->t("Missing dataset query parameter or valid dataset id"));
+    if ($ds_query == NULL && $url_query == NULL) {
+      \Drupal::messenger()->addStatus($this->t("Missing dataset or url query parameter, or valid dataset id"));
       return new RedirectResponse('/metsis/search');
     }
     /*
@@ -63,82 +67,93 @@ class DefaultController extends ControllerBase {
     $markup = 'No Data Found!';
     $webMapServers = [];
     // \Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
+
     if (count($query) > 0) {
-      $datasets = explode(",", $query['dataset']);
-      $fields = [
-        "id",
-        "title",
-        "data_access_url_ogc_wms",
-        "data_access_wms_layers",
-        "metadata_identifier",
-        'geographic_extent_rectangle_north',
-        'geographic_extent_rectangle_south',
-        'geographic_extent_rectangle_east',
-        'geographic_extent_rectangle_west',
-      ];
-      /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
-      $index = Index::load('metsis');
+      if ($ds_query != NULL) {
+        $datasets = explode(",", $query['dataset']);
+        $fields = [
+          "id",
+          "title",
+          "data_access_url_ogc_wms",
+          "data_access_wms_layers",
+          "metadata_identifier",
+          'geographic_extent_rectangle_north',
+          'geographic_extent_rectangle_south',
+          'geographic_extent_rectangle_east',
+          'geographic_extent_rectangle_west',
+        ];
+        /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
+        $index = Index::load('metsis');
 
-      /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
-      $backend = $index->getServerInstance()->getBackend();
+        /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
+        $backend = $index->getServerInstance()->getBackend();
 
-      $connector = $backend->getSolrConnector();
+        $connector = $backend->getSolrConnector();
 
-      $solarium_query = $connector->getSelectQuery();
+        $solarium_query = $connector->getSelectQuery();
 
-      // Foreach ($metadata_identifier as $id) {
-      // \Drupal::logger('metsis_wms')->debug("setQuery: metadata_identifier: " .$id);.
-      $ids = implode(' ', $datasets);
-      $solarium_query->setQuery('id:(' . $ids . ')');
-      // dpm($solarium_query->getQuery());
-      // }
-      // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
-      // $solarium_query->setRows(2);.
-      $solarium_query->setFields($fields);
+        // Foreach ($metadata_identifier as $id) {
+        // \Drupal::logger('metsis_wms')->debug("setQuery: metadata_identifier: " .$id);.
+        $ids = implode(' ', $datasets);
+        $solarium_query->setQuery('id:(' . $ids . ')');
+        // dpm($solarium_query->getQuery());
+        // }
+        // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
+        // $solarium_query->setRows(2);.
+        $solarium_query->setFields($fields);
 
-      $result = $connector->execute($solarium_query);
+        $result = $connector->execute($solarium_query);
 
-      // The total number of documents found by Solr.
-      $found = $result->getNumFound();
-      // \Drupal::logger('metsis_wms')->debug("found :" .$found);
-      // The total number of documents returned from the query.
-      // $count = $result->count();
-      // Check the Solr response status (not the HTTP status).
-      // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
-      // $status = $result->getStatus();
-      $wms_data = [];
-      $layers = [];
-      foreach ($result as $document) {
-        $fields = $document->getFields();
-        if (isset($fields['data_access_url_ogc_wms'])) {
-          $mi = $fields['metadata_identifier'];
+        // The total number of documents found by Solr.
+        $found = $result->getNumFound();
+        // \Drupal::logger('metsis_wms')->debug("found :" .$found);
+        // The total number of documents returned from the query.
+        // $count = $result->count();
+        // Check the Solr response status (not the HTTP status).
+        // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
+        // $status = $result->getStatus();
+        $wms_data = [];
+        $layers = [];
+        foreach ($result as $document) {
+          $fields = $document->getFields();
+          if (isset($fields['data_access_url_ogc_wms'])) {
+            $mi = $fields['metadata_identifier'];
 
-          foreach ($fields['data_access_url_ogc_wms'] as $wms_url) {
-            $wms_data[$mi]['dar'][] = $wms_url;
-          }
-
-          if (isset($fields['data_access_wms_layers'])) {
-            foreach ($fields['data_access_wms_layers'] as $wms_layer) {
-              $wms_data[$mi]['layers'][] = $wms_layer;
+            foreach ($fields['data_access_url_ogc_wms'] as $wms_url) {
+              $wms_data[$mi]['dar'][] = $wms_url;
             }
+
+            if (isset($fields['data_access_wms_layers'])) {
+              foreach ($fields['data_access_wms_layers'] as $wms_layer) {
+                $wms_data[$mi]['layers'][] = $wms_layer;
+              }
+            }
+            $geographical_extent_north = $fields['geographic_extent_rectangle_north'];
+            $geographical_extent_south = $fields['geographic_extent_rectangle_south'];
+            $geographical_extent_east = $fields['geographic_extent_rectangle_east'];
+            $geographical_extent_west = $fields['geographic_extent_rectangle_west'];
+            $geographical_extent = [
+              $geographical_extent_north,
+              $geographical_extent_south,
+              $geographical_extent_east,
+              $geographical_extent_west,
+            ];
+            $wms_data[$mi]['geom'] = $geographical_extent;
+            $wms_data[$mi]['title'] = $fields['title'];
           }
-          $geographical_extent_north = $fields['geographic_extent_rectangle_north'];
-          $geographical_extent_south = $fields['geographic_extent_rectangle_south'];
-          $geographical_extent_east = $fields['geographic_extent_rectangle_east'];
-          $geographical_extent_west = $fields['geographic_extent_rectangle_west'];
-          $geographical_extent = [
-            $geographical_extent_north,
-            $geographical_extent_south,
-            $geographical_extent_east,
-            $geographical_extent_west,
-          ];
-          $wms_data[$mi]['geom'] = $geographical_extent;
-          $wms_data[$mi]['title'] = $fields['title'];
+          else {
+            \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
+            return new RedirectResponse($referer);
+          }
         }
-        else {
-          \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
-          return new RedirectResponse($referer);
-        }
+      }
+      if ($url_query != NULL) {
+        $wms_data = [
+          'ext' => [
+            'title' => 'Custom WMS url',
+            'dar' => [$url_query],
+          ],
+        ];
       }
       // dpm($wms_data);
       /*
@@ -420,7 +435,7 @@ class DefaultController extends ControllerBase {
       'id' => 'map-search',
       ];
        */
-
+      dpm($wms_data);
       return $build;
     }
   }
