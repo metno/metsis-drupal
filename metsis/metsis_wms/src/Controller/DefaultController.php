@@ -35,11 +35,11 @@ class DefaultController extends ControllerBase {
 
     $module_handler = \Drupal::service('module_handler');
     $module_path = $module_handler->getModule('metsis_search')->getPath();
-    dpm($query);
+    // dpm($query);
     $ds_query = $query['dataset'] ?? NULL;
     $url_query = $query['wms_url'] ?? NULL;
-    dpm($ds_query);
-    dpm($url_query);
+    // dpm($ds_query);
+    // dpm($url_query);
     // Redirect back to search with message if no info are given.
     if ($ds_query == NULL && $url_query == NULL) {
       \Drupal::messenger()->addStatus($this->t("Missing dataset or url query parameter, or valid dataset id"));
@@ -435,7 +435,7 @@ class DefaultController extends ControllerBase {
       'id' => 'map-search',
       ];
        */
-      dpm($wms_data);
+      // dpm($wms_data);
       return $build;
     }
   }
