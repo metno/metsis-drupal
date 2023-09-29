@@ -1433,6 +1433,8 @@ console.log("Start of wms map script:");
               if (geom == undefined) {
                 //map.getView().fit(makeAxisAwareExtent)
                 console.log(bbox);
+                geom = extent = ol.proj.transformExtent(bbox, 'EPSG:4326', selected_proj);
+                map.getView().fit(geom);
               }
               else {
                 map.getView().fit(geom.getExtent());
