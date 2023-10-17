@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class StorageInformationForm.
+ * Prints dataset storage information.
  */
 class StorageInformationForm extends FormBase {
 
@@ -30,7 +30,8 @@ class StorageInformationForm extends FormBase {
       ];
     }
 
-    if (isset($fields['storage_information_file_location'])) {
+    if ((isset($fields['storage_information_file_location'])
+        && $this->currentUser()->isAuthenticated())) {
       $form['file_location'] = [
         '#type' => 'item',
         '#title' => $this->t('File location:'),
@@ -82,16 +83,6 @@ class StorageInformationForm extends FormBase {
     }
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
   }
 
   /**
