@@ -6,6 +6,7 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
 
@@ -63,6 +64,13 @@ class DynamicLandingPagesController extends ControllerBase {
    */
   protected $geoPhpWrapper;
 
+
+  /**
+   * The current user.
+   *
+   * @var \Drupal\Core\Session\AccountProxyInterface
+   */
+  protected $currentUser;
 
   public const LICENCES = [
     'CC0-1.0' => [
