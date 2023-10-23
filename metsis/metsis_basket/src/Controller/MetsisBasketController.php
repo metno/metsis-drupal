@@ -88,7 +88,7 @@ class MetsisBasketController extends DashboardBokehController {
     $build['#attached'] = [
       'library' => [
         'core/jquery.ui',
-        'leaflet/leaflet',
+       // 'leaflet/leaflet', # Dont think we will need this
         'metsis_basket/basket_view',
     // 'metsis_dashboard_bokeh/dashboard',.
       ],

@@ -10,7 +10,6 @@ dependencies:
     - better_exposed_filters
     - search_api
     - user
-    - views_autocomplete_filters
     - views_fieldsets
 id: metsis_search
 label: 'Metsis Search'

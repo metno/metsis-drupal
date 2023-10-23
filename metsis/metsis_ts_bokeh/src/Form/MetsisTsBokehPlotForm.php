@@ -75,7 +75,7 @@ class MetsisTsBokehPlotForm extends FormBase {
     $form['#attached']['library'][] = 'metsis_ts_bokeh/bokeh_api';
     $form['#attached']['library'][] = 'metsis_lib/adc_buttons';
     $form['#attached']['library'][] = 'system/title';
-    $form['#attached']['library'][] = 'jquery_ui_draggable/draggable';
+    // $form['#attached']['library'][] = 'jquery_ui_draggable/draggable';
 
     /* We display the form above the plot with subit button on top */
     /*$form['actions'] = [

@@ -10,7 +10,6 @@ dependencies:
   module:
     - search_api
     - user
-    - views_autocomplete_filters
     - views_fieldsets
 id: metsis_elements
 label: 'Metsis Elements'
