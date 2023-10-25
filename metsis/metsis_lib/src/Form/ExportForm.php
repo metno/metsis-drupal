@@ -27,6 +27,7 @@ class ExportForm extends FormBase {
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->config = $container->get('config.factory')->get('metsis_search.export.settings');
+    $instance->exportConfig = $container->get('config.factory')->get('metsis_lib.settings');
     return $instance;
   }
 
@@ -43,6 +44,9 @@ class ExportForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $fields = NULL) {
     $form_state->set('mmd', $fields['mmd_xml_file']);
     $form_state->set('id', $fields['id']);
+
+    // $selectedExports = $this->exportConfig->get('export_metadata');
+    // $this->logger('landing')->debug($selectedExports);
 
     $form['export'] = [
       '#type' => 'actions',

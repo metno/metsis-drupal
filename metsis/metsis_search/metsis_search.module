@@ -161,6 +161,9 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 
   if (isset($view) && ($view->storage->id() == 'metsis_metadata_details')) {
     $view->element['#attached']['library'][] = 'metsis_lib/fa_academia';
+    if (\Drupal::currentUser()->isAnonymous()) {
+      $view->field['storage_information_file_location']->options['exclude'] = TRUE;
+    }
   }
 
   // For simple search.

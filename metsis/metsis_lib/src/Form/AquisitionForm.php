@@ -47,14 +47,16 @@ class AquisitionForm extends FormBase {
       '#weight' => '0',
       '#group' => 'aquisition',
     ];
-    foreach ($fields['platform_instrument_short_name'] as $platform) {
-      $i = 0;
-      $form['instrument'][] = [
-        '#type' => 'markup',
-        '#markup' => '<a alt="' . $fields['platform_instrument_long_name'][$i] . '"href="' . $fields['platform_instrument_resource'][$i] . '">' . $platform . '</a>',
-        '#allowed_tags' => ['a'],
-      ];
-      $i++;
+    if (isset($fields['platform_instrument_short_name'])) {
+      foreach ($fields['platform_instrument_short_name'] as $platform) {
+        $i = 0;
+        $form['instrument'][] = [
+          '#type' => 'markup',
+          '#markup' => '<a alt="' . $fields['platform_instrument_long_name'][$i] . '"href="' . $fields['platform_instrument_resource'][$i] . '">' . $platform . '</a>',
+          '#allowed_tags' => ['a'],
+        ];
+        $i++;
+      }
     }
 
     return $form;

@@ -30,11 +30,19 @@ class ExportMetadataForm extends FormBase {
   protected $config;
 
   /**
+   * Config factory config.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $configExportSelectedList;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->config = $container->get('config.factory')->get('metsis_search.export.settings');
+    $instance->metsisLibConfig = $container->get('config.factory')->get('metsis_lib.settings');
     return $instance;
   }
 
@@ -84,8 +92,15 @@ class ExportMetadataForm extends FormBase {
     ];
 
     $options = $this->config->get('export_list');
-    $def_export = (NULL != $form_state->getValue('list')) ? $form_state->getValue('list') : 'mmd';
-    // dpm($def_export);
+    $conf_options = $this->metsisLibConfig->get('export_metadata');
+    $def_export = (NULL != $form_state->getValue('list')) ? $form_state->getValue('list') : $conf_options[0];
+    dpm($options);
+    dpm($conf_options);
+    foreach ($options as $key => $value) {
+      if (!in_array($key, $conf_options)) {
+        unset($options[$key]);
+      }
+    }
     $form['export']['list'] = [
       '#type' => 'select',
       '#options' => $options,

@@ -146,6 +146,8 @@ class DynamicLandingPagesController extends ControllerBase {
     // Get the configured prefix for the landingpage lookup.
     $main_config = $this->configFactory->get('metsis_lib.settings');
     $id_prefix = $main_config->get('landing_pages_prefix');
+    $export_list = $main_config->get('export_metadata');
+    // \Drupal::logger('metsis_lib')->debug(implode(', ', $export_list));
     /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
 
@@ -429,13 +431,25 @@ class DynamicLandingPagesController extends ControllerBase {
 
       ];
     }
+    $exportMarkup = [
+      'iso' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=iso">ISO-Inspire</a>',
+      'iso2' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=iso">ISO-Inspire-2</a>',
+      'geonorge' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=geonorge">ISO-Norge-Inspire</a>',
+      'inspire' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=inspire">Inspire</a>',
+      'wmo' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=wmo">WMO/a>',
+      'dif' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 9.8</a>',
+      'dif10' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 10</a>',
+      'mmd' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=mmd">METNO MMD</a>',
+    ];
+
+    $_markup = '';
+    foreach ($export_list as $key => $value) {
+      $_markup .= $exportMarkup[$key];
+    }
     $renderArray['constraints_and_info']['metadata_information']['metadata_download'] = [
       '#type' => 'item',
       '#title' => $this->t('Download Machine Readable Metadata:'),
-      '#markup' => '<br><a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=iso">ISO-Inspire</a>
-              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=geonorge">ISO-Norge-Inspire</a>
-              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 9.8</a>
-              <a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=mmd">METNO MMD</a>',
+      '#markup' => '<br>' . $_markup,
     // Add br here for line break.
       '#allowed_tags' => ['a', 'strong', 'br'],
 
