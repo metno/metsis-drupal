@@ -94,8 +94,8 @@ class ExportMetadataForm extends FormBase {
     $options = $this->config->get('export_list');
     $conf_options = $this->metsisLibConfig->get('export_metadata');
     $def_export = (NULL != $form_state->getValue('list')) ? $form_state->getValue('list') : $conf_options[0];
-    dpm($options);
-    dpm($conf_options);
+    // dpm($options);
+    // dpm($conf_options);
     foreach ($options as $key => $value) {
       if (!in_array($key, $conf_options)) {
         unset($options[$key]);
