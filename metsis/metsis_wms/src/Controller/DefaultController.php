@@ -162,7 +162,7 @@ class DefaultController extends ControllerBase {
 
       // search-map wrapper.
       $build['search-map'] = [
-        '#prefix' => '<div id="search-map" class="search-map w3-card-2 clearfix">',
+        '#prefix' => '<div data-search-map id="search-map" class="search-map w3-card-2 clearfix">',
         '#suffix' => '</div>',
       ];
 

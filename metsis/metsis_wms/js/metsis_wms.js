@@ -1,11 +1,12 @@
 console.log("Start of wms map script:");
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
 
   console.log("Attaching WMS map script to drupal behaviours:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisWmsMap = {
-    attach: function (context, drupalSettings) {
-      $('#map-res', context).once('metsis-wms-map').each(function () {
+    attach: function (context) {
+      const mapEl = $(once('#search-map', '[data-search-map]', context));
+      mapEl.each(function () {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS WMS Map...');
@@ -2473,4 +2474,4 @@ console.log("Start of wms map script:");
     },
   };
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

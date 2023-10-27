@@ -75,7 +75,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface {
     }
 
     $build['search-map'] = [
-      '#prefix' => '<p><div id="map-search" class="w3-border map-search">',
+      '#prefix' => '<p><div data-map-search id="map-search" class="w3-border map-search">',
       '#suffix' => '</div>',
     ];
     // search-map wrapper.

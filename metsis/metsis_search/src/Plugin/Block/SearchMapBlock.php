@@ -173,7 +173,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface {
     $build['search-map']['map-fullscreen-wrapper']['map'] = [
       // '#prefix' => '<div id="mapcontainer" class="w3-border map-container clearfix">',
       '#type' => 'markup',
-      '#markup' => '<div id="map-res" class="map-res">',
+      '#markup' => '<div data-map-res id="map-res" class="map-res">',
       '#suffix' => '</div>',
       '#allowed_tags' => ['div'],
     ];

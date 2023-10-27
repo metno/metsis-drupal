@@ -1,7 +1,9 @@
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
   Drupal.behaviors.metsisMapSearch = {
-    attach: function (context, drupalSettings) {
-      $('#map-search', context).once('metsisMapSearch').each(function () {
+    attach: function (context) {
+      const mapEl = $(once('#map-search', '[data-map-search]', context));
+      // console.log(mapEl);
+      mapEl.each(function () {
         //  $(document).ready(function() {
         var lat = drupalSettings.metsis_search.mapLat;
         var lon = drupalSettings.metsis_search.mapLon;
@@ -571,4 +573,4 @@
       });
     },
   };
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

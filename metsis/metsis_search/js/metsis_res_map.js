@@ -1,11 +1,13 @@
 console.log("Start of metsis search map script:");
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
 
   console.log("Attaching map script to drupal behaviours:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisSearchBlock = {
-    attach: function (context, drupalSettings) {
-      $('#map-res', context).once('metsis-search-map').each(function () {
+    attach: function (context) {
+      const mapEl = $(once('#map-res', '[data-map-res]', context));
+      //console.log(mapEl);
+      mapEl.each(function () {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS Map...');
@@ -3031,4 +3033,4 @@ console.log("Start of metsis search map script:");
     },
   };
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);
