@@ -131,6 +131,7 @@ class MetsisBasketController extends DashboardBokehController {
       $feature_type = $arr[0];
       $title = $arr[1];
       $dar = $arr[2];
+      $mi = $arr[3];
 
       /*
       \Drupal::logger('metsis_basket')
@@ -151,7 +152,7 @@ class MetsisBasketController extends DashboardBokehController {
         'title' => $title,
         'session_id' => session_id(),
         'basket_timestamp' => time(),
-        'metadata_identifier' => $metaid,
+        'metadata_identifier' => $mi,
         'feature_type' => $feature_type,
         'dar' => serialize($dar),
       ];
@@ -237,7 +238,7 @@ class MetsisBasketController extends DashboardBokehController {
     $solarium_query = $connector->getSelectQuery();
 
     \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " . $metadata_identifier);
-    $solarium_query->setQuery('metadata_identifier:' . $metadata_identifier);
+    $solarium_query->setQuery('id:' . $metadata_identifier);
 
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
     // $solarium_query->setRows(2);.
@@ -249,6 +250,8 @@ class MetsisBasketController extends DashboardBokehController {
       'data_access_url_ogc_wms',
       'feature_type',
       'title',
+      'metadata_identifier',
+      'id',
     ]);
 
     $result = $connector->execute($solarium_query);
@@ -264,6 +267,7 @@ class MetsisBasketController extends DashboardBokehController {
     $title = 'NA';
     $feature_type = 'NA';
     $dar = [];
+    $metadata_identifier = 'NA';
     foreach ($result as $doc) {
       $fields = $doc->getFields();
     }
@@ -295,7 +299,12 @@ class MetsisBasketController extends DashboardBokehController {
       // An array of documents. Can also iterate directly on $result.
       $title = $fields['title'][0];
     }
-    return [$feature_type, $title, $dar];
+    if (isset($fields['metadata_identifier'])) {
+      // An array of documents. Can also iterate directly on $result.
+      $mi = $fields['metadata_identifier'];
+    }
+
+    return [$feature_type, $title, $dar, $mi];
   }
 
 }
