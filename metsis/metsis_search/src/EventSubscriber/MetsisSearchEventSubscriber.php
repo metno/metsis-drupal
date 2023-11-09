@@ -289,7 +289,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * with nameing authrity prefixes.
        */
       $keys = $query->getKeys();
-      dpm($keys);
+      // dpm($keys);
       if ($keys != NULL) {
         if (is_string($keys[0])) {
           if (substr($keys[0], 0, 6) === 'no.met') {
@@ -308,7 +308,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           }
         }
       }
-      dpm($query->getKeys());
+      // dpm($query->getKeys());
       $solarium_query->setFields($uniq_fields);
       // We dont need to get the thumbnail data as we will lazy-load that later.
       $solarium_query->removeField('thumbnail_data');
