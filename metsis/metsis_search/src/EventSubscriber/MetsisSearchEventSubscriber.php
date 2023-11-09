@@ -289,24 +289,26 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * with nameing authrity prefixes.
        */
       $keys = $query->getKeys();
-      // dpm($keys);
+      dpm($keys);
       if ($keys != NULL) {
-        if (substr($keys[0], 0, 6) === 'no.met') {
-          $new_keys = str_replace(':', '?', $keys[0]);
-          $query->keys($new_keys);
-          // dpm($query->getKeys());
-        }
-        if (substr($keys[0], 0, 8) === 'no.nersc') {
-          $new_keys = str_replace(':', '?', $keys[0]);
-          $query->keys($new_keys);
-          // dpm($query->getKeys());
-        }
-        if ($this->isValidUuid($keys[0])) {
-          $new_keys = '*' . $keys[0];
-          $query->keys($new_keys);
+        if (is_string($keys[0])) {
+          if (substr($keys[0], 0, 6) === 'no.met') {
+            $new_keys = str_replace(':', '?', $keys[0]);
+            $query->keys($new_keys);
+            // dpm($query->getKeys());
+          }
+          if (substr($keys[0], 0, 8) === 'no.nersc') {
+            $new_keys = str_replace(':', '?', $keys[0]);
+            $query->keys($new_keys);
+            // dpm($query->getKeys());
+          }
+          if ($this->isValidUuid($keys[0])) {
+            $new_keys = '*' . $keys[0];
+            $query->keys($new_keys);
+          }
         }
       }
-
+      dpm($query->getKeys());
       $solarium_query->setFields($uniq_fields);
       // We dont need to get the thumbnail data as we will lazy-load that later.
       $solarium_query->removeField('thumbnail_data');
