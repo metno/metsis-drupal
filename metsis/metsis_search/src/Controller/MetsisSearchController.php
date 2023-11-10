@@ -9,6 +9,7 @@ use Drupal\Core\Ajax\RemoveCommand;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\search_api\Entity\Index;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * A Class with functions used by the search interface.
@@ -18,8 +19,8 @@ class MetsisSearchController extends ControllerBase {
   /**
    * Ajax callback to get the count of children datasets for a parent dataset.
    */
-  public function getChildrenCount() {
-    $query_from_request = \Drupal::request()->query->all();
+  public function getChildrenCount(Request $request) {
+    $query_from_request = $request->query->all();
     $params = UrlHelper::filterQueryParameters($query_from_request);
     $id = $params['metadata_identifier'];
 
@@ -50,13 +51,10 @@ class MetsisSearchController extends ControllerBase {
     // $status = $result->getStatus();
     // An array of documents. Can also iterate directly on $result.
     // $documents = $result->getDocuments();
-    // \Drupal::logger('metsis_search')->debug('Got ' . $found . ' children for dataset ' . $id);.
     $response = new AjaxResponse();
     if ($found > 0) {
       $selector = '.childlink[reference="' . $id . '"]';
-      // $markup = '<a href="/metsis/elements?metadata_identifier="'. $id .'"/>Child data..['. $found .']</a>';
       $markup = 'Child data..[' . $found . ']';
-      // \Drupal::logger('metsis_search')->debug("MetsisSearchController::getChildrenCount: markup: ". $markup );
       $response->addCommand(new HtmlCommand($selector, $markup));
     }
     if ($found == 0) {

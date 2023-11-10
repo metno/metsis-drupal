@@ -1,10 +1,8 @@
 metsis_wms.get_custom_content:
   path: '/metsis/map/wmscustom'
   defaults:
-  #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
     _controller: '\Drupal\metsis_wms\Controller\DefaultController::getCustomContent'
     _title: 'METSIS OL6 WMS custom content'
-  #    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
   options:
     query:
       dataset: ""
@@ -16,10 +14,8 @@ metsis_wms.get_custom_content:
 metsis_wms.wms:
   path: '/metsis/map/wms'
   defaults:
-#    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
     _controller: '\Drupal\metsis_wms\Controller\DefaultController::getWmsMap'
     _title: 'METSIS OL6 WMS'
-#    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
   options:
     query:
       dataset: ""

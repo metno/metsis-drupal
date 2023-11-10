@@ -47,7 +47,6 @@ class ExportForm extends FormBase {
 
     // $selectedExports = $this->exportConfig->get('export_metadata');
     // $this->logger('landing')->debug($selectedExports);
-
     $form['export'] = [
       '#type' => 'actions',
         // '#tree' => true,.
@@ -99,16 +98,6 @@ class ExportForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function ajaxCallback(array &$form, FormStateInterface $form_state) {
     return $form;
   }
@@ -119,7 +108,6 @@ class ExportForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Display result.
     /* foreach ($form_state->getValues() as $key => $value) {
-    \Drupal::messenger()->addMessage($key . ': ' . ($key === 'text_format'?$value['value']:$value));
     } */
     $mmd = $form_state->get('mmd');
     $id = $form_state->get('id');

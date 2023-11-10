@@ -5,23 +5,50 @@ namespace Drupal\metsis_wms\Controller;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class for getting the wms capabilites document.
  */
 class GetCapController extends ControllerBase {
+  /**
+   * The HTTP client to fetch the feed data with.
+   *
+   * @var \GuzzleHttp\ClientInterface
+   */
+  protected $httpClient;
+
+  /**
+   * Constructor for MymoduleServiceExample.
+   *
+   * @param \GuzzleHttp\ClientInterface $http_client
+   *   A Guzzle client object.
+   */
+  public function __construct(ClientInterface $http_client) {
+    $this->httpClient = $http_client;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+    $container->get('http_client')
+    );
+  }
 
   /**
    * Get the capabilities document.
    */
-  public function getCapDoc() {
+  public function getCapDoc(Request $request) {
     /*
      * Get the query parameters from the calling pre_page.
      */
-    $query_from_request = \Drupal::request()->query->all();
+    $query_from_request = $request->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
     if (count($query) > 0) {
       $url = $query['dataset'] . '&REQUEST=' . $query['REQUEST'];
@@ -38,15 +65,14 @@ class GetCapController extends ControllerBase {
       ];
 
       try {
-        $client = \Drupal::httpClient();
-        $request = $client->request('GET', $url, $options);
+        $request = $this->httpClient->request('GET', $url, $options);
       }
       catch (RequestException $e) {
         // Log the error.
         watchdog_exception('custom_modulename', $e);
       }
       // Get the response.
-      $responseStatus = $request->getStatusCode();
+      // $responseStatus = $request->getStatusCode();
       // var_dump($responseStatus);
       $responseXml = $request;
       // Create a Drupal xml response and return the response to the page.
@@ -62,19 +88,19 @@ class GetCapController extends ControllerBase {
   /**
    * Get the capdoc from url.
    */
-  public function getCapDocFromUrl() {
+  public function getCapDocFromUrl(Request $request) {
     /*
      * Get the query parameters from the calling pre_page
      */
-    $query_from_request = \Drupal::request()->query->all();
+    $query_from_request = $request->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
     $url = $query['url'];
 
-    $host = \Drupal::request()->getSchemeAndHttpHost();
+    $host = $request->getSchemeAndHttpHost();
     // $getCapString = '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities';
     $getCapString = '?VERSION=1.3.0&REQUEST=GetCapabilities&SERVICE=WMS';
     $getCapUrl = $url . $getCapString;
-    \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug($getCapUrl);
+    $this->getLogger('metsis_wms::getCapDocFromUrl')->debug($getCapUrl);
     // $getCapUrl = 'https://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?version=1.3.0&request=GetCapabilities&service=WMS';
     // Make the xml request on thredds wms service.
     $options = [
@@ -92,12 +118,11 @@ class GetCapController extends ControllerBase {
     ];
 
     try {
-      $client = \Drupal::httpClient();
-      $response = $client->request('GET', $getCapUrl, $options);
+      $response = $this->httpClient->request('GET', $getCapUrl, $options);
     }
     catch (RequestException $e) {
       // Log the error.
-      \Drupal::logger('metsis_wms')->notice('WMS with url: ' . $getCapUrl . ' was not found.');
+      $this->getLogger('metsis_wms')->notice('WMS with url: ' . $getCapUrl . ' was not found.');
       return new Response(
             '404: Not found',
             Response::HTTP_NOT_FOUND,
@@ -106,8 +131,7 @@ class GetCapController extends ControllerBase {
     }
     if (!is_null($response)) {
       // Get the response.
-      $responseStatus = $response->getStatusCode();
-
+      // $responseStatus = $response->getStatusCode();
       $responseXml = $response;
       // Create a Drupal xml response and return the response to the page.
       $responseCustom = new Response(
@@ -119,12 +143,6 @@ class GetCapController extends ControllerBase {
       $body = (string) $response->getBody();
       $xml = simplexml_load_string($body);
       $json = Json::encode($xml);
-      // \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug('json: @json', [ '@json' => $json]);
-      // $array = json_decode($json,TRUE);
-      // \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug('xml @xml', [ '@xml' => $body]);
-      // \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug('Got response status: ' . $responseStatus);
-      // \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug('Got response body: @body', ['@body' => $client->$request->getContents()]);
-      // \Drupal::logger('metsis_wms::getCapDocFromUrl')->debug('Custom response body: ' . $responseCustom);
       $jsonResponse = new JsonResponse();
       // $jsonResponse->setData(Json::decode($json));
       $jsonResponse->setJson($json);

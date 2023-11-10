@@ -23,6 +23,8 @@ use Solarium\Core\Event\PostExecuteRequest;
 use Solarium\Core\Event\PreExecuteRequest;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -73,6 +75,12 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    */
   protected $searchId;
 
+  /**
+   * Request stack.
+   *
+   * @var Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $request;
 
   /**
    * UUID Regexp pattern.
@@ -141,17 +149,21 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current session.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
    *   The cache backend.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request stack.
    */
   public function __construct(
         AccountProxyInterface $current_user,
         ConfigFactoryInterface $configFactory,
         SessionInterface $session,
-        CacheBackendInterface $cache
+        CacheBackendInterface $cache,
+        RequestStack $request
     ) {
     $this->currentUser = $current_user;
     $this->config = $configFactory->get('metsis_search.settings');
     $this->session = $session;
     $this->cache = $cache;
+    $this->request = $request->getCurrentRequest();
   }
 
   /**
@@ -201,11 +213,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * Invalidate the search result map cache
        */
       $this->cache->invalidate('metsis_search_map');
-      // Get the current request object.
-      $request = \Drupal::request();
-
-      if ($request->headers->has('referer')) {
-        $this->session->set('back_to_search', $request->headers->get('referer'));
+      if ($this->request->headers->has('referer')) {
+        $this->session->set('back_to_search', $this->request->headers->get('referer'));
       }
       if ($this->session->has('bboxFilter')) {
         $bboxFilter = $this->session->get('bboxFilter');
@@ -227,14 +236,14 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // Add bbox filter query if drawn bbox on map.
       $bbox_filter_overlap = $this->config->get('bbox_overlap_sort');
       if ($bboxFilter != NULL && $bboxFilter != "") {
-        \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
+        $this->getLogger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
         if ($bbox_filter_overlap) {
           $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
         }
         else {
           $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox}' . $map_bbox_filter . '(' . $bboxFilter . ')');
         }
-        $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
+        // $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
         // $request->query->set('bboxFilter', $search_string);
         // $request->request->set('bboxFilter', $search_string);
       }
@@ -324,7 +333,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       $use_direct = FALSE;
       if ($keys !== NULL) {
         // dpm($keys);
-        foreach ($keys as $key => $value) {
+        foreach ($keys as $_ => $value) {
           if (!is_array($value)) {
             if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
               $use_direct = TRUE;
@@ -335,7 +344,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           }
 
           else {
-            foreach ($value as $key => $value2) {
+            foreach ($value as $_ => $value2) {
               if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
                 $use_direct = TRUE;
               }

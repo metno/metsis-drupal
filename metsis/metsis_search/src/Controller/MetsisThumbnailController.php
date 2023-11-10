@@ -41,10 +41,10 @@ class MetsisThumbnailController extends ControllerBase {
     // The total number of documents found by Solr.
     $found = $result->getNumFound();
 
-    // $thumb = '/modules/metsis/metsis_search/images/missing_map_place_holder.png';
     $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
     $response = new AjaxResponse();
-    // Return thumbnail inside image tag if document have thumbnail_data. If not remove the thumbnail wrapper <div>.
+    // Return thumbnail inside image tag if document have thumbnail_data.
+    // If not remove the thumbnail wrapper <div>.
     $selector = str_replace('_', '-', $id);
     $selector = str_replace('.', '-', $selector);
 

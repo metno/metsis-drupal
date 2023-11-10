@@ -43,17 +43,6 @@ class WmsUrlForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  /*
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-  if (mb_strlen($form_state->getValue('message')) < 10) {
-  $form_state->setErrorByName('message', $this->t('Message should be at least 10 characters.'));
-  }
-  }
-   */
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
     $wms_url = $form_state->getValue('wms_url');

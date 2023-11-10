@@ -86,17 +86,6 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
-   *
-   * NOTE: Implement form validation here.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Get user and pass from admin configuration.
-    $values = $form_state->getValues();
-
-  }
-
-  /**
-   * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 

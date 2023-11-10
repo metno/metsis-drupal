@@ -4,13 +4,47 @@ namespace Drupal\metsis_wms\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Extension\ModuleHandler;
 use Drupal\search_api\Entity\Index;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Default controller for the metsis_wms module.
  */
 class DefaultController extends ControllerBase {
+
+  /**
+   * The injected module_handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandler
+   */
+  protected $moduleHandler;
+
+  /**
+   * WMS Controller constructor.
+   *
+   * @param Drupal\Core\Extension\ModuleHandler $module_handler
+   *   The form builder.
+   */
+  public function __construct(ModuleHandler $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   The Drupal service container.
+   *
+   * @return static
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+          $container->get('module_handler')
+      );
+  }
 
   /**
    * Get the custom content.
@@ -27,14 +61,12 @@ class DefaultController extends ControllerBase {
   /**
    * Get the wms map.
    */
-  public function getWmsMap() {
-    $query_from_request = \Drupal::request()->query->all();
+  public function getWmsMap(Request $request) {
+    $query_from_request = $request->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
-    $request = \Drupal::request();
     $referer = $request->headers->get('referer');
 
-    $module_handler = \Drupal::service('module_handler');
-    $module_path = $module_handler->getModule('metsis_search')->getPath();
+    $module_path = $this->moduleHandler->getModule('metsis_search')->getPath();
     // dpm($query);
     $ds_query = $query['dataset'] ?? NULL;
     $url_query = $query['wms_url'] ?? NULL;
@@ -42,14 +74,14 @@ class DefaultController extends ControllerBase {
     // dpm($url_query);
     // Redirect back to search with message if no info are given.
     if ($ds_query == NULL && $url_query == NULL) {
-      \Drupal::messenger()->addStatus($this->t("Missing dataset or url query parameter, or valid dataset id"));
+      $this->messenger()->addStatus($this->t("Missing dataset or url query parameter, or valid dataset id"));
       return new RedirectResponse('/metsis/search');
     }
     /*
      * Variables from configuration
      */
     // Get saved configuration.
-    $config = \Drupal::config('metsis_search.settings');
+    $config = $this->config('metsis_search.settings');
     $map_location = $config->get('map_selected_location');
     $map_lat = $config->get('map_locations')[$map_location]['lat'];
     $map_lon = $config->get('map_locations')[$map_location]['lon'];
@@ -61,12 +93,8 @@ class DefaultController extends ControllerBase {
     $pywps_service = $config->get('pywps_service');
     $map_wms_layers_skip = explode(',', $config->get('map_wms_layers_skip'));
 
-    $session = \Drupal::request()->getSession();
+    $session = $request->getSession();
     $proj = $session->get('proj');
-
-    $markup = 'No Data Found!';
-    $webMapServers = [];
-    // \Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
 
     if (count($query) > 0) {
       if ($ds_query != NULL) {
@@ -92,8 +120,6 @@ class DefaultController extends ControllerBase {
 
         $solarium_query = $connector->getSelectQuery();
 
-        // Foreach ($metadata_identifier as $id) {
-        // \Drupal::logger('metsis_wms')->debug("setQuery: metadata_identifier: " .$id);.
         $ids = implode(' ', $datasets);
         $solarium_query->setQuery('id:(' . $ids . ')');
         // dpm($solarium_query->getQuery());
@@ -104,16 +130,8 @@ class DefaultController extends ControllerBase {
 
         $result = $connector->execute($solarium_query);
 
-        // The total number of documents found by Solr.
-        $found = $result->getNumFound();
         // \Drupal::logger('metsis_wms')->debug("found :" .$found);
-        // The total number of documents returned from the query.
-        // $count = $result->count();
-        // Check the Solr response status (not the HTTP status).
-        // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
-        // $status = $result->getStatus();
         $wms_data = [];
-        $layers = [];
         foreach ($result as $document) {
           $fields = $document->getFields();
           if (isset($fields['data_access_url_ogc_wms'])) {
@@ -142,7 +160,7 @@ class DefaultController extends ControllerBase {
             $wms_data[$mi]['title'] = $fields['title'];
           }
           else {
-            \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
+            $this->messenger()->addError($this->t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
             return new RedirectResponse($referer);
           }
         }
@@ -170,13 +188,6 @@ class DefaultController extends ControllerBase {
         '#prefix' => '<div id="map-top-panel" class="map-top-panel w3-container">',
         '#suffix' => '</div>',
       ];
-      /*
-      $build['search-map']['panel']['basemap'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="basemap-wrapper"><label class="basemap-label"><strong>Select Basemap:</strong></label></div>',
-      '#allowed_tags' => ['div','label','strong'],
-      ];
-       */
       // Top panel projection selection markup.
       $build['search-map']['top-panel']['projection'] = [
         '#type' => 'markup',
@@ -205,14 +216,6 @@ class DefaultController extends ControllerBase {
         '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'img'],
       ];
 
-      // Top panel current bbox filter text markup.
-      /*  $build['search-map']['top-panel']['opacity'] = [
-      '#type' => 'markup',
-      '#markup' => '<span class="w3-right">Opacity WMS Layers<div id="map-slider-id" class="w3-right"><div class="ui-slider-handle"></div></div></span>',
-      '#allowed_tags' => ['div', 'span'],
-      ];
-       */
-
       // Placeholder for additional layers select list.
       /*
        * Openlayers map viewport container
@@ -229,21 +232,11 @@ class DefaultController extends ControllerBase {
       ];
 
       $build['search-map']['map-fullscreen-wrapper']['map'] = [
-      // '#prefix' => '<div id="mapcontainer" class="w3-border map-container clearfix">',
         '#type' => 'markup',
         '#markup' => '<div id="map-res" class="map-res">',
         '#suffix' => '</div>',
         '#allowed_tags' => ['div'],
       ];
-
-      // Toggle sidebare/layerswitcher button control inside map.
-      /*        $build['search-map']['map-fullscreen-wrapper']['map']['toggle-sidebar'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="map-openbtn-wrapper ol-control ol-unselectable"></div>',
-      //'#suffix' => '</div>',
-      '#allowed_tags' => ['div', 'button', 'span'],
-      ];
-       */
 
       // Side panel collapseable.
       $build['search-map']['map-fullscreen-wrapper']['side-panel'] = [
@@ -349,45 +342,6 @@ class DefaultController extends ControllerBase {
         '#markup' => '<div id="popup-content" class="popup-content w3-small"></div>',
         '#allowed_tags' => ['div'],
       ];
-
-      // Placeholder for ts-plot.
-      /*    $build['map-ts-plot'] = [
-      '#prefix' => '<div id="bokeh-map-ts-plot" class="w3-card-2 w3-container">',
-      '#suffix' => '</div>',
-      '#allowed_tags' => ['div'],
-      ];
-
-      $build['map-ts-plot']['header'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="map-ts-header"><span class="w3-center"><h3>Visualize timeseries</h3></span></div>',
-      '#allowed_tags' => ['div','h','h3', 'span'],
-      ];
-
-      $build['map-ts-plot']['loader'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="map-ts-loader"></div>',
-      '#allowed_tags' => ['div'],
-      ];
-      $build['map-ts-plot']['back'] = [
-      '#type' => 'markup',
-      '#markup' => '<div id="map-ts-back" class="map-ts-back"></div>',
-      '#allowed_tags' => ['div'],
-      ];
-      $build['map-ts-plot']['variables'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="map-ts-vars"></div>',
-      '#allowed_tags' => ['div'],
-      ];
-      $build['map-ts-plot']['plot'] = [
-      '#type' => 'markup',
-      '#markup' => '<div id="map-ts-plot" name="tsplot" class="map-ts-plot"></div>',
-      '#allowed_tags' => ['div'],
-      ];
-       */
-      /* $build['suffix'] = [
-      '#suffix' => '</div>'
-      ];
-       */
 
       // Set the cache for this form.
       $build['#cache'] = [

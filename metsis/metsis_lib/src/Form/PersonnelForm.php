@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class PersonnelForm.
+ * Show the diferrnet personnele in a horizontal tab.
  */
 class PersonnelForm extends FormBase {
 
@@ -30,7 +30,7 @@ class PersonnelForm extends FormBase {
       $role_tag = str_replace(' ', '_', strtolower($role));
       $form[$role_tag] = [
         '#type' => 'details',
-        '#title' => $this->t($role),
+        '#title' => $this->t('@role', ['@role' => $role]),
         '#weight' => '0',
         '#group' => 'personnel',
         '#attributes' => [
@@ -211,16 +211,6 @@ class PersonnelForm extends FormBase {
     }
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
   }
 
   /**

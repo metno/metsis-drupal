@@ -82,14 +82,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#default_value' => $config->get('score_parent'),
       '#return_value' => TRUE,
     ];
-    /*
-    $form['keep_parent_filter'] = [
-    '#type' => 'checkbox',
-    '#title' => $this->t('Tick this box to keep the parent dataset filter when resetting the search.'),
-    '#default_value' => $config->get('keep_parent_filter'),
-    '#return_value' => true,
-    ];
-     */
+
     $form['ts_pywps_url'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Enter URL of TS plot service'),
@@ -244,7 +237,6 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     $form['searchmap']['search_text'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Help text for search map'),
-    // '#description' => t("this  help text will be displayed under the search map  "),
       '#default_value' => $config->get('map_search_text'),
     ];
 
@@ -289,18 +281,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     '#default_value' => $config->get('dar_ogc_wms'),
     ];
      */
-    // $form['#attached']['library'][] = 'landing_page_creator/landing_page_creator';
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * NOTE: Implement form validation here.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Get user and pass from admin configuration.
-    $values = $form_state->getValues();
   }
 
   /**
@@ -328,8 +309,6 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     }
 
     $this->configFactory->getEditable('metsis_search.settings')
-          // ->set('map_base_layer_wms_north', $values['searchmap']['map_base_layer_wms_north'])
-          // ->set('map_base_layer_wms_south', $values['searchmap']['map_base_layer_wms_south'])
       ->set('map_init_proj', $values['searchmap']['init_proj'])
       ->set('map_additional_layers_b', $layers)
       ->set('map_pins_b', $pins)
@@ -340,14 +319,6 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('map_bbox_filter', $values['searchmap']['bbox_filter'])
       ->set('map_search_text', $values['searchmap']['search_text'])
       ->set('map_wms_layers_skip', $values['searchmap']['wms_layers_skip'])
-          // ->set('dar_http', $values['dar']['http'])
-          // ->set('dar_odata', $values['dar']['odata'])
-          // ->set('dar_opendap', $values['dar']['opendap'])
-          // ->set('dar_ogc_wms', $values['dar']['ogc_wms'])
-          // ->set('lp_button_var', $values['lp_button_var'])
-          // ->set('ts_server_type', $values['ts_server_type'])
-          // ->set('ts_button_text', $values['ts_button_text'])
-          // ->set('csv_button_text', $values['csv_button_text'])
       ->set('selected_collections', $values['collections'])
       ->set('pywps_service', $values['ts_pywps_url'])
       ->set('score_parent', $values['score_parent'])
@@ -356,7 +327,6 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('cloud_coverage_details', $values['cloud_coverage_details'])
       ->set('disable_children_filter', $values['disable_children_filter'])
       ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
-          // ->set('keep_parent_filter', $values['keep_parent_filter'])
       ->save();
 
     parent::submitForm($form, $form_state);

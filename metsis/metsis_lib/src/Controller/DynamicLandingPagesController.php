@@ -6,12 +6,11 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -72,6 +71,16 @@ class DynamicLandingPagesController extends ControllerBase {
    */
   protected $currentUser;
 
+  /**
+   * The leaflet map service.
+   *
+   * @var \Drupal\leaflet\LeafletService
+   */
+  protected $leaflet;
+
+  /**
+   * License constant.
+   */
   public const LICENCES = [
     'CC0-1.0' => [
       'url' => 'https://spdx.org/licenses/CC0-1.0',
@@ -127,6 +136,7 @@ class DynamicLandingPagesController extends ControllerBase {
     $instance->json = $container->get('serialization.json');
     $instance->geoPhpWrapper = $container->get('geofield.geophp');
     $instance->request = $container->get('request_stack')->getCurrentRequest();
+    $instance->leaflet = $container->get('leaflet.service');
     return $instance;
   }
 
@@ -136,7 +146,7 @@ class DynamicLandingPagesController extends ControllerBase {
    * @return string
    *   Return Hello string.
    */
-  public function getLandingPage($id) {
+  public function getLandingPage(string $id, Request $request) {
     // Get the host of this drupal instance.
     $host = $this->request->getHost();
     $fullhost = $this->request->getSchemeAndHttpHost();
@@ -171,9 +181,9 @@ class DynamicLandingPagesController extends ControllerBase {
       $fields = $doc->getFields();
     }
     // dpm($fields);
-    if (NULL != \Drupal::request()->query->get('export_type')) {
+    if (NULL != $request->query->get('export_type')) {
       $response = new Response();
-      $export_type = \Drupal::request()->query->get('export_type');
+      $export_type = $request->query->get('export_type');
       $id = $fields['id'];
       $mmd = $fields['mmd_xml_file'];
       // By setting these 2 header options, the browser will see the URL
@@ -265,7 +275,7 @@ class DynamicLandingPagesController extends ControllerBase {
     // $settings['map_position']['center']['lat'] = $features['lat'];
     // $settings['map_position']['center']['lon'] = $features['lon'];
     // Set $map array with leafletMapGetInfo.
-    $map = \Drupal::service('leaflet.service')->leafletMapGetInfo();
+    $map = $this->leaflet->leafletMapGetInfo();
     // dpm($map);
     // $map = leaflet_leaflet_map_info();
     $map['OSM Mapnik']['settings']['leaflet_markercluster'] = [
@@ -283,12 +293,12 @@ class DynamicLandingPagesController extends ControllerBase {
     // dpm($features);
     // $map['settings']['zoom'] = 1;
     // render the map.
-    $map_result = \Drupal::service('leaflet.service')->leafletRenderMap($map['OSM Mapnik'], $features, $height = '400px');
+    $map_result = $this->leaflet->leafletRenderMap($map['OSM Mapnik'], $features, $height = '400px');
     // Add the rendered map to the renderArray.
     $renderArray['map'] = $map_result;
 
-    // Get the extent form for displaying temporal and geographial extent in tabs.
-    $renderArray['extentGroup'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\ExtentForm', $fields, $features, $isPoint);
+    // Get the form for displaying temporal and geographial extent in tabs.
+    $renderArray['extentGroup'] = $this->formBuilder()->getForm('Drupal\metsis_lib\Form\ExtentForm', $fields, $features, $isPoint);
 
     /*
      * Dataset Citation
@@ -368,13 +378,6 @@ class DynamicLandingPagesController extends ControllerBase {
       }
       if (isset($fields['use_constraint_identifier'])) {
         if (NULL != self::LICENCES[$fields['use_constraint_identifier']]) {
-          /*            $renderArray['constraints_and_info']['constraints']['licence_identifier'] = [
-          '#type' => 'item',
-          '#title' => $this->t('Licence:'),
-          '#markup' => '<a class="w3-text-blue" href="'.self::LICENCES[$fields['use_constraint_identifier']]['url'].'">' .$fields['use_constraint_identifier'].'</a>',
-          '#allowed_tags' => ['a', 'strong'],
-          ];
-           */
           $renderArray['constraints_and_info']['constraints']['licence_img'] = [
             '#type' => 'markup',
           // '#prefix' => '<p>',.
@@ -454,7 +457,6 @@ class DynamicLandingPagesController extends ControllerBase {
       '#allowed_tags' => ['a', 'strong', 'br'],
 
     ];
-    // $renderArray['constraints_and_info']['metadata_information']['metadata_download_actions'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\ExportForm', $fields);.
     /*
      * DATA ACCESS
      */
@@ -739,7 +741,7 @@ class DynamicLandingPagesController extends ControllerBase {
       '#title' => $this->t('Personnel'),
 
     ];
-    $renderArray['personnel_wrapper']['personnel_tabs'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\PersonnelForm', $fields);
+    $renderArray['personnel_wrapper']['personnel_tabs'] = $this->formBuilder()->getForm('Drupal\metsis_lib\Form\PersonnelForm', $fields);
 
     /*
      * KEYWORDS
@@ -751,7 +753,7 @@ class DynamicLandingPagesController extends ControllerBase {
 
     ];
 
-    $renderArray['keywords_wrapper']['keywords_tabs'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\KeywordsForm', $fields);
+    $renderArray['keywords_wrapper']['keywords_tabs'] = $this->formBuilder()->getForm('Drupal\metsis_lib\Form\KeywordsForm', $fields);
 
     /*
      * Platform and Instrument
@@ -762,7 +764,7 @@ class DynamicLandingPagesController extends ControllerBase {
         '#title' => $this->t('Aquisition Information'),
 
       ];
-      $renderArray['aquisition_wrapper']['aquisition_tabs'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\AquisitionForm', $fields);
+      $renderArray['aquisition_wrapper']['aquisition_tabs'] = $this->formBuilder()->getForm('Drupal\metsis_lib\Form\AquisitionForm', $fields);
     }
 
     $renderArray['metadata_update_wrapper'] = [
@@ -787,19 +789,9 @@ class DynamicLandingPagesController extends ControllerBase {
         '#title' => $this->t('Storage Information'),
 
       ];
-      $renderArray['storage_information_wrapper']['information'] = \Drupal::formBuilder()->getForm('Drupal\metsis_lib\Form\StorageInformationForm', $fields);
+      $renderArray['storage_information_wrapper']['information'] = $this->formBuilder()->getForm('Drupal\metsis_lib\Form\StorageInformationForm', $fields);
 
     }
-    // $renderArray['#group_children']['temporal'] = 'extent';
-    // $renderArray['#group_children']['geographical'] = 'extent';
-    // $renderArray['extent']['tabs']['temporal']['temp_tab']['#tree'] = true;
-    // $renderArray['extent']['tabs']['geographical']['geo_tab']['#tree'] = true;
-    // $renderArray['extent']['tabs']['temporal']['temp_tab']['#parents'] = ['extent', 'tabs', 'temporal', 'temp_tab'];
-    // $renderArray['extent']['tabs']['geographical']['geo_tab']['#parents'] = ['extent', 'tabs', 'geographical', 'geo_tab'];
-    // $renderArray['#fieldgroups']['extent']->children[] = 'geographical';
-    // $renderArray['#attached']['library'][] = 'field_group/core';
-    // $renderArray['#attached']['library'][] = 'field_group/tabs';
-    // $renderArray['#attached']['library'][] = 'field_group/formatter.horizontal_tabs';.
     $renderArray['#attached']['library'][] = 'metsis_lib/landing_page';
     $renderArray['#attached']['library'][] = 'metsis_lib/fa_academia';
     $renderArray['#cache']['max-age'] = 0;
@@ -892,53 +884,9 @@ class DynamicLandingPagesController extends ControllerBase {
         '@type' => 'DataCatalog',
         'name:' => $host,
       ],
-      'temporalCoverage' => $start_date . '/' . $start_date ?? '',
+      'temporalCoverage' => $start_date . '/' . $end_date ?? '',
 
     ];
-    $string = <<<EOF
-        "creator":{
-           "@type":"Organization",
-           "url": "https://www.ncei.noaa.gov/",
-           "name":"OC/NOAA/NESDIS/NCEI > National Centers for Environmental Information, NESDIS, NOAA, U.S. Department of Commerce",
-           "contactPoint":{
-              "@type":"ContactPoint",
-              "contactType": "customer service",
-              "telephone":"+1-828-271-4800",
-              "email":"ncei.orders@noaa.gov"
-           }
-        },
-        "funder":{
-           "@type": "Organization",
-           "sameAs": "https://ror.org/00tgqzw13",
-           "name": "National Weather Service"
-        },
-        "includedInDataCatalog":{
-           "@type":"DataCatalog",
-           "name":"adc.met.no"
-        },
-        "distribution":[
-           {
-              "@type":"DataDownload",
-              "encodingFormat":"CSV",
-              "contentUrl":"http://www.ncdc.noaa.gov/stormevents/ftp.jsp"
-           },
-           {
-              "@type":"DataDownload",
-              "encodingFormat":"XML",
-              "contentUrl":"http://gis.ncdc.noaa.gov/all-records/catalog/search/resource/details.page?id=gov.noaa.ncdc:C00510"
-           }
-        ],
-        "temporalCoverage":"1950-01-01/2013-12-18",
-        "spatialCoverage":{
-           "@type":"Place",
-           "geo":{
-              "@type":"GeoShape",
-              "box":"18.0 -65.0 72.0 172.0"
-           }
-        }
-      }
-
-EOF;
     return $json;
   }
 
