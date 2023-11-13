@@ -1,16 +1,3 @@
-metsis_wms.get_custom_content:
-  path: '/metsis/map/wmscustom'
-  defaults:
-    _controller: '\Drupal\metsis_wms\Controller\DefaultController::getCustomContent'
-    _title: 'METSIS OL6 WMS custom content'
-  options:
-    query:
-      dataset: ""
-      solr_core: ""
-  requirements:
-    _permission: 'access wms'
-
-
 metsis_wms.wms:
   path: '/metsis/map/wms'
   defaults:

@@ -45,21 +45,19 @@ class MetsisTsBokehPlotForm extends FormBase {
      *
      * {@inheritdoc}
      */
-    $session = \Drupal::request()->getSession();
+    $session = $this->getRequest()->getSession();
     // $data_uri = $session->get('metsis_ts_bokeh')->get('data_uri');
     // $items = $session->get('items');
-    // \Drupal::logger('metsis_ts_bokeh')->debug('buildForm: yaxis form_state is: ' . $form_state->getValue('y_axis'));
     $isinit = $session->get('isinit');
 
     // Get the request referer for go back button.
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-
+    // $request = $this->getRequest();
+    // $referer = $request->headers->get('referer');.
     /*
      * Check if we got opendap urls from http request. then overwite
      * data_uri variable
      */
-    $query_from_request = \Drupal::request()->query->all();
+    $query_from_request = $this->getRequest()->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
     if (isset($query['opendap_urls'])) {
       $session->set('data_uri', $query['opendap_urls']);
@@ -76,14 +74,13 @@ class MetsisTsBokehPlotForm extends FormBase {
     $form['#attached']['library'][] = 'metsis_lib/adc_buttons';
     $form['#attached']['library'][] = 'system/title';
     // $form['#attached']['library'][] = 'jquery_ui_draggable/draggable';
-
     /* We display the form above the plot with subit button on top */
     /*$form['actions'] = [
     '#type' => 'actions',
     ];*/
     $form['submit'] = [
       '#type' => 'button',
-      '#value' => t('Plot'),
+      '#value' => $this->t('Plot'),
       '#ajax' => [
         'callback' => '::getPlotData',
       ],
@@ -94,22 +91,22 @@ class MetsisTsBokehPlotForm extends FormBase {
       '#type' => 'select',
       '#options' => ['time' => 'time'],
       '#default_value' => $default_x_axis,
-      '#description' => t(''),
-      '#empty' => t(''),
+      '#description' => $this->t('The x axis.'),
+      '#empty' => $this->t('Empty x value'),
     ];
-    $default_y_axis = "no default set";
 
+    // $default_y_axis = "no default set";
     $form['y_axis'] = [
       '#type' => 'select',
       '#options' => adc_get_ts_bokeh_plot_y_vars(),
       '#default_value' => $form_state->get('y_axis'),
-      '#description' => t(''),
-      '#empty' => t(''),
+      '#description' => $this->t('Th y axis'),
+      '#empty' => $this->t('Empty y value'),
     ];
 
     $form['items'] = [
       '#type' => 'value',
-      '#value' => t('This is my stored value'),
+      '#value' => $this->t('This is my stored value'),
     ];
     /*
      * Here we will display the plot
@@ -130,13 +127,6 @@ class MetsisTsBokehPlotForm extends FormBase {
 
     $session->set('isinit', FALSE);
 
-    // Add go back putton.
-    /* Commented out since we use dialog
-    $form['go_back'] = [
-    '#type' => 'markup',
-    '#markup' => '<a class="adc-button adc-sbutton" href="' .$referer .'">Go back to search</a>'
-    ];
-     */
     return $form;
   }
 
@@ -161,9 +151,9 @@ class MetsisTsBokehPlotForm extends FormBase {
    * Ajax callback function.
    */
   public function getPlotData(array $form, FormStateInterface $form_state) {
-    \Drupal::logger('metsis_ts_bokeh')->debug('Ajax callback y-axis: ' . $form_state->getValue('y_axis'));
+    $this->getLogger('metsis_ts_bokeh')->debug('Ajax callback y-axis: ' . $form_state->getValue('y_axis'));
     // Get data resource url from tempstore.
-    $session = \Drupal::request()->getSession();
+    $session = $this->getRequest()->getSession();
     $data_uri = $session->get('data_uri');
 
     // Get plot json data.
