@@ -63,7 +63,7 @@ class DashboardBokehConfigurationForm extends ConfigFormBase {
     $value = $form_state->getValue('dashboard_bokeh_service');
 
     if (!UrlHelper::isValid($value, TRUE)) {
-      $form_state->setErrorByName('dashboard_bokeh_service', t('The dashboard service url is not valid: @dashboard_bokeh_service', ['@dashboard_bokeh_service' => $value]));
+      $form_state->setErrorByName('dashboard_bokeh_service', $this->t('The dashboard service url is not valid: @dashboard_bokeh_service', ['@dashboard_bokeh_service' => $value]));
       return;
     }
   }
