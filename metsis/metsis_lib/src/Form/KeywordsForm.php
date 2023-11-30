@@ -68,7 +68,7 @@ class KeywordsForm extends FormBase {
 
       $form[$vocab_tag] = [
         '#type' => 'details',
-        '#title' => $this->t('@vocab', ['@bocab' => $vocab]),
+        '#title' => $this->t('@vocab', ['@vocab' => $vocab]),
         '#weight' => '0',
         '#group' => 'keywords',
         '#attributes' => [
