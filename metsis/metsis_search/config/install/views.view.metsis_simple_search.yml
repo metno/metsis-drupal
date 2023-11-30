@@ -6,6 +6,7 @@ dependencies:
   module:
     - better_exposed_filters
     - search_api
+    - user
 id: metsis_simple_search
 label: 'METSIS Simple Search'
 module: views
@@ -762,8 +763,9 @@ display:
                   collapsible: false
                   is_secondary: true
       access:
-        type: none
-        options: {  }
+        type: perm
+        options:
+          perm: 'access content'
       cache:
         type: none
         options: {  }
@@ -1107,6 +1109,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis_simple_search'
         - 'search_api_list:metsis_simple_search'
@@ -1768,6 +1771,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis_simple_search'
         - 'search_api_list:metsis_simple_search'
@@ -1786,7 +1790,9 @@ display:
           query_tags: {  }
       defaults:
         query: false
-      display_extenders: {  }
+      display_extenders:
+        simple_sitemap_display_extender:
+          variants: {  }
       path: metsis/simple_search
     cache_metadata:
       max-age: -1
@@ -1794,6 +1800,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis_simple_search'
         - 'search_api_list:metsis_simple_search'

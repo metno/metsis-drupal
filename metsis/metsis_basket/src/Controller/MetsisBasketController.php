@@ -9,6 +9,8 @@ use Drupal\Core\Cache\Cache;
 use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
 use Drupal\search_api\Entity\Index;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 /**
  * Default controller for the metsis_basket module.
  *
@@ -20,84 +22,89 @@ class MetsisBasketController extends DashboardBokehController {
    * Show the basket.
    */
   public function myBasket() {
-    // Get the current user_id.
-    $user_id = (int) \Drupal::currentUser()->id();
+    if ($this->currentUser()->isAuthenticated()) {
+      // Get the current user_id.
+      $user_id = (int) $this->currentUser()->id();
 
-    // Get the refering page.
-    $session = \Drupal::request()->getSession();
-    // $referer = $session->get('back_to_search');.
-    $referer = \Drupal::request()->headers->get('referer');
-    $pattern1 = '/metsis\/search/i';
-    if (TRUE === preg_match($pattern1, (string) $referer)) {
-      $referer = '/metsis/search';
+      // Get the refering page.
+      $session = \Drupal::request()->getSession();
+      // $referer = $session->get('back_to_search');.
+      $referer = \Drupal::request()->headers->get('referer');
+      $pattern1 = '/metsis\/search/i';
+      if (TRUE === preg_match($pattern1, (string) $referer)) {
+        $referer = '/metsis/search';
+      }
+      else {
+        $session->set('basket_ref', $referer);
+      }
+      $build['content'] = [
+        '#type' => 'container',
+      // Create content wrapper.
+      ];
+      $build['content']['back'] = [
+        '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
+        '#suffix' => '</span></div>',
+
+        '#markup' => '<a class="w3-btn w3-border-black" href="' . $session->get('basket_ref') . '">Go back to search </a>',
+      ];
+
+      // Get markup for the Bokeh Dashboard.
+      $build[] = self::postDatasource();
+
+      // Show the basket table, if it has any entries.
+      if ($this->getUserItemCount($user_id) > 0) {
+        $build['content']['basket'] = [
+          '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
+          '#suffix' => '</div>',
+          '#type' => 'details',
+          '#title' => $this->t('Show my basket (remove items)'),
+          '#attributes' => ['class' => ['basketDetails']],
+        ];
+        $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
+      }
+      /*  $build['content']['basket']['view']['#cache'] = [
+
+      'max-age' => 0,
+      ];
+       */
+
+      $build['content']['loading'] = [
+        '#type' => "markup",
+        '#prefix' => '<div id="dash-loader-wrapper">',
+        '#markup' => $this->t("Dashboard is loading..."),
+        '#suffix' => '<img id="dashTrobber" src="/core/misc/throbber-active.gif"></div>',
+        '#allowed_tags' => ['img'],
+        '#attributes' => [
+          'class' => 'dashLoader',
+        ],
+      ];
+
+      $build['#cache'] = [
+        'contexts' => ['user', 'session'],
+        'tags' => ['basket:user:' . $user_id],
+        'keys' => ['views', 'basket_view', 'embed_1'],
+      // 'max-age' => 25,.
+      ];
+      // $build['#theme'] = 'dashboard_page';
+      // $build['#type'] = 'container';
+      // $build['#theme'] = 'metsis_basket-template';.
+      $build['#attached'] = [
+        'library' => [
+          'core/jquery.ui',
+       // 'leaflet/leaflet', # Dont think we will need this
+          'metsis_basket/basket_view',
+      // 'metsis_dashboard_bokeh/dashboard',.
+        ],
+      ];
+      $build['#attributes'] = [
+        'class' => ['myBasket'],
+      ];
+
+      return $build;
     }
     else {
-      $session->set('basket_ref', $referer);
+      throw new AccessDeniedHttpException();
     }
-    $build['content'] = [
-      '#type' => 'container',
-    // Create content wrapper.
-    ];
-    $build['content']['back'] = [
-      '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
-      '#suffix' => '</span></div>',
-
-      '#markup' => '<a class="w3-btn w3-border-black" href="' . $session->get('basket_ref') . '">Go back to search </a>',
-    ];
-
-    // Get markup for the Bokeh Dashboard.
-    $build[] = self::postDatasource();
-
-    // Show the basket table, if it has any entries.
-    if ($this->getUserItemCount($user_id) > 0) {
-      $build['content']['basket'] = [
-        '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
-        '#suffix' => '</div>',
-        '#type' => 'details',
-        '#title' => $this->t('Show my basket (remove items)'),
-        '#attributes' => ['class' => ['basketDetails']],
-      ];
-      $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
-    }
-    /*  $build['content']['basket']['view']['#cache'] = [
-
-    'max-age' => 0,
-    ];
-     */
-
-    $build['content']['loading'] = [
-      '#type' => "markup",
-      '#prefix' => '<div id="dash-loader-wrapper">',
-      '#markup' => $this->t("Dashboard is loading..."),
-      '#suffix' => '<img id="dashTrobber" src="/core/misc/throbber-active.gif"></div>',
-      '#allowed_tags' => ['img'],
-      '#attributes' => [
-        'class' => 'dashLoader',
-      ],
-    ];
-
-    $build['#cache'] = [
-      'contexts' => ['user', 'session'],
-      'tags' => ['basket:user:' . $user_id],
-      'keys' => ['views', 'basket_view', 'embed_1'],
-      // 'max-age' => 25,.
-    ];
-    // $build['#theme'] = 'dashboard_page';
-    // $build['#type'] = 'container';
-    // $build['#theme'] = 'metsis_basket-template';.
-    $build['#attached'] = [
-      'library' => [
-        'core/jquery.ui',
-       // 'leaflet/leaflet', # Dont think we will need this
-        'metsis_basket/basket_view',
-    // 'metsis_dashboard_bokeh/dashboard',.
-      ],
-    ];
-    $build['#attributes'] = [
-      'class' => ['myBasket'],
-    ];
-
-    return $build;
   }
 
   /**
@@ -117,10 +124,10 @@ class MetsisBasketController extends DashboardBokehController {
    * Add item to basket.
    */
   public function add($metaid) {
-    if (\Drupal::currentUser()->isAuthenticated()) {
+    if ($this->currentUser()->isAuthenticated()) {
       // This user is logged in.
-      $user_id = (int) \Drupal::currentUser()->id();
-      $user_name = \Drupal::currentUser()->getAccountName();
+      $user_id = (int) $this->currentUser()->id();
+      $user_name = $this->currentUser()->getAccountName();
 
       // Generate uuid from uuid service.
       $uuid_service = \Drupal::service('uuid');

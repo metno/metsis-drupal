@@ -12,6 +12,7 @@ use Drupal\search_api\Entity\Index;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class DynamicLandingPagesController. Create dynamic landing pages.
@@ -175,8 +176,12 @@ class DynamicLandingPagesController extends ControllerBase {
     // $solarium_query->setFields($fields);
     $result = $connector->execute($solarium_query);
     // The total number of documents found by Solr.
-    // $found = $result->getNumFound();
-    // \Drupal::logger('found')->debug("found: " . $found);.
+    $found = $result->getNumFound();
+    /* Throw not found exception to make drupal create 404 page when not in index */
+    if ($found === 0) {
+      throw new NotFoundHttpException();
+    }
+
     foreach ($result as $doc) {
       $fields = $doc->getFields();
     }

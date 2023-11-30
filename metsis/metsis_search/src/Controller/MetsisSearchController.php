@@ -52,12 +52,12 @@ class MetsisSearchController extends ControllerBase {
     // An array of documents. Can also iterate directly on $result.
     // $documents = $result->getDocuments();
     $response = new AjaxResponse();
+    $selector = '.childlink[reference="' . $id . '"]';
     if ($found > 0) {
-      $selector = '.childlink[reference="' . $id . '"]';
       $markup = 'Child data..[' . $found . ']';
       $response->addCommand(new HtmlCommand($selector, $markup));
     }
-    if ($found == 0) {
+    if ($found === 0) {
       $response->addCommand(new RemoveCommand($selector));
     }
     /*

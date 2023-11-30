@@ -125,7 +125,7 @@ class SearchUtils {
     $query_from_request = \Drupal::request()->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
     $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
+    $referer = $request->headers->get('referer', '/metsis/search');
 
     $metadata_div_counter = 0;
     $extracted_info = [];
@@ -136,10 +136,10 @@ class SearchUtils {
       // $geographical_extent_south = isset($fields['geographic_extent_rectangle_south']) ? $fields['geographic_extent_rectangle_north'] : 1;
       // $geographical_extent_east = isset($fields['geographic_extent_rectangle_east']) ? $fields['geographic_extent_rectangle_north'] : 1;
       // $geographical_extent_west = isset($fields['geographic_extent_rectangle_west']) ? $fields['geographic_extent_rectangle_north'] : 1;
-      $geographical_extent_north = $fields['geographic_extent_rectangle_north'];
-      $geographical_extent_south = $fields['geographic_extent_rectangle_south'];
-      $geographical_extent_east = $fields['geographic_extent_rectangle_east'];
-      $geographical_extent_west = $fields['geographic_extent_rectangle_west'];
+      $geographical_extent_north = $fields['geographic_extent_rectangle_north'] ?? 90;
+      $geographical_extent_south = $fields['geographic_extent_rectangle_south'] ?? -90;
+      $geographical_extent_east = $fields['geographic_extent_rectangle_east'] ?? 180;
+      $geographical_extent_west = $fields['geographic_extent_rectangle_west'] ?? -180;
 
       $geographical_extent = [
         (float) $geographical_extent_north,

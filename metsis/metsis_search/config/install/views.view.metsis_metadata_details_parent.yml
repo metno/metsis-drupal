@@ -5,6 +5,7 @@ dependencies:
     - search_api.index.metsis
   module:
     - search_api
+    - user
     - views_fieldsets
 id: metsis_metadata_details_parent
 label: 'Metsis Metadata Details Parent'
@@ -714,8 +715,8 @@ display:
           wrapper: details
           legend: 'Metadata Information'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         metadata_identifier:
           id: metadata_identifier
           table: search_api_index_metsis
@@ -781,7 +782,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{last_metadata_update | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -1146,8 +1147,8 @@ display:
           wrapper: details
           legend: Investigator
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_investigator_name:
           id: personnel_investigator_name
           table: search_api_index_metsis
@@ -1363,8 +1364,8 @@ display:
           wrapper: details
           legend: 'Metadata Author'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_metadata_author_name:
           id: personnel_metadata_author_name
           table: search_api_index_metsis
@@ -1685,8 +1686,8 @@ display:
           wrapper: details
           legend: 'Temporal extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -1699,7 +1700,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -1755,7 +1756,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -1815,8 +1816,9 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: none
-        options: {  }
+        type: perm
+        options:
+          perm: 'access content'
       cache:
         type: none
         options: {  }
@@ -1903,6 +1905,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis'
         - 'search_api_list:metsis'
@@ -1913,6 +1916,8 @@ display:
     position: 1
     display_options:
       display_extenders:
+        simple_sitemap_display_extender:
+          variants: {  }
         geocluster_views_display_extender:
           geocluster_enabled: false
           geocluster_options: {  }
@@ -1922,6 +1927,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis'
         - 'search_api_list:metsis'

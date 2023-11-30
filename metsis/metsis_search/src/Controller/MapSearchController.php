@@ -171,7 +171,7 @@ class MapSearchController extends ControllerBase {
     // $session->remove('proj', $proj);
     // $session->remove('place_filter');
     // $response = new AjaxResponse();
-    return new RedirectResponse(Url::fromRoute('view.metsis_search.results'));
+    return new RedirectResponse(Url::fromRoute('view.metsis_search.results')->toString());
   }
 
   /**

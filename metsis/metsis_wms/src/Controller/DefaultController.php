@@ -64,7 +64,8 @@ class DefaultController extends ControllerBase {
   public function getWmsMap(Request $request) {
     $query_from_request = $request->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
-    $referer = $request->headers->get('referer');
+    $referer = $request->headers->get('referer', '/metsis/search');
+    // dpm($referer);
 
     $module_path = $this->moduleHandler->getModule('metsis_search')->getPath();
     // dpm($query);
