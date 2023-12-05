@@ -455,7 +455,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''short'') }}'
+            text: "{{last_metadata_update_datetime | date('U') | format_date('short') }}"
             make_link: false
             path: ''
             absolute: false
@@ -608,8 +608,8 @@ display:
           wrapper: fieldset
           legend: 'Temporal Extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -622,7 +622,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -678,7 +678,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -878,8 +878,8 @@ display:
           wrapper: details
           legend: 'Show more...'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -1000,7 +1000,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<p><a class="ext" href="{{ related_url_landing_page }}">Dataset Landing Page</a></p>'
+            text: "{% if related_url_landing_page %}\r\n<p><a class=\"ext\" href=\"{{ related_url_landing_page }}\">Dataset Landing Page</a></p>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1370,8 +1370,8 @@ display:
           wrapper: fieldset
           legend: 'Data access:'
           classes: datasetOps
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         nothing_2:
           id: nothing_2
           table: views
