@@ -258,8 +258,14 @@ class MetsisCsvBokehDownloadForm extends FormBase {
 
       // $response =  new RedirectResponse($form_state->get('referer'));
       // $response->send();
-      $url = Url::fromUri($form_state->get('referer'));
-      $form_state->setRedirectUrl($url);
+      if (NULL !== $form_state->get('referer')) {
+        $url = Url::fromUri($form_state->get('referer'));
+        $form_state->setRedirectUrl($url);
+      }
+      else {
+        $url = Url::fromUri('/metsis/search');
+        $form_state->setRedirectUrl($url);
+      }
 
       // $form_state->setRedirect($form_state->get('referer'));
       return NULL;
