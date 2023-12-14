@@ -19,7 +19,6 @@ dependencies:
   - twig_views
   - date_popup
   - search_api_sorts
-  - blazy
   - lazy
   - metsis_lib
   - metsis_wms

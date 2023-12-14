@@ -45,12 +45,8 @@ class MetsisUtils {
     $od_server_service = $config->get('metsis_opendap_parser_service');
 
     // Create uri from config:
-    $uri = $od_server_ip . ':' . $od_server_port . $od_server_service;
     // var_dump($uri);
     // Get the referer:
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-
     $odquery = '{
                 findAllAttributes(
                   datasetId: "' . $metadata_identifier . '", collection: "' . $collection_core . '"
@@ -76,14 +72,6 @@ class MetsisUtils {
     $od_server_ip = $config->get('metsis_opendap_parser_ip');
     $od_server_port = $config->get('metsis_opendap_parser_port');
     $od_server_service = $config->get('metsis_opendap_parser_service');
-
-    // Create uri from config:
-    $uri = $od_server_ip . ':' . $od_server_port . $od_server_ip;
-
-    // Get the referer:
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-
     $odquery = '{
                       findAllVariables(
                         datasetId: "' . $metadata_identifier . '", collection: "' . $collection_core . '"

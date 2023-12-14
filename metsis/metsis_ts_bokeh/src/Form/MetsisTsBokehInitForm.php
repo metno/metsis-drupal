@@ -10,10 +10,11 @@ namespace Drupal\metsis_ts_bokeh\Form;
  *
  */
 
-use Drupal\Core\Link;
-use Drupal\Core\Url;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * {@inheritdoc}
@@ -45,7 +46,7 @@ class MetsisTsBokehInitForm extends FormBase {
     /*
      * Clean up tempstore
      */
-    $session = \Drupal::request()->getSession();
+    $session = $this->getRequest()->getSession();
     if ($session->has('data_uri')) {
       $session->remove('data_uri');
     }
@@ -53,18 +54,18 @@ class MetsisTsBokehInitForm extends FormBase {
     /*
      * Display error message if backend url configuration is not set
      */
-    $config = \Drupal::config('metsis_ts_bokeh.configuration');
+    $config = $this->config('metsis_ts_bokeh.configuration');
     $backend_uri = $config->get('ts_bokeh_plot_service');
     if (!isset($backend_uri)) {
       $link = Link::fromTextAndUrl('configure backend',
         Url::fromRoute('metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form'))->toString();
-      \Drupal::messenger()->addError(t("Backend not configured. Please  @link first.", ['@link' => $link]));
+      $this->messenger()->addError($this->t("Backend not configured. Please  @link first.", ['@link' => $link]));
     }
 
     $form['data_uri'] = [
       '#type' => 'url',
       '#sze' => '150',
-      '#title' => t("Enter dataset resource URL:"),
+      '#title' => $this->t("Enter dataset resource URL:"),
       '#required' => TRUE,
     ];
 
@@ -74,7 +75,7 @@ class MetsisTsBokehInitForm extends FormBase {
 
     $form['actions']['submit'] = [
       '#type' => 'submit',
-      '#value' => t('Submit'),
+      '#value' => $this->t('Submit'),
     ];
     return $form;
   }
@@ -93,7 +94,7 @@ class MetsisTsBokehInitForm extends FormBase {
    * Redirect init form to plot.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $session = \Drupal::request()->getSession();
+    $session = $this->getRequest()->getSession();
     $session->set('data_uri', $form_state->getValue('data_uri'));
     $form_state->setRedirect('metsis_ts_bokeh.plot');
   }

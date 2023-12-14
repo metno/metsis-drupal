@@ -62,6 +62,18 @@ a:hover {
   margin-left: 2px;
 }
 
+
+/* Make sure no bold facets */
+label,
+.field__label {
+  font-weight: normal !important;
+}
+
+/* Show licence image inline */
+.licimg {
+  display: inline;
+}
+
 /*
 .views-field-fieldset-3 > span:nth-child(1) > details:nth-child(1)
 */

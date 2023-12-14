@@ -3,10 +3,11 @@
 namespace Drupal\metsis_basket\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\metsis_basket\Controller\MetsisBasketController;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+
+use Drupal\metsis_basket\Controller\MetsisBasketController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Contains \Drupal\metsis_basket\Plugin\Block\BasketBlock.

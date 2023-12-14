@@ -2,27 +2,30 @@
 
 namespace Drupal\metsis_search\EventSubscriber;
 
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 // Use Drupal\devel\DevelDumperManagerInterface;.
-use Drupal\search_api\LoggerTrait;
-use Solarium\Core\Event\Events as SolariumEvents;
-use Solarium\Core\Event\PostCreateQuery;
-use Solarium\Core\Event\PostExecuteRequest;
-use Solarium\Core\Event\PreExecuteRequest;
-use Solarium\Core\Event\PostCreateResult;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-
-use Drupal\search_api_solr\Event\PreQueryEvent;
-use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
-use Drupal\search_api_solr\Event\SearchApiSolrEvents;
-use Drupal\search_api_solr\Event\PostExtractResultsEvent;
-
-use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 use Drupal\metsis_search\SearchUtils;
+
+use Drupal\search_api\LoggerTrait;
+use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
+use Drupal\search_api_solr\Event\PostExtractResultsEvent;
+use Drupal\search_api_solr\Event\PreQueryEvent;
+use Drupal\search_api_solr\Event\SearchApiSolrEvents;
+
+use Solarium\Core\Event\Events as SolariumEvents;
+use Solarium\Core\Event\PostCreateQuery;
+use Solarium\Core\Event\PostCreateResult;
+use Solarium\Core\Event\PostExecuteRequest;
+use Solarium\Core\Event\PreExecuteRequest;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Event subscriber for listening to search api events and solr evnets.
@@ -72,6 +75,19 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    */
   protected $searchId;
 
+  /**
+   * Request stack.
+   *
+   * @var Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $request;
+
+  /**
+   * UUID Regexp pattern.
+   *
+   * @var string
+   */
+  protected $uuidRegexp = '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i';
 
   /**
    * Default solr search fields needed for metsis_search.
@@ -133,17 +149,21 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current session.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
    *   The cache backend.
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The current request stack.
    */
   public function __construct(
         AccountProxyInterface $current_user,
         ConfigFactoryInterface $configFactory,
         SessionInterface $session,
-        CacheBackendInterface $cache
+        CacheBackendInterface $cache,
+        RequestStack $request
     ) {
     $this->currentUser = $current_user;
     $this->config = $configFactory->get('metsis_search.settings');
     $this->session = $session;
     $this->cache = $cache;
+    $this->request = $request->getCurrentRequest();
   }
 
   /**
@@ -186,17 +206,15 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $searchId = $query->getSearchId();
     $this->searchId = $searchId;
     // Only do something during this event if we have metsis search view.
-    if (($searchId !== NULL) && ($searchId === 'views_page:metsis_search__results')) {
+    if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results')
+      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results')) {
       // dpm('Got metsis search query...');.
       /*
        * Invalidate the search result map cache
        */
       $this->cache->invalidate('metsis_search_map');
-      // Get the current request object.
-      $request = \Drupal::request();
-
-      if ($request->headers->has('referer')) {
-        $this->session->set('back_to_search', $request->headers->get('referer'));
+      if ($this->request->headers->has('referer')) {
+        $this->session->set('back_to_search', $this->request->headers->get('referer'));
       }
       if ($this->session->has('bboxFilter')) {
         $bboxFilter = $this->session->get('bboxFilter');
@@ -216,10 +234,16 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       }
 
       // Add bbox filter query if drawn bbox on map.
+      $bbox_filter_overlap = $this->config->get('bbox_overlap_sort');
       if ($bboxFilter != NULL && $bboxFilter != "") {
-        \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
-        $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
-        $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
+        $this->getLogger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
+        if ($bbox_filter_overlap) {
+          $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+        }
+        else {
+          $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+        }
+        // $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
         // $request->query->set('bboxFilter', $search_string);
         // $request->request->set('bboxFilter', $search_string);
       }
@@ -249,6 +273,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         // dpm($solarium_query->getSorts());
         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
       }
+
+      /*
+       * New score parents test.
+       *
+       * TODO: Add config posibility if this works well.
+       */
+      $solarium_query->addParam('bq',
+      [
+        'iParent' =>
+        '(isParent:true^3 OR isParent:false^1)',
+      ]);
       /*
        * Add fields not defined in search view but needed for
        * other metsis search backends. I.E MapSearch
@@ -265,18 +300,24 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       $keys = $query->getKeys();
       // dpm($keys);
       if ($keys != NULL) {
-        if (substr($keys[0], 0, 6) === 'no.met') {
-          $new_keys = str_replace(':', '?', $keys[0]);
-          $query->keys($new_keys);
-          // dpm($query->getKeys());
-        }
-        if (substr($keys[0], 0, 8) === 'no.nersc') {
-          $new_keys = str_replace(':', '?', $keys[0]);
-          $query->keys($new_keys);
-          // dpm($query->getKeys());
+        if (is_string($keys[0])) {
+          if (substr($keys[0], 0, 6) === 'no.met') {
+            $new_keys = str_replace(':', '?', $keys[0]);
+            $query->keys($new_keys);
+            // dpm($query->getKeys());
+          }
+          if (substr($keys[0], 0, 8) === 'no.nersc') {
+            $new_keys = str_replace(':', '?', $keys[0]);
+            $query->keys($new_keys);
+            // dpm($query->getKeys());
+          }
+          if ($this->isValidUuid($keys[0])) {
+            $new_keys = '*' . $keys[0];
+            $query->keys($new_keys);
+          }
         }
       }
-
+      // dpm($query->getKeys());
       $solarium_query->setFields($uniq_fields);
       // We dont need to get the thumbnail data as we will lazy-load that later.
       $solarium_query->removeField('thumbnail_data');
@@ -292,15 +333,22 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       $use_direct = FALSE;
       if ($keys !== NULL) {
         // dpm($keys);
-        foreach ($keys as $key => $value) {
+        foreach ($keys as $_ => $value) {
           if (!is_array($value)) {
             if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
               $use_direct = TRUE;
             }
+            if ($this->isValidUuid($value)) {
+              $use_direct = TRUE;
+            }
           }
+
           else {
-            foreach ($value as $key => $value2) {
+            foreach ($value as $_ => $value2) {
               if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
+                $use_direct = TRUE;
+              }
+              if ($this->isValidUuid($value2)) {
                 $use_direct = TRUE;
               }
             }
@@ -370,7 +418,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   public function postCreateResult(PostCreateResult $event) {
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
-    if (($this->searchId !== NULL) && ($this->searchId === 'views_page:metsis_search__results')) {
+    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'
+      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'))) {
       // dpm($this->searchId);
       // $result = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfo($event->getResult());
@@ -381,6 +430,22 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $this->session->remove('basket_ref');
       }
     }
+  }
+
+  /**
+   * Check if a given string is a valid UUID.
+   *
+   * @param string $uuid
+   *   The string to check.
+   *
+   * @return bool
+   *   Return true or false.
+   */
+  public function isValidUuid($uuid) {
+    if (!is_string($uuid) || (preg_match($this->uuidRegexp, $uuid) !== 1)) {
+      return FALSE;
+    }
+    return TRUE;
   }
 
 }

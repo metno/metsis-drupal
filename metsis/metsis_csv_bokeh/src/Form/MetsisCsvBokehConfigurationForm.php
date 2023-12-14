@@ -11,9 +11,9 @@ namespace Drupal\metsis_csv_bokeh\Form;
  *
  **/
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Class ConfigurationForm.
@@ -64,7 +64,7 @@ class MetsisCsvBokehConfigurationForm extends ConfigFormBase {
     $value = $form_state->getValue('csv_bokeh_service');
 
     if (!UrlHelper::isValid($value, TRUE)) {
-      $form_state->setErrorByName('metsis_csv_bokeh_service', t('The CSV service url is not valid.', ['%csv_plot_service' => $value]));
+      $form_state->setErrorByName('metsis_csv_bokeh_service', $this->t('The CSV service url is not valid.', ['%csv_plot_service' => $value]));
       return;
     }
   }

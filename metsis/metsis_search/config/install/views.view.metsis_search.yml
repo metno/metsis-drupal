@@ -10,7 +10,6 @@ dependencies:
     - better_exposed_filters
     - search_api
     - user
-    - views_autocomplete_filters
     - views_fieldsets
 id: metsis_search
 label: 'Metsis Search'
@@ -40,7 +39,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{ id | split(''.'') | join(''-'') }}'
+            text: "{{ id | split('.') | join('-') }}"
             make_link: false
             path: ''
             absolute: false
@@ -456,7 +455,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''solr_format'')  }}'
+            text: "{{last_metadata_update_datetime | date('U') | format_date('solr_format')  }}"
             make_link: false
             path: ''
             absolute: false
@@ -609,8 +608,8 @@ display:
           wrapper: fieldset
           legend: 'Temporal Extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -623,7 +622,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -679,7 +678,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -879,8 +878,8 @@ display:
           wrapper: details
           legend: 'Show more...'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -1371,8 +1370,8 @@ display:
           wrapper: fieldset
           legend: 'Data access:'
           classes: datasetOps
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         nothing_2:
           id: nothing_2
           table: views
@@ -2371,22 +2370,26 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
             min_placeholder: ''
             max_placeholder: ''
             placeholder: ''
           is_grouped: false
           group_info:
-            label: ''
-            description: ''
-            identifier: ''
+            label: 'Temporal extent_start date'
+            description: null
+            identifier: temporal_extent_start_date
             optional: true
             widget: select
             multiple: false
             remember: false
             default_group: All
             default_group_multiple: {  }
-            group_items: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
         temporal_extent_end_date:
           id: temporal_extent_end_date
           table: search_api_index_metsis
@@ -2641,10 +2644,125 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        is_child:
+          id: is_child
+          table: search_api_index_metsis
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: 'Do not show children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        is_parent_1:
+          id: is_parent_1
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'Show parents with children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '1'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        is_parent_2:
+          id: is_parent_2
+          table: search_api_index_metsis
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'Show regular datasets without children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
           1: AND
+          2: OR
       style:
         type: html_list
         options:
@@ -2663,10 +2781,18 @@ display:
             project_short_name: project_short_name
             nothing_2: nothing_2
             nothing_3: nothing_3
+            nothing_6: nothing_6
+            nothing_4: nothing_4
+            data_access_url_http: data_access_url_http
+            data_access_url_ftp: data_access_url_ftp
+            nothing_5: nothing_5
+            data_access_url_odata: data_access_url_odata
+            nothing_7: nothing_7
             nothing_1: nothing_1
+            nothing_11: nothing_11
             use_constraint_identifier: use_constraint_identifier
             access_constraint: access_constraint
-          separator: '&nbsp;&nbsp;'
+          separator: '&nbsp;'
           hide_empty: true
       query:
         type: search_api_query
@@ -2698,6 +2824,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   results:
     id: results
     display_title: Page
@@ -2717,7 +2844,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{ id | split(''.'') | join(''-'') }}'
+            text: "{{ id | split('.') | join('-') }}"
             make_link: false
             path: ''
             absolute: false
@@ -3190,7 +3317,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''solr_format'')  }}'
+            text: "{{last_metadata_update_datetime | date('U') | format_date('solr_format')  }}"
             make_link: false
             path: ''
             absolute: false
@@ -3445,8 +3572,8 @@ display:
           wrapper: fieldset
           legend: 'Temporal Extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -3459,7 +3586,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -3515,7 +3642,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -3715,8 +3842,8 @@ display:
           wrapper: details
           legend: 'Show more...'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -3837,8 +3964,8 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<p><a class="ext" href="{{ related_url_landing_page }}">Dataset Landing Page</a></p>'
-            make_link: false
+            text: "{% if related_url_landing_page %}\r\n<p><a class=\"ext\" href=\"{{ related_url_landing_page }}\">Dataset Landing Page</a></p>\r\n{% endif %}"
+            make_link: true
             path: ''
             absolute: false
             external: false
@@ -4207,8 +4334,8 @@ display:
           wrapper: fieldset
           legend: 'Data access:'
           classes: datasetOps
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         nothing_2:
           id: nothing_2
           table: views
@@ -4705,7 +4832,7 @@ display:
           element_label_class: ''
           element_label_colon: false
           element_wrapper_type: ''
-          element_wrapper_class: 'ajax-wrapper metachild-wrapper inline'
+          element_wrapper_class: 'ajax-wrapper metachild-wrapper'
           element_default_classes: true
           empty: ''
           hide_empty: true
@@ -4878,7 +5005,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}"
+            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -5054,261 +5181,4 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
-  simplesearch:
-    id: simplesearch
-    display_title: Page2
-    display_plugin: page
-    position: 1
-    display_options:
-      title: 'Simple Search'
-      cache:
-        type: none
-        options: {  }
-      filters:
-        search_api_fulltext:
-          id: search_api_fulltext
-          table: search_api_index_metsis
-          field: search_api_fulltext
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: search_api_fulltext
-          operator: or
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: search_api_fulltext_op
-            label: Search
-            description: ''
-            use_operator: false
-            operator: search_api_fulltext_op
-            operator_limit_selection: true
-            operator_list:
-              and: and
-              or: or
-            identifier: fulltext
-            required: false
-            remember: false
-            multiple: true
-            remember_roles:
-              authenticated: authenticated
-              administrator: administrator
-              anonymous: '0'
-              content_editor: '0'
-            expose_fields: false
-            placeholder: 'Enter your search here'
-            searched_fields_id: ''
-            autocomplete_filter: 0
-            autocomplete_min_chars: '0'
-            autocomplete_items: '10'
-            autocomplete_raw_suggestion: 1
-            autocomplete_raw_dropdown: 1
-            autocomplete_dependent: 0
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          parse_mode: direct
-          min_length: null
-          fields:
-            - abstract
-            - full_text
-            - title
-        temporal_extent_start_date:
-          id: temporal_extent_start_date
-          table: search_api_index_metsis
-          field: temporal_extent_start_date
-          relationship: none
-          group_type: group
-          admin_label: 'Start date'
-          plugin_id: search_api_date
-          operator: '>='
-          value:
-            min: ''
-            max: ''
-            value: ''
-            type: date
-          group: 1
-          exposed: true
-          expose:
-            operator_id: temporal_extent_start_date_op
-            label: 'Start Date'
-            description: ''
-            use_operator: false
-            operator: temporal_extent_start_date_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: start_date
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-        temporal_extent_end_date:
-          id: temporal_extent_end_date
-          table: search_api_index_metsis
-          field: temporal_extent_end_date
-          relationship: none
-          group_type: group
-          admin_label: 'End date'
-          plugin_id: search_api_date
-          operator: '<='
-          value:
-            min: ''
-            max: ''
-            value: ''
-            type: date
-          group: 1
-          exposed: true
-          expose:
-            operator_id: temporal_extent_end_date_op
-            label: 'End Date'
-            description: ''
-            use_operator: false
-            operator: temporal_extent_end_date_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: end_date
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-        dataset_type:
-          id: dataset_type
-          table: search_api_index_metsis
-          field: dataset_type
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: search_api_string
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: dataset_type_op
-            label: 'Dataset type'
-            description: null
-            use_operator: false
-            operator: dataset_type_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: dataset_type
-            required: false
-            remember: false
-            multiple: true
-            remember_roles:
-              authenticated: authenticated
-            min_placeholder: null
-            max_placeholder: null
-            placeholder: null
-          is_grouped: true
-          group_info:
-            label: 'Dataset Level'
-            description: 'Filter on Parent/Level-1 and Child/Level-2 datasets'
-            identifier: dataset_type
-            optional: true
-            widget: radios
-            multiple: false
-            remember: false
-            default_group: '1'
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: Parent/Level-1
-                operator: '='
-                value:
-                  min: ''
-                  max: ''
-                  value: Level-1
-              2:
-                title: Child/Level-2
-                operator: '='
-                value:
-                  min: ''
-                  max: ''
-                  value: Level-2
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
-      defaults:
-        cache: false
-        title: false
-        filters: false
-        filter_groups: false
-      display_description: 'simple search'
-      exposed_block: true
-      display_extenders:
-        geocluster_views_display_extender:
-          geocluster_enabled: false
-          geocluster_options: {  }
-        views_merge_rows: {  }
-        library_in_views_display_extender: {  }
-        metatag_display_extender: {  }
-      path: metsis/simplesearch
-      menu:
-        type: none
-        title: 'Metsis Search'
-        description: 'Search Metadata'
-        weight: 0
-        expanded: false
-        menu_name: main
-        parent: ''
-        context: '0'
-    cache_metadata:
-      max-age: -1
-      contexts:
-        - 'languages:language_interface'
-        - url
-        - url.query_args
-        - user.roles
-      tags:
-        - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'

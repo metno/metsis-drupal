@@ -4,9 +4,10 @@ namespace Drupal\metsis_wms\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\search_api\Entity\Index;
 use Drupal\Core\Render\Markup;
+use Drupal\search_api\Entity\Index;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 // Use Drupal\metsis_wms\WmsUtils;.
 /**
@@ -17,16 +18,14 @@ class WmsController extends ControllerBase {
   /**
    * Get the wms map.
    */
-  public function getWmsMap() {
-    $query_from_request = \Drupal::request()->query->all();
+  public function getWmsMap(Request $reqeust) {
+    $query_from_request = $reqeust->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
-    $request = \Drupal::request();
-    $referer = $request->headers->get('referer');
-
+    // $referer = $request->headers->get('referer');
     /*
      * Variables from configuration
      */
-    $config = \Drupal::config('metsis_wms.settings');
+    $config = $this->config('metsis_wms.settings');
     $wms_which_base_layer = $config->get('wms_base_layer');
     $wms_overlay_border = $config->get('wms_overlay_border');
     $wms_product_select = $config->get('wms_product_select');
@@ -38,7 +37,6 @@ class WmsController extends ControllerBase {
 
     $markup = 'No Data Found!';
     $webMapServers = [];
-    // \Drupal::logger('metsis_wms')->debug("Got query parameters: " . count($query));
     if (count($query) > 0) {
       $datasets = explode(",", $query['dataset']);
 
@@ -99,10 +97,9 @@ class WmsController extends ControllerBase {
   /**
    * Get the webmap servers.
    */
-  public function getWebMapServers($datasets) {
+  public function getWebMapServers(Request $request, $datasets) {
     global $base_url;
     // Get the referer uri.
-    $request = \Drupal::request();
     $referer = $request->headers->get('referer');
 
     $fields = [
@@ -150,7 +147,7 @@ class WmsController extends ControllerBase {
         }
       }
       else {
-        \Drupal::messenger()->addError(t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
+        $this->messeger()->addError($this->t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
         return new RedirectResponse($referer);
       }
     }

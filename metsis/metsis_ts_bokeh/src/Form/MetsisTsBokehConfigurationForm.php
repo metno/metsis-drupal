@@ -2,9 +2,9 @@
 
 namespace Drupal\metsis_ts_bokeh\Form;
 
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\UrlHelper;
 
 /**
  * Class ConfigurationForm.
@@ -55,7 +55,7 @@ class MetsisTsBokehConfigurationForm extends ConfigFormBase {
     $value = $form_state->getValue('ts_bokeh_plot_service');
 
     if (!UrlHelper::isValid($value, TRUE)) {
-      $form_state->setErrorByName('ts_bokeh_plot_service', t('The plot service url is not valid.', ['%ts_bokeh_plot_service' => $value]));
+      $form_state->setErrorByName('ts_bokeh_plot_service', $this->t('The plot service url is not valid.', ['%ts_bokeh_plot_service' => $value]));
       return;
     }
   }

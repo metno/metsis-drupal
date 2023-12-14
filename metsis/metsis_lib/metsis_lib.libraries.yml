@@ -55,6 +55,10 @@ landing_page:
   css:
     theme:
       css/landing_page.css: {}
+go_back:
+  version: 1.0.0
+  js:
+    js/custom/go_back.js: {}
 
 fa_academia:
   version: v1.9.2

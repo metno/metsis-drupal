@@ -2,11 +2,12 @@
 
 namespace Drupal\metsis_search\Controller;
 
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\RemoveCommand;
+
+use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\search_api\Entity\Index;
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
-use Drupal\Core\Ajax\RemoveCommand;
 
 /**
  * Controller for handeling thumbnails and lazy loading.
@@ -40,10 +41,10 @@ class MetsisThumbnailController extends ControllerBase {
     // The total number of documents found by Solr.
     $found = $result->getNumFound();
 
-    // $thumb = '/modules/metsis/metsis_search/images/missing_map_place_holder.png';
     $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
     $response = new AjaxResponse();
-    // Return thumbnail inside image tag if document have thumbnail_data. If not remove the thumbnail wrapper <div>.
+    // Return thumbnail inside image tag if document have thumbnail_data.
+    // If not remove the thumbnail wrapper <div>.
     $selector = str_replace('_', '-', $id);
     $selector = str_replace('.', '-', $selector);
 

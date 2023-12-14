@@ -1,29 +1,13 @@
-metsis_wms.get_custom_content:
-  path: '/metsis/map/wmscustom'
-  defaults:
-  #    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
-    _controller: '\Drupal\metsis_wms\Controller\DefaultController::getCustomContent'
-    _title: 'METSIS OL6 WMS custom content'
-  #    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
-  options:
-    query:
-      dataset: ""
-      solr_core: ""
-  requirements:
-    _permission: 'access wms'
-
-
 metsis_wms.wms:
   path: '/metsis/map/wms'
   defaults:
-#    _controller: '\Drupal\metsis_wms\Controller\WmsController::getWmsMap'
     _controller: '\Drupal\metsis_wms\Controller\DefaultController::getWmsMap'
     _title: 'METSIS OL6 WMS'
-#    _title_callback: '\Drupal\metsis_wms\Controller\WmsController::getTitle'
   options:
     query:
       dataset: ""
       solr_core: ""
+      wms_url: ""
   requirements:
     _permission: 'access wms'
 
@@ -68,3 +52,11 @@ system.admin_config_metsis:
     description: 'METSIS Specific configuraton'
   requirements:
     _permission: 'administer site configuration'
+
+metsis_wms.wms_url:
+  path: '/metsis/wms/form'
+  defaults:
+    _title: 'WMS Generic Url Plotting'
+    _form: 'Drupal\metsis_wms\Form\WmsUrlForm'
+  requirements:
+    _permission: 'access content'

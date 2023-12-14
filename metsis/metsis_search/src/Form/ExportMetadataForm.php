@@ -13,12 +13,10 @@ namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-
-use Symfony\Component\HttpFoundation\Response;
-
 use Drupal\search_api\Entity\Index;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Form for exporting metadata.
@@ -32,11 +30,19 @@ class ExportMetadataForm extends FormBase {
   protected $config;
 
   /**
+   * Config factory config.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $configExportSelectedList;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->config = $container->get('config.factory')->get('metsis_search.export.settings');
+    $instance->metsisLibConfig = $container->get('config.factory')->get('metsis_lib.settings');
     return $instance;
   }
 
@@ -86,8 +92,16 @@ class ExportMetadataForm extends FormBase {
     ];
 
     $options = $this->config->get('export_list');
-    $def_export = (NULL != $form_state->getValue('list')) ? $form_state->getValue('list') : 'mmd';
+    $conf_options = $this->metsisLibConfig->get('export_metadata');
+    $def_export = (NULL != $form_state->getValue('list')) ? $form_state->getValue('list') : current($conf_options);
+    // dpm($options);
+    // dpm($conf_options);
     // dpm($def_export);
+    foreach ($options as $key => $value) {
+      if (!in_array($key, $conf_options)) {
+        unset($options[$key]);
+      }
+    }
     $form['export']['list'] = [
       '#type' => 'select',
       '#options' => $options,
@@ -131,15 +145,6 @@ class ExportMetadataForm extends FormBase {
   /**
    * {@inheritdoc}
    *
-   * Here we validate and signal an error if there are no users selected.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    parent::validateForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
    * On submit, show the user the names of the users they selected.
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
@@ -154,7 +159,6 @@ class ExportMetadataForm extends FormBase {
 
     if ($mmd == null || $mmd == '') {
     $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand('#metsis-export-form', 'The export service is not yet available for this dataset.'));
     $form_state->setResponse($response);
 
     //return $response;
@@ -208,8 +212,7 @@ class ExportMetadataForm extends FormBase {
     $result = $connector->execute($solarium_query);
 
     // The total number of documents found by Solr.
-    $found = $result->getNumFound();
-    // \Drupal::logger('export_doc')->debug("found: " . $found);
+    // \Drupal::logger('export_doc')->debug("found: " . $found);.
     $mmd = NULL;
     foreach ($result as $doc) {
       $fields = $doc->getFields();

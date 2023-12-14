@@ -2,14 +2,14 @@
 
 namespace Drupal\metsis_basket\Controller;
 
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Cache\Cache;
+use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
 use Drupal\search_api\Entity\Index;
 
-
-use Drupal\metsis_dashboard_bokeh\Controller\DashboardBokehController;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Default controller for the metsis_basket module.
@@ -22,84 +22,89 @@ class MetsisBasketController extends DashboardBokehController {
    * Show the basket.
    */
   public function myBasket() {
-    // Get the current user_id.
-    $user_id = (int) \Drupal::currentUser()->id();
+    if ($this->currentUser()->isAuthenticated()) {
+      // Get the current user_id.
+      $user_id = (int) $this->currentUser()->id();
 
-    // Get the refering page.
-    $session = \Drupal::request()->getSession();
-    // $referer = $session->get('back_to_search');.
-    $referer = \Drupal::request()->headers->get('referer');
-    $pattern1 = '/metsis\/search/i';
-    if (TRUE === preg_match($pattern1, (string) $referer)) {
-      $referer = '/metsis/search';
+      // Get the refering page.
+      $session = \Drupal::request()->getSession();
+      // $referer = $session->get('back_to_search');.
+      $referer = \Drupal::request()->headers->get('referer');
+      $pattern1 = '/metsis\/search/i';
+      if (TRUE === preg_match($pattern1, (string) $referer)) {
+        $referer = '/metsis/search';
+      }
+      else {
+        $session->set('basket_ref', $referer);
+      }
+      $build['content'] = [
+        '#type' => 'container',
+      // Create content wrapper.
+      ];
+      $build['content']['back'] = [
+        '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
+        '#suffix' => '</span></div>',
+
+        '#markup' => '<a class="w3-btn w3-border-black" href="' . $session->get('basket_ref') . '">Go back to search </a>',
+      ];
+
+      // Get markup for the Bokeh Dashboard.
+      $build[] = self::postDatasource();
+
+      // Show the basket table, if it has any entries.
+      if ($this->getUserItemCount($user_id) > 0) {
+        $build['content']['basket'] = [
+          '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
+          '#suffix' => '</div>',
+          '#type' => 'details',
+          '#title' => $this->t('Show my basket (remove items)'),
+          '#attributes' => ['class' => ['basketDetails']],
+        ];
+        $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
+      }
+      /*  $build['content']['basket']['view']['#cache'] = [
+
+      'max-age' => 0,
+      ];
+       */
+
+      $build['content']['loading'] = [
+        '#type' => "markup",
+        '#prefix' => '<div id="dash-loader-wrapper">',
+        '#markup' => $this->t("Dashboard is loading..."),
+        '#suffix' => '<img id="dashTrobber" src="/core/misc/throbber-active.gif"></div>',
+        '#allowed_tags' => ['img'],
+        '#attributes' => [
+          'class' => 'dashLoader',
+        ],
+      ];
+
+      $build['#cache'] = [
+        'contexts' => ['user', 'session'],
+        'tags' => ['basket:user:' . $user_id],
+        'keys' => ['views', 'basket_view', 'embed_1'],
+      // 'max-age' => 25,.
+      ];
+      // $build['#theme'] = 'dashboard_page';
+      // $build['#type'] = 'container';
+      // $build['#theme'] = 'metsis_basket-template';.
+      $build['#attached'] = [
+        'library' => [
+          'core/jquery.ui',
+       // 'leaflet/leaflet', # Dont think we will need this
+          'metsis_basket/basket_view',
+      // 'metsis_dashboard_bokeh/dashboard',.
+        ],
+      ];
+      $build['#attributes'] = [
+        'class' => ['myBasket'],
+      ];
+
+      return $build;
     }
     else {
-      $session->set('basket_ref', $referer);
+      throw new AccessDeniedHttpException();
     }
-    $build['content'] = [
-      '#type' => 'container',
-    // Create content wrapper.
-    ];
-    $build['content']['back'] = [
-      '#prefix' => '<div class="w3-container w3-panel w3-leftbar"><span>',
-      '#suffix' => '</span></div>',
-
-      '#markup' => '<a class="w3-btn w3-border-black" href="' . $session->get('basket_ref') . '">Go back to search </a>',
-    ];
-
-    // Get markup for the Bokeh Dashboard.
-    $build[] = self::postDatasource();
-
-    // Show the basket table, if it has any entries.
-    if ($this->getUserItemCount($user_id) > 0) {
-      $build['content']['basket'] = [
-        '#prefix' => '<div class="w3-container w3-leftbar w3-panel">',
-        '#suffix' => '</div>',
-        '#type' => 'details',
-        '#title' => $this->t('Show my basket (remove items)'),
-        '#attributes' => ['class' => ['basketDetails']],
-      ];
-      $build['content']['basket']['view'] = views_embed_view('basket_view', 'embed_1');
-    }
-    /*  $build['content']['basket']['view']['#cache'] = [
-
-    'max-age' => 0,
-    ];
-     */
-
-    $build['content']['loading'] = [
-      '#type' => "markup",
-      '#prefix' => '<div id="dash-loader-wrapper">',
-      '#markup' => $this->t("Dashboard is loading..."),
-      '#suffix' => '<img id="dashTrobber" src="/core/misc/throbber-active.gif"></div>',
-      '#allowed_tags' => ['img'],
-      '#attributes' => [
-        'class' => 'dashLoader',
-      ],
-    ];
-
-    $build['#cache'] = [
-      'contexts' => ['user', 'session'],
-      'tags' => ['basket:user:' . $user_id],
-      'keys' => ['views', 'basket_view', 'embed_1'],
-      // 'max-age' => 25,.
-    ];
-    // $build['#theme'] = 'dashboard_page';
-    // $build['#type'] = 'container';
-    // $build['#theme'] = 'metsis_basket-template';.
-    $build['#attached'] = [
-      'library' => [
-        'core/jquery.ui',
-        'leaflet/leaflet',
-        'metsis_basket/basket_view',
-    // 'metsis_dashboard_bokeh/dashboard',.
-      ],
-    ];
-    $build['#attributes'] = [
-      'class' => ['myBasket'],
-    ];
-
-    return $build;
   }
 
   /**
@@ -119,10 +124,10 @@ class MetsisBasketController extends DashboardBokehController {
    * Add item to basket.
    */
   public function add($metaid) {
-    if (\Drupal::currentUser()->isAuthenticated()) {
+    if ($this->currentUser()->isAuthenticated()) {
       // This user is logged in.
-      $user_id = (int) \Drupal::currentUser()->id();
-      $user_name = \Drupal::currentUser()->getAccountName();
+      $user_id = (int) $this->currentUser()->id();
+      $user_name = $this->currentUser()->getAccountName();
 
       // Generate uuid from uuid service.
       $uuid_service = \Drupal::service('uuid');
@@ -133,6 +138,7 @@ class MetsisBasketController extends DashboardBokehController {
       $feature_type = $arr[0];
       $title = $arr[1];
       $dar = $arr[2];
+      $mi = $arr[3];
 
       /*
       \Drupal::logger('metsis_basket')
@@ -153,7 +159,7 @@ class MetsisBasketController extends DashboardBokehController {
         'title' => $title,
         'session_id' => session_id(),
         'basket_timestamp' => time(),
-        'metadata_identifier' => $metaid,
+        'metadata_identifier' => $mi,
         'feature_type' => $feature_type,
         'dar' => serialize($dar),
       ];
@@ -239,7 +245,7 @@ class MetsisBasketController extends DashboardBokehController {
     $solarium_query = $connector->getSelectQuery();
 
     \Drupal::logger('metsis_basket_solr_query')->debug("metadata_identifier: " . $metadata_identifier);
-    $solarium_query->setQuery('metadata_identifier:' . $metadata_identifier);
+    $solarium_query->setQuery('id:' . $metadata_identifier);
 
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
     // $solarium_query->setRows(2);.
@@ -251,6 +257,8 @@ class MetsisBasketController extends DashboardBokehController {
       'data_access_url_ogc_wms',
       'feature_type',
       'title',
+      'metadata_identifier',
+      'id',
     ]);
 
     $result = $connector->execute($solarium_query);
@@ -266,6 +274,7 @@ class MetsisBasketController extends DashboardBokehController {
     $title = 'NA';
     $feature_type = 'NA';
     $dar = [];
+    $metadata_identifier = 'NA';
     foreach ($result as $doc) {
       $fields = $doc->getFields();
     }
@@ -297,7 +306,12 @@ class MetsisBasketController extends DashboardBokehController {
       // An array of documents. Can also iterate directly on $result.
       $title = $fields['title'][0];
     }
-    return [$feature_type, $title, $dar];
+    if (isset($fields['metadata_identifier'])) {
+      // An array of documents. Can also iterate directly on $result.
+      $mi = $fields['metadata_identifier'];
+    }
+
+    return [$feature_type, $title, $dar, $mi];
   }
 
 }

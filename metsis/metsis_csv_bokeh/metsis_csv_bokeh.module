@@ -1,28 +1,23 @@
 <?php
 
-//require_once DRUPAL_ROOT . '/modules/metsis/metsis_csv_bokeh/includes/metsis_csv_bokeh.utils.inc';
+/**
+ * @file
+ * Export netcdf subset as csv or netcf.
+ */
 
 /**
- * Implements hook_help()
- *
- * @param $path
- * @param $arg
- *
- * @return string
+ * Implements hook_help().
  */
-function metsis_csv_bokeh_help($path, $arg)
-{
-    switch ($path) {
+function metsis_csv_bokeh_help($path, $arg) {
+  switch ($path) {
     case 'help.page.metsis_csv_bokeh':
-      $output = '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('This METSIS module provides blocks for configuring and downloading
-                            time series data as ASCII CSV using the METSIS web services.
-                            Configure the block from
-                <a href="@metsis_csv_bokeh">blocks admin page</a>', [
-          '@metsis_csv_bokeh' => '/metsis_csv_bokeh#overlay=admin/structure/block',
-        ]) . ' to activate and configure METSIS CSV Bokeh.</p>';
+      $output = '<h3>About</h3>';
+      $output .= '<p>This METSIS module provides blocks for configuring and downloading
+        time series data as ASCII CSV using the METSIS web services.
+        Configure the block from <a href="/metsis_csv_bokeh#overlay=admin/structure/block">blocks admin page</a> to activate and configure METSIS CSV Bokeh.</p>';
       return $output;
+
     case 'admin/content/metsis_csv_bokeh':
-      return '<p>' . t('METSIS CSV Bokeh.') . '</p>';
+      return '<p>METSIS CSV Bokeh</p>';
   }
 }

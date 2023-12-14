@@ -1,4 +1,4 @@
-(function ($) {
+(function ($, once) {
 
   function throbberActivate() {
     if ($.trim($("#dash-loader-wrapper").html()) == '') {
@@ -28,8 +28,8 @@ console.log("event target complete");
 
 });*/
   Drupal.behaviors.bokehDashLoader = {
-    attach: function (context, settings) {
-      $('#bokeh-dashboard').once('throbber-bokeh').each(function () {
+    attach: function (context) {
+      $(once('#bokeh-dashboard', 'throbber-bokeh', context)).each(function () {
         //
         console.log("Initializing throbber bokeh behavior...");
         //Variable to hold dasbord/bokeh initialized or not
@@ -81,4 +81,4 @@ console.log("event target complete");
     },
     weight: 999
   }
-})(jQuery);
+})(jQuery, once);

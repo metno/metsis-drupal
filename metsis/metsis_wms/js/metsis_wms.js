@@ -1,11 +1,12 @@
 console.log("Start of wms map script:");
-(function ($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings, once) {
 
   console.log("Attaching WMS map script to drupal behaviours:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisWmsMap = {
-    attach: function (context, drupalSettings) {
-      $('#map-res', context).once('metsis-wms-map').each(function () {
+    attach: function (context) {
+      const mapEl = $(once('#search-map', '[data-search-map]', context));
+      mapEl.each(function () {
         //$('#map-res', context).once('metsisSearchBlock').each(function() {
         /** Start reading drupalSettings sent from the mapblock build */
         console.log('Initializing METSIS WMS Map...');
@@ -442,6 +443,7 @@ console.log("Start of wms map script:");
         //Variable to hold timeDimensions for wms timeSeries
         var timeDimensions = [];
         var elevationDimensions = [];
+        var wmsStyles = []
         var elevationUnits = 'NA';
         //Create features Layergroup
         var featureLayers = {};
@@ -560,6 +562,17 @@ console.log("Start of wms map script:");
             var element = document.createElement('div');
             element.className = 'map-openbtn-wrapper ol-unselectable ol-control';
             element.appendChild(button);
+
+            /* Populate wms styles */
+            console.log("populate wms style select")
+            var selectStyles = document.createElement('select');
+            selectStyles.className = 'wms-style-dropdown';
+            selectStyles.id = 'wms-styles-select';
+            selectStyles.name = "WMS Styles";
+            var styleLabel = document.createElement("label");
+            styleLabel.innerHTML = "Choose WMS style: "
+            styleLabel.htmlFor = "wms-styles";
+            document.getElementById("wms-style-id").appendChild(styleLabel).appendChild(selectStyles);
 
             ol.control.Control.call(this, {
               element: element,
@@ -1105,8 +1118,13 @@ console.log("Start of wms map script:");
             //    }).then(function(response) {
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
             wmsUrl = wmsUrl.replace('//lustre', '/lustre');
-            wmsUrl = wmsUrl.split("?")[0];
-            wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
+              wmsUrlOrig = wmsUrl;
+            }
+            else {
+              wmsUrl = wmsUrl.split("?")[0];
+              wmsUrlOrig = wmsUrlOrig.split("?")[0];
+            }
             console.log("trying wms with url: " + wmsUrl);
 
             function onGetCapSuccess(response) {
@@ -1168,6 +1186,18 @@ console.log("Start of wms map script:");
                       }
                       return [];
                     };
+                    var getWmsStyles = function () {
+                      var styles = ls[i].Style;
+                      let styleList = [];
+                      if (styles !== undefined) {
+                        for (const val of styles) {
+                          styleList.push(val.Name);
+
+                        }
+                      }
+                      console.log(styleList);
+                      return styleList
+                    }
                     var makeAxisAwareExtent = function () {
                       var bboxs = ls[i].BoundingBox;
                       if (bboxs) {
@@ -1195,7 +1225,10 @@ console.log("Start of wms map script:");
                       //console.log(timedim);
                       hasElevationDimension = true;
                     }
-
+                    let wmsLayerStyles = getWmsStyles()
+                    if (wmsLayerStyles.length > 0) {
+                      wmsStyles = wmsLayerStyles
+                    }
                     var layerProjections = ls[i].CRS;
                     console.log(layerProjections);
                     var visible = false;
@@ -1210,10 +1243,29 @@ console.log("Start of wms map script:");
                     }
                     if (layerName === wmsLayerMmd || title === wmsLayerMmd) {
                       visible = true;
+                      styleValues = getWmsStyles()
+                      let wmsSelect = document.getElementById('wms-styles-select');
+
+                      for (const val of styleValues) {
+                        var option = document.createElement("option");
+                        option.value = val;
+                        option.text = val;
+                        wmsSelect.appendChild(option);
+                      }
+
                     }
                     else {
                       if (i === 0) {
                         visible = true;
+                        styleValues = getWmsStyles()
+                        let wmsSelect = document.getElementById('wms-styles-select');
+
+                        for (const val of styleValues) {
+                          var option = document.createElement("option");
+                          option.value = val;
+                          option.text = val;
+                          wmsSelect.appendChild(option);
+                        }
                       }
                     }
                     if (hasTimeDimension) {
@@ -1271,6 +1323,37 @@ console.log("Start of wms map script:");
               wmsLayerGroup.getLayers().push(wmsGroup);
               //wmsLayerGroup.set('title', productTitle, false);
               featureLayersGroup.setVisible(false);
+              // Add controls for wms style change
+              //$('#wms-styles-select').change(function () {
+              const wmsSelect = document.getElementById("wms-styles-select");
+              wmsSelect.addEventListener('change', function handleChange(event) {
+                //wmsLayerGroup.setOpacity(ui.value / 100);
+                console.log("Selected style: " + event.target.value);
+                const selected_style = event.target.value;
+                //console.log("currentTime: " +timeDimensions[ui.value])
+                wmsGroup.getLayers().forEach(function (element, index, array) {
+                  //console.log(element);
+                  element.getSource().updateParams({
+                    'STYLES': selected_style
+                  });
+                  if (element.getVisible() == true) {
+                    var res = map.getView().getResolution();
+                    console.log(element.getSource().getParams().LAYERS);
+                    console.log(element.getVisible());
+                    var params = {
+                      'LAYER': element.getSource().getParams().LAYERS,
+                      'STYLE': selected_style
+                    };
+                    console.log("legend params: " + params);
+                    var legendUrl = element.getSource().getLegendUrl(res, params);
+                    console.log("Legend url: " + legendUrl);
+                    //$('#bottomMapPanel').append('<img id="map-bottom-wms-legend" />');
+                    var img = document.getElementById('map-wms-legend');
+                    img.src = legendUrl;
+                  }
+                });
+              });
+
 
               //Add timeDimension controls if we have timeDimension
               if (hasTimeDimension) {
@@ -1318,7 +1401,8 @@ console.log("Start of wms map script:");
                 $('#time').text(timeDimensions[0]);
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 try {
-                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
+                  var res = map.getView().getResolution();
+                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res);
                   var img = document.getElementById('map-wms-legend');
                   img.src = legendUrl;
                 }
@@ -1347,7 +1431,15 @@ console.log("Start of wms map script:");
               }
               //Fit to feature geometry
               //console.log(feature_ids[id]);
-              map.getView().fit(geom.getExtent());
+              if (geom == undefined) {
+                //map.getView().fit(makeAxisAwareExtent)
+                console.log(bbox);
+                geom = extent = ol.proj.transformExtent(bbox, 'EPSG:4326', selected_proj);
+                map.getView().fit(geom);
+              }
+              else {
+                map.getView().fit(geom.getExtent());
+              }
               //map.getView().fit(wmsLayer.getExtent())
               map.getView().setZoom(map.getView().getZoom());
 
@@ -1374,21 +1466,38 @@ console.log("Start of wms map script:");
                 },
               });
             }
-
-            $.ajax({
-              type: 'GET',
-              url: wmsUrl + getCapString,
-              dataType: 'xml',
-              //async: false,
-              error: function () {
-                console.log("Request failed: " + wmsUrl + getCapString);
-                console.log("Trying getCapProxy....");
-                tryProxy(proxyURL, wmsUrlOrig)
-              },
-              success: function (response) {
-                onGetCapSuccess(response)
-              },
-            });
+            if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl,
+                dataType: 'xml',
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl + getCapString);
+                  console.log("Trying getCapProxy....");
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+                  onGetCapSuccess(response)
+                },
+              });
+            }
+            else {
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl + getCapString,
+                dataType: 'xml',
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl + getCapString);
+                  console.log("Trying getCapProxy....");
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+                  onGetCapSuccess(response)
+                },
+              });
+            }
           }
 
 
@@ -1851,9 +1960,11 @@ console.log("Start of wms map script:");
           var iconFeaturesPin = [];
           var wmsProducts = [];
           for (var i12 = 0; i12 <= extracted_info.length - 1; i12++) {
-
+            if (!Array.isArray(extracted_info[i12][2])) {
+              geom = undefined;
+            }
             //If we have a geographic extent, create polygon feature
-            if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
+            else if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
               //Transform boundingbox to selected projection and create a polygon geometry
               box_tl = ol.proj.transform([extracted_info[i12][2][3], extracted_info[i12][2][0]], 'EPSG:4326', prj);
               box_tr = ol.proj.transform([extracted_info[i12][2][2], extracted_info[i12][2][0]], 'EPSG:4326', prj);
@@ -2077,7 +2188,9 @@ console.log("Start of wms map script:");
           oninfo: function (l) {
             var title = l.get('title');
             try {
-              var legendUrl = l.getSource().getLegendUrl();
+              var res = map.getView().getResolution();
+              var legendUrl = l.getSource().getLegendUrl(res);
+              console.log("Got legend url: " + legendUrl);
               //$('#bottomMapPanel').append('<img id="map-bottom-wms-legend" />');
               var img = document.getElementById('map-wms-legend');
               img.src = legendUrl;
@@ -2088,6 +2201,10 @@ console.log("Start of wms map script:");
           }
         });
         switcher.on('toggle', function (e) {
+          console.log(e);
+
+        });
+        switcher.on('change:visible', function (e) {
           console.log(e);
 
         });
@@ -2128,7 +2245,7 @@ console.log("Start of wms map script:");
               }
             }
 
-    */
+        */
         //LOOP WMS ARRAY
         var wmsUrls = [];
         var layers = [];
@@ -2350,9 +2467,11 @@ console.log("Start of wms map script:");
             document.getElementById("droplayers").style.display = "inline";
           }
         }
-
+        document.getElementById("goBackMapButton").addEventListener("click", () => {
+          history.back();
+        })
       });
     },
   };
 
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, drupalSettings, once);

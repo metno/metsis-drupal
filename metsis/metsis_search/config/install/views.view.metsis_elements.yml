@@ -10,7 +10,6 @@ dependencies:
   module:
     - search_api
     - user
-    - views_autocomplete_filters
     - views_fieldsets
 id: metsis_elements
 label: 'Metsis Elements'
@@ -187,19 +186,19 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-        thumbnail_data:
-          id: thumbnail_data
-          table: search_api_index_metsis
-          field: thumbnail_data
+        nothing_11:
+          id: nothing_11
+          table: views
+          field: nothing
           relationship: none
           group_type: group
           admin_label: Thumbnail
-          plugin_id: search_api
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: "<div class=\"res-thumb w3-padding w3-left media media--blazy media--loading media--image\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  class=\"w3-image b-lazy media__image media__element img-responsive\" alt=\"Embedded Thumbnail\" data-src={{thumbnail_data}}\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\" style=\"width:70%;max-width:250px\"/>\r\n</a></div>"
+            text: "<div id=\"thumb-wrapper-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>"
             make_link: false
             path: ''
             absolute: false
@@ -235,11 +234,7 @@ display:
           empty: ''
           hide_empty: false
           empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
+          hide_alter_empty: false
         project_long_name:
           id: project_long_name
           table: search_api_index_metsis
@@ -460,7 +455,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{last_metadata_update_datetime | date(''U'') | format_date(''short'') }}'
+            text: "{{last_metadata_update_datetime | date('U') | format_date('short') }}"
             make_link: false
             path: ''
             absolute: false
@@ -504,6 +499,59 @@ display:
           date_format: solr_format
           custom_date_format: ''
           timezone: UTC
+        dataset_citation_doi:
+          id: dataset_citation_doi
+          table: search_api_index_metsis
+          field: dataset_citation_doi
+          relationship: none
+          group_type: group
+          admin_label: DOI
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if  ('http' not in dataset_citation_doi) and ('doi.org' not in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org'  in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         fieldset_1:
           id: fieldset_1
           table: views
@@ -560,8 +608,8 @@ display:
           wrapper: fieldset
           legend: 'Temporal Extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -574,7 +622,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -630,7 +678,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -830,8 +878,8 @@ display:
           wrapper: details
           legend: 'Show more...'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -952,7 +1000,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<p><a class="ext" href="{{ related_url_landing_page }}">Dataset Landing Page</a></p>'
+            text: "{% if related_url_landing_page %}\r\n<p><a class=\"ext\" href=\"{{ related_url_landing_page }}\">Dataset Landing Page</a></p>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1316,14 +1364,14 @@ display:
             - data_access_url_ftp
             - data_access_url_odata
             - nothing_7
-            - nothing_1
             - nothing_5
+            - nothing_1
             - mmd_xml_file
           wrapper: fieldset
           legend: 'Data access:'
           classes: datasetOps
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         nothing_2:
           id: nothing_2
           table: views
@@ -1777,6 +1825,55 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: Children
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         mmd_xml_file:
           id: mmd_xml_file
           table: search_api_index_metsis
@@ -1895,7 +1992,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{% endif %}"
+            text: "{% if  use_constraint_identifier == 'CC0-1.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC0-1.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CC0.png\" /></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY/NLOD'  or ss_access == 'CC BY/NLOD' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBY.png\" >/NLOD</a>\r\n{% elseif use_constraint_identifier == 'CC-BY-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNC.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-SA-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-SA-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCSA.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'CC-BY-NC-ND-4.0' %}\r\n{% if use_constraint_resource %}\r\n<a href={{ use_constraint_resource }}>\r\n{% else %}\r\n<a href=\"http://spdx.org/licenses/CC-BY-NC-ND-4.0\">\r\n{% endif %}\r\n<img class=\"licimg\" src=\"/modules/metsis/metsis_search/icons/CCBYNCND.png\" ></a>\r\n{% elseif use_constraint_identifier == 'Not provided' %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% elseif use_constraint_identifier %}\r\n<a href={{ use_constraint_resource }}> {{ use_constraint_identifier }}</a>\r\n{% else %}\r\n{% if use_constraint_license_text is defined %}\r\n{{ use_constraint_license_text | preg_replace('/(http[s]?:\\\\/\\\\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+[^\"!\\). ])/', '<a href=\"$1\">$1</a>') | raw }}\r\n{% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2082,13 +2179,13 @@ display:
       empty: {  }
       sorts: {  }
       arguments:
-        related_dataset:
-          id: related_dataset
+        related_dataset_id:
+          id: related_dataset_id
           table: search_api_index_metsis
-          field: related_dataset
+          field: related_dataset_id
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: 'Related dataset ID'
           plugin_id: search_api
           default_action: empty
           exception:
@@ -2263,6 +2360,50 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        metadata_status:
+          id: metadata_status
+          table: search_api_index_metsis
+          field: metadata_status
+          relationship: none
+          group_type: group
+          admin_label: 'Metadata Status'
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: Active
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
@@ -2288,7 +2429,7 @@ display:
             nothing_1: nothing_1
             use_constraint_identifier: use_constraint_identifier
             access_constraint: access_constraint
-          separator: '&nbsp;&nbsp;'
+          separator: ''
           hide_empty: true
       query:
         type: search_api_query
@@ -2310,6 +2451,19 @@ display:
           empty: false
           view_to_insert: 'metsis_metadata_details_parent:default'
           inherit_arguments: true
+        area_1:
+          id: area_1
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: 'go back'
+          plugin_id: text
+          empty: false
+          content:
+            value: '<span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back</a></span>'
+            format: full_html
+          tokenize: false
         area:
           id: area
           table: views
@@ -2320,7 +2474,7 @@ display:
           plugin_id: text
           empty: false
           content:
-            value: '<h2>Children</h2>'
+            value: '<h2>Child dataset(s)</h2>'
             format: basic_html
           tokenize: false
         result:
@@ -2344,6 +2498,7 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
   results:
     id: results
     display_title: Page
@@ -2381,3 +2536,4 @@ display:
         - user.roles
       tags:
         - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'

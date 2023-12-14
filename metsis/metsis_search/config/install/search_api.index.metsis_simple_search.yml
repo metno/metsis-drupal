@@ -1,0 +1,197 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - search_api.server.local_metsis
+  module:
+    - search_api_solr
+    - search_api
+third_party_settings:
+  search_api_solr:
+    finalize: false
+    commit_before_finalize: false
+    commit_after_finalize: false
+    debug_finalize: false
+    highlighter:
+      maxAnalyzedChars: 51200
+      fragmenter: gap
+      usePhraseHighlighter: true
+      highlightMultiTerm: true
+      preserveMulti: false
+      regex:
+        slop: 0.5
+        pattern: blank
+        maxAnalyzedChars: 10000
+      highlight:
+        mergeContiguous: false
+        requireFieldMatch: false
+        snippets: 5
+        fragsize: 0
+    mlt:
+      mintf: 1
+      mindf: 1
+      maxdf: 0
+      maxdfpct: 0
+      minwl: 0
+      maxwl: 0
+      maxqt: 100
+      maxntp: 2000
+      boost: false
+      interestingTerms: details
+    term_modifiers:
+      slop: 3
+      fuzzy: 1
+    advanced:
+      index_prefix: ''
+      collection: ''
+      timezone: ''
+    multilingual:
+      limit_to_content_language: false
+      include_language_independent: true
+      use_language_undefined_as_fallback_language: false
+      specific_languages:
+        en: '0'
+      use_universal_collation: false
+id: metsis_simple_search
+name: 'METSIS Simple search'
+description: ''
+read_only: true
+field_settings:
+  abstract:
+    label: Abstract
+    datasource_id: solr_document
+    property_path: abstract
+    type: text
+    boost: 1.3
+  activity_type:
+    label: 'Activity type'
+    datasource_id: solr_document
+    property_path: activity_type
+    type: string
+  bbox:
+    label: Bbox
+    datasource_id: solr_document
+    property_path: bbox
+    type: string
+  full_text:
+    label: 'Full text'
+    datasource_id: solr_document
+    property_path: full_text
+    type: text
+    boost: 1.1
+  id:
+    label: Id
+    datasource_id: solr_document
+    property_path: id
+    type: string
+  is_child:
+    label: IsChild
+    datasource_id: solr_document
+    property_path: isChild
+    type: boolean
+  is_parent:
+    label: IsParent
+    datasource_id: solr_document
+    property_path: isParent
+    type: boolean
+  keywords_keyword:
+    label: 'Keywords keyword'
+    datasource_id: solr_document
+    property_path: keywords_keyword
+    type: text
+  metadata_status:
+    label: 'Metadata status'
+    datasource_id: solr_document
+    property_path: metadata_status
+    type: string
+  related_url_landing_page:
+    label: 'Related url landing page'
+    datasource_id: solr_document
+    property_path: related_url_landing_page
+    type: string
+  sm_keywords:
+    label: 'Sm keywords'
+    datasource_id: solr_document
+    property_path: sm_keywords
+    type: string
+  ss_language:
+    label: 'Ss language'
+    datasource_id: solr_document
+    property_path: ss_language
+    type: string
+  temporal_extent_end_date:
+    label: 'Temporal extent end date'
+    datasource_id: solr_document
+    property_path: temporal_extent_end_date
+    type: date
+  temporal_extent_start_date:
+    label: 'Temporal extent start date'
+    datasource_id: solr_document
+    property_path: temporal_extent_start_date
+    type: date
+  timestamp:
+    label: Timestamp
+    datasource_id: solr_document
+    property_path: timestamp
+    type: date
+  title:
+    label: Title
+    datasource_id: solr_document
+    property_path: title
+    type: text
+    boost: 1.5
+datasource_settings:
+  solr_document:
+    id_field: id
+    request_handler: ''
+    default_query: '*:*'
+    label_field: title
+    language_field: ss_language
+    url_field: related_url_landing_page
+processor_settings:
+  add_url: {  }
+  aggregated_field: {  }
+  auto_aggregated_fulltext_field: {  }
+  double_quote_workaround:
+    weights:
+      postprocess_query: 0
+      preprocess_index: -15
+      preprocess_query: -15
+    all_fields: false
+    fields:
+      - abstract
+      - activity_type
+      - bbox
+      - full_text
+      - id
+      - metadata_status
+      - related_url_landing_page
+      - sm_keywords
+      - ss_language
+      - title
+    replacement: '|9999999998|'
+  entity_type: {  }
+  highlight:
+    weights:
+      postprocess_query: 0
+    prefix: '<em><strong>'
+    suffix: '</strong></em>'
+    excerpt: true
+    excerpt_always: true
+    excerpt_length: 312
+    exclude_fields: {  }
+    highlight: server
+    highlight_partial: false
+  language_with_fallback: {  }
+  rendered_item: {  }
+  solr_date_range:
+    weights:
+      preprocess_index: 0
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  cron_limit: 50
+  index_directly: true
+  track_changes_in_references: true
+server: local_metsis

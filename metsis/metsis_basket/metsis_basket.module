@@ -2,25 +2,26 @@
 
 /**
  * @file
+ * Module for adding datasets to basket.
  */
 
 /**
- * Display help from this module
+ * Display help from this module.
  */
 function metsis_basket_help($path, $arg) {
   switch ($path) {
-    case 'admin/help#metsis_basket': $output = '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Work in progress .<a href
-="@metsis_basket">Back to module admin.</a>.', ['@metsis_basket' => '/#overlay=admin/modules']) . '</p>';
+    case 'admin/help#metsis_basket':
+      $output = '<h3>About</h3>';
+      $output .= '<p>Module implementing basket functionality. </p>';
       return $output;
 
     case 'admin/content/metsis_basket':
-      return '<p>' . t('The basket.') . '</p>';
+      return '<p>The basket. </p>';
   }
 }
 
 /**
- * Implements hook_theme()
+ * Implements hook_theme().
  */
 function metsis_basket_theme($existing, $type, $theme, $path) {
   return [

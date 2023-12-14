@@ -9,12 +9,12 @@ namespace Drupal\metsis_ts_bokeh\Form;
  * Form to show and manipulate the Plot
  *
  */
-
-use Drupal\Core\Url;
-use Drupal\Core\Link;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Class for the TS bokeh Plot form.
@@ -45,11 +45,11 @@ class MetsisTsPlotForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
 
     // Get the API endpoint config.
-    $config = \Drupal::config('metsis_ts_bokeh.configuration');
+    $config = $this->config('metsis_ts_bokeh.configuration');
     $backend_uri = $config->get('ts_bokeh_plot_service');
 
     // Get the query parameters for this request.
-    $query_from_request = \Drupal::request()->query->all();
+    $query_from_request = $this->getRequest()->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
 
     $form['plotform'] = [
@@ -73,7 +73,7 @@ class MetsisTsPlotForm extends FormBase {
       $form['plotform']['input']['data_uri'] = [
         '#type' => 'url',
         '#sze' => 100,
-        '#title' => t("Enter dataset resource URL:"),
+        '#title' => $this->t("Enter dataset resource URL:"),
         '#label' => 'URL',
         '#label_display' => 'before',
         '#default_value' => $form_state->getValue('data_uri'),
@@ -89,7 +89,7 @@ class MetsisTsPlotForm extends FormBase {
 
       $form['plotform']['input']['actions']['submit'] = [
         '#type' => 'submit',
-        '#value' => t('Plot'),
+        '#value' => $this->t('Plot'),
         '#ajax' => [
           'callback' => '::getPlotCallback',
           'wrapper' => 'plot-wrapper',
@@ -153,14 +153,14 @@ class MetsisTsPlotForm extends FormBase {
    * @todo Impletment form validation here.
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $config = \Drupal::config('metsis_ts_bokeh.configuration');
+    $config = $this->config('metsis_ts_bokeh.configuration');
     $backend_uri = $config->get('ts_bokeh_plot_service');
     if (!isset($backend_uri)) {
       $link = Link::fromTextAndUrl(
             'configure backend',
             Url::fromRoute('metsis_ts_bokeh.metsis_ts_bokeh_admin_settings_form')
         )->toString();
-      \Drupal::messenger()->addError(t("Backend not configured. Please  @link first.", ['@link' => $link]));
+      $this->messenger()->addError($this->t("Backend not configured. Please  @link first.", ['@link' => $link]));
     }
     return parent::validateForm($form, $form_state);
   }
@@ -178,7 +178,7 @@ class MetsisTsPlotForm extends FormBase {
    * Ajax callback function.
    */
   public function getPlotCallback(array $form, FormStateInterface $form_state) {
-    $config = \Drupal::config('metsis_ts_bokeh.configuration');
+    $config = $this->config('metsis_ts_bokeh.configuration');
     $backend_uri = $config->get('ts_bokeh_plot_service');
 
     // Get the opendapUrl.

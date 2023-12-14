@@ -822,6 +822,11 @@ field_settings:
     datasource_id: solr_document
     property_path: platform_resource
     type: string
+  platform_sentinel:
+    label: 'Platform sentinel'
+    datasource_id: solr_document
+    property_path: platform_sentinel
+    type: string
   platform_short_name:
     label: 'Platform short name'
     datasource_id: solr_document
@@ -842,10 +847,20 @@ field_settings:
     datasource_id: solr_document
     property_path: project_short_name
     type: string
+  quality_control:
+    label: 'Quality control'
+    datasource_id: solr_document
+    property_path: quality_control
+    type: string
   related_dataset:
     label: 'Related dataset'
     datasource_id: solr_document
     property_path: related_dataset
+    type: string
+  related_dataset_id:
+    label: 'Related dataset id'
+    datasource_id: solr_document
+    property_path: related_dataset_id
     type: string
   related_information_description:
     label: 'Related information_description'
@@ -1163,6 +1178,16 @@ processor_settings:
     highlight_partial: true
   language_with_fallback: {  }
   rendered_item: {  }
+  solr_boost_more_recent:
+    weights:
+      preprocess_query: 0
+    boosts:
+      temporal_extent_start_date:
+        boost: 1.3
+        resolution: NOW/SECOND
+        m: '3.16e-11'
+        a: 0.1
+        b: 0.05
   solr_date_range:
     weights:
       preprocess_index: 0

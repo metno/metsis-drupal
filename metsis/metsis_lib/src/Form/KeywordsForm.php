@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class KeywordsForm.
+ * Display differnt keyword classes in horizontal tabs.
  */
 class KeywordsForm extends FormBase {
 
@@ -68,7 +68,7 @@ class KeywordsForm extends FormBase {
 
       $form[$vocab_tag] = [
         '#type' => 'details',
-        '#title' => $this->t($vocab),
+        '#title' => $this->t('@vocab', ['@vocab' => $vocab]),
         '#weight' => '0',
         '#group' => 'keywords',
         '#attributes' => [
@@ -270,16 +270,6 @@ class KeywordsForm extends FormBase {
      */
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
   }
 
   /**

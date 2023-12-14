@@ -4,8 +4,9 @@ namespace Drupal\metsis_lib\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\HttpFoundation\Response;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Export MMD as different formats.
@@ -26,6 +27,7 @@ class ExportForm extends FormBase {
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
     $instance->config = $container->get('config.factory')->get('metsis_search.export.settings');
+    $instance->exportConfig = $container->get('config.factory')->get('metsis_lib.settings');
     return $instance;
   }
 
@@ -43,6 +45,8 @@ class ExportForm extends FormBase {
     $form_state->set('mmd', $fields['mmd_xml_file']);
     $form_state->set('id', $fields['id']);
 
+    // $selectedExports = $this->exportConfig->get('export_metadata');
+    // $this->logger('landing')->debug($selectedExports);
     $form['export'] = [
       '#type' => 'actions',
         // '#tree' => true,.
@@ -78,17 +82,17 @@ class ExportForm extends FormBase {
 
     ];
 
-    return $form;
-  }
+    $form['export']['mmd'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('METNO MMD'),
+      '#export_type' => 'mmd',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
 
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
+    ];
+
+    return $form;
   }
 
   /**
@@ -104,7 +108,6 @@ class ExportForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Display result.
     /* foreach ($form_state->getValues() as $key => $value) {
-    \Drupal::messenger()->addMessage($key . ': ' . ($key === 'text_format'?$value['value']:$value));
     } */
     $mmd = $form_state->get('mmd');
     $id = $form_state->get('id');
@@ -123,7 +126,12 @@ class ExportForm extends FormBase {
     }
     else {
       $mmd_xml = base64_decode($mmd);
-      $content = $this->transformXml($mmd_xml, $export_type);
+      if ($export_type === 'mmd') {
+        $content = $mmd_xml;
+      }
+      else {
+        $content = $this->transformXml($mmd_xml, $export_type);
+      }
       $response->setContent($content);
     }
 

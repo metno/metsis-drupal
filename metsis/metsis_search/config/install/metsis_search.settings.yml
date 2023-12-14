@@ -56,6 +56,6 @@ selected_collections:
   SESS2022: SESS2022
   SIOSAP: SIOSAP
   CVL: CVL
-pywps_service: 'https://bokeh.metsis-api.met.no/TS-Plot'
+pywps_service: 'localhost'
 map_wms_layers_skip: ''
 score_parent: 0

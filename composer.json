@@ -1,6 +1,10 @@
 {
     "name": "metsis/metsis-drupal",
-    "type": "drupal-metsis-module",
+    "type": "drupal-custom-module",
     "description": "METSIS drupal modules",
-    "license": "GPL-2.0+"
+    "license": "GPL-2.0-or-later",
+    "scripts": {
+        "sniff": "phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis",
+        "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml metsis"
+    }
 }

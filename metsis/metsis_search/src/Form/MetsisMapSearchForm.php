@@ -42,8 +42,8 @@ class MetsisMapSearchForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Get the bounding box drawn on the map.
-    \Drupal::logger('metsis_search')->debug("Building MapSearchForm");
-    /*    $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+    $this->getLogger('metsis_search')->debug("Building MapSearchForm");
+    /* $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
     $bboxFilter = $tempstore->get('bboxFilter');
     $tllat = "";
     $tllon = "";
@@ -54,24 +54,8 @@ class MetsisMapSearchForm extends FormBase {
     $tllon = $tempstore->get('tllon');
     $brlat = $tempstore->get('brlat');
     $brlon = $tempstore->get('brlon');
-    \Drupal::logger('metsis_search')->debug("Got input filter vars: " .$tllat .','. $tllon .','.$brlat.','.$brlon);
     }
      */
-    // Get saved configuration.
-    $config = \Drupal::config('metsis_search.settings');
-    $map_location = $config->get('map_selected_location');
-    $map_lat = $config->get('map_locations')[$map_location]['lat'];
-    $map_lon = $config->get('map_locations')[$map_location]['lon'];
-    $map_zoom = $config->get('map_zoom');
-    // $additional_layers = $config->get('additional_layers');
-    $map_projections = $config->get('map_projections');
-    $map_init_proj = $config->get('map_init_proj');
-    $map_search_text = $config->get('map_search_text');
-    $map_base_layer_wms_north = $config->get('map_base_layer_wms_north');
-    $map_base_layer_wms_south = $config->get('map_base_layer_wms_south');
-    $map_search_text = $config->get('map_search_text');
-    $map_layers_list = $config->get('map_layers');
-
     /*
      * Create the form render array
      */
@@ -166,8 +150,8 @@ class MetsisMapSearchForm extends FormBase {
      * 'mapLat' => $map_lat, //to be replaced with configuration variables
      * 'mapLon' => $map_lon, //to be replaced with configuration variables
      * 'mapZoom' => $map_zoom, //to be replaced with configuration variables
-     * 'init_proj' => $map_init_proj, //to be replaced with configuration variables
-     * 'additional_layers' => false, //to be replaced with configuration variables
+     * 'init_proj' => $map_init_proj, //to be replaced with conf variables
+     * 'additional_layers' => false, //to be replaced with config variables
      * 'base_layer_wms_north' => $map_base_layer_wms_north,
      * 'base_layer_wms_south' => $map_base_layer_wms_south,
      * 'tllat' => $tllat,
@@ -207,7 +191,7 @@ class MetsisMapSearchForm extends FormBase {
    * Ajax callback function.
    */
   public function getPlotData(array $form, FormStateInterface $form_state) {
-    /*    \Drupal::logger('metsis_ts_bokeh')->debug('Ajax callback y-axis: ' . $form_state->getValue('y_axis'));
+    /* tate->getValue('y_axis'));
     //Get data resource url from tempstore
     $tempstore = \Drupal::service('tempstore.private')->get('metsis_ts_bokeh');
     $data_uri = $tempstore->get('data_uri');
@@ -219,7 +203,6 @@ class MetsisMapSearchForm extends FormBase {
     $response->addCommand(
     new HtmlCommand(
     '.plot-container',
-    '<div id="tsplot"><script>Bokeh.embed.embed_item(' . $items . ')</script></div>'),
     );
     return $response;
      */

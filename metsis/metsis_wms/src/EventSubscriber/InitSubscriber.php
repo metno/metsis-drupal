@@ -2,8 +2,8 @@
 
 namespace Drupal\metsis_wms\EventSubscriber;
 
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Implements the init subscriber.

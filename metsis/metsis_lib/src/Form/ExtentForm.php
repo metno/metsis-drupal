@@ -6,7 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Class ExtentForm.
+ * CForm for displaying temporal and geographic extent in horizontal tabs.
  */
 class ExtentForm extends FormBase {
 
@@ -97,16 +97,6 @@ class ExtentForm extends FormBase {
     }
 
     return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    foreach ($form_state->getValues() as $key => $value) {
-      // @todo Validate fields.
-    }
-    parent::validateForm($form, $form_state);
   }
 
   /**

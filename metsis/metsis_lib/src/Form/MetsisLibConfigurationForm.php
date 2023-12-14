@@ -5,12 +5,30 @@ namespace Drupal\metsis_lib\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class ConfigurationForm.
  *
  * {@inheritdoc}
  */
 class MetsisLibConfigurationForm extends ConfigFormBase {
+
+  /**
+   * Config factory config.
+   *
+   * @var \Drupal\Core\Config\Config
+   */
+  protected $exportConfig;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $instance = parent::create($container);
+    $instance->exportConfig = $container->get('config.factory')->get('metsis_search.export.settings');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -54,19 +72,16 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
         ],
       ],
     ];
+    $metadata_options = $this->exportConfig->get('export_list');
+    $form['export_metadata'] = [
+      '#type' => 'select',
+      '#title' => $this->t("Select which metadata formats for exporting on landing- and search pages"),
+      '#options' => $metadata_options,
+      '#multiple' => TRUE,
+      '#default_value' => $config->get('export_metadata'),
+    ];
 
     return parent::buildForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * NOTE: Implement form validation here.
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Get user and pass from admin configuration.
-    $values = $form_state->getValues();
-
   }
 
   /**
@@ -81,6 +96,7 @@ class MetsisLibConfigurationForm extends ConfigFormBase {
     $this->configFactory->getEditable('metsis_lib.settings')
       ->set('enable_landing_pages', $form_state->getValue('enable_landing_pages'))
       ->set('landing_pages_prefix', $form_state->getValue('landing_pages_prefix'))
+      ->set('export_metadata', $form_state->getValue('export_metadata'))
       ->save();
 
     parent::submitForm($form, $form_state);
