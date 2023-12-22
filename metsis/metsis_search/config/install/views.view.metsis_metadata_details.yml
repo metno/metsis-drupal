@@ -515,7 +515,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="ext" href="https://vocab.met.no/mmd/Activity_Type/{{ activity_type | title | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ activity_type }}</a>'
+            text: "<a class=\"ext\" href=\"https://vocab.met.no/mmd/Activity_Type/{{ activity_type | title | split(' ') | join('')  | split('/') | join('-') | split('-') | join('')  }}\" target=\"_blank\" rel=\"noreferrer\">{{ activity_type }}</a>"
             make_link: false
             path: ''
             absolute: false
@@ -568,7 +568,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="ext" href="https://vocab.met.no/mmd/Quality_Control/{{ quality_control | title | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ quality_control }}</a>'
+            text: "<a class=\"ext\" href=\"https://vocab.met.no/mmd/Quality_Control/{{ quality_control | title | split(' ') | join('')  | split('/') | join('-') | split('-') | join('')  }}\" target=\"_blank\" rel=\"noreferrer\">{{ quality_control }}</a>"
             make_link: false
             path: ''
             absolute: false
@@ -712,8 +712,8 @@ display:
           wrapper: details
           legend: 'Show Abstract'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         abstract:
           id: abstract
           table: search_api_index_metsis
@@ -823,8 +823,8 @@ display:
           wrapper: details
           legend: 'Show Keywords'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         keywords_vocabulary:
           id: keywords_vocabulary
           table: search_api_index_metsis
@@ -1044,8 +1044,8 @@ display:
           wrapper: details
           legend: 'Metadata Information'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         metadata_identifier:
           id: metadata_identifier
           table: search_api_index_metsis
@@ -1111,7 +1111,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ last_metadata_update_datetime  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{ last_metadata_update_datetime  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -1276,7 +1276,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ alternate_identifier_type }} - {{ alternate_identifier }} '
+            text: "{% if alternate_identifier_type and alternate_identifier %}\r\n{{ alternate_identifier_type }} - {{ alternate_identifier }} \r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1382,7 +1382,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="ext" href="https://vocab.met.no/mmd/Operational_Status/{{ operational_status | split('' '') | join('''')  | split(''/'') | join(''-'') | split(''-'') | join('''')  }}" target="_blank" rel="noreferrer">{{ operational_status  }}</a>'
+            text: "<a class=\"ext\" href=\"https://vocab.met.no/mmd/Operational_Status/{{ operational_status | split(' ') | join('')  | split('/') | join('-') | split('-') | join('')  }}\" target=\"_blank\" rel=\"noreferrer\">{{ operational_status  }}</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1864,8 +1864,8 @@ display:
           wrapper: details
           legend: 'Related resources'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         related_url_landing_page_desc:
           id: related_url_landing_page_desc
           table: search_api_index_metsis
@@ -2887,8 +2887,8 @@ display:
           wrapper: details
           legend: 'Dataset Citation'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         dataset_citation_title:
           id: dataset_citation_title
           table: search_api_index_metsis
@@ -3060,7 +3060,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{ dataset_citation_publication_date | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{ dataset_citation_publication_date | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -3733,8 +3733,8 @@ display:
           wrapper: details
           legend: Investigator
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_investigator_name:
           id: personnel_investigator_name
           table: search_api_index_metsis
@@ -4328,8 +4328,8 @@ display:
           wrapper: details
           legend: 'Technical contact'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_technical_name:
           id: personnel_technical_name
           table: search_api_index_metsis
@@ -4923,8 +4923,8 @@ display:
           wrapper: details
           legend: 'Metadata Author'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_metadata_author_name:
           id: personnel_metadata_author_name
           table: search_api_index_metsis
@@ -5511,8 +5511,8 @@ display:
           wrapper: details
           legend: 'Data center'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         data_center_long_name_1:
           id: data_center_long_name_1
           table: search_api_index_metsis
@@ -5735,8 +5735,8 @@ display:
           wrapper: details
           legend: 'Data center contact'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         personnel_datacenter_name:
           id: personnel_datacenter_name
           table: search_api_index_metsis
@@ -6329,8 +6329,8 @@ display:
           wrapper: details
           legend: Platform
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         platform_long_name:
           id: platform_long_name
           table: search_api_index_metsis
@@ -6900,8 +6900,8 @@ display:
           wrapper: details
           legend: Instrument
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         platform_instrument_resource:
           id: platform_instrument_resource
           table: search_api_index_metsis
@@ -7324,8 +7324,8 @@ display:
           wrapper: details
           legend: 'Temporal extent'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -7338,7 +7338,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_start_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_start_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -7394,7 +7394,7 @@ display:
           exclude: false
           alter:
             alter_text: false
-            text: '{{temporal_extent_end_date  | date(''U'') | format_date(''solr_format'') }}'
+            text: "{{temporal_extent_end_date  | date('U') | format_date('solr_format') }}"
             make_link: false
             path: ''
             absolute: false
@@ -7548,8 +7548,8 @@ display:
           wrapper: details
           legend: 'Geographic extent {{ geographic_extent_rectangle_srs }}'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         geographic_extent_rectangle_north:
           id: geographic_extent_rectangle_north
           table: search_api_index_metsis
@@ -7910,8 +7910,8 @@ display:
           wrapper: details
           legend: 'Observation location {{ location_vocabulary }}'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         location_category:
           id: location_category
           table: search_api_index_metsis
@@ -8297,8 +8297,8 @@ display:
           wrapper: details
           legend: 'Data access'
           classes: ''
-          collapsible: 1
-          collapsed: 0
+          collapsible: true
+          collapsed: false
         data_access_url_http_desc:
           id: data_access_url_http_desc
           table: search_api_index_metsis
@@ -8790,7 +8790,7 @@ display:
             alter_text: false
             text: ''
             make_link: true
-            path: '{{ data_access_url_opendap ~ ''.html''}}'
+            path: "{{ data_access_url_opendap ~ '.html'}}"
             absolute: false
             external: true
             replace_spaces: false
@@ -8896,7 +8896,7 @@ display:
             alter_text: false
             text: ''
             make_link: true
-            path: '{{ data_access_url_ogc_wms  ~  ''?SERVICE=WMS&REQUEST=GetCapabilities'' }}'
+            path: "{{ data_access_url_ogc_wms  ~  '?SERVICE=WMS&REQUEST=GetCapabilities' }}"
             absolute: false
             external: true
             replace_spaces: false
@@ -9101,8 +9101,8 @@ display:
           wrapper: details
           legend: 'File storage information'
           classes: ''
-          collapsible: 1
-          collapsed: 1
+          collapsible: true
+          collapsed: true
         storage_information_file_name:
           id: storage_information_file_name
           table: search_api_index_metsis
@@ -9520,7 +9520,6 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: ''
-          default_argument_skip_url: false
           summary_options: {  }
           summary:
             sort_order: asc

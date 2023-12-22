@@ -1,32 +1,46 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - search_api.index.metsis
+    - views.view.metsis_elements
+  module:
+    - search_api
 id: elements_start_date_month
 name: 'Elements Start date month'
-url_alias: start_date_month
 weight: 0
 min_count: 1
-show_only_one_result: false
-field_identifier: temporal_extent_start_date
+missing: false
+missing_label: others
+url_alias: start_date_month
 facet_source_id: 'search_api:views_page__metsis_elements__results'
+field_identifier: temporal_extent_start_date
+query_operator: and
+hard_limit: 15
+exclude: false
+use_hierarchy: false
+keep_hierarchy_parents_active: false
+hierarchy:
+  type: taxonomy
+  config: {  }
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
 widget:
   type: links
   config:
     show_numbers: true
     soft_limit: 15
-    soft_limit_settings:
-      show_less_label: 'Show less'
-      show_more_label: 'Show more'
     show_reset_link: false
     reset_text: 'Show all'
     hide_reset_when_no_selection: false
-query_operator: and
-use_hierarchy: false
-expand_hierarchy: false
-enable_parent_when_child_gets_disabled: true
-hard_limit: 15
-exclude: false
+    soft_limit_settings:
+      show_less_label: 'Show less'
+      show_more_label: 'Show more'
+empty_behavior:
+  behavior: none
 only_visible_when_facet_source_is_visible: true
+show_only_one_result: false
+show_title: false
 processor_configs:
   date_item:
     processor_id: date_item
@@ -36,26 +50,12 @@ processor_configs:
       date_display: actual_date
       granularity: 5
       date_format: F
-  dependent_processor:
-    processor_id: dependent_processor
+      hierarchy: false
+  hierarchy_processor:
+    processor_id: hierarchy_processor
     weights:
-      build: 5
-    settings:
-      elements_end_date:
-        enable: false
-        condition: null
-        values: ''
-        negate: false
-      elements_start_date_day:
-        enable: false
-        condition: null
-        values: ''
-        negate: false
-      elements_start_date_year:
-        enable: true
-        condition: not_empty
-        values: ''
-        negate: false
+      build: 100
+    settings: {  }
   raw_value_widget_order:
     processor_id: raw_value_widget_order
     weights:
@@ -68,6 +68,3 @@ processor_configs:
       pre_query: 50
       build: 15
     settings: {  }
-empty_behavior:
-  behavior: none
-show_title: false

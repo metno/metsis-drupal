@@ -42,15 +42,15 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
   // $request = \Drupal::request();
   // $referer = $request->headers->get('referer');.
 
+  /* Collect possible start and end dates for passing to elements view */
   $config = \Drupal::config('metsis_search.settings');
 
   $disable_basket = $config->get('hide_add_to_basket');
 
   $new_value = '<div><span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back to main search</a></span></div>';
-
   if ($view->id() == 'metsis_elements' && $display_id === 'results') {
     // $fields = $view->display_handler->getOption('header');
-    // dpm($fields);
+    // dpm($args);
 
     // $options = [
     // 'id' => 'area_text_custom',
@@ -82,7 +82,28 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       $fields['nothing_2']['exclude'] = TRUE;
       $view->display_handler->overrideOption('fields', $fields);
     }
-  }
+    /* Pass metsis search view arguments to elements view. */
+    $filters = $view->getExposedInput();
+    $fields = $view->display_handler->getOption('fields');
+    $orig_text = $fields['nothing_1']['alter']['text'];
+    // dpm($orig_text);
+    // dpm($filters);
+    $replace_text = '/search?';
+    foreach ($filters as $k => $v) {
+      if( $k === 'op') { continue; }
+      if( $k === 'fulltext') {
+        $v = '';
+      }
+      $replace_text .=  $k . '=' . $v . '&';
+    }
+    $rep_text_t = rtrim($replace_text, '&');
+    // dpm($rep_text_t);
+    $replaced_text = str_replace('/search',$rep_text_t, $orig_text);
+    // dpm($replaced_text);
+    $fields['nothing_1']['alter']['text'] = $replaced_text;
+    $view->display_handler->overrideOption('fields', $fields);
+    }
+
 
 }
 
@@ -193,6 +214,12 @@ function metsis_search_theme($existing, $type, $theme, $path) {
   // Drupal::logger('metsis_search')->debug("Enter: hook_theme: " . $path);.
   return [
     'views_view_field__metsis_search__results__last_metadata_update_datetime' => [
+      // 'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
+      'render element' => 'elements',
+      'base hook' => 'views field',
+      'path' => 'modules/metsis/metsis_search/templates',
+    ],
+    'views_view_field__metsis_elements__results__last_metadata_update_datetime' => [
       // 'template' => 'views-view-field--metsis_search--results--last_metadata_update_datetime',
       'render element' => 'elements',
       'base hook' => 'views field',

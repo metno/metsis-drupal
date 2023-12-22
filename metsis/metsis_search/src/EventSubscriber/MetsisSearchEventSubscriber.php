@@ -2,26 +2,28 @@
 
 namespace Drupal\metsis_search\EventSubscriber;
 
-// Use Drupal\devel\DevelDumperManagerInterface;.
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-
 use Drupal\metsis_search\SearchUtils;
-
 use Drupal\search_api\LoggerTrait;
+use Drupal\search_api\Query\Condition;
+use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\PostExtractResultsEvent;
 use Drupal\search_api_solr\Event\PreQueryEvent;
 use Drupal\search_api_solr\Event\SearchApiSolrEvents;
-
 use Solarium\Core\Event\Events as SolariumEvents;
 use Solarium\Core\Event\PostCreateQuery;
+use Solarium\Core\Event\PostCreateRequest;
 use Solarium\Core\Event\PostCreateResult;
 use Solarium\Core\Event\PostExecuteRequest;
+use Solarium\Core\Event\PreCreateRequest;
 use Solarium\Core\Event\PreExecuteRequest;
-
+use Solarium\QueryType\Select\Query;
+// Use Drupal\devel\DevelDumperManagerInterface;.
+use Solarium\QueryType\Select\Query as SolariumQuery;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -66,7 +68,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *
    * @var array
    */
-  protected $specialChars = ['*', '?', ':'];
+  protected $specialChars = ['*', '?', ':', '!'];
 
   /**
    * To hold the current searchId.
@@ -139,6 +141,13 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   ];
 
   /**
+   * Query string for adding open end date to date range search.
+   *
+   * @var string
+   */
+  protected $openEndDateQuery = 'NOT temporal_extent_end_date:[* TO *]';
+
+  /**
    * Construct an example service instance.
    *
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
@@ -172,6 +181,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents(): array {
     $events[SolariumEvents::POST_CREATE_QUERY][] = ['postCreateQuery'];
     $events[SolariumEvents::PRE_EXECUTE_REQUEST][] = ['preExecuteRequest'];
+    $events[SolariumEvents::PRE_CREATE_REQUEST][] = ['preCreateRequest'];
+    $events[SolariumEvents::POST_CREATE_REQUEST][] = ['postCreateRequest'];
     $events[SolariumEvents::POST_EXECUTE_REQUEST][] = ['postExecuteRequest'];
     $events[SolariumEvents::POST_CREATE_RESULT][] = ['postCreateResult'];
     $events[SearchApiSolrEvents::PRE_QUERY][] = ['onPreQuery'];
@@ -187,6 +198,9 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current event.
    */
   public function postConvertQuery(PostConvertedQueryEvent $event) {
+    // dpm("PostConvertedQueryEvent");
+    // dpm($event->getSearchApiQuery());
+    // dpm($event->getSolariumQuery());
 
   }
 
@@ -209,6 +223,10 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results')
       || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results')) {
       // dpm('Got metsis search query...');.
+      // dpm("Before");
+      // dpm($query);
+      // dpm($solarium_query);
+      // dpm($query->getConditionGroup()->getConditions());
       /*
        * Invalidate the search result map cache
        */
@@ -271,7 +289,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         }
 
         // dpm($solarium_query->getSorts());
-        $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
+        // $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');.
       }
 
       /*
@@ -361,11 +379,40 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $parse_mode->setConjunction($conjuction);
         $query->setParseMode($parse_mode);
       }
-      //
+      /* Rewrite the query for when end date filter is provided. */
+      // $filters = $solarium_query->getFilterQueries();
+      // // dpm($filters);
+      // if (array_key_exists('filters_2', $filters)) {
+      //   $fq = $filters['filters_2']->getQuery();
+      //   // dpm($fq);
+      //   preg_match('(temporal_extent_end_date.*\])', $fq, $matches);
+      //   if (!empty($matches)) {
+      //     if (str_contains($fq, 'start_date')) {
+      //       $rep_str = ' +' . $matches[0];
+      //       $new_fq = str_replace($rep_str, '', $fq);
+      //       // dpm($new_fq);
+      //       $filters['filters_2']->setQuery($new_fq);
+      //     }
+      //     else {
+      //       $rep_str = $matches[0];
+      //       unset($filters['filters_2']);
+      //     }
+      //     $solarium_query->setFilterQueries($filters);
+      //     $solarium_query->addParam('end_date_query', $matches[0]);
+      //     $solarium_query->addParam('okeys', $query->getKeys());
+
+      // }
+
+      // }
+
       // dpm($query->getParseMode()->label());
       // dpm($this->config);
       // dpm($this->session);
       // dpm($solarium_query->getFields());
+      // dpm("After");
+      // dpm($query);
+      // dpm($solarium_query);
+      // dpm($query->getConditionGroup()->getConditions());
     }
   }
 
@@ -387,6 +434,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   the current Event.
    */
   public function postCreateQuery(PostCreateQuery $event) {
+    // dpm($event->getQuery());
   }
 
   /**
@@ -407,6 +455,88 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    */
   public function postExecuteRequest(PostExecuteRequest $event) {
     // \Drupal::logger('metsis-search')->debug("PostExecuteRequest");
+  }
+
+  /**
+   * Listen to the pre create request event.
+   *
+   * @param \Solarium\Core\Event\PreCreateRequest $event
+   *   The pre create request event.
+   */
+  public function preCreateRequest(PreCreateRequest $event) {
+    // dpm("PreCreateRequest");
+    // dpm($event->getQuery());
+    // dpm($event->getRequest());
+    // $query = $event->getQuery();
+    // dpm($query->getQuery());
+
+  }
+
+  /**
+   * Listen to the post create request event.
+   *
+   * @param \Solarium\Core\Event\PostCreateRequest $event
+   *   The post create request event.
+   */
+  public function postCreateRequest(PostCreateRequest $event) {
+    // dpm("PostCreateRequest");
+    // dpm($event->getQuery());
+    // $req = $event->getRequest();
+    // dpm($req->getParams());
+
+    /* Rewrite the query if we got an end date filter. */
+    // $end_date_query = $req->getParam('end_date_query');
+    // if (NULL != $end_date_query) {
+    //   $qs = '(';
+    //   $query = $req->getParam('q');
+    //   $trim_query = rtrim($query, ')');
+    //   $okeys = $req->getParam('okeys');
+    //   $conjuction = '';
+    //   if (NULL != $okeys) {
+    //     if (array_key_exists('#conjunction', $okeys)) {
+    //       if ($okeys['#conjunction'] === 'AND') {
+    //         $qs = '+(';
+    //         $conjuction = 'AND';
+    //       }
+    //       if ($okeys['#conjunction'] === 'OR') {
+    //         $qs = '(';
+    //         $conjuction = 'OR';
+    //       }
+    //       unset($okeys['#conjunction']);
+    //     }
+
+    // Foreach ($okeys as $k) {
+    //       if ($conjuction === 'AND') {
+    //         $qs .= '+full_text:"' . $k . '" ';
+    //       }
+    //       if ($conjuction === 'OR') {
+    //         $qs .= 'full_text:"' . $k . '" ';
+    //       }
+    //     }.
+
+    // $dkeys = explode(' ', $okeys);
+    //     if (count($okeys) > 1) {
+    //       $new_query = $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
+    //     }
+    //     else {
+    //       $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
+    //     }
+    //     $req->addParam('q', $new_query, TRUE);
+
+    // $req->removeParam('okeys');
+    //   }
+    //   if (NULL == $okeys) {
+    //     $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . '(*:* ' . $this->openEndDateQuery . ')';
+    //     $req->addParam('q', $new_query, TRUE);
+    //   }
+    //   $req->removeParam('end_date_query');
+    //   // dpm($new_query);
+    // }
+    // /** @var Solarium\QueryType\Select\Query $query*/
+    // $query = $event->getQuery();
+    // // ->getFilterQueries());
+    // dpm(gettype($query));
+    // dpm($query['#filterQueries']);
   }
 
   /**

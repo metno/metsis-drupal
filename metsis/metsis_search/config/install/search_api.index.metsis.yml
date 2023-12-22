@@ -65,7 +65,7 @@ field_settings:
     datasource_id: solr_document
     property_path: abstract
     type: text
-    boost: !!float 2
+    boost: 2.0
   access_constraint:
     label: 'Access constraint'
     datasource_id: solr_document
@@ -221,7 +221,7 @@ field_settings:
     datasource_id: solr_document
     property_path: dataset_citation_doi
     type: text
-    boost: !!float 3
+    boost: 3.0
   dataset_citation_edition:
     label: 'Dataset citation edition'
     datasource_id: solr_document
@@ -436,7 +436,7 @@ field_settings:
     label: 'Last metadata update note'
     datasource_id: solr_document
     property_path: last_metadata_update_note
-    type: text
+    type: solr_text_wstoken
   last_metadata_update_type:
     label: 'Last metadata update type'
     datasource_id: solr_document
@@ -1122,7 +1122,7 @@ field_settings:
     datasource_id: solr_document
     property_path: title
     type: text
-    boost: !!float 3
+    boost: 3.0
   use_constraint_identifier:
     label: 'Use constraint_identifier'
     datasource_id: solr_document
@@ -1150,6 +1150,7 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   auto_aggregated_fulltext_field: {  }
+  custom_value: {  }
   entity_type: {  }
   highlight:
     weights:

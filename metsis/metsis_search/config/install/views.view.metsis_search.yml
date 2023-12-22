@@ -2288,7 +2288,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: search_api_fulltext
-          operator: and
+          operator: or
           value: ''
           group: 1
           exposed: true
@@ -2314,9 +2314,11 @@ display:
             expose_fields: false
             placeholder: 'Enter your search here'
             searched_fields_id: ''
+            value_maxlength: 128
             autocomplete_filter: 1
             autocomplete_min_chars: '0'
             autocomplete_items: '10'
+            autocomplete_field: ''
             autocomplete_raw_suggestion: 1
             autocomplete_raw_dropdown: 1
             autocomplete_dependent: 1
@@ -2335,108 +2337,7 @@ display:
           parse_mode: terms
           min_length: null
           fields:
-            - abstract
-            - dataset_citation_doi
             - full_text
-            - title
-        temporal_extent_start_date:
-          id: temporal_extent_start_date
-          table: search_api_index_metsis
-          field: temporal_extent_start_date
-          relationship: none
-          group_type: group
-          admin_label: 'Start date'
-          plugin_id: search_api_date
-          operator: '>='
-          value:
-            min: ''
-            max: ''
-            value: ''
-            type: date
-          group: 1
-          exposed: true
-          expose:
-            operator_id: temporal_extent_start_date_op
-            label: 'Start Date'
-            description: ''
-            use_operator: false
-            operator: temporal_extent_start_date_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: start_date
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              content_editor: '0'
-              administrator: '0'
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: 'Temporal extent_start date'
-            description: null
-            identifier: temporal_extent_start_date
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1: {  }
-              2: {  }
-              3: {  }
-        temporal_extent_end_date:
-          id: temporal_extent_end_date
-          table: search_api_index_metsis
-          field: temporal_extent_end_date
-          relationship: none
-          group_type: group
-          admin_label: 'End date'
-          plugin_id: search_api_date
-          operator: '<='
-          value:
-            min: ''
-            max: ''
-            value: ''
-            type: date
-          group: 1
-          exposed: true
-          expose:
-            operator_id: temporal_extent_end_date_op
-            label: 'End Date'
-            description: ''
-            use_operator: false
-            operator: temporal_extent_end_date_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: end_date
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -2758,11 +2659,157 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        temporal_extent_start_date:
+          id: temporal_extent_start_date
+          table: search_api_index_metsis
+          field: temporal_extent_start_date
+          relationship: none
+          group_type: group
+          admin_label: 'Start date'
+          plugin_id: search_api_date
+          operator: '<='
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
+          group: 3
+          exposed: true
+          expose:
+            operator_id: temporal_extent_start_date_op
+            label: 'Start Date'
+            description: ''
+            use_operator: false
+            operator: temporal_extent_start_date_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: start_date
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: 'Temporal extent_start date'
+            description: null
+            identifier: temporal_extent_start_date
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
+        temporal_extent_end_date:
+          id: temporal_extent_end_date
+          table: search_api_index_metsis
+          field: temporal_extent_end_date
+          relationship: none
+          group_type: group
+          admin_label: 'End date'
+          plugin_id: search_api_date
+          operator: '>='
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
+          group: 4
+          exposed: true
+          expose:
+            operator_id: temporal_extent_end_date_op
+            label: 'End Date'
+            description: ''
+            use_operator: false
+            operator: temporal_extent_end_date_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: end_date
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        temporal_extent_end_date_1:
+          id: temporal_extent_end_date_1
+          table: search_api_index_metsis
+          field: temporal_extent_end_date
+          relationship: none
+          group_type: group
+          admin_label: 'Open End date'
+          plugin_id: search_api_date
+          operator: empty
+          value:
+            min: ''
+            max: ''
+            value: ''
+            type: date
+          group: 4
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
           1: AND
           2: OR
+          3: AND
+          4: OR
       style:
         type: html_list
         options:
@@ -3896,7 +3943,7 @@ display:
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
-          use_highlighting: false
+          use_highlighting: true
           multi_type: separator
           multi_separator: ', '
         related_url_landing_page_desc:
