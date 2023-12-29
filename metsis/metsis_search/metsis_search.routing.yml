@@ -56,6 +56,8 @@ metsis_search.children_count:
   options:
     query:
       metadata_identifier: ""
+      start_date: ""
+      end_date: ""
   requirements:
     _permission: 'access metsis search'
 

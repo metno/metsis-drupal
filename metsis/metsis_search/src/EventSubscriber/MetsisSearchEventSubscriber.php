@@ -221,7 +221,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $this->searchId = $searchId;
     // Only do something during this event if we have metsis search view.
     if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results')
-      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results')) {
+      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'
+     || $this->searchId === 'views_page:metsis_search_date_test__results')) {
       // dpm('Got metsis search query...');.
       // dpm("Before");
       // dpm($query);
@@ -350,26 +351,33 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // Use direct query?
       $use_direct = FALSE;
       if ($keys !== NULL) {
-        // dpm($keys);
-        foreach ($keys as $_ => $value) {
-          if (!is_array($value)) {
-            if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
-              $use_direct = TRUE;
+        if (is_array($keys)) {
+          // dpm($keys);
+          foreach ($keys as $_ => $value) {
+            if (!is_array($value)) {
+              if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
+                $use_direct = TRUE;
+              }
+              if ($this->isValidUuid($value)) {
+                $use_direct = TRUE;
+              }
             }
-            if ($this->isValidUuid($value)) {
-              $use_direct = TRUE;
+
+            else {
+              foreach ($value as $_ => $value2) {
+                if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
+                  $use_direct = TRUE;
+                }
+                if ($this->isValidUuid($value2)) {
+                  $use_direct = TRUE;
+                }
+              }
             }
           }
-
-          else {
-            foreach ($value as $_ => $value2) {
-              if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
-                $use_direct = TRUE;
-              }
-              if ($this->isValidUuid($value2)) {
-                $use_direct = TRUE;
-              }
-            }
+        }
+        else {
+          if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $keys)) {
+            $use_direct = TRUE;
           }
         }
       }
@@ -380,30 +388,44 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $query->setParseMode($parse_mode);
       }
       /* Rewrite the query for when end date filter is provided. */
-      // $filters = $solarium_query->getFilterQueries();
-      // // dpm($filters);
-      // if (array_key_exists('filters_2', $filters)) {
-      //   $fq = $filters['filters_2']->getQuery();
-      //   // dpm($fq);
-      //   preg_match('(temporal_extent_end_date.*\])', $fq, $matches);
-      //   if (!empty($matches)) {
-      //     if (str_contains($fq, 'start_date')) {
-      //       $rep_str = ' +' . $matches[0];
-      //       $new_fq = str_replace($rep_str, '', $fq);
-      //       // dpm($new_fq);
-      //       $filters['filters_2']->setQuery($new_fq);
-      //     }
-      //     else {
-      //       $rep_str = $matches[0];
-      //       unset($filters['filters_2']);
-      //     }
-      //     $solarium_query->setFilterQueries($filters);
-      //     $solarium_query->addParam('end_date_query', $matches[0]);
-      //     $solarium_query->addParam('okeys', $query->getKeys());
+      $filters = $solarium_query->getFilterQueries();
+      // dpm($filters);
+      $date_filter = NULL;
+      if (array_key_exists('filters_2', $filters)) {
+        $fq = $filters['filters_2']->getQuery();
+        // dpm($fq);
+        if (str_contains($fq, 'start_date') && !str_contains($fq, 'end_date')) {
+          $date_filter = "START";
+        }
+        if (str_contains($fq, 'end_date') && !str_contains($fq, 'start_date')) {
+          $date_filter = "END";
+        }
+        if (str_contains($fq, 'start_date') && str_contains($fq, 'end_date')) {
+          $date_filter = "STARTEND";
+        }
+        preg_match_all('(\"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z\")', $fq, $matches);
 
-      // }
+        // dpm($date_filter);
+        // dpm($matches);
+        if (!empty($matches)) {
+          if ($date_filter === 'STARTEND') {
+            $start = $matches[0][0];
+            $end = $matches[0][1];
+            $new_fq = $fq . ' OR (temporal_extent_start_date:[' . $start . ' TO *] AND temporal_extent_end_date:[* TO ' . $end . ']) OR (*:* -temporal_extent_end_date:*)';
+            // dpm($new_fq);
+            $filters['filters_2']->setQuery($new_fq);
+          }
+          // Else {
+          //   $rep_str = $matches[0];
+          //   unset($filters['filters_2']);
+          // }.
+          $solarium_query->setFilterQueries($filters);
+          $solarium_query->addParam('end_date_query', $matches[0]);
+          $solarium_query->addParam('okeys', $query->getKeys());
 
-      // }
+        }
+
+      }
 
       // dpm($query->getParseMode()->label());
       // dpm($this->config);
@@ -414,6 +436,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // dpm($solarium_query);
       // dpm($query->getConditionGroup()->getConditions());
     }
+
   }
 
   /**
@@ -549,7 +572,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
     if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'
-      || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'))) {
+    || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'))) {
       // dpm($this->searchId);
       // $result = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfo($event->getResult());

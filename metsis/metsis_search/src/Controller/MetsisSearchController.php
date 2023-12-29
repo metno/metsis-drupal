@@ -23,6 +23,8 @@ class MetsisSearchController extends ControllerBase {
     $query_from_request = $request->query->all();
     $params = UrlHelper::filterQueryParameters($query_from_request);
     $id = $params['metadata_identifier'];
+    $start_date = $params['start_date'] ?? NULL;
+    $end_date = $params['end_date'] ?? NULL;
 
     /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
@@ -38,7 +40,16 @@ class MetsisSearchController extends ControllerBase {
     $solarium_query->setRows(1);
     $solarium_query->setFields('id');
     $solarium_query->createFilterQuery('children')->setQuery('isChild:true');
-
+    $date_filter = '';
+    if (NULL != $start_date) {
+      $date_filter .= '+temporal_extent_start_date:[' . $start_date . 'T00:00:00Z TO *] ';
+    }
+    if (NULL != $end_date) {
+      $date_filter .= '+temporal_extent_end_date:[* TO ' . $end_date . 'T00:00:00Z] ';
+    }
+    if ('' !== $date_filter) {
+      $solarium_query->createFilterQuery('datefilter')->setQuery($date_filter);
+    }
     $result = $connector->execute($solarium_query);
 
     // The total number of documents found by Solr.

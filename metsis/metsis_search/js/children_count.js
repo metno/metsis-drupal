@@ -24,6 +24,19 @@
           //console.log(myurl);
           //if(isParent == "True") {
           $('#metachildlink', this).removeClass('visually-hidden');
+          var href = $('#metachildlink', this).attr('href');
+          console.log(href);
+          start_date = href.match(/(?:start_date=)(\d{4}-\d{2}-\d{2})/);
+          if (start_date) {
+            console.log(start_date[1]);
+            myurl += '&start_date=' + start_date[1];
+          }
+          end_date = href.match(/(?:end_date=)(\d{4}-\d{2}-\d{2})/);
+          if (end_date) {
+            console.log(end_date[1]);
+            myurl += '&end_date=' + end_date[1];
+          }
+          console.log(myurl);
           Drupal.ajax({
             url: myurl
           }).execute();

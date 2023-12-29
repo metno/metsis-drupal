@@ -91,9 +91,11 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     $replace_text = '/search?';
     foreach ($filters as $k => $v) {
       if( $k === 'op') { continue; }
+      if( $k === 'is_parent') { continue; }
       if( $k === 'fulltext') {
         $v = '';
       }
+      if(is_array($v)) { continue;}
       $replace_text .=  $k . '=' . $v . '&';
     }
     $rep_text_t = rtrim($replace_text, '&');
@@ -257,8 +259,10 @@ function metsis_search_theme($existing, $type, $theme, $path) {
  * Implments hook_views_query_alter().
  */
 function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
-  if ($view->id() == 'metsis_search') {
+  if ($view->id() == 'metsis_search' || $view->id() == 'metsis_search_date_test') {
     // Do something withe the veiws query here.
+  // dpm($view, __FUNCTION__);
+  // dpm($query, __FUNCTION__);
   }
 }
 
