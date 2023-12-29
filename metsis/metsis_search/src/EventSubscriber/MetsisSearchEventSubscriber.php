@@ -411,13 +411,13 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           if ($date_filter === 'STARTEND') {
             $start = $matches[0][0];
             $end = $matches[0][1];
-            $new_fq = $fq . ' OR (temporal_extent_start_date:[' . $start . ' TO *] AND temporal_extent_end_date:[* TO ' . $end . ']) OR (*:* -temporal_extent_end_date:*)';
+            $new_fq = $fq . ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *]) OR (*:* -temporal_extent_end_date:*)';
             // dpm($new_fq);
             $filters['filters_2']->setQuery($new_fq);
           }
           // Else {
-          //   $rep_str = $matches[0];
-          //   unset($filters['filters_2']);
+          // $rep_str = $matches[0];
+          // unset($filters['filters_2']);
           // }.
           $solarium_query->setFilterQueries($filters);
           $solarium_query->addParam('end_date_query', $matches[0]);
@@ -510,50 +510,50 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     /* Rewrite the query if we got an end date filter. */
     // $end_date_query = $req->getParam('end_date_query');
     // if (NULL != $end_date_query) {
-    //   $qs = '(';
-    //   $query = $req->getParam('q');
-    //   $trim_query = rtrim($query, ')');
-    //   $okeys = $req->getParam('okeys');
-    //   $conjuction = '';
-    //   if (NULL != $okeys) {
-    //     if (array_key_exists('#conjunction', $okeys)) {
-    //       if ($okeys['#conjunction'] === 'AND') {
-    //         $qs = '+(';
-    //         $conjuction = 'AND';
-    //       }
-    //       if ($okeys['#conjunction'] === 'OR') {
-    //         $qs = '(';
-    //         $conjuction = 'OR';
-    //       }
-    //       unset($okeys['#conjunction']);
-    //     }
+    // $qs = '(';
+    // $query = $req->getParam('q');
+    // $trim_query = rtrim($query, ')');
+    // $okeys = $req->getParam('okeys');
+    // $conjuction = '';
+    // if (NULL != $okeys) {
+    // if (array_key_exists('#conjunction', $okeys)) {
+    // if ($okeys['#conjunction'] === 'AND') {
+    // $qs = '+(';
+    // $conjuction = 'AND';
+    // }
+    // if ($okeys['#conjunction'] === 'OR') {
+    // $qs = '(';
+    // $conjuction = 'OR';
+    // }
+    // unset($okeys['#conjunction']);
+    // }
 
     // Foreach ($okeys as $k) {
-    //       if ($conjuction === 'AND') {
-    //         $qs .= '+full_text:"' . $k . '" ';
-    //       }
-    //       if ($conjuction === 'OR') {
-    //         $qs .= 'full_text:"' . $k . '" ';
-    //       }
-    //     }.
+    // if ($conjuction === 'AND') {
+    // $qs .= '+full_text:"' . $k . '" ';
+    // }
+    // if ($conjuction === 'OR') {
+    // $qs .= 'full_text:"' . $k . '" ';
+    // }
+    // }.
 
     // $dkeys = explode(' ', $okeys);
-    //     if (count($okeys) > 1) {
-    //       $new_query = $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
-    //     }
-    //     else {
-    //       $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
-    //     }
-    //     $req->addParam('q', $new_query, TRUE);
+    // if (count($okeys) > 1) {
+    // $new_query = $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
+    // }
+    // else {
+    // $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
+    // }
+    // $req->addParam('q', $new_query, TRUE);
 
     // $req->removeParam('okeys');
-    //   }
-    //   if (NULL == $okeys) {
-    //     $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . '(*:* ' . $this->openEndDateQuery . ')';
-    //     $req->addParam('q', $new_query, TRUE);
-    //   }
-    //   $req->removeParam('end_date_query');
-    //   // dpm($new_query);
+    // }
+    // if (NULL == $okeys) {
+    // $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . '(*:* ' . $this->openEndDateQuery . ')';
+    // $req->addParam('q', $new_query, TRUE);
+    // }
+    // $req->removeParam('end_date_query');
+    // // dpm($new_query);
     // }
     // /** @var Solarium\QueryType\Select\Query $query*/
     // $query = $event->getQuery();

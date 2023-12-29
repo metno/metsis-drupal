@@ -2667,7 +2667,7 @@ display:
           group_type: group
           admin_label: 'Start date'
           plugin_id: search_api_date
-          operator: '<='
+          operator: '>='
           value:
             min: ''
             max: ''
@@ -2718,7 +2718,7 @@ display:
           group_type: group
           admin_label: 'End date'
           plugin_id: search_api_date
-          operator: '>='
+          operator: '<='
           value:
             min: ''
             max: ''
