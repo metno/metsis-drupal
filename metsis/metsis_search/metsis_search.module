@@ -90,22 +90,27 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     // dpm($filters);
     $replace_text = '/search?';
     foreach ($filters as $k => $v) {
-      if( $k === 'op') { continue; }
-      if( $k === 'is_parent') { continue; }
-      if( $k === 'fulltext') {
+      if ($k === 'op') {
+        continue;
+      }
+      if ($k === 'is_parent') {
+        continue;
+      }
+      if ($k === 'fulltext') {
         $v = '';
       }
-      if(is_array($v)) { continue;}
-      $replace_text .=  $k . '=' . $v . '&';
+      if (is_array($v)) {
+        continue;
+      }
+      $replace_text .= $k . '=' . $v . '&';
     }
     $rep_text_t = rtrim($replace_text, '&');
     // dpm($rep_text_t);
-    $replaced_text = str_replace('/search',$rep_text_t, $orig_text);
+    $replaced_text = str_replace('/search', $rep_text_t, $orig_text);
     // dpm($replaced_text);
     $fields['nothing_1']['alter']['text'] = $replaced_text;
     $view->display_handler->overrideOption('fields', $fields);
-    }
-
+  }
 
 }
 
@@ -261,8 +266,8 @@ function metsis_search_theme($existing, $type, $theme, $path) {
 function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
   if ($view->id() == 'metsis_search' || $view->id() == 'metsis_search_date_test') {
     // Do something withe the veiws query here.
-  // dpm($view, __FUNCTION__);
-  // dpm($query, __FUNCTION__);
+    // dpm($view, __FUNCTION__);
+    // dpm($query, __FUNCTION__);.
   }
 }
 
