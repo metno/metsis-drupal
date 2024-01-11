@@ -436,7 +436,7 @@ field_settings:
     label: 'Last metadata update note'
     datasource_id: solr_document
     property_path: last_metadata_update_note
-    type: solr_text_wstoken
+    type: string
   last_metadata_update_type:
     label: 'Last metadata update type'
     datasource_id: solr_document

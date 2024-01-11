@@ -87,6 +87,10 @@ class DynamicLandingPagesController extends ControllerBase {
       'url' => 'https://spdx.org/licenses/CC0-1.0',
       'img' => '/modules/metsis/metsis_search/icons/CC0.png',
     ],
+    'CC-BY-3.0' => [
+      'url' => 'https://spdx.org/licenses/CC-BY-3.0',
+      'img' => '/modules/metsis/metsis_search/icons/CCBY.png',
+    ],
     'CC-BY-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-4.0',
       'img' => '/modules/metsis/metsis_search/icons/CCBY.png',
@@ -490,7 +494,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['data_access']['opendap'] = [
           '#type' => 'item',
           '#title' => $this->t('OPeNDAP:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '.html">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -509,10 +513,16 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['data_access_url_ogc_wms'])) {
       foreach ($fields['data_access_url_ogc_wms'] as $resource) {
+        if (str_contains($resource, '?')) {
+          $capLink = explode('?', $resource)[0];
+        }
+        else {
+          $capLink = $resource;
+        }
         $renderArray['data_access']['ogc_wms'] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WMS:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $capLink . 'service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }

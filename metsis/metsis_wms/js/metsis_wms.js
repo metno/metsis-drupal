@@ -574,6 +574,10 @@ console.log("Start of wms map script:");
             styleLabel.htmlFor = "wms-styles";
             document.getElementById("wms-style-id").appendChild(styleLabel).appendChild(selectStyles);
 
+            // Control.init({
+            //   element: element,
+            //   target: options.target,
+            // });
             ol.control.Control.call(this, {
               element: element,
               target: options.target,
@@ -976,6 +980,7 @@ console.log("Start of wms map script:");
             var getCapString = '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities';
             var parser = new ol.format.WMSCapabilities();
             var hasTimeDimension = false;
+            var defaultTime = null;
             //Do xml request
             let xhr = new XMLHttpRequest();
 
@@ -1010,6 +1015,9 @@ console.log("Start of wms map script:");
                           for (var j = 0; j < dimensions.length; j++) {
                             if ("time" === dimensions[j].name) {
                               var times = dimensions[j].values.split(",");
+                              if (times.length == 1 && dimensions[j].values.indexOf('/')) {
+                                console.log("wms1: got timerange");
+                              }
                               return times;
                             }
                           }
@@ -1090,6 +1098,21 @@ console.log("Start of wms map script:");
           }
         }
 
+        //Function for creating times dimension array from
+        // wms time duration syntax
+        function getTimesArray(start, end, duration) {
+          var dateArray = [];
+          var currentDate = moment(start);
+          var stopDate = moment(end);
+          var duration = moment.duration(duration);
+          while (currentDate <= stopDate) {
+            //dateArray.push(moment(currentDate).format('YYYY-MM-DDTHH:MM:SSZ'));
+            dateArray.push(moment(currentDate).utc().format());
+            currentDate = moment(currentDate).add(duration);
+          }
+          return dateArray;
+        }
+
         //Function for retrieving wms capabilities
         function getWmsLayers2(wmsUrl, title, geom, wmsLayerMmd) {
           if (wmsUrl != null && wmsUrl != "") {
@@ -1105,6 +1128,7 @@ console.log("Start of wms map script:");
             var getCapString = '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities';
             var parser = new ol.format.WMSCapabilities();
             var hasTimeDimension = false;
+            var defaultTimeDim = null;
             var hasElevationDimension = false;
             var proxyURL = '/metsis/map/getcapfromurl?url=';
             var wmsUrlOrig = wmsUrl;
@@ -1160,13 +1184,40 @@ console.log("Start of wms map script:");
                 }
                 if (ls) {
                   console.log(ls.Name);
-                  for (var i = 0; i < ls.length; i++) {
+                  for (let i = 0; i < ls.length; i++) {
                     var getTimeDimensions = function () {
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
                           if ("time" === dimensions[j].name) {
                             var times = dimensions[j].values.split(",");
+                            if (times.length == 1 && dimensions[j].values.indexOf('/')) {
+                              var startDate = dimensions[j].values.split("/")[0];
+                              var endDate = dimensions[j].values.split("/")[1];
+                              var duration = dimensions[j].values.split("/")[2];
+
+
+                              _defaultTimeDim = dimensions[j].default;
+
+                              // console.log("wms2: got timerange. default: " + _defaultTimeDim);
+                              // console.log("start: " + startDate);
+                              // console.log("end: " + endDate);
+                              // console.log("duration: " + duration);
+
+
+                              if (_defaultTimeDim !== undefined) {
+                                defaultTimeDim = _defaultTimeDim;
+                                console.log("timedim default: " + defaultTimeDim);
+                              }
+                              if (startDate === endDate) {
+                                times = [startDate];
+                              }
+                              else {
+                                times = getTimesArray(startDate, endDate, duration);
+                              }
+                              //console.log("New Times array:: " + times);
+
+                            }
                             return times;
                           }
                         }
@@ -1243,30 +1294,44 @@ console.log("Start of wms map script:");
                     }
                     if (layerName === wmsLayerMmd || title === wmsLayerMmd) {
                       visible = true;
-                      styleValues = getWmsStyles()
+                      styleValues = getWmsStyles();
+                      styleValuesUniq = styleValues.reduce(function (prev, cur) {
+                        return (prev.indexOf(cur) < 0) ? prev.concat([cur]) : prev;
+                      }, []);
+                      console.log(styleValuesUniq);
                       let wmsSelect = document.getElementById('wms-styles-select');
 
-                      for (const val of styleValues) {
+                      for (const val of styleValuesUniq) {
                         var option = document.createElement("option");
                         option.value = val;
                         option.text = val;
-                        wmsSelect.appendChild(option);
+                        if ($('#wms-styles-select option[value="' + option.value + '"]').length === 0) {
+                          $('#wms-styles-select').append('<option value="' + option.value + '">' + option.text + '</option>');
+                        }
+                        //wmsSelect.appendChild(option);
                       }
 
                     }
                     else {
                       if (i === 0) {
                         visible = true;
-                        styleValues = getWmsStyles()
+                        styleValues = getWmsStyles();
+                        let styleValuesUniq = styleValues.reduce(function (prev, cur) {
+                          return (prev.indexOf(cur) < 0) ? prev.concat([cur]) : prev;
+                        }, []);
+                        console.log(styleValuesUniq);
                         let wmsSelect = document.getElementById('wms-styles-select');
-
-                        for (const val of styleValues) {
+                        for (const val of styleValuesUniq) {
                           var option = document.createElement("option");
                           option.value = val;
                           option.text = val;
-                          wmsSelect.appendChild(option);
+                          if ($('#wms-styles-select option[value="' + option.value + '"]').length === 0) {
+                            $('#wms-styles-select').append('<option value="' + option.value + '">' + option.text + '</option>');
+                          }
+                          //wmsSelect.appendChild(option);
                         }
                       }
+                      else visible = false;
                     }
                     if (hasTimeDimension) {
                       let newTimeDim = getTimeDimensions();
@@ -1280,7 +1345,8 @@ console.log("Start of wms map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    console.log("i=" + i + " layer_name: " + ls[i].Name);
+                    visible = (idx === 0) ? true : false;
+                    console.log("i=" + idx + " layer_name: " + ls[i].Name);
                     if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
                       wmsGroup.getLayers().insertAt(i,
                         new ol.layer.Tile({
@@ -1309,13 +1375,13 @@ console.log("Start of wms map script:");
 
                           })),
                         }));
+                      console.log("Added layer: " + title + " visible: " + visible);
                     }
                   }
                   //Update timedimension variables for animation
                   //hasTimeDimension = false;
 
                 }
-
 
               }
               //})

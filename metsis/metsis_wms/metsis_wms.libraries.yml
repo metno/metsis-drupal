@@ -2,8 +2,11 @@ wms_ol6:
   version: 1.2
   css:
     theme:
+      #js/ol-8.2/ol.css: {}
       css/metsis_wms.css: {}
   js:
+    #js/ol-8.2/dist/ol.js: {}
+    js/moment.min.js: { minified: true}
     js/metsis_wms.js: {}
   dependencies:
     - core/jquery
