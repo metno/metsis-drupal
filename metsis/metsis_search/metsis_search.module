@@ -5,15 +5,14 @@
  * Contains Metsis search module.
  */
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Component\Utility\Unicode;
 use Drupal\filter\Plugin\Filter\FilterHtmlCorrector;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
-
 use Drupal\views\ViewExecutable;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
@@ -117,8 +116,8 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
 
   if ($view->id() == 'metsis_simple_search' && $display_id === 'results') {
 
-   // $fields = $view->display_handler->getOption('fields');
-   // dpm($fields);
+    // $fields = $view->display_handler->getOption('fields');
+    // dpm($fields);
   }
 }
 
@@ -227,22 +226,23 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
  * Implements hook_preprocess_views_view_field()
  */
 function metsis_search_preprocess_views_view_field(&$variables) {
-  //  $view = $variables['view'];
-  //  $field = $variables['field'];
+  // $view = $variables['view'];
+  // $field = $variables['field'];
   // dpm($field);
-  //  if ($view->storage->id() == 'metsis_simple_search' &&
-  //      $view->current_display == 'results' &&
-  //      $field->field == 'keywords_keyword'
-  //    ) {
-       //dpm($field->original_value);
-      //$variables['output'] = Unicode::truncate($field->original_value, 256,
-      //   $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 80);
-    // $kw_string = Unicode::truncate((string) $variables['output'], 256,
-    //       $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 10);
-       // dpm($kw_string);
-    //   $variables['output'] = Markup::create((string) FilterHtmlCorrector::process($kw_string, 'und'));
-    // }
+  // if ($view->storage->id() == 'metsis_simple_search' &&
+  // $view->current_display == 'results' &&
+  // $field->field == 'keywords_keyword'
+  // ) {
+  // dpm($field->original_value);
+  // $variables['output'] = Unicode::truncate($field->original_value, 256,
+  // $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 80);
+  // $kw_string = Unicode::truncate((string) $variables['output'], 256,
+  // $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 10);
+  // dpm($kw_string);
+  // $variables['output'] = Markup::create((string) FilterHtmlCorrector::process($kw_string, 'und'));
+  // }
 }
+
 /**
  * Implemets hook_theme().
  */
@@ -298,18 +298,6 @@ function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $
     // dpm($view, __FUNCTION__);
     // dpm($query, __FUNCTION__);.
   }
-}
-
-/**
- * Generate options for date range field.
- */
-function dr_get_options() {
-  $options = [
-    "Intersects" => "Intersects",
-    "Contains" => "Contains",
-    "Within" => "Within",
-  ];
-  return $options;
 }
 
 /**
@@ -414,18 +402,17 @@ function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_
   // }
   $current_path = \Drupal::service('path.current')->getPath();
 
-  if($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-metsis-elements-results'){
-    //     if(in_array('bef-exposed-form', $form['#attributes']['class'])){
-    //         //force the form action to match the current path - used to fix broken exposed filters when using contextual links
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-metsis-elements-results') {
+    // if(in_array('bef-exposed-form', $form['#attributes']['class'])){
+    // //force the form action to match the current path - used to fix broken exposed filters when using contextual links
     // dpm($current_path, __FUNCTION__);
-    // dpm($form_id, __FUNCTION__);
-
+    // dpm($form_id, __FUNCTION__);.
 
     $form['#action'] = $current_path;
-    // dpm($form, __FUNCTION__);
+    // dpm($form, __FUNCTION__);.
 
-    //     }
-    }
+    // }
+  }
 
 }
 
