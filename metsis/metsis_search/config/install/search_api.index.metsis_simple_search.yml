@@ -124,6 +124,11 @@ field_settings:
     datasource_id: solr_document
     property_path: temporal_extent_end_date
     type: date
+  temporal_extent_period_dr:
+    label: 'Temporal extent period dr'
+    datasource_id: solr_document
+    property_path: temporal_extent_period_dr
+    type: solr_date_range
   temporal_extent_start_date:
     label: 'Temporal extent start date'
     datasource_id: solr_document

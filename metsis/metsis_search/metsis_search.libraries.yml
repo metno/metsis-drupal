@@ -44,6 +44,7 @@ search_map_block:
     theme:
       css/metsis_res_map.css: {}
   js:
+    js/moment.min.js: { minified: true}
     js/metsis_res_map.js: {}
   dependencies:
     - core/jquery

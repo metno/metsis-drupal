@@ -103,7 +103,7 @@ system.admin_config_metsis:
     _permission: 'administer site configuration'
 
 metsis_search.download_dataset:
-  path: '/metsis/dataset/download'
+  path: '/metsis/dataset/download/{datasetId}'
   defaults:
     _title: 'Download dataset'
     _form: 'Drupal\metsis_search\Form\DownloadDatasetForm'

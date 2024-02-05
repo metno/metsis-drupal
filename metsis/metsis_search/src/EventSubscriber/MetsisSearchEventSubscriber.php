@@ -19,6 +19,7 @@ use Solarium\Core\Event\PostCreateQuery;
 use Solarium\Core\Event\PostCreateRequest;
 use Solarium\Core\Event\PostCreateResult;
 use Solarium\Core\Event\PostExecuteRequest;
+use Solarium\Core\Event\PreCreateQuery;
 use Solarium\Core\Event\PreCreateRequest;
 use Solarium\Core\Event\PreExecuteRequest;
 use Solarium\QueryType\Select\Query;
@@ -179,6 +180,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents(): array {
+    $events[SolariumEvents::PRE_CREATE_QUERY][] = ['preCreateQuery'];
     $events[SolariumEvents::POST_CREATE_QUERY][] = ['postCreateQuery'];
     $events[SolariumEvents::PRE_EXECUTE_REQUEST][] = ['preExecuteRequest'];
     $events[SolariumEvents::PRE_CREATE_REQUEST][] = ['preCreateRequest'];
@@ -192,6 +194,16 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Listen to  the post create query.
+   *
+   * @param \Solarium\Core\Event\PreCreateQuery $event
+   *   the current Event.
+   */
+  public function preCreateQuery(PreCreateQuery $event) {
+    // dpm($event, __FUNCTION__);.
+  }
+
+  /**
    * Listen to  the post convert query event.
    *
    * @param \Drupal\search_api_solr\Event\PostConvertedQueryEvent $event
@@ -201,7 +213,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     // dpm("PostConvertedQueryEvent");
     // dpm($event->getSearchApiQuery());
     // dpm($event->getSolariumQuery());
-
+    // dpm($event->getSolariumQuery(), __FUNCTION__);.
   }
 
   /**
@@ -211,6 +223,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current event.
    */
   public function onPreQuery(PreQueryEvent $event) {
+
     // Search api query.
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
@@ -219,6 +232,34 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     // Get the search id for this search view.
     $searchId = $query->getSearchId();
     $this->searchId = $searchId;
+
+    // Handeling simple search view.
+    if (($searchId !== NULL) && (($searchId === 'views_page:metsis_simple_search__results'))) {
+      $conditions = $query->getConditionGroup()->getConditions();
+      $range_op = NULL;
+      if (isset($conditions[3])) {
+        $range_op = $conditions[3]->getConditions()[0]->getOperator();
+        // dpm($range_op, __LINE__);.
+        $solarium_query->removeFilterQuery('filters_3');
+      }
+      if ($range_op != NULL and $range_op != 'Between') {
+        // dpm($solarium_query, __FUNCTION__);.
+        $range_filter = $solarium_query->getFilterQuery('filters_2');
+        $range_filter_query = $range_filter->getQuery();
+        $qf = explode(':', $range_filter_query, 2);
+        $field = $qf[0];
+        $dr = preg_replace('/(T[0-9]{2}:[0-9]{2}:[0-9]{2}Z)/', '', $qf[1]);
+        $dr = str_replace('"', '', $dr);
+        $solarium_query->removeFilterQuery('filters_2');
+        $options = [
+          'key' => 'filters_2',
+          'query' => "{!field f=$field op=$range_op}$dr",
+        ];
+        // dpm($options);
+        $solarium_query->addFilterQuery($options);
+      }
+    }
+
     // Only do something during this event if we have metsis search view.
     if (($searchId !== NULL) && (($searchId === 'views_page:metsis_search__results')
       || $this->searchId === 'views_page:metsis_elements__results' || $this->searchId === 'views_page:metsis_simple_search__results'
@@ -458,6 +499,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    */
   public function postCreateQuery(PostCreateQuery $event) {
     // dpm($event->getQuery());
+    // dpm($event, __FUNCTION__);.
   }
 
   /**

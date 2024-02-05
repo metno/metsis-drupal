@@ -250,6 +250,17 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       '#allowed_tags' => ['div', 'img'],
 
     ];
+
+    // Wms Styles Dropdown.
+    $build['search-map']['map-fullscreen-wrapper']['side-panel']['wms-styles'] = [
+      '#type' => 'markup',
+      '#prefix' => '<div class="w3-container w3-margin-left wmsstyle-placeholder">',
+      '#markup' => '<div id="wms-style-id" class="wms-style-dropdown></div>',
+      '#suffix' => '</div>',
+      '#allowed_tags' => ['div', 'img'],
+
+    ];
+
     // Placeholder for the ol-ext layerswitcher inside side-panel.
     $build['search-map']['map-fullscreen-wrapper']['side-panel']['layerswitcher'] = [
       '#markup' => '<div class="external layerSwitcher"><b>Layer switcher</b></div>',

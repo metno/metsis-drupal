@@ -7,7 +7,10 @@
 
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Component\Utility\Unicode;
+use Drupal\filter\Plugin\Filter\FilterHtmlCorrector;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 
@@ -112,6 +115,11 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     $view->display_handler->overrideOption('fields', $fields);
   }
 
+  if ($view->id() == 'metsis_simple_search' && $display_id === 'results') {
+
+   // $fields = $view->display_handler->getOption('fields');
+   // dpm($fields);
+  }
 }
 
 /**
@@ -196,8 +204,9 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 
   // For simple search.
   if (isset($view) && ($view->storage->id() == 'metsis_simple_search')) {
+    // $view->element['#attached']['library'][] = 'metsis_search/children_count';
     // dpm($view->field);
-    // dpm($view->result);.
+    // dpm($view->result);
   }
 }
 
@@ -214,6 +223,26 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
   }
 }
 
+/**
+ * Implements hook_preprocess_views_view_field()
+ */
+function metsis_search_preprocess_views_view_field(&$variables) {
+  //  $view = $variables['view'];
+  //  $field = $variables['field'];
+  // dpm($field);
+  //  if ($view->storage->id() == 'metsis_simple_search' &&
+  //      $view->current_display == 'results' &&
+  //      $field->field == 'keywords_keyword'
+  //    ) {
+       //dpm($field->original_value);
+      //$variables['output'] = Unicode::truncate($field->original_value, 256,
+      //   $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 80);
+    // $kw_string = Unicode::truncate((string) $variables['output'], 256,
+    //       $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 10);
+       // dpm($kw_string);
+    //   $variables['output'] = Markup::create((string) FilterHtmlCorrector::process($kw_string, 'und'));
+    // }
+}
 /**
  * Implemets hook_theme().
  */
@@ -272,6 +301,18 @@ function metsis_search_views_query_alter(ViewExecutable $view, QueryPluginBase $
 }
 
 /**
+ * Generate options for date range field.
+ */
+function dr_get_options() {
+  $options = [
+    "Intersects" => "Intersects",
+    "Contains" => "Contains",
+    "Within" => "Within",
+  ];
+  return $options;
+}
+
+/**
  * Implements hook_views_data_alter().
  */
 function metsis_search_views_data_alter(array &$data) {
@@ -279,6 +320,14 @@ function metsis_search_views_data_alter(array &$data) {
   // var_dump($data);
   // Do something withe the veiws query here
   // }.
+
+  // Override the views filter to custom date_range filter for the date range search.
+  if (isset($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'])) {
+    $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['id'] = 'search_api_date_range';
+    // $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['options callback'] = 'dr_get_options';
+    // dpm($data['search_api_index_metsis_simple_search'], __FUNCTION__);
+  }
+
 }
 
 /**
@@ -363,6 +412,21 @@ function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_
   // ];
   // var_dump($form);
   // }
+  $current_path = \Drupal::service('path.current')->getPath();
+
+  if($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-metsis-elements-results'){
+    //     if(in_array('bef-exposed-form', $form['#attributes']['class'])){
+    //         //force the form action to match the current path - used to fix broken exposed filters when using contextual links
+    // dpm($current_path, __FUNCTION__);
+    // dpm($form_id, __FUNCTION__);
+
+
+    $form['#action'] = $current_path;
+    // dpm($form, __FUNCTION__);
+
+    //     }
+    }
+
 }
 
 /**
