@@ -85,6 +85,63 @@ display:
           group_type: group
           admin_label: 'Is parent dataset?'
           plugin_id: search_api_boolean
+          label: Parent
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: true-false
+          type_custom_true: ''
+          type_custom_false: ''
+          not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        is_child:
+          id: is_child
+          table: search_api_index_metsis_simple_search
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: 'is child dataset?'
+          plugin_id: search_api_boolean
           label: ''
           exclude: true
           alter:
@@ -126,10 +183,275 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          type: yes-no
+          type: true-false
           type_custom_true: ''
           type_custom_false: ''
           not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        related_dataset_id_1:
+          id: related_dataset_id_1
+          table: search_api_index_metsis_simple_search
+          field: related_dataset_id
+          relationship: none
+          group_type: group
+          admin_label: 'Related dataset id placeholder for title'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        nothing_5:
+          id: nothing_5
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'Parent title'
+          plugin_id: custom
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: '{{ related_dataset_id_1 }}'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+        is_parent_1:
+          id: is_parent_1
+          table: search_api_index_metsis_simple_search
+          field: is_parent
+          relationship: none
+          group_type: group
+          admin_label: 'Parent child grouping'
+          plugin_id: search_api_boolean
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: "{% if is_parent|lower == 'true' %}\r\n<h3><span><em>Parent dataset(s) - Collections </em></span></h3>\r\n{% elseif is_parent|lower == 'false' %}\r\n<h3><span><em>Other dataset(s)</em></span></h3>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: true-false
+          type_custom_true: Parents/Collections
+          type_custom_false: 'Other datasets'
+          not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        related_dataset:
+          id: related_dataset
+          table: search_api_index_metsis_simple_search
+          field: related_dataset
+          relationship: none
+          group_type: group
+          admin_label: 'Related dataset meta identifier'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        related_dataset_id:
+          id: related_dataset_id
+          table: search_api_index_metsis_simple_search
+          field: related_dataset_id
+          relationship: none
+          group_type: group
+          admin_label: 'Related dataset grouping'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: "{% if is_child|lower == 'true' %}\r\n<span><em> The following child dataset(s) are part of collection <a class=\"w3-text-blue use-ajax\"  data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Parent Details&quot;}\" \r\n    data-dialog-type=\"dialog\" href=\"/metsis/metadata/parent/{{ related_dataset_id }}\">{{ nothing_5 }}</a>. List all data in <a href=\"/metsis/simple_search?related_dataset_id={{ related_dataset_id }}\" class=\"w3-text-blue\" >this collection</a> </em></span>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
           multi_type: separator
@@ -568,7 +890,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden w3-btn w3-border w3-border-grey\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden w3-btn w3-border w3-border-grey\" href=/metsis/simple_search?related_dataset_id={{ id }}></a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -703,6 +1025,214 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        data_access_url_ogc_wms:
+          id: data_access_url_ogc_wms
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_ogc_wms
+          relationship: none
+          group_type: group
+          admin_label: 'wms data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_opendap:
+          id: data_access_url_opendap
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_opendap
+          relationship: none
+          group_type: group
+          admin_label: 'OpenDAP data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        feature_type:
+          id: feature_type
+          table: search_api_index_metsis_simple_search
+          field: feature_type
+          relationship: none
+          group_type: group
+          admin_label: featureType
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        nothing_6:
+          id: nothing_6
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: VIsualise
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if data_access_url_ogc_wms %} \r\n  <a class=\"w3-btn w3-border w3-border-grey\"  href=\"/metsis/map/wms?dataset={{ id }}\">Visualise WMS</a>\r\n{% elseif  data_access_url_opendap and (feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile') %}\r\n<a class=\"use-ajax  w3-btn w3-border w3-border-grey\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: 'w3-cell w3-container'
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
       pager:
         type: full
         options:
@@ -743,7 +1273,7 @@ display:
               autosubmit_textfield_delay: 500
               autosubmit_hide: false
               input_required: true
-              allow_secondary: true
+              allow_secondary: false
               secondary_label: 'Advanced options'
               secondary_open: false
               reset_button_always_show: true
@@ -751,18 +1281,21 @@ display:
               search_api_fulltext:
                 plugin_id: default
                 advanced:
-                  placeholder_text: ''
                   rewrite:
                     filter_rewrite_values: ''
                   collapsible: false
                   is_secondary: false
-              temporal_extent_start_date:
+              temporal_extent_period_dr:
                 plugin_id: default
                 advanced:
-                  rewrite:
-                    filter_rewrite_values: ''
                   collapsible: false
-                  is_secondary: true
+                  is_secondary: false
+              related_dataset_id:
+                plugin_id: default
+                advanced:
+                  placeholder_text: ''
+                  collapsible: false
+                  is_secondary: false
       access:
         type: perm
         options:
@@ -836,11 +1369,13 @@ display:
             description: ''
             use_operator: false
             operator: search_api_fulltext_op
-            operator_limit_selection: false
-            operator_list: {  }
+            operator_limit_selection: true
+            operator_list:
+              and: and
+              or: or
             identifier: search_api_fulltext
             required: false
-            remember: true
+            remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
@@ -850,9 +1385,11 @@ display:
             expose_fields: false
             placeholder: ''
             searched_fields_id: search_api_fulltext_searched_fields
+            value_maxlength: 128
             autocomplete_filter: 1
             autocomplete_min_chars: '3'
             autocomplete_items: '16'
+            autocomplete_field: ''
             autocomplete_raw_suggestion: 1
             autocomplete_raw_dropdown: 1
             autocomplete_dependent: 0
@@ -869,49 +1406,11 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           parse_mode: terms
-          min_length: 3
+          min_length: 2
           fields:
             - abstract
             - full_text
             - title
-        is_child:
-          id: is_child
-          table: search_api_index_metsis_simple_search
-          field: is_child
-          relationship: none
-          group_type: group
-          admin_label: 'Do not show children'
-          plugin_id: search_api_boolean
-          operator: '='
-          value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
         is_parent:
           id: is_parent
           table: search_api_index_metsis_simple_search
@@ -1010,11 +1509,58 @@ display:
             operator_id: temporal_extent_period_dr_op
             label: 'Temporal extent'
             description: 'Filter on start and end dates'
-            use_operator: true
+            use_operator: false
             operator: temporal_extent_period_dr_op
             operator_limit_selection: false
             operator_list: {  }
             identifier: temporal_extent_period_dr
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        related_dataset_id:
+          id: related_dataset_id
+          table: search_api_index_metsis_simple_search
+          field: related_dataset_id
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: related_dataset_id_op
+            label: 'Related dataset id'
+            description: ''
+            use_operator: false
+            operator: related_dataset_id_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: related_dataset_id
             required: false
             remember: false
             multiple: false
@@ -1047,10 +1593,18 @@ display:
       style:
         type: html_list
         options:
-          grouping: {  }
+          grouping:
+            -
+              field: is_parent_1
+              rendered: true
+              rendered_strip: false
+            -
+              field: related_dataset_id
+              rendered: true
+              rendered_strip: false
           row_class: w3-card-2
           default_row_class: true
-          type: ul
+          type: ol
           wrapper_class: item-list
           class: ''
       row:
@@ -1100,9 +1654,11 @@ display:
           bypass_access: true
           skip_access: true
           preserve_facet_query_args: true
-          query_tags: {  }
+          query_tags:
+            - simple_search
       defaults:
         query: false
+      exposed_block: true
       display_extenders:
         simple_sitemap_display_extender:
           variants: {  }

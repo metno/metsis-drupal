@@ -141,7 +141,7 @@ class MetsisTsBokehPlotForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     /*
      * We use ajax on this form, so this function is empty
      */

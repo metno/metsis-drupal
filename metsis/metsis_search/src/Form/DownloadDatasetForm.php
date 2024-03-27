@@ -187,7 +187,7 @@ class DownloadDatasetForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     if (mb_strlen($form_state->getValue('message')) < 10) {
       $form_state->setErrorByName('message', $this->t('Message should be at least 10 characters.'));
     }
@@ -196,7 +196,7 @@ class DownloadDatasetForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->messenger()->addStatus($this->t('The message has been sent.'));
     $form_state->setRedirect('<front>');
   }

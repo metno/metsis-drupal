@@ -113,7 +113,7 @@ display:
             trim: false
             preserve_tags: ''
             html: false
-          element_type: h1
+          element_type: h2
           element_class: ''
           element_label_type: ''
           element_label_class: ''
@@ -247,7 +247,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<h2>{{ project_long_name }}, {{ project_short_name }} </h2>'
+            text: "{% if project_long_name is defined %}\r\n{{ project_long_name }}\r\n{% elseif project_short_name is defined %}\r\n, ({{ project_short_name }})\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1132,7 +1132,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -1148,7 +1148,7 @@ display:
           legend: Investigator
           classes: ''
           collapsible: true
-          collapsed: false
+          collapsed: true
         personnel_investigator_name:
           id: personnel_investigator_name
           table: search_api_index_metsis
@@ -1349,7 +1349,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -1365,7 +1365,7 @@ display:
           legend: 'Metadata Author'
           classes: ''
           collapsible: true
-          collapsed: false
+          collapsed: true
         personnel_metadata_author_name:
           id: personnel_metadata_author_name
           table: search_api_index_metsis
@@ -1791,7 +1791,7 @@ display:
           element_default_classes: true
           empty: ''
           hide_empty: true
-          empty_zero: false
+          empty_zero: true
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
@@ -1863,17 +1863,13 @@ display:
           row_class: ''
           default_row_class: true
           type: ul
-          wrapper_class: item-list
+          wrapper_class: ''
           class: ''
       row:
         type: fields
         options:
           default_field_elements: true
-          inline:
-            project_long_name: project_long_name
-            project_short_name: project_short_name
-            data_center_long_name: data_center_long_name
-            data_center_url: data_center_url
+          inline: {  }
           separator: ','
           hide_empty: true
       query:
@@ -1883,20 +1879,7 @@ display:
           skip_access: true
           preserve_facet_query_args: false
       relationships: {  }
-      header:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          plugin_id: text
-          empty: false
-          content:
-            value: '<h2>Parent Dataset</h2>'
-            format: basic_html
-          tokenize: false
+      header: {  }
       footer: {  }
       display_extenders: {  }
     cache_metadata:
@@ -1921,6 +1904,29 @@ display:
           geocluster_enabled: false
           geocluster_options: {  }
       path: metsis/metadata/parent
+    cache_metadata:
+      max-age: -1
+      contexts:
+        - 'languages:language_interface'
+        - url
+        - user.permissions
+      tags:
+        - 'config:search_api.index.metsis'
+        - 'search_api_list:metsis'
+  page_2:
+    id: page_2
+    display_title: 'Simple Page'
+    display_plugin: page
+    position: 1
+    display_options:
+      display_description: 'Parent information for Simple Search'
+      display_extenders:
+        simple_sitemap_display_extender:
+          variants: {  }
+        geocluster_views_display_extender:
+          geocluster_enabled: false
+          geocluster_options: {  }
+      path: metsis/metadata/parent/simple
     cache_metadata:
       max-age: -1
       contexts:

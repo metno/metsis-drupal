@@ -9540,8 +9540,8 @@ display:
           row_class: ''
           default_row_class: true
           type: ul
-          wrapper_class: item-list
-          class: ''
+          wrapper_class: ''
+          class: meta-details-list
       row:
         type: fields
         options:
@@ -9582,6 +9582,8 @@ display:
     position: 1
     display_options:
       display_extenders:
+        simple_sitemap_display_extender:
+          variants: {  }
         geocluster_views_display_extender:
           geocluster_enabled: false
           geocluster_options: {  }

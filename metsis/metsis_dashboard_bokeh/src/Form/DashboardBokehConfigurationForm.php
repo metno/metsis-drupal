@@ -59,7 +59,7 @@ class DashboardBokehConfigurationForm extends ConfigFormBase {
    *
    * @todo Add validation to the rest of the form elements.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     $value = $form_state->getValue('dashboard_bokeh_service');
 
     if (!UrlHelper::isValid($value, TRUE)) {
@@ -71,7 +71,7 @@ class DashboardBokehConfigurationForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $this->configFactory->getEditable('metsis_dashboard_bokeh.configuration')
       ->set('dashboard_bokeh_service', $form_state->getValue('dashboard_bokeh_service'))
       ->set('dashboard_notebook_service', $form_state->getValue('dashboard_notebook_service'))

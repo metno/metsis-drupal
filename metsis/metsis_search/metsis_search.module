@@ -11,9 +11,11 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\filter\Plugin\Filter\FilterHtmlCorrector;
+use Drupal\search_api\Entity\Index;
 use Drupal\views\Plugin\views\cache\CachePluginBase;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
 use Drupal\views\ViewExecutable;
+use Drupal\views\Views;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 
@@ -41,9 +43,11 @@ function metsis_search_help($route_name, RouteMatchInterface $route_match) {
  */
 function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &$args) {
   // Get the current request object.
-  // $request = \Drupal::request();
+  $request = \Drupal::request();
   // $referer = $request->headers->get('referer');.
-
+  $rUri = $request->getRequestUri();
+  // dpm($rUri, __FUNCTION__);
+  // dpm($request->query, __FUNCTION__);.
   /* Collect possible start and end dates for passing to elements view */
   $config = \Drupal::config('metsis_search.settings');
 
@@ -117,7 +121,54 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
   if ($view->id() == 'metsis_simple_search' && $display_id === 'results') {
 
     // $fields = $view->display_handler->getOption('fields');
-    // dpm($fields);
+    // dpm($view);
+    /* Pass metsis search view arguments to elements view. */
+    $filters = $view->getExposedInput();
+    $fields = $view->display_handler->getOption('fields');
+    $orig_text = $fields['nothing_4']['alter']['text'];
+    // dpm($orig_text);
+    // dpm($filters, __FUNCTION__);.
+    $replace_text = $rUri;
+    foreach ($filters as $k => $v) {
+      if ($k === 'op') {
+        continue;
+      }
+      if ($k === 'is_parent') {
+        continue;
+      }
+      if ($k === 'fulltext') {
+        $v = '';
+      }
+      if (is_array($v)) {
+        continue;
+      }
+      $replace_text .= $k . '=' . $v . '&';
+    }
+    $rep_text_t = rtrim($replace_text, '&');
+    // dpm($rep_text_t);
+    $replaced_text = str_replace('/metsis/simple_search', $rUri, $orig_text);
+    $replaced_text = str_replace('?related_dataset_id', '&related_dataset_id', $replaced_text);
+    // dpm($replaced_text, __FUNCTION__);.
+
+    $fields['nothing_4']['alter']['text'] = $replaced_text;
+
+    if (isset($filters['related_dataset_id']) && $filters['related_dataset_id'] != '') {
+      $parent_args = [$filters['related_dataset_id']];
+      // dpm($parent_args, __FUNCTION__. ':'. __LINE__);.
+      $parent_view = Views::getView('metsis_metadata_details_parent');
+      // If (is_object($view)) {.
+      $parent_view->setArguments($parent_args);
+      $parent_view->setDisplay('page_2');
+      // $view->preExecute();
+      $parent_view->execute();
+      // $content = $view->buildRenderable('results', $args);
+      // dpm($parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText(),__FUNCTION__);
+      $parent_title = $parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText();
+      $fields['nothing_5']['alter']['text'] = $parent_title;
+      // }
+    }
+    $view->display_handler->overrideOption('fields', $fields);
+
   }
 }
 
@@ -206,6 +257,32 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     // $view->element['#attached']['library'][] = 'metsis_search/children_count';
     // dpm($view->field);
     // dpm($view->result);
+    $index = Index::load('metsis');
+
+    $results = &$view->result;
+    $filteredResults = [];
+    // dpm($view->field['nothing_5'], __FUNCTION__);
+    // foreach ($view->result as &$row) {
+    // dpm($row, __FUNCTION__);
+    // dpm($idx, __FUNCTION__);
+    // $rid = $row->{"solr_document/related_dataset_id"};
+    // if (!empty($rid)) {
+    // dpm($rid[0], __FUNCTION__);
+    // $query = $index->query();
+    // $query->addCondition('id', trim($rid[0]));
+    // $query->setOption('search_api_retrieved_field_values', ['title']);
+    // dpm($query->getConditionGroup());
+    // $presults = $query->execute();
+    // dpm($presults->getResultItems(), __FUNCTION__ . ':' . __LINE__);
+    // $presults->getResultItems();
+    // foreach ($presults as $key => $value) {
+    // $ptitle = $value->getField('title')->getValues()[0]->getText();
+    // $view->field['nothing_5']->options['alter']['text'] = $ptitle;
+    // $result->_entity->set('nothing_5', $ptitle);
+    // }.
+
+    // }
+    // }
   }
 }
 
@@ -213,12 +290,13 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
  * Implements hook_views_post_render().
  */
 function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
-  if (isset($view) && ($view->storage->id() == 'metsis_search')) {
+  if (isset($view) && (($view->storage->id() == 'metsis_search')
+      ||($view->storage->id() == 'metsis_simple_search'))) {
     // $cache->options['results_lifespan'] = 400;
     // $cache->options['output_lifespan'] = 400;
 
-    // dpm($cache);
-    // dpm($output);
+    // dpm($view->field['nothing_5'], __FUNCTION__);
+    // dpm($output['#rows'][0], __FUNCTION__);.
   }
 }
 
@@ -226,9 +304,9 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
  * Implements hook_preprocess_views_view_field()
  */
 function metsis_search_preprocess_views_view_field(&$variables) {
-  // $view = $variables['view'];
-  // $field = $variables['field'];
-  // dpm($field);
+  $view = $variables['view'];
+  $field = $variables['field'];
+  // dpm($field, __FUNCTION__);
   // if ($view->storage->id() == 'metsis_simple_search' &&
   // $view->current_display == 'results' &&
   // $field->field == 'keywords_keyword'
@@ -240,7 +318,30 @@ function metsis_search_preprocess_views_view_field(&$variables) {
   // $wordsafe = TRUE, $add_ellipsis = TRUE, $min_wordsafe_length = 10);
   // dpm($kw_string);
   // $variables['output'] = Markup::create((string) FilterHtmlCorrector::process($kw_string, 'und'));
-  // }
+  // }.
+  if ($variables['view']->id() === 'metsis_simple_search' &&
+  // $view->current_display == 'results' &&
+   $variables['field']->options['id'] === 'nothing_5'
+
+  ) {
+    $p_id = (string) $variables['output'];
+    if ($p_id !== '') {
+      $index = Index::load('metsis');
+      $query = $index->query();
+      $query->addCondition('id', trim($p_id));
+      $query->setOption('search_api_retrieved_field_values', ['title']);
+      // dpm($query->getConditionGroup());
+      $presults = $query->execute();
+      // dpm($presults->getResultItems(), __FUNCTION__ . ':' . __LINE__);.
+      $presults->getResultItems();
+      foreach ($presults as $key => $value) {
+        $ptitle = $value->getField('title')->getValues()[0]->getText();
+        $variables['output'] = Markup::create($ptitle);
+        $variables['field']->last_render = $variables['output'];
+      }
+
+    }
+  }
 }
 
 /**
@@ -286,6 +387,11 @@ function metsis_search_theme($existing, $type, $theme, $path) {
       'template' => 'views-fieldsets-details',
       'path' => 'modules/metsis/metsis_search/templates',
     ],
+    'page__metsis__simple_search' => [
+      // 'render element' => 'elements',
+      'base hook' => 'page',
+      'path' => 'modules/metsis/metsis_search/templates',
+    ],
   ];
 }
 
@@ -308,12 +414,14 @@ function metsis_search_views_data_alter(array &$data) {
   // var_dump($data);
   // Do something withe the veiws query here
   // }.
-
+  // dpm($data);
   // Override the views filter to custom date_range filter for the date range search.
   if (isset($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'])) {
     $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['id'] = 'search_api_date_range';
     // $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['options callback'] = 'dr_get_options';
-    // dpm($data['search_api_index_metsis_simple_search'], __FUNCTION__);
+    // dpm($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'], __FUNCTION__);
+    $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['field']['id'] = 'daterange';
+    // dpm($data['search_api_index_metsis_simple_search']['temporal_extent_start_date'], __FUNCTION__);.
   }
 
 }
@@ -376,7 +484,7 @@ function metsis_search_views_post_execute(ViewExecutable $view) {
   // dpm('hei');.
 
   if ($view->id() == 'metsis_simple_search') {
-    // dpm($view->result);.
+    // dpm($view, __FUNCTION__);.
   }
 }
 
@@ -461,6 +569,21 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     ];*/
     // dpm($form);
     // dpm($form);
+  }
+  if (($view['view']->id() == 'metsis_simple_search') && ($view['view']->current_display == 'results')) {
+    // $form['related_dataset_id']['#type'] = 'hidden';
+    $form['related_dataset_id']['#states'] = [
+      'invisible' => [
+        ':input[name="related_dataset_id"]' => ['value' => ''],
+        'disabled' => TRUE,
+      ],
+    ];
+    // $form['related_dataset_id']['#access'] = FALSE;
+
+    // $form['is_child']['#type'] = 'hidden';
+    // $form['is_child']['#access'] = FALSE;
+
+    // dpm($form,__FUNCTION__);.
   }
 }
 

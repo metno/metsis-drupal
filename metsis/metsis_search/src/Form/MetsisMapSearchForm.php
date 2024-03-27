@@ -181,7 +181,7 @@ class MetsisMapSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     /*
      * We use ajax on this form, so this function is empty
      */
@@ -190,7 +190,7 @@ class MetsisMapSearchForm extends FormBase {
   /**
    * Ajax callback function.
    */
-  public function getPlotData(array $form, FormStateInterface $form_state) {
+  public function getPlotData(array $form, FormStateInterface $form_state): void {
     /* tate->getValue('y_axis'));
     //Get data resource url from tempstore
     $tempstore = \Drupal::service('tempstore.private')->get('metsis_ts_bokeh');

@@ -177,7 +177,7 @@ class MapSearchController extends ControllerBase {
   /**
    * Callback for reset action.
    */
-  public function resetCallback() {
+  public function resetCallback(): void {
     // \Drupal::logger('metsis_search')->debug("MapSearchController::resetCallback");
   }
 

@@ -20,7 +20,7 @@ class InitSubscriber implements EventSubscriberInterface {
   /**
    * On a partivular event do the following.
    */
-  public function onEvent() {
+  public function onEvent(): void {
     /* DEPRECTAED    drupal_add_css(drupal_get_path('module', 'metsis_ts_bokeh') . '/css/metsis_ts_bokeh.css'); */
   }
 

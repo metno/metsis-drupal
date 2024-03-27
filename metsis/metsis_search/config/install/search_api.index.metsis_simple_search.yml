@@ -73,6 +73,21 @@ field_settings:
     datasource_id: solr_document
     property_path: bbox
     type: string
+  data_access_url_ogc_wms:
+    label: 'Data access url ogc wms'
+    datasource_id: solr_document
+    property_path: data_access_url_ogc_wms
+    type: string
+  data_access_url_opendap:
+    label: 'Data access url opendap'
+    datasource_id: solr_document
+    property_path: data_access_url_opendap
+    type: string
+  feature_type:
+    label: 'Feature type'
+    datasource_id: solr_document
+    property_path: feature_type
+    type: string
   full_text:
     label: 'Full text'
     datasource_id: solr_document
@@ -103,6 +118,26 @@ field_settings:
     label: 'Metadata status'
     datasource_id: solr_document
     property_path: metadata_status
+    type: string
+  project_long_name:
+    label: 'Project long name'
+    datasource_id: solr_document
+    property_path: project_long_name
+    type: string
+  project_short_name:
+    label: 'Project short name'
+    datasource_id: solr_document
+    property_path: project_short_name
+    type: string
+  related_dataset:
+    label: 'Related dataset'
+    datasource_id: solr_document
+    property_path: related_dataset
+    type: string
+  related_dataset_id:
+    label: 'Related dataset id'
+    datasource_id: solr_document
+    property_path: related_dataset_id
     type: string
   related_url_landing_page:
     label: 'Related url landing page'
@@ -157,6 +192,7 @@ processor_settings:
   add_url: {  }
   aggregated_field: {  }
   auto_aggregated_fulltext_field: {  }
+  custom_value: {  }
   double_quote_workaround:
     weights:
       postprocess_query: 0

@@ -168,7 +168,7 @@ class MetsisTsPlotForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     // $form_state->setValue('data_uri', '');
     // $form_state->disableCache();
     $form_state->setRebuild();

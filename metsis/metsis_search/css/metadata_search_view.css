@@ -77,3 +77,12 @@ label,
 /*
 .views-field-fieldset-3 > span:nth-child(1) > details:nth-child(1)
 */
+
+/* Remove bullet from ul in extended metadata view off canvas dialog */
+.meta-details-list {
+  list-style-type: none !important;
+}
+
+.simple-search-region {
+  flex-flow: column;
+}

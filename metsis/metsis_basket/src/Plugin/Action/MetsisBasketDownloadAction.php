@@ -24,7 +24,7 @@ class MetsisBasketDownloadAction extends ViewsBulkOperationsActionBase {
   /**
    * {@inheritdoc}
    */
-  public function execute($entity = NULL) {
+  public function execute($entity = NULL): void {
     \Drupal::logger('metsis_basket')->debug('Executing metsis basket Download action');
     $user = \Drupal::currentUser();
     \Drupal::logger('metsis_basket')->debug('Crrent user id is: ' . $user->id());
@@ -50,7 +50,7 @@ class MetsisBasketDownloadAction extends ViewsBulkOperationsActionBase {
   /**
    * {@inheritdoc}
    */
-  public function executeMultiple(array $objects) {
+  public function executeMultiple(array $objects): void {
 
     /*
      * Get the default endpoint names from default config
@@ -104,7 +104,7 @@ class MetsisBasketDownloadAction extends ViewsBulkOperationsActionBase {
   /**
    * Get order download.
    */
-  public function createDownloadActionOrder($uris) {
+  public function createDownloadActionOrder($uris): void {
     $user = \Drupal::currentUser();
     global $base_url;
 

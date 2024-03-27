@@ -199,7 +199,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PreCreateQuery $event
    *   the current Event.
    */
-  public function preCreateQuery(PreCreateQuery $event) {
+  public function preCreateQuery(PreCreateQuery $event): void {
     // dpm($event, __FUNCTION__);.
   }
 
@@ -209,7 +209,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\search_api_solr\Event\PostConvertedQueryEvent $event
    *   The current event.
    */
-  public function postConvertQuery(PostConvertedQueryEvent $event) {
+  public function postConvertQuery(PostConvertedQueryEvent $event): void {
     // dpm("PostConvertedQueryEvent");
     // dpm($event->getSearchApiQuery());
     // dpm($event->getSolariumQuery());
@@ -222,7 +222,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\search_api_solr\Event\PreQueryEvent $event
    *   The current event.
    */
-  public function onPreQuery(PreQueryEvent $event) {
+  public function onPreQuery(PreQueryEvent $event): void {
 
     // Search api query.
     $query = $event->getSearchApiQuery();
@@ -331,7 +331,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         }
 
         // dpm($solarium_query->getSorts());
-        // $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');.
+        $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
       }
 
       /*
@@ -342,7 +342,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       $solarium_query->addParam('bq',
       [
         'iParent' =>
-        '(isParent:true^3 OR isParent:false^1)',
+        '(isParent:true^4 OR isParent:false^2)',
+        'isChild' => 'isChild:true^1',
       ]);
       /*
        * Add fields not defined in search view but needed for
@@ -497,7 +498,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PostCreateQuery $event
    *   the current Event.
    */
-  public function postCreateQuery(PostCreateQuery $event) {
+  public function postCreateQuery(PostCreateQuery $event): void {
     // dpm($event->getQuery());
     // dpm($event, __FUNCTION__);.
   }
@@ -508,7 +509,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PreExecuteRequest $event
    *   The pre execute event.
    */
-  public function preExecuteRequest(PreExecuteRequest $event) {
+  public function preExecuteRequest(PreExecuteRequest $event): void {
     // \Drupal::logger('metsis-search')->debug("PreExecuteRequest");
   }
 
@@ -518,7 +519,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PostExecuteRequest $event
    *   The post execute event.
    */
-  public function postExecuteRequest(PostExecuteRequest $event) {
+  public function postExecuteRequest(PostExecuteRequest $event): void {
     // \Drupal::logger('metsis-search')->debug("PostExecuteRequest");
   }
 
@@ -528,7 +529,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PreCreateRequest $event
    *   The pre create request event.
    */
-  public function preCreateRequest(PreCreateRequest $event) {
+  public function preCreateRequest(PreCreateRequest $event): void {
     // dpm("PreCreateRequest");
     // dpm($event->getQuery());
     // dpm($event->getRequest());
@@ -543,7 +544,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PostCreateRequest $event
    *   The post create request event.
    */
-  public function postCreateRequest(PostCreateRequest $event) {
+  public function postCreateRequest(PostCreateRequest $event): void {
     // dpm("PostCreateRequest");
     // dpm($event->getQuery());
     // $req = $event->getRequest();
@@ -610,7 +611,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @param \Solarium\Core\Event\PostCreateResult $event
    *   The post create result event.
    */
-  public function postCreateResult(PostCreateResult $event) {
+  public function postCreateResult(PostCreateResult $event): void {
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
     if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'

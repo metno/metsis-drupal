@@ -51,7 +51,7 @@ class MetsisTsBokehConfigurationForm extends ConfigFormBase {
    * NOTE: url-validation already provided by url form element type.
    * Implement custom validation here if needed.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     $value = $form_state->getValue('ts_bokeh_plot_service');
 
     if (!UrlHelper::isValid($value, TRUE)) {
@@ -63,7 +63,7 @@ class MetsisTsBokehConfigurationForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
 
     $this->configFactory->getEditable('metsis_ts_bokeh.configuration')
       ->set('ts_bokeh_plot_service', $form_state->getValue('ts_bokeh_plot_service'))

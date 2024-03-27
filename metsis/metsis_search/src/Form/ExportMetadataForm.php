@@ -147,7 +147,7 @@ class ExportMetadataForm extends FormBase {
    *
    * On submit, show the user the names of the users they selected.
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $values = $form_state->getValues();
 
     $id = $values['solr-id'];

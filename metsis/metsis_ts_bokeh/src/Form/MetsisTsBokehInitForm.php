@@ -93,7 +93,7 @@ class MetsisTsBokehInitForm extends FormBase {
    *
    * Redirect init form to plot.
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
     $session = $this->getRequest()->getSession();
     $session->set('data_uri', $form_state->getValue('data_uri'));
     $form_state->setRedirect('metsis_ts_bokeh.plot');

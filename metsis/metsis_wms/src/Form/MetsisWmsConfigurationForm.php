@@ -120,7 +120,7 @@ class MetsisWmsConfigurationForm extends ConfigFormBase {
    *
    * NOTE: Implement form validation here.
    */
-  public function validateForm(array &$form, FormStateInterface $form_state) {
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
     // Get user and pass from admin configuration.
     $values = $form_state->getValues();
 
@@ -129,7 +129,7 @@ class MetsisWmsConfigurationForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
 
     /*
      * Save the configuration.

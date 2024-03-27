@@ -43,7 +43,7 @@ class WmsUrlForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
 
     $wms_url = $form_state->getValue('wms_url');
     $this->messenger()->addStatus($this->t('url @', ['@' => $wms_url]));
