@@ -40,6 +40,7 @@ class MetsisSearchController extends ControllerBase {
     $solarium_query->setRows(1);
     $solarium_query->setFields('id');
     $solarium_query->createFilterQuery('children')->setQuery('isChild:true');
+    $solarium_query->createFilterQuery('statusfilter')->setQuery('metadata_status:Active');
     $date_filter = '';
     if (NULL != $start_date) {
       $date_filter .= '+temporal_extent_start_date:[' . $start_date . 'T00:00:00Z TO *] ';
