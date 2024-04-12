@@ -89,19 +89,31 @@ map_ol_ext:
     - metsis_search/map_ol
 
 
+# map_geocoder:
+#   version: 4.1.2
+#   css:
+#     component:
+#       https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
+#   js:
+#     https://unpkg.com/ol-geocoder@4.3.0/dist/ol-geocoder.js:  { type: external, minified: true} #, attributes: {async: true}}
+#   dependencies:
+#   - core/drupal
+#   - core/jquery
+#   - jquery_ui/core
+#   - metsis_search/map_ol
+
 map_geocoder:
-  version: 4.1.2
+  #version: 4.1.2
   css:
     component:
-      https://unpkg.com/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
+      https://cdn.jsdelivr.net/npm/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
   js:
-    https://unpkg.com/ol-geocoder@4.3.0/dist/ol-geocoder.js:  { type: external, minified: true} #, attributes: {async: true}}
+    https://cdn.jsdelivr.net/npm/ol-geocoder/dist/ol-geocoder.js:  { type: external, minified: true} #, attributes: {async: true}}
   dependencies:
   - core/drupal
   - core/jquery
   - jquery_ui/core
   - metsis_search/map_ol
-
 
 children_count:
   version: 1.0.1
