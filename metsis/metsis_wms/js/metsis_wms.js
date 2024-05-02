@@ -1345,7 +1345,7 @@ console.log("Start of wms map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    visible = (idx === 0) ? true : false;
+                    visible = (i === 0) ? true : false;
                     console.log("i=" + idx + " layer_name: " + ls[i].Name);
                     if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
                       wmsGroup.getLayers().insertAt(i,
