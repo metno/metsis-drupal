@@ -1175,15 +1175,15 @@ console.log("Start of wms map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
-                if (!ls) {
+                if (ls === undefined) {
                   lst = layers[idx]
-                  if (lst) {
+                  if (lst !== undefined) {
                     ls = [lst];
                   }
 
                 }
-                if (ls) {
-                  console.log(ls.Name);
+                if (ls !== undefined) {
+                  console.log("Got layer: " + ls.Name);
                   for (let i = 0; i < ls.length; i++) {
                     var getTimeDimensions = function () {
                       var dimensions = ls[i].Dimension;
@@ -1199,10 +1199,10 @@ console.log("Start of wms map script:");
 
                               _defaultTimeDim = dimensions[j].default;
 
-                              // console.log("wms2: got timerange. default: " + _defaultTimeDim);
-                              // console.log("start: " + startDate);
-                              // console.log("end: " + endDate);
-                              // console.log("duration: " + duration);
+                              //console.log("wms2: got timerange. default: " + _defaultTimeDim);
+                              //console.log("start: " + startDate);
+                              //console.log("end: " + endDate);
+                              //console.log("duration: " + duration);
 
 
                               if (_defaultTimeDim !== undefined) {
@@ -1210,6 +1210,9 @@ console.log("Start of wms map script:");
                                 console.log("timedim default: " + defaultTimeDim);
                               }
                               if (startDate === endDate) {
+                                times = [startDate];
+                              }
+                              else if (endDate === undefined && duration === undefined) {
                                 times = [startDate];
                               }
                               else {
@@ -1347,37 +1350,80 @@ console.log("Start of wms map script:");
                     }
                     visible = (i === 0) ? true : false;
                     console.log("i=" + idx + " layer_name: " + ls[i].Name);
-                    if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
-                      wmsGroup.getLayers().insertAt(i,
-                        new ol.layer.Tile({
-                          title: title,
-                          visible: visible,
-                          //extent: extent,
+                    if (wmsLayerMmd.length > 0) {
+                      console.log("Got wms layers from MMD. Loading only those provided");
+                      if (($.inArray(ls[i].Name, wms_layers_skip) === -1) &&
+                        (($.inArray(ls[i].Name, wmsLayerMmd) !== -1) ||
+                          ($.inArray(ls[i].Title, wmsLayerMmd) !== -1))) // ||
+                      //(($.inArray(ls[i].Title, wmsLayerMmd) === -1) ||
+                      // ($.inArray(ls[i].Title, wmsLayerMmd) === -1)))
+                      {
+                        //visible = (idx === 0) ? true : false;
+                        wmsGroup.getLayers().insertAt(i,
+                          new ol.layer.Tile({
+                            title: title,
+                            visible: false,
+                            //extent: extent,
 
-                          //keepVisible: false,
-                          //preload: 5,
-                          //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
-                          dimensions: getTimeDimensions(),
-                          styles: ls[i].Style,
-                          source: new ol.source.TileWMS(({
-                            url: wmsUrl,
-                            reprojectionErrorThreshold: 0.1,
-                            projection: selected_proj,
-                            params: {
-                              'LAYERS': ls[i].Name,
-                              'VERSION': result.version,
-                              'FORMAT': 'image/png',
-                              'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
-                              'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
-                              'TRANSPARENT': true,
-                            },
-                            crossOrigin: 'anonymous',
+                            //keepVisible: false,
+                            //preload: 5,
+                            //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
+                            dimensions: getTimeDimensions(),
+                            styles: ls[i].Style,
+                            source: new ol.source.TileWMS(({
+                              url: wmsUrl,
+                              reprojectionErrorThreshold: 0.1,
+                              projection: selected_proj,
+                              params: {
+                                'LAYERS': ls[i].Name,
+                                'VERSION': result.version,
+                                'FORMAT': 'image/png',
+                                'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
+                                'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
+                                'TRANSPARENT': true,
+                              },
+                              crossOrigin: 'anonymous',
 
-                          })),
-                        }));
-                      console.log("Added layer: " + title + " visible: " + visible);
+                            })),
+                          }));
+                        console.log("Added layer: " + title + " visible: " + visible);
+                      }
+                    }
+                    else {
+                      console.log("No given mmd layers. Loading all");
+                      if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
+                        wmsGroup.getLayers().insertAt(i,
+                          new ol.layer.Tile({
+                            title: title,
+                            visible: false,
+                            //extent: extent,
+
+                            //keepVisible: false,
+                            //preload: 5,
+                            //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
+                            dimensions: getTimeDimensions(),
+                            styles: ls[i].Style,
+                            source: new ol.source.TileWMS(({
+                              url: wmsUrl,
+                              reprojectionErrorThreshold: 0.1,
+                              projection: selected_proj,
+                              params: {
+                                'LAYERS': ls[i].Name,
+                                'VERSION': result.version,
+                                'FORMAT': 'image/png',
+                                'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
+                                'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
+                                'TRANSPARENT': true,
+                              },
+                              crossOrigin: 'anonymous',
+
+                            })),
+                          }));
+                        console.log("Added layer: " + title + " visible: " + visible);
+                      }
                     }
                   }
+
                   //Update timedimension variables for animation
                   //hasTimeDimension = false;
 
@@ -1385,7 +1431,9 @@ console.log("Start of wms map script:");
 
               }
               //})
+              wmsGroup.getLayers().item(0).setVisible(true);
               wmsGroup.getLayers().getArray().reverse();
+
               wmsLayerGroup.getLayers().push(wmsGroup);
               //wmsLayerGroup.set('title', productTitle, false);
               featureLayersGroup.setVisible(false);
@@ -2353,13 +2401,23 @@ console.log("Start of wms map script:");
           });
         });
 
+        console.log("Gathered information");
         console.log(ids);
         console.log(wmsUrls);
         console.log(layers);
         for (let i = 0; i < ids.length; i++) {
+          console.log("Looping resources: i=" + i);
           console.log(ids[i]);
           console.log(wmsUrls[i]);
-          //console.log(layers[i]);
+          if (layers.length === 0) {
+            layers.push([]);
+            console.log(layers[i].length);
+          }
+          if (layers[i].length === 1 && layers[i][0] === 'mmd:wms_layer') {
+            layers[i].pop();
+          }
+          console.log(layers[i]);
+
           //console.log(geoms[i]);
           getWmsLayers2(wmsUrls[i][0], titles[i], geoms[i], layers[i]);
           //  map.getView().setZoom(map.getView().getZoom());
