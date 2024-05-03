@@ -4,10 +4,11 @@ namespace Drupal\metsis_search\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\RemoveCommand;
-
 use Drupal\Core\Ajax\ReplaceCommand;
+use Drupal\Core\Cache\CacheableAjaxResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\search_api\Entity\Index;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller for handeling thumbnails and lazy loading.
@@ -17,8 +18,8 @@ class MetsisThumbnailController extends ControllerBase {
   /**
    * Querey the document for the given id and return the thumbnail.
    */
-  public function loadThumbnails($id) {
-
+  public function loadThumbnails(Request $request, $id) {
+    // dpm($request);
     /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
 
@@ -42,30 +43,40 @@ class MetsisThumbnailController extends ControllerBase {
     $found = $result->getNumFound();
 
     $thumb = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-    $response = new AjaxResponse();
     // Return thumbnail inside image tag if document have thumbnail_data.
     // If not remove the thumbnail wrapper <div>.
     $selector = str_replace('_', '-', $id);
     $selector = str_replace('.', '-', $selector);
-
+    $found_thumb = FALSE;
     if ($found > 0) {
       foreach ($result as $doc) {
         if (count($doc->getFields()) > 0) {
           foreach ($doc as $field => $value) {
             if ($field === 'thumbnail_data') {
               $thumb = $value;
+              $found_thumb = TRUE;
               // dpm('got thumb for id:'.$id.': ' . $thumb);
               // Add thumbnail image tag.
-              $response->addCommand(new ReplaceCommand('#thumb-' . $selector, '<img class="w3-image" src="' . $thumb . '" typeof="Image" style="width:70%;max-width:250px"/>'));
+
             }
           }
         }
         else {
           // dpm('using no thumb for id: ' . $id);
           // Remove wrapper tag.
-          $response->addCommand(new RemoveCommand('#thumb-wrapper-' . $selector));
         }
       }
+    }
+    if ($found_thumb === TRUE) {
+      $response = new AjaxResponse();
+      $response->addCommand(new ReplaceCommand('#thumb-' . $selector, '<img class="w3-image" src="' . $thumb . '" typeof="Image" style="width:70%;max-width:250px"/>'));
+
+    }
+    else {
+      $response = new AjaxResponse();
+
+      $response->addCommand(new RemoveCommand('#thumb-wrapper-' . $selector));
+
     }
 
     // Return ajax response.

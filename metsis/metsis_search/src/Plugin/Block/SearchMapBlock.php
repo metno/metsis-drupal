@@ -86,13 +86,14 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory service.
    */
-  public function __construct(array $configuration,
-                              $plugin_id,
-                              $plugin_definition,
-                              ModuleHandler $moduleHandler,
-                              Request $request,
-                              ConfigFactoryInterface $configFactory
-                              ) {
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    ModuleHandler $moduleHandler,
+    Request $request,
+    ConfigFactoryInterface $configFactory,
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moduleHandler = $moduleHandler;
     $this->request = $request;

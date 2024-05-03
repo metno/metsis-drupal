@@ -342,6 +342,33 @@ function metsis_search_preprocess_views_view_field(&$variables) {
 
     }
   }
+
+  if (($variables['view']->id() === 'metsis_search' ||
+    $variables['view']->id() === 'duplicate_of_metsis_search') &&
+  // $view->current_display == 'results' &&
+   $variables['field']->options['id'] === 'nothing_13'
+
+  ) {
+    $p_id = (string) $variables['output'];
+    // dpm($p_id, __FUNCTION__ . ':' . __LINE__);.
+    if ($p_id !== '') {
+      $index = Index::load('metsis');
+      $query = $index->query();
+      $query->addCondition('id', trim($p_id));
+      $query->setOption('search_api_retrieved_field_values', ['title']);
+      // dpm($query->getConditionGroup());
+      $presults = $query->execute();
+      // dpm($presults->getResultItems(), __FUNCTION__ . ':' . __LINE__);.
+      $presults->getResultItems();
+      foreach ($presults as $key => $value) {
+        $ptitle = $value->getField('title')->getValues()[0]->getText();
+        // dpm($ptitle, __FUNCTION__ . ':' . __LINE__);.
+        $variables['output'] = Markup::create($ptitle);
+        $variables['field']->last_render = $variables['output'];
+      }
+
+    }
+  }
 }
 
 /**

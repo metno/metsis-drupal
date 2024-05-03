@@ -71,6 +71,8 @@ metsis_search.load_tbumbs:
       metadata_identifier: ""
   requirements:
     _permission: 'access metsis search'
+  #  _access: true
+  #methods: ['GET']
 
 metsis_search.export.form.mmd:
   path: '/metsis/export/{id}'

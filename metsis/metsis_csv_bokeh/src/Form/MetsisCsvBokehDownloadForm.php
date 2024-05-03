@@ -49,7 +49,7 @@ class MetsisCsvBokehDownloadForm extends FormBase {
    *   The http_client.
    */
   public function __construct(
-    Client $http_client
+    Client $http_client,
   ) {
     $this->httpClient = $http_client;
   }

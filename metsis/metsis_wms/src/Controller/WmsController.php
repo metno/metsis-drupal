@@ -160,15 +160,15 @@ class WmsController extends ControllerBase {
    * Get the wms markup.
    */
   public function prepareWmsMarkup(
-        $wms_map_center_lon,
-        $wms_map_center_lat,
-        $wms_map_init_zoom,
-        $wms_which_base_layer,
-        $wms_overlay_border,
-        $webMapServers,
-        $wms_product_select,
-        $additional_layers
-    ) {
+    $wms_map_center_lon,
+    $wms_map_center_lat,
+    $wms_map_init_zoom,
+    $wms_which_base_layer,
+    $wms_overlay_border,
+    $webMapServers,
+    $wms_product_select,
+    $additional_layers,
+  ) {
     // Get the referer uri.
     $request = \Drupal::request();
     $referer = $request->headers->get('referer');

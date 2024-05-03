@@ -163,12 +163,12 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current request stack.
    */
   public function __construct(
-        AccountProxyInterface $current_user,
-        ConfigFactoryInterface $configFactory,
-        SessionInterface $session,
-        CacheBackendInterface $cache,
-        RequestStack $request
-    ) {
+    AccountProxyInterface $current_user,
+    ConfigFactoryInterface $configFactory,
+    SessionInterface $session,
+    CacheBackendInterface $cache,
+    RequestStack $request,
+  ) {
     $this->currentUser = $current_user;
     $this->config = $configFactory->get('metsis_search.settings');
     $this->session = $session;
