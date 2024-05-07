@@ -105,19 +105,19 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
         continue;
       }
       if ($k === 'fulltext') {
-        // dpm($v, __FUNCTION__);
+        // dpm($v, __FUNCTION__);.
         $v = str_replace(' ', '%20', $v);
       }
       if (is_array($v)) {
         continue;
       }
-       $replace_text .= $k . '=' . $v . '&';
+      $replace_text .= $k . '=' . $v . '&';
 
     }
     $rep_text_t = rtrim($replace_text, '&');
-    // dpm($rep_text_t, __LINE__);
+    // dpm($rep_text_t, __LINE__);.
     $replaced_text = str_replace('/search', $rep_text_t, $orig_text);
-    // dpm($replaced_text, __LINE__);
+    // dpm($replaced_text, __LINE__);.
     $fields['nothing_1']['alter']['text'] = $replaced_text;
     $view->display_handler->overrideOption('fields', $fields);
   }
