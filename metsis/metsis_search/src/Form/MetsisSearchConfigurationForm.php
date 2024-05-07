@@ -130,14 +130,15 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#title' => 'Sort results by overlap-ratio when using bounding box filter',
       '#default_value' => $config->get('bbox_overlap_sort'),
     ];
-    /*
-    $form['ts_button_text'] = [
-    '#type' => 'textfield',
-    '#title' => t('Enter button text for TimeSeries visualization'),
-    //  '#description' => t("the button text for HTTP access "),
-    '#size' => 20,
-    '#default_value' => $config->get('ts_button_text'),
+
+    $form['search_match_children'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check this box to also search within children.'),
+      '#description' =>
+      $this->t("Will return the parent of matching children when only returning level 1 datasets."),
+      '#default_value' => $config->get('search_match_children'),
     ];
+    /*
     $form['csv_button_text'] = [
     '#type' => 'textfield',
     '#title' => t('Enter button text for CSV download'),
@@ -327,6 +328,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('cloud_coverage_details', $values['cloud_coverage_details'])
       ->set('disable_children_filter', $values['disable_children_filter'])
       ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
+      ->set('search_match_children', $values['search_match_children'])
       ->save();
 
     parent::submitForm($form, $form_state);

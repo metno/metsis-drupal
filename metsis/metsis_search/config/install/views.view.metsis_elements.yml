@@ -2252,6 +2252,8 @@ display:
             autocomplete_raw_suggestion: 1
             autocomplete_raw_dropdown: 1
             autocomplete_dependent: 0
+            autocomplete_contextual: 0
+            autocomplete_autosubmit: 0
           is_grouped: false
           group_info:
             label: ''
@@ -2267,9 +2269,51 @@ display:
           parse_mode: terms
           min_length: null
           fields:
-            - abstract
             - full_text
-            - title
+        metadata_status:
+          id: metadata_status
+          table: search_api_index_metsis
+          field: metadata_status
+          relationship: none
+          group_type: group
+          admin_label: 'Metadata Status'
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: Active
+          group: 2
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
         temporal_extent_start_date:
           id: temporal_extent_start_date
           table: search_api_index_metsis
@@ -2284,7 +2328,7 @@ display:
             max: ''
             value: ''
             type: date
-          group: 1
+          group: 3
           exposed: true
           expose:
             operator_id: temporal_extent_start_date_op
@@ -2331,7 +2375,7 @@ display:
             max: ''
             value: ''
             type: date
-          group: 1
+          group: 3
           exposed: true
           expose:
             operator_id: temporal_extent_end_date_op
@@ -2364,54 +2408,12 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        metadata_status:
-          id: metadata_status
-          table: search_api_index_metsis
-          field: metadata_status
-          relationship: none
-          group_type: group
-          admin_label: 'Metadata Status'
-          plugin_id: search_api_string
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: Active
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
       filter_groups:
         operator: AND
         groups:
           1: AND
+          2: AND
+          3: AND
       style:
         type: html_list
         options:

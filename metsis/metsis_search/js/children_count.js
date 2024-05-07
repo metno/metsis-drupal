@@ -36,7 +36,23 @@
             console.log(end_date[1]);
             myurl += '&end_date=' + end_date[1];
           }
-          console.log(myurl);
+          fulltext = href.match(/(fulltext=)[^&]+(?=&)/);
+          if (fulltext) {
+            //console.log(fulltext);
+            fulltext_query = fulltext[0].replace(/fulltext=/, '');
+            //console.log(fulltext_query.replace(/%20/, ' '));
+            myurl += '&fulltext=' + fulltext_query.replace(/%20/, ' ');
+          }
+
+          fulltext_op = href.match(/(search_api_fulltext_op=)[^&]+(?=&)/);
+          if (fulltext_op) {
+            console.log(fulltext_op);
+            fulltext_query_op = fulltext_op[0].replace(/search_api_fulltext_op=/, '');
+            //console.log(fulltext_query.replace(/%20/, ' '));
+            myurl += '&search_api_fulltext_op=' + fulltext_query_op;
+          }
+
+          console.log("Child count url: " + myurl);
           Drupal.ajax({
             url: myurl
           }).execute();

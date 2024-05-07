@@ -88,11 +88,13 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       $fields['nothing_2']['exclude'] = TRUE;
       $view->display_handler->overrideOption('fields', $fields);
     }
+
     /* Pass metsis search view arguments to elements view. */
     $filters = $view->getExposedInput();
     $fields = $view->display_handler->getOption('fields');
     $orig_text = $fields['nothing_1']['alter']['text'];
-    // dpm($orig_text);
+    // dpm($orig_text, __FUNCTION__);
+    // dpm($view, __FUNCTION__);
     // dpm($filters);
     $replace_text = '/search?';
     foreach ($filters as $k => $v) {
@@ -103,17 +105,19 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
         continue;
       }
       if ($k === 'fulltext') {
-        $v = '';
+        // dpm($v, __FUNCTION__);
+        $v = str_replace(' ', '%20', $v);
       }
       if (is_array($v)) {
         continue;
       }
-      $replace_text .= $k . '=' . $v . '&';
+       $replace_text .= $k . '=' . $v . '&';
+
     }
     $rep_text_t = rtrim($replace_text, '&');
-    // dpm($rep_text_t);
+    // dpm($rep_text_t, __LINE__);
     $replaced_text = str_replace('/search', $rep_text_t, $orig_text);
-    // dpm($replaced_text);
+    // dpm($replaced_text, __LINE__);
     $fields['nothing_1']['alter']['text'] = $replaced_text;
     $view->display_handler->overrideOption('fields', $fields);
   }

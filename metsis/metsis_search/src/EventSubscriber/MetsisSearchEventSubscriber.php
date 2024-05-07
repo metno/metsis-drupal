@@ -206,14 +206,44 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   /**
    * Listen to  the post convert query event.
    *
+   * Here we can modify the solr q parameter.
+   *
    * @param \Drupal\search_api_solr\Event\PostConvertedQueryEvent $event
    *   The current event.
    */
   public function postConvertQuery(PostConvertedQueryEvent $event): void {
-    // dpm("PostConvertedQueryEvent");
-    // dpm($event->getSearchApiQuery());
-    // dpm($event->getSolariumQuery());
-    // dpm($event->getSolariumQuery(), __FUNCTION__);.
+
+    // Search api query.
+    $query = $event->getSearchApiQuery();
+    // Solarium search api solr query.
+    $solarium_query = $event->getSolariumQuery();
+
+    // Get the Query Helper from the Solarium API.
+    $helper = $solarium_query->getHelper();
+
+    // Get the search id for this search view.
+    $searchId = $query->getSearchId();
+    $this->searchId = $searchId;
+
+    // Only execute for special metsis search views.
+    if (($searchId !== NULL) && ($searchId === 'views_page:metsis_search__results')) {
+
+      /*
+       * Add join query for querying the child datasets as well, when
+       * main query only search Level-1 datasets.
+       */
+      $do_child_join = $this->config->get('search_match_children');
+      if ($do_child_join) {
+        $current_query = $solarium_query->getQuery();
+        // dpm($current_query, __FUNCTION__);
+        // . ' OR ' .
+        $solarium_query->setQuery($helper->join('related_dataset_id', 'id') . $current_query . ' OR ' . $current_query);
+        // $solarium_query->setQuery($current_query);
+      }
+
+      // dpm($event->getSearchApiQuery(), __FUNCTION__);
+      // dpm($event->getSolariumQuery(), __FUNCTION__);.
+    }
   }
 
   /**
@@ -228,6 +258,9 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
     $solarium_query = $event->getSolariumQuery();
+
+    // Get the Query Helper from the Solarium API.
+    $helper = $solarium_query->getHelper();
 
     // Get the search id for this search view.
     $searchId = $query->getSearchId();
@@ -296,7 +329,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // Add bbox filter query if drawn bbox on map.
       $bbox_filter_overlap = $this->config->get('bbox_overlap_sort');
       if ($bboxFilter != NULL && $bboxFilter != "") {
-        $this->getLogger('metsis_search-hook_solr_qyery_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
+        $this->getLogger('metsis_search-hook_solr_query_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
         if ($bbox_filter_overlap) {
           $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
         }
@@ -431,10 +464,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       }
       /* Rewrite the query for when end date filter is provided. */
       $filters = $solarium_query->getFilterQueries();
-      // dpm($filters);
+      // Default date filter key for main search.
+      $filter_key = 'filters_2';
+      // Metsis Elements view have different filter key for dates.
+      if ($this->searchId === 'views_page:metsis_elements__results') {
+        $filter_key = 'filters_1';
+
+      }
+      // dpm($filters, __FUNCTION__);.
       $date_filter = NULL;
-      if (array_key_exists('filters_2', $filters)) {
-        $fq = $filters['filters_2']->getQuery();
+      if (array_key_exists($filter_key, $filters)) {
+        $fq = $filters[$filter_key]->getQuery();
         // dpm($fq);
         if (str_contains($fq, 'start_date') && !str_contains($fq, 'end_date')) {
           $date_filter = "START";
@@ -455,7 +495,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
             $end = $matches[0][1];
             $new_fq = $fq . ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *]) OR (*:* -temporal_extent_end_date:*)';
             // dpm($new_fq);
-            $filters['filters_2']->setQuery($new_fq);
+            $filters[$filter_key]->setQuery($new_fq);
           }
           // Else {
           // $rep_str = $matches[0];
