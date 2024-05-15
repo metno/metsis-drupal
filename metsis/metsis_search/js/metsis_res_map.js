@@ -61,10 +61,15 @@ console.log("Start of metsis search map script:");
           console.log("WMS Layers to skip: ");
           console.log(wms_layers_skip);
           console.log("Extracted info: ");
-          //console.log(extracted_info);
+          console.log(extracted_info);
 
         }
 
+        //Make extracted info empty array if null or undefined
+        if (extracted_info === null || extracted_info === undefined) {
+          console.log('The array is null or undefined');
+          extracted_info = [];
+        }
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
@@ -893,14 +898,14 @@ console.log("Start of metsis search map script:");
 
         }
         //Display message instead of empty map when search results are empty
-        if (extracted_info.length === 0) {
-          console.log("No extracted info");
-          $('.map-res').empty();
-          $('.map-res').append('<span class="w3-margin-left w3-center"><h2>No results found! Please refine your search.</h2></span>');
-        } else {
-          var map = createMap();
-        }
-
+        // if (extracted_info.length === 0) {
+        //   console.log("No extracted info");
+        //   $('.map-res').empty();
+        //   $('.map-res').append('<span class="w3-margin-left w3-center"><h2>No results found! Please refine your search.</h2></span>');
+        // } else {
+        //   var map = createMap();
+        // }
+        var map = createMap();
         function init() {
           $('#map-sidepanel').bind('resize', function (e) {
             console.log('Sidepanel resize');
@@ -2437,6 +2442,10 @@ console.log("Start of metsis search map script:");
           var iconFeaturesPol = [];
           var iconFeaturesPin = [];
           var wmsProducts = [];
+          if (extracted_info.length === 0) {
+            var featuresExtent = new ol.extent.createEmpty();
+            return featuresExtent;
+          }
           for (var i12 = 0; i12 <= extracted_info.length - 1; i12++) {
 
             //If we have a geographic extent, create polygon feature
@@ -2571,8 +2580,11 @@ console.log("Start of metsis search map script:");
         //initialize features
         console.log("Building features with projection: " + selected_proj);
         var featuresExtent = buildFeatures(projObjectforCode[selected_proj].projection);
-        map.getView().setCenter(ol.extent.getCenter(featuresExtent));
-        map.getView().fit(featuresExtent);
+        console.log(featuresExtent);
+        if (!ol.extent.isEmpty(featuresExtent)) {
+          map.getView().setCenter(ol.extent.getCenter(featuresExtent));
+          map.getView().fit(featuresExtent);
+        }
         map.getView().setZoom(map.getView().getZoom() - 0.3);
         // display clickable ID in tooltip
         //console.log('calling id_tooltip');

@@ -86,3 +86,17 @@ label,
 .simple-search-region {
   flex-flow: column;
 }
+
+.simple-search-row {
+  border-width: 1px;
+  border-bottom-width: 1px;
+  border-bottom-color: darkgray;
+  border-bottom-style: dotted;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+}
+
+.views-field-nothing-7 {
+  margin-left: 15px !important;
+  margin-top: -15px !important;
+}

@@ -562,6 +562,55 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
+        nothing_7:
+          id: nothing_7
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'appears in collection'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if related_dataset_id_1 %}\r\n<span><em> appears in  collection <a class=\"w3-text-blue use-ajax\"  data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Parent Details&quot;}\" \r\n    data-dialog-type=\"dialog\" href=\"/metsis/metadata/parent/{{ related_dataset_id_1 }}\">{{ nothing_5 }}</a></em></span>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         nothing_1:
           id: nothing_1
           table: views
@@ -1593,16 +1642,8 @@ display:
       style:
         type: html_list
         options:
-          grouping:
-            -
-              field: is_parent_1
-              rendered: true
-              rendered_strip: false
-            -
-              field: related_dataset_id
-              rendered: true
-              rendered_strip: false
-          row_class: w3-card-2
+          grouping: {  }
+          row_class: simple-search-row
           default_row_class: true
           type: ol
           wrapper_class: item-list
