@@ -531,7 +531,7 @@ display:
             trim_whitespace: false
             alt: ''
             rel: ''
-            link_class: ''
+            link_class: w3-text-blue
             prefix: ''
             suffix: ''
             target: ''
