@@ -418,11 +418,11 @@ function metsis_search_theme($existing, $type, $theme, $path) {
       'template' => 'views-fieldsets-details',
       'path' => 'modules/metsis/metsis_search/templates',
     ],
-    // 'page__metsis__simple_search' => [
-    //   // 'render element' => 'elements',
-    //   'base hook' => 'page',
-    //   'path' => 'modules/metsis/metsis_search/templates',
-    // ],
+      // 'page__metsis__simple_search' => [
+      // //'render element' => 'elements',
+      // 'base hook' => 'page',
+      // 'path' => 'modules/metsis/metsis_search/templates',
+      // ],
   ];
 }
 
