@@ -522,7 +522,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['data_access']['ogc_wms'] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WMS:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $capLink . 'service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $capLink . '?service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
