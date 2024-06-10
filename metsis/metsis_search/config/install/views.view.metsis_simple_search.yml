@@ -1332,18 +1332,22 @@ display:
                 advanced:
                   rewrite:
                     filter_rewrite_values: ''
+                    filter_rewrite_values_key: false
                   collapsible: false
+                  collapsible_disable_automatic_open: false
                   is_secondary: false
               temporal_extent_period_dr:
                 plugin_id: default
                 advanced:
                   collapsible: false
+                  collapsible_disable_automatic_open: false
                   is_secondary: false
               related_dataset_id:
                 plugin_id: default
                 advanced:
                   placeholder_text: ''
                   collapsible: false
+                  collapsible_disable_automatic_open: false
                   is_secondary: false
       access:
         type: perm
@@ -1642,7 +1646,11 @@ display:
       style:
         type: html_list
         options:
-          grouping: {  }
+          grouping:
+            -
+              field: is_parent_1
+              rendered: true
+              rendered_strip: false
           row_class: simple-search-row
           default_row_class: true
           type: ol

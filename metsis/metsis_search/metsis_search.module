@@ -107,6 +107,10 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       if ($k === 'fulltext') {
         // dpm($v, __FUNCTION__);.
         $v = str_replace(' ', '%20', $v);
+        $v = str_replace('"', '%22', $v);
+        $v = str_replace('*', '%2A', $v);
+        $v = str_replace('-', '%2D', $v);
+        $v = str_replace('?', '%3F', $v);
       }
       if (is_array($v)) {
         continue;

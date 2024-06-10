@@ -15,8 +15,24 @@ background: #10CF1B;
  * Order buttons inline and wrap in fieldset
 */
 fieldset.datasetops {
+  flex: 1 1 auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
+  max-width: 100%;
+  padding: 0.2em;
+  text-decoration: none;
+  min-width: 0;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+fieldset.temporal-box {
+  max-width: 100%;
+  padding: 0.2em;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
 /*
@@ -96,7 +112,11 @@ label,
   padding-bottom: 5px;
 }
 
-.views-field-nothing-7 {
+/* .views-field-nothing-7 {
   margin-left: 15px !important;
   margin-top: -15px !important;
-}
+} */
+/*
+span.field_content {
+
+ }*/

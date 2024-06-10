@@ -79,6 +79,13 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   protected $searchId;
 
   /**
+   * To hold the current extracted map info.
+   *
+   * @var string
+   */
+  protected $mapInfo;
+
+  /**
    * Request stack.
    *
    * @var Symfony\Component\HttpFoundation\RequestStack
@@ -236,12 +243,22 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       if ($do_child_join) {
         $current_query = $solarium_query->getQuery();
         // dpm($current_query, __FUNCTION__);
+        // $current_query = str_replace(')', '', $current_query);
+        // $current_query = str_replace('(', '', $current_query);
         // . ' OR ' .
-        $solarium_query->setQuery($helper->join('related_dataset_id', 'id') . $current_query . ' OR ' . $current_query);
+        $main_query = $helper->escapePhrase($current_query);
+        $main_query = rtrim($main_query, '"');
+        $main_query = ltrim($main_query, '"');
+
+        // dpm($main_query);
+        // $solarium_query->setQuery($current_query . ' ' . $helper->join('related_dataset_id', 'id') . $current_query);.
+        $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
         // $solarium_query->setQuery($current_query);
+        //
+        // dpm($solarium_query->getQuery(), __FUNCTION__);
       }
 
-      // dpm($event->getSearchApiQuery(), __FUNCTION__);
+      // dpm($event->getSearchApiQuery(), __FUNCTION__);.
       // dpm($event->getSolariumQuery(), __FUNCTION__);.
     }
   }
@@ -258,6 +275,11 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
     $solarium_query = $event->getSolariumQuery();
+    $current_query = $solarium_query->getQuery();
+    // dpm($current_query, __FUNCTION__);.
+
+    // Set t full_text as the default search field.
+    $solarium_query->setQueryDefaultField('full_text');
 
     // Get the Query Helper from the Solarium API.
     $helper = $solarium_query->getHelper();
@@ -347,6 +369,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         // \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
         $solarium_query->createFilterQuery('collection')->setQuery('collection:(' . implode(" ", array_keys($selected_collections)) . ')');
       }
+
+      /*
+       * We always want to sort by score, then date if its a tie.
+       */
+      $def_sorts = $solarium_query->getSorts();
+      $solarium_query->clearSorts();
+      $solarium_query->addSort('score', $solarium_query::SORT_DESC);
+      foreach ($def_sorts as $field => $order) {
+        $solarium_query->addSort($field, $order);
+      }
+
       /*
        * Parent boost results
        */
@@ -361,11 +394,19 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $solarium_query->addSort('score', $solarium_query::SORT_DESC);
         foreach ($def_sorts as $field => $order) {
           $solarium_query->addSort($field, $order);
+          if (str_contains($field, "temporal")) {
+            // dpm($field);
+            // $solarium_query->addParam('bf', "recip(abs(ms(NOW, {$field})),3.16e-11,10,0.1)");.
+          }
         }
 
         // dpm($solarium_query->getSorts());
         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
       }
+
+      /*
+       * Score start date test.
+       */
 
       /*
        * New score parents test.
@@ -517,6 +558,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // dpm($query);
       // dpm($solarium_query);
       // dpm($query->getConditionGroup()->getConditions());
+      $current_query = $solarium_query->getQuery();
+      // dpm($current_query, __FUNCTION__);.
     }
 
   }

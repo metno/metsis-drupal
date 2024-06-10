@@ -34,7 +34,7 @@ class ExportMetadataForm extends FormBase {
    *
    * @var \Drupal\Core\Config\Config
    */
-  protected $configExportSelectedList;
+  protected $metsisLibConfig;
 
   /**
    * {@inheritdoc}

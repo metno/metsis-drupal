@@ -15,16 +15,16 @@
         //var metaid = string.replace(reg,"").trim();
         var metaid = $(this).data("id");
         var isParent = $(this).attr("isparent");
-        console.log(isParent);
+        console.log("Found parent: " + isParent + ' for id: ' + metaid);
         var myurl = '/metsis/elements/count?metadata_identifier=' + metaid;
         if (isParent) {
           console.log("Dataset: " + metaid + "has children.");
-          //console.log(metaid);
+          console.log(this);
           //console.log(isParent);
           //console.log(myurl);
           //if(isParent == "True") {
-          $('#metachildlink', this).removeClass('visually-hidden');
           var href = $('#metachildlink', this).attr('href');
+          $('#metachildlink', this).removeClass('visually-hidden');
           console.log(href);
           start_date = href.match(/(?:start_date=)(\d{4}-\d{2}-\d{2})/);
           if (start_date) {

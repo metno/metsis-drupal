@@ -58,6 +58,11 @@ class MetsisSearchController extends ControllerBase {
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);
     $solarium_query->setRows(1);
     $solarium_query->setFields('id');
+    $result = $connector->execute($solarium_query);
+
+    // The total number of documents found by Solr.
+    $total = $result->getNumFound();
+
     $solarium_query->createFilterQuery('children')->setQuery('isChild:true');
     $solarium_query->createFilterQuery('statusfilter')->setQuery('metadata_status:Active');
     $date_filter = '';
@@ -78,6 +83,8 @@ class MetsisSearchController extends ControllerBase {
 
     // The total number of documents found by Solr.
     $found = $result->getNumFound();
+    // dpm($found, __FUNCTION__);
+    // dpm($total, __FUNCTION__);.
 
     // The total number of documents returned from the query.
     // $count = $result->count();
@@ -89,7 +96,7 @@ class MetsisSearchController extends ControllerBase {
     $response = new AjaxResponse();
     $selector = '.childlink[reference="' . $id . '"]';
     if ($found > 0) {
-      $markup = 'Child data..[' . $found . ']';
+      $markup = 'Child data..[' . $found . ' of ' . $total . ']';
       $response->addCommand(new HtmlCommand($selector, $markup));
     }
     if ($found === 0) {
