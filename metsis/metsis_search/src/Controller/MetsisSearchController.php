@@ -28,6 +28,7 @@ class MetsisSearchController extends ControllerBase {
     $end_date = $params['end_date'] ?? NULL;
     $fulltext = $params['fulltext'] ?? NULL;
     $fulltext_op = $params['search_api_fulltext_op'] ?? NULL;
+    // dpm($start_date);
 
     /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
@@ -67,16 +68,36 @@ class MetsisSearchController extends ControllerBase {
     $solarium_query->createFilterQuery('statusfilter')->setQuery('metadata_status:Active');
     $date_filter = '';
     if (NULL != $start_date) {
-      $date_filter .= '+temporal_extent_start_date:[' . $start_date . 'T00:00:00Z TO *] ';
-      $date_filter .= 'OR temporal_extent_start_date:[* TO ' . $start_date . 'T00:00:00Z] ';
-    }
-    if (NULL != $end_date) {
-      $date_filter .= '+temporal_extent_end_date:[* TO ' . $end_date . 'T00:00:00Z] ';
-      $date_filter .= 'OR temporal_extent_end_date:[' . $end_date . 'T00:00:00Z TO *] ';
-      $date_filter .= 'OR (*:* -temporal_extent_end_date:*) ';
+
+      $date_filter .= '(temporal_extent_start_date:[' . $start_date . 'T00:00:00Z TO *])';
+      // $date_filter .= ' AND temporal_extent_end_date:[* TO' . $start_date . '])';
+      $date_filter .= ' OR (temporal_extent_start_date:[* TO ' . $start_date . 'T00:00:00Z]';
+      $date_filter .= ' AND (*:* -temporal_extent_end_date:* ))';
 
     }
+
+    if (NULL != $end_date) {
+      $date_filter .= '(temporal_extent_end_date:[* TO ' . $end_date . 'T23:59:59Z])';
+      $date_filter .= 'OR (temporal_extent_end_date:[' . $end_date . 'T00:00:00Z TO *] ';
+      $date_filter .= ' AND temporal_extent_start_date:[ * TO ' . $end_date . 'T00:00:00Z]) ';
+      $date_filter .= 'OR (*:* -temporal_extent_end_date:*)';
+
+    }
+    if (NULL != $end_date && NULL != $start_date) {
+      $start = $start_date;
+      $end = $end_date;
+      $date_filter = '';
+      $date_filter = ' ((temporal_extent_start_date:[' . $start . 'T00:00:00Z TO ' . $end . 'T23:59:59Z]';
+      $date_filter .= ' AND temporal_extent_end_date:[' . $start . 'T00:00:00Z TO ' . $end . 'T23:59:59Z])';
+      $date_filter .= ' OR (temporal_extent_start_date:[* TO ' . $start . 'T00:00:00Z]';
+      $date_filter .= ' AND -temporal_extent_end_date:[* TO *]))';
+      $date_filter .= ' OR ((temporal_extent_start_date:[* TO ' . $start . 'T00:00:00Z]';
+      $date_filter .= ' AND temporal_extent_end_date:[' . $end . 'T00:00:00Z TO *])';
+      $date_filter .= ' OR (temporal_extent_start_date:[* TO ' . $start . 'T00:00:00Z]';
+      $date_filter .= ' AND -temporal_extent_end_date:[* TO *]))';
+    }
     if ('' !== $date_filter) {
+      // dpm($date_filter, __FUNCTION__);.
       $solarium_query->createFilterQuery('datefilter')->setQuery($date_filter);
     }
     $result = $connector->execute($solarium_query);

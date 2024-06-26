@@ -8,6 +8,7 @@ dependencies:
     - user.role.authenticated
     - views.view.metsis_metadata_details_parent
   module:
+    - better_exposed_filters
     - search_api
     - user
     - views_fieldsets
@@ -25,7 +26,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: ''
+      title: 'Children search'
       fields:
         id:
           id: id
@@ -304,7 +305,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent == 'True' %}\r\n<img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\">\r\n{%endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/elements/{{ id }}/search\" title=\"Show ALL chiildren in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1396,7 +1397,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -1407,17 +1408,17 @@ display:
           fields:
             - nothing_2
             - nothing_3
+            - nothing_1
             - nothing_6
             - nothing_4
             - data_access_url_http
             - data_access_url_ftp
+            - nothing_5
             - data_access_url_odata
             - nothing_7
-            - nothing_5
-            - nothing_1
             - mmd_xml_file
           wrapper: fieldset
-          legend: 'Data access:'
+          legend: 'Data operations / access:'
           classes: datasetOps
           collapsible: true
           collapsed: false
@@ -1433,7 +1434,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" title=\"Add product to basket\" href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1482,7 +1483,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\">Show extended metadata</a>"
+            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\"\r\ntitle=\"Show extended metadata information\"\r\n>Show extended metadata</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1519,6 +1520,55 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        nothing_1:
+          id: nothing_1
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: Children
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" title=\"List children based on search criteria\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
         nothing_6:
           id: nothing_6
           table: views
@@ -1531,7 +1581,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\">\r\n  <a class=\"adc-button adc-sbutton\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\">\r\n  <a class=\"adc-button adc-sbutton\" title=\"Visualise WMS\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1580,7 +1630,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" title=\"Visualise Timeseries\"  href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1629,7 +1679,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_http }}>Download data</a>'
+            text: '<a class="adc-button adc-sbutton inline" title="Download data (HTTP)"  href={{ data_access_url_http }}>Download data</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1682,7 +1732,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_ftp }}>Download FTP</a>'
+            text: '<a class="adc-button adc-sbutton inline" title="Download data (FTP)" href={{ data_access_url_ftp }}>Download FTP</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1723,6 +1773,55 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        nothing_5:
+          id: nothing_5
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'OPeNDAP download'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" title=\"Download data (OPeNDAP)\"  href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: false
+          hide_alter_empty: true
         data_access_url_odata:
           id: data_access_url_odata
           table: search_api_index_metsis
@@ -1735,7 +1834,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_odata }}>Download SAFE product</a>'
+            text: '<a class="adc-button adc-sbutton inline"  title="Download data as SAFE product"  href={{ data_access_url_odata }}>Download SAFE product</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1788,7 +1887,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\"  title=\"Export and download as ASCII format\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1825,104 +1924,6 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
-        nothing_5:
-          id: nothing_5
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: 'OPeNDAP download'
-          plugin_id: custom
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: true
-          empty_zero: false
-          hide_alter_empty: true
-        nothing_1:
-          id: nothing_1
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: Children
-          plugin_id: custom
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" href=/metsis/elements/{{ id }}/search></a>\r\n</div>\r\n{% endif %}"
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
         mmd_xml_file:
           id: mmd_xml_file
           table: search_api_index_metsis
@@ -1935,7 +1936,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="use-ajax ajax adc-button adc-sbutton inline" href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
+            text: '<a class="use-ajax ajax adc-button adc-sbutton inline" title="Export and download metadata as XML"  href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
             make_link: false
             path: ''
             absolute: false
@@ -2206,7 +2207,7 @@ display:
             offset_label: Offset
           quantity: 9
       exposed_form:
-        type: basic
+        type: bef
         options:
           submit_button: Search
           reset_button: true
@@ -2215,6 +2216,28 @@ display:
           expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
+          text_input_required: 'Select any filter and click on Apply to see results'
+          text_input_required_format: null
+          bef:
+            general:
+              autosubmit: false
+              autosubmit_exclude_textfield: false
+              autosubmit_textfield_delay: 500
+              autosubmit_hide: false
+              input_required: false
+              allow_secondary: false
+              secondary_label: 'Advanced options'
+              secondary_open: false
+              reset_button_always_show: false
+            sort:
+              plugin_id: default
+            filter:
+              search_api_fulltext:
+                plugin_id: default
+              temporal_extent_start_date:
+                plugin_id: default
+              temporal_extent_end_date:
+                plugin_id: default
       access:
         type: role
         options:
@@ -2371,7 +2394,7 @@ display:
           group_type: group
           admin_label: 'Start date'
           plugin_id: search_api_date
-          operator: '>='
+          operator: '<='
           value:
             min: ''
             max: ''
@@ -2394,6 +2417,7 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
             min_placeholder: ''
             max_placeholder: ''
@@ -2418,7 +2442,7 @@ display:
           group_type: group
           admin_label: 'End date'
           plugin_id: search_api_date
-          operator: '<='
+          operator: '>='
           value:
             min: ''
             max: ''
@@ -2441,6 +2465,7 @@ display:
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
+              content_editor: '0'
               administrator: '0'
             min_placeholder: ''
             max_placeholder: ''
@@ -2566,6 +2591,8 @@ display:
         cache: false
       exposed_block: true
       display_extenders:
+        simple_sitemap_display_extender:
+          variants: {  }
         geocluster_views_display_extender:
           geocluster_enabled: false
           geocluster_options: {  }

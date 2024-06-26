@@ -531,11 +531,49 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         // dpm($date_filter);
         // dpm($matches);
         if (!empty($matches)) {
+
+          if ($date_filter === 'START') {
+            $start = $matches[0][0];
+            $start_fq = $fq;
+            // $new_fq = '(' . $fq . ' AND ';
+            $new_fq = '(temporal_extent_start_date:[' . $start . ' TO *])';
+            $new_fq .= ' OR ';
+            $new_fq .= '(temporal_extent_start_date:[ * TO ' . $start . ']';
+            $new_fq .= ' AND temporal_extent_end_date:[' . $start . ' TO *]) OR ';
+            $new_fq .= '(' . $start_fq;
+            $new_fq .= ' AND (*:* -temporal_extent_end_date:*))';
+            $start_fq = $new_fq;
+            $filters[$filter_key]->setQuery($new_fq);
+          }
+          if ($date_filter === 'END') {
+            $end = $matches[0][0];
+            // $end_fq = $fq;
+            // $new_fq = '(' . $fq . ' AND ';
+            $new_fq = '(temporal_extent_end_date:[* TO ' . $end . '])';
+            $new_fq .= ' OR ';
+            $new_fq .= '(temporal_extent_end_date:[' . $end . ' TO *]';
+            $new_fq .= ' AND temporal_extent_start_date:[ * TO ' . $end . ']) ';
+            // $new_fq .= '(' . $end_fq;
+            $new_fq .= ' OR (*:* -temporal_extent_end_date:*)';
+            // $new_fq = '(' . $end_fq . ' AND ';
+            // $new_fq .= 'temporal_extent_start_date:[* TO ' . $end . '])';
+            // $new_fq .= ' OR ';
+            // $new_fq .= '(' . $end_fq;
+            // $new_fq .= ' AND (*:* -temporal_extent_end_date:*))';
+            $end_fq = $new_fq;
+            $filters[$filter_key]->setQuery($new_fq);
+          }
           if ($date_filter === 'STARTEND') {
             $start = $matches[0][0];
             $end = $matches[0][1];
-            $new_fq = $fq . ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *]) OR (*:* -temporal_extent_end_date:*)';
-            // dpm($new_fq);
+            // $new_fq = $fq . ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *]) OR (*:* -temporal_extent_end_date:*)';
+            $new_fq = '((temporal_extent_start_date:[' . $start . ' TO ' . $end . ']';
+            $new_fq .= ' AND temporal_extent_end_date:[' . $start . ' TO ' . $end . '])';
+            $new_fq .= ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND -temporal_extent_end_date:[* TO *]))';
+            $new_fq .= ' OR ((temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *])';
+            $new_fq .= ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND -temporal_extent_end_date:[* TO *]))';
+
+            // dpm($new_fq, __FUNCTION__);.
             $filters[$filter_key]->setQuery($new_fq);
           }
           // Else {

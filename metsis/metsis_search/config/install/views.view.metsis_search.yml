@@ -403,7 +403,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent == 'True' %}\r\n<img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\">\r\n{%endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/elements/{{ id }}/search\" title=\"Show ALL chiildren in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1495,7 +1495,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -1516,7 +1516,7 @@ display:
             - nothing_7
             - nothing_11
           wrapper: fieldset
-          legend: 'Data access:'
+          legend: 'Data operations / access:'
           classes: datasetOps
           collapsible: true
           collapsed: false
@@ -1532,7 +1532,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" title=\"Add product to basket\"  href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1581,7 +1581,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\">Show extended metadata</a>"
+            text: "<a class=\"use-ajax adc-button adc-sbutton\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\"\r\n   title=\"Show extended metadata information\"\r\n>Show extended metadata \r\n</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1630,7 +1630,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" href=\"/metsis/elements/{{ id }}/search\"></a>\r\n</div>\r\n{% endif %}"
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" title=\"List children based on search criteria\" href=\"/metsis/elements/{{ id }}/search\"></a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1679,7 +1679,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\"><a class=\"adc-button adc-sbutton\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a></div>\r\n{% endif %}"
+            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\"><a class=\"adc-button adc-sbutton\" title=\"Visualise WMS\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a></div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1728,7 +1728,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" title=\"Visualise Timeseries\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1777,7 +1777,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_http }}>Download data</a>'
+            text: '<a class="adc-button adc-sbutton inline" title="Download data (HTTP)" href={{ data_access_url_http }}>Download data</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1830,7 +1830,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_ftp }}>Download FTP</a>'
+            text: '<a class="adc-button adc-sbutton inline" title="Download data (HTTP)" href={{ data_access_url_ftp }}>Download FTP</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1883,7 +1883,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n<a class=\"adc-button adc-sbutton\" title=\"Download data (OPeNDAP)\" href=\"{{ data_access_url_opendap }}.html\">OPeNDAP</a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1932,7 +1932,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="adc-button adc-sbutton inline" href={{ data_access_url_odata }}>Download SAFE product</a>'
+            text: '<a class="adc-button adc-sbutton inline" title="Download data as SAFE product" href={{ data_access_url_odata }}>Download SAFE product</a>'
             make_link: false
             path: ''
             absolute: false
@@ -1985,7 +1985,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\" title=\"Export and download as ASCII format\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2034,7 +2034,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '<a class="use-ajax ajax adc-button adc-sbutton inline" href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
+            text: '<a class="use-ajax ajax adc-button adc-sbutton inline" title="Export and download metadata as XML"  href="/metsis/export/{{ id }}" data-dialog-options="{&quot;width&quot;:400, &quot;title&quot;:&quot;Export Metadata&quot;}" data-dialog-type="modal">Export Metadata</a>'
             make_link: false
             path: ''
             absolute: false
@@ -2822,7 +2822,7 @@ display:
           group_type: group
           admin_label: 'Start date'
           plugin_id: search_api_date
-          operator: '>='
+          operator: '<='
           value:
             min: ''
             max: ''
@@ -2873,7 +2873,7 @@ display:
           group_type: group
           admin_label: 'End date'
           plugin_id: search_api_date
-          operator: '<='
+          operator: '>='
           value:
             min: ''
             max: ''

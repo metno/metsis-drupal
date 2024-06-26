@@ -418,6 +418,7 @@ console.log("Start of metsis search map script:");
               maxZoom: 23,
               center: ol.extent.getCenter(featuresExtent),
               extent: projObjectforCode[prj].extent,
+              //maxResolution: 43008.234375,
               //projection: projObjectforCode[prj].projection,
               projection: selected_proj,
             }));
@@ -1937,7 +1938,10 @@ console.log("Start of metsis search map script:");
               $.ajax({
                 type: 'GET',
                 url: proxyURL + wmsUrlOrig,
+                crossDomain: true,
+                //xhrFields: { withCredentials: true },
                 dataType: 'xml',
+                //headers: { "Access-Control-Allow-Origin": '*' },
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + proxyURL + wmsUrlOrig);
@@ -1953,6 +1957,9 @@ console.log("Start of metsis search map script:");
                 type: 'GET',
                 url: wmsUrl,
                 dataType: 'xml',
+                crossDomain: true,
+                // xhrFields: { withCredentials: true },
+                // headers: { "Access-Control-Allow-Origin": '*' },
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);
@@ -1969,6 +1976,9 @@ console.log("Start of metsis search map script:");
                 type: 'GET',
                 url: wmsUrl + getCapString,
                 dataType: 'xml',
+                crossDomain: true,
+                //xhrFields: { withCredentials: true },
+                //headers: { "Access-Control-Allow-Origin": '*'},
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);
@@ -2437,16 +2447,19 @@ console.log("Start of metsis search map script:");
         //build up the point/polygon features
         function buildFeatures(prj) {
           console.log("Building polygons and pins features....");
-          //console.log(prj);
           var allFeatures = [];
           var iconFeaturesPol = [];
           var iconFeaturesPin = [];
           var wmsProducts = [];
           if (extracted_info.length === 0) {
+            console.log("No extracted Info")
             var featuresExtent = new ol.extent.createEmpty();
+
             return featuresExtent;
           }
           for (var i12 = 0; i12 <= extracted_info.length - 1; i12++) {
+
+            //console.log(extracted_info[i12]);
 
             //If we have a geographic extent, create polygon feature
             if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
@@ -2458,6 +2471,33 @@ console.log("Start of metsis search map script:");
               geom = new ol.geom.Polygon([
                 [box_tl, box_tr, box_br, box_bl, box_tl]
               ]);
+              // Handle wide extents in EPSG:32661
+              var west = -6378137.0 * Math.PI;
+              var east = 6378137.0 * Math.PI;
+
+              if (extracted_info[i12][2][2] === 180 && selected_proj === "EPSG:32661") {
+                extracted_info[i12][2][2] = east;
+              }
+              if (extracted_info[i12][2][3] === -180 && selected_proj === "EPSG:32661") {
+                extracted_info[i12][2][3] = west;
+              }
+              if (extracted_info[i12][2][2] === 179.9 && selected_proj === "EPSG:32661") {
+                extracted_info[i12][2][2] = east;
+              }
+              if (extracted_info[i12][2][3] === -179.9 && selected_proj === "EPSG:32661") {
+                extracted_info[i12][2][3] = west;
+              }
+              if ((extracted_info[i12][2][3] === west && extracted_info[i12][2][2] === east && selected_proj == "EPSG:32661")
+                || (extracted_info[i12][2][3] === west + 0.1 && extracted_info[i12][2][2] === east - 0.1 && selected_proj == "EPSG:32661")) {
+                console.log("Processing wide polygon");
+                console.log("wide dataset:" + extracted_info[i12][4][0]);
+                // Transform the North and South coordinates to EPSG:32661
+                var north = ol.proj.transform([0, extracted_info[i12][2][0]], 'EPSG:4326', prj)[1];
+                var south = ol.proj.transform([0, extracted_info[i12][2][1]], 'EPSG:4326', prj)[1];
+
+
+                geom = new ol.geom.Polygon.fromExtent([west, south, east, north]);
+              }
 
               //Define polygon features
               var iconFeaturePol = new ol.Feature({
@@ -2559,7 +2599,8 @@ console.log("Start of metsis search map script:");
             //projection: prj,
             //style: iconStyle,
           });
-          //create a vector layer with all points from the vector source and pins
+
+          //console.log(newFeature);
 
           featureLayersGroup.getLayers().push(polygonsFeatureLayer);
           featureLayersGroup.getLayers().push(pinsFeatureLayer);
@@ -3174,10 +3215,10 @@ console.log("Start of metsis search map script:");
 
         //geonorge stedsnavn provider implementation.
         /**
-  * Custom provider for OS OpenNames search covering Great Britian.
-  * Factory function which returns an object with the methods getParameters
-  * and handleResponse called by the Geocoder
-  */
+        * Custom provider for OS OpenNames search covering Great Britian.
+        * Factory function which returns an object with the methods getParameters
+        * and handleResponse called by the Geocoder
+        */
         function geoNorgeSearch(options) {
           const { url } = options;
 

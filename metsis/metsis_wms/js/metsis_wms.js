@@ -1570,6 +1570,9 @@ console.log("Start of wms map script:");
                 type: 'GET',
                 url: proxyURL + wmsUrlOrig,
                 dataType: 'xml',
+                //xhrFields: { withCredentials: true },
+                headers: { "Access-Control-Allow-Origin": '*' },
+                crossDomain: true,
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + proxyURL + wmsUrlOrig);
@@ -1585,6 +1588,9 @@ console.log("Start of wms map script:");
                 type: 'GET',
                 url: wmsUrl,
                 dataType: 'xml',
+                // xhrFields: { withCredentials: true },
+                headers: { "Access-Control-Allow-Origin": '*' },
+                crossDomain: true,
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);
@@ -1601,6 +1607,9 @@ console.log("Start of wms map script:");
                 type: 'GET',
                 url: wmsUrl + getCapString,
                 dataType: 'xml',
+                crossDomain: true,
+                // xhrFields: { withCredentials: true },
+                headers: { "Access-Control-Allow-Origin": '*' },
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);

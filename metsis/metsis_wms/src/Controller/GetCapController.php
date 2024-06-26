@@ -60,6 +60,7 @@ class GetCapController extends ControllerBase {
         'debug' => FALSE,
         'headers' => [
           'Content-Type' => 'application/xml',
+          'Access-Control-Allow-Origin' => '*',
         ],
           // 'body' => $xml,
           // 'verify'=>true,
@@ -80,7 +81,7 @@ class GetCapController extends ControllerBase {
       $response = new Response(
             $responseXml->getBody(),
             Response::HTTP_OK,
-            ['Content-Type' => 'application/xml|']
+            ['Content-Type' => 'application/xml']
         );
       return $response;
     }
