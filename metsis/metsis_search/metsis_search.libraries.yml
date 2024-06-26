@@ -19,7 +19,7 @@ ts_plot:
     - core/drupalSettings
 
 search_map:
-  version: 1.0.2
+  version: 1.0.3
   css:
     theme:
       css/metsis_qsearch.css: {}
@@ -39,7 +39,7 @@ search_map:
     - metsis_search/map_ol_ext
 
 search_map_block:
-  version: 1.0.2
+  version: 1.0.3
   css:
     theme:
       css/metsis_res_map.css: {}
