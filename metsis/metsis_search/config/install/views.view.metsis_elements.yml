@@ -2482,6 +2482,120 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        platform_ancillary_cloud_coverage:
+          id: platform_ancillary_cloud_coverage
+          table: search_api_index_metsis
+          field: platform_ancillary_cloud_coverage
+          relationship: none
+          group_type: group
+          admin_label: 'cloud coverage'
+          plugin_id: search_api_numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: platform_ancillary_cloud_coverage_op
+            label: 'Platform ancillary cloud coverage'
+            description: null
+            use_operator: false
+            operator: platform_ancillary_cloud_coverage_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: platform_ancillary_cloud_coverage
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: null
+            max_placeholder: null
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: 'Cloud Coverage'
+            description: 'Filter on cloud coverage for products (Applies only to Sentinel products)'
+            identifier: platform_ancillary_cloud_coverage
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: '<10%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '10.0'
+              2:
+                title: '<20%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '20.0'
+              3:
+                title: '<30%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '30.0'
+              4:
+                title: '<40%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '40.0'
+              5:
+                title: '<50%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '50.0'
+              6:
+                title: '<60%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '60.0'
+              7:
+                title: '<70%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '70.0'
+              8:
+                title: '<80%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '80.0'
+              9:
+                title: '<90%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '90.0'
+              10:
+                title: '<100%'
+                operator: '<'
+                value:
+                  min: ''
+                  max: ''
+                  value: '100.0'
       filter_groups:
         operator: AND
         groups:
@@ -2586,7 +2700,12 @@ display:
     position: 1
     display_options:
       cache:
-        type: search_api_none
+        type: search_api_time
+        options:
+          results_lifespan: 300
+          results_lifespan_custom: 0
+          output_lifespan: 300
+          output_lifespan_custom: 0
       defaults:
         cache: false
       exposed_block: true
@@ -2610,12 +2729,18 @@ display:
         parent: ''
         context: '0'
     cache_metadata:
-      max-age: -1
+      max-age: 0
       contexts:
         - 'languages:language_interface'
         - url
         - url.query_args
         - user.roles
       tags:
+        - 'config:facets.facet.elements_end_date'
+        - 'config:facets.facet.elements_start_date_day'
+        - 'config:facets.facet.elements_start_date_month'
+        - 'config:facets.facet.elements_start_date_year'
+        - 'config:facets.facet.keywords_elements'
         - 'config:search_api.index.metsis'
+        - 'config:views.view.metsis_elements'
         - 'search_api_list:metsis'

@@ -109,17 +109,35 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     // Add cloud coverage filter.
     $form['enable_cloud_coverage'] = [
       '#type' => 'checkbox',
-      '#title' => 'Enable cloud coverage search filter in search form',
+      '#title' => 'Enable cloud coverage search filter in main search form',
       '#default_value' => $config->get('enable_cloud_coverage'),
     ];
     $form['cloud_coverage_details'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show the cloud coverage filter inside a closed details tag in search form'),
+      '#title' => $this->t('Show the cloud coverage filter inside a closed details tag in the main search form'),
       '#size' => 15,
       '#default_value' => $config->get('cloud_coverage_details'),
       '#states' => [
         'visible' => [
           ':input[name="enable_cloud_coverage"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    // Add cloud coverage filter.
+    $form['enable_cloud_coverage_elements'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Enable cloud coverage search filter in elements search form',
+      '#default_value' => $config->get('enable_cloud_coverage_elements'),
+    ];
+    $form['cloud_coverage_details_elements'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show the cloud coverage filter inside a closed details tag in the elements search form'),
+      '#size' => 15,
+      '#default_value' => $config->get('cloud_coverage_details_elements'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_cloud_coverage_elements"]' => ['checked' => TRUE],
         ],
       ],
     ];
@@ -327,6 +345,8 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('enable_cloud_coverage', $values['enable_cloud_coverage'])
       ->set('cloud_coverage_details', $values['cloud_coverage_details'])
       ->set('disable_children_filter', $values['disable_children_filter'])
+      ->set('cloud_coverage_details_elements', $values['cloud_coverage_details_elements'])
+      ->set('disable_children_filter_elements', $values['disable_children_filter_elements'])
       ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
       ->set('search_match_children', $values['search_match_children'])
       ->save();
