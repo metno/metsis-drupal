@@ -346,7 +346,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('cloud_coverage_details', $values['cloud_coverage_details'])
       ->set('disable_children_filter', $values['disable_children_filter'])
       ->set('cloud_coverage_details_elements', $values['cloud_coverage_details_elements'])
-      ->set('disable_children_filter_elements', $values['disable_children_filter_elements'])
+      ->set('enable_cloud_coverage_elements', $values['enable_cloud_coverage_elements'])
       ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
       ->set('search_match_children', $values['search_match_children'])
       ->save();

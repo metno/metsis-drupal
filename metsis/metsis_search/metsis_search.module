@@ -605,6 +605,36 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     // dpm($form);
     // dpm($form);
   }
+   if (($view['view']->id() == 'metsis_elements') && ($view['view']->current_display == 'results')) {
+    // $form['actions']['submit']['#value'] = t('Apply Nowx1');
+
+    // Always keep advanced options closed.
+    unset($form['secondary']['#open']);
+
+    // Get the metsis earch config object.
+    $config = \Drupal::config('metsis_search.settings');
+    $enable_cloud_coverage = $config->get('enable_cloud_coverage_elements');
+    $cloud_coverage_details = $config->get('cloud_coverage_details_elements');
+    $disable_children_filter = $config->get('disable_children_filter_elements');
+    // dpm($form);
+    if (!$enable_cloud_coverage) {
+      // unset($form['#info']['filter-platform_ancillary_cloud_coverage']);.
+      $form['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
+      $form['platform_ancillary_cloud_coverage']['#access'] = FALSE;
+      $form['platform_ancillary_cloud_coverage']['#multiple'] = FALSE;
+      $form['platform_ancillary_cloud_coverage_collapsible']['#type'] = 'hidden';
+      $form['platform_ancillary_cloud_coverage_collapsible']['#access'] = FALSE;
+    }
+    if ($enable_cloud_coverage && (!$cloud_coverage_details)) {
+      unset($form['platform_ancillary_cloud_coverage_collapsible']);
+      unset($form['platform_ancillary_cloud_coverage']['#group']);
+    }
+
+   // if ($disable_children_filter) {
+   //   $form['is_parent']['#type'] = 'hidden';
+   //   $form['is_parent']['#access'] = FALSE;
+   //  }
+  }
   if (($view['view']->id() == 'metsis_simple_search') && ($view['view']->current_display == 'results')) {
     // $form['related_dataset_id']['#type'] = 'hidden';
     $form['related_dataset_id']['#states'] = [
