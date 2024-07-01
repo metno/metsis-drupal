@@ -8,30 +8,39 @@ dependencies:
     - search_api
 id: platform
 name: Platform
-url_alias: platform
 weight: 0
 min_count: 1
-show_only_one_result: false
-field_identifier: platform_long_name
+missing: false
+missing_label: others
+url_alias: platform
 facet_source_id: 'search_api:views_page__metsis_search__results'
+field_identifier: platform_long_name
+query_operator: and
+hard_limit: 50
+exclude: false
+use_hierarchy: false
+keep_hierarchy_parents_active: false
+hierarchy:
+  type: taxonomy
+  config: {  }
+expand_hierarchy: false
+enable_parent_when_child_gets_disabled: true
 widget:
   type: checkbox
   config:
     show_numbers: false
-    soft_limit: 0
+    soft_limit: 15
+    show_reset_link: true
+    reset_text: 'Show all'
+    hide_reset_when_no_selection: true
     soft_limit_settings:
       show_less_label: 'Show less'
       show_more_label: 'Show more'
-    show_reset_link: false
-    reset_text: 'Show all'
-    hide_reset_when_no_selection: false
-query_operator: and
-use_hierarchy: false
-expand_hierarchy: false
-enable_parent_when_child_gets_disabled: true
-hard_limit: 0
-exclude: false
+empty_behavior:
+  behavior: none
 only_visible_when_facet_source_is_visible: false
+show_only_one_result: false
+show_title: false
 processor_configs:
   active_widget_order:
     processor_id: active_widget_order
@@ -51,12 +60,14 @@ processor_configs:
       sort: 40
     settings:
       sort: ASC
+  hierarchy_processor:
+    processor_id: hierarchy_processor
+    weights:
+      build: 100
+    settings: {  }
   url_processor_handler:
     processor_id: url_processor_handler
     weights:
       pre_query: 50
       build: 15
     settings: {  }
-empty_behavior:
-  behavior: none
-show_title: false

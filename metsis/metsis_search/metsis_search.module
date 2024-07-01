@@ -605,7 +605,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     // dpm($form);
     // dpm($form);
   }
-   if (($view['view']->id() == 'metsis_elements') && ($view['view']->current_display == 'results')) {
+  if (($view['view']->id() == 'metsis_elements') && ($view['view']->current_display == 'results')) {
     // $form['actions']['submit']['#value'] = t('Apply Nowx1');
 
     // Always keep advanced options closed.
@@ -630,10 +630,10 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
       unset($form['platform_ancillary_cloud_coverage']['#group']);
     }
 
-   // if ($disable_children_filter) {
-   //   $form['is_parent']['#type'] = 'hidden';
-   //   $form['is_parent']['#access'] = FALSE;
-   //  }
+    // If ($disable_children_filter) {
+    // $form['is_parent']['#type'] = 'hidden';
+    // $form['is_parent']['#access'] = FALSE;
+    // }.
   }
   if (($view['view']->id() == 'metsis_simple_search') && ($view['view']->current_display == 'results')) {
     // $form['related_dataset_id']['#type'] = 'hidden';
