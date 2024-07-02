@@ -465,16 +465,16 @@ function metsis_search_views_data_alter(array &$data) {
  * Implements hook_views_pre_build().
  */
 function metsis_search_views_pre_build(ViewExecutable $view) {
-  if ($view->id() == 'metsis_search') {
+  if ($view->id() == 'metsis_search' || $view->id() == 'metsis_elements') {
     // \Drupal::logger('metsis_search')->debug("hook_metsis_search_view_pre_build");
     // Check if reset query and reset boundingbox if so.
     \Drupal::cache()->invalidate('metsis_search_map');
     $request = \Drupal::request();
     $query_from_request = $request->query->all();
-
+    //dpm($query_from_request, __FUNCTION__);
     // Check if operator op is set in query and op=Reset to reset boundingbox.
-    if (isset($query_from_request['op'])) {
-      if ($query_from_request['op'] == "Reset" || $query_from_request['op'] == "Nullstill") {
+    if (isset($query_from_request['reset'])) {
+      if ($query_from_request['reset'] == "Reset" || $query_from_request['reset'] == "Nullstill") {
         \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
         $session = \Drupal::request()->getSession();
         // $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
@@ -507,6 +507,12 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
         $session->set('back_to_search', '/metsis/search');
         return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
         }*/
+        if($view->id() == 'metsis_elements') {
+          \Drupal::logger('metsis_search')->debug("Elements reset event. Redirect and callin main search reset");
+          $res = new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?reset=Reset');
+          $res->send();
+          return;
+        }
       }
     }
   }
