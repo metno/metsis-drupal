@@ -9497,8 +9497,12 @@ display:
             authenticated: authenticated
             administrator: administrator
       cache:
-        type: search_api_none
-        options: {  }
+        type: search_api_time
+        options:
+          results_lifespan: 518400
+          results_lifespan_custom: 0
+          output_lifespan: 518400
+          output_lifespan_custom: 0
       empty: {  }
       sorts: {  }
       arguments:

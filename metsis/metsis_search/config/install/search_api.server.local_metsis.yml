@@ -42,10 +42,10 @@ backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: metsis-solr.met.no
+    host: 172.22.0.10
     port: 8983
     path: /
-    core: testcore
+    core: adc
     timeout: 20
     index_timeout: 10
     optimize_timeout: 10

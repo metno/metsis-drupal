@@ -2457,7 +2457,7 @@ display:
               or: or
             identifier: fulltext
             required: false
-            remember: true
+            remember: false
             multiple: true
             remember_roles:
               anonymous: anonymous
