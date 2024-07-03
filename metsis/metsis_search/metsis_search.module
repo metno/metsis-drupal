@@ -18,6 +18,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\views\Views;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Implements hook_help().
@@ -471,7 +472,7 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
     \Drupal::cache()->invalidate('metsis_search_map');
     $request = \Drupal::request();
     $query_from_request = $request->query->all();
-    //dpm($query_from_request, __FUNCTION__);
+    // dpm($query_from_request, __FUNCTION__);
     // Check if operator op is set in query and op=Reset to reset boundingbox.
     if (isset($query_from_request['reset'])) {
       if ($query_from_request['reset'] == "Reset" || $query_from_request['reset'] == "Nullstill") {
@@ -507,9 +508,9 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
         $session->set('back_to_search', '/metsis/search');
         return new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search');
         }*/
-        if($view->id() == 'metsis_elements') {
+        if ($view->id() == 'metsis_elements') {
           \Drupal::logger('metsis_search')->debug("Elements reset event. Redirect and callin main search reset");
-          $res = new \Symfony\Component\HttpFoundation\RedirectResponse('/metsis/search?reset=Reset');
+          $res = new RedirectResponse('/metsis/search?reset=Reset');
           $res->send();
           return;
         }
