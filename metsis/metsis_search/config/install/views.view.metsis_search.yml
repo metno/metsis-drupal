@@ -179,6 +179,59 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        thumbnail_url:
+          id: thumbnail_url
+          table: search_api_index_metsis
+          field: thumbnail_url
+          relationship: none
+          group_type: group
+          admin_label: 'Thumbnail URL'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -354,7 +407,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>"
+            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false

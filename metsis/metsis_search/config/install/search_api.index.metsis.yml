@@ -1112,6 +1112,11 @@ field_settings:
     datasource_id: solr_document
     property_path: thumbnail_data
     type: solr_string_storage
+  thumbnail_url:
+    label: 'Thumbnail URL'
+    datasource_id: solr_document
+    property_path: thumbnail_url
+    type: solr_string_storage
   timestamp:
     label: Timestamp
     datasource_id: solr_document
