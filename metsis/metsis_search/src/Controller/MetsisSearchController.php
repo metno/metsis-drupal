@@ -154,7 +154,7 @@ class MetsisSearchController extends ControllerBase {
       $solarium_query->createFilterQuery('collection')->setQuery('collection:(' . implode(" ", array_keys($selected_collections)) . ')');
     }
 
-    dpm($solarium_query, __FUNCTION__);
+    // dpm($solarium_query, __FUNCTION__);.
     $result = $connector->execute($solarium_query);
 
     // The total number of documents found by Solr.
