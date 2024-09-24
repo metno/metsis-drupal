@@ -67,7 +67,7 @@ class MetsisBasketDeleteAction extends ViewsBulkOperationsActionBase {
    *
    * @todo Make sure this access function behave as expected.
    */
-  public function access($object, AccountInterface $account = NULL, $return_as_object = TRUE) {
+  public function access($object, AccountInterface $account, $return_as_object = TRUE) {
     if ($object->getEntityTypeId() === 'metsis_basket_item') {
       /*          $access = $object->access('delete', $account, true)
       ->andIf($object->status->access('delete', $account, true));

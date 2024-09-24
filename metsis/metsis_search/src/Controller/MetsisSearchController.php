@@ -161,7 +161,6 @@ class MetsisSearchController extends ControllerBase {
     $found = $result->getNumFound();
     // dpm($found, __FUNCTION__);
     // dpm($total, __FUNCTION__);.
-
     // The total number of documents returned from the query.
     // $count = $result->count();
     // Check the Solr response status (not the HTTP status).
