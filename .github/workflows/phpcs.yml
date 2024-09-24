@@ -25,21 +25,21 @@ jobs:
             .ci/vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
   - phpcs_8_3:
       runs-on: ubuntu-latest
-        steps:
-          - name: Setup PHP with PECL extension
-            uses: shivammathur/setup-php@v2
-            with:
-              php-version: '8.3'
-          - name: Checkout
-            uses: actions/checkout@v4
+      steps:
+        - name: Setup PHP with PECL extension
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: '8.3'
+        - name: Checkout
+          uses: actions/checkout@v4
 
-          - name: Install PHP Code Sniffer
-            run: |
-              cd .ci
-              php --version
-              composer require --dev dealerdirect/phpcodesniffer-composer-installer
-              composer require --dev drupal/coder
+        - name: Install PHP Code Sniffer
+          run: |
+            cd .ci
+            php --version
+            composer require --dev dealerdirect/phpcodesniffer-composer-installer
+            composer require --dev drupal/coder
 
-          - name: Check coding standards
-            run: |
-              .ci/vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
+        - name: Check coding standards
+          run: |
+            .ci/vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
