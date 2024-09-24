@@ -2297,18 +2297,21 @@ display:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
               temporal_extent_start_date:
                 plugin_id: default
                 advanced:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
               temporal_extent_end_date:
                 plugin_id: default
                 advanced:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
               platform_ancillary_cloud_coverage:
                 plugin_id: default
                 advanced:
@@ -2319,6 +2322,7 @@ display:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
       access:
         type: role
         options:

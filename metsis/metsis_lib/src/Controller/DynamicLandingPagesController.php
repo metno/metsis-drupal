@@ -448,7 +448,7 @@ class DynamicLandingPagesController extends ControllerBase {
       'iso2' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=iso">ISO-Inspire-2</a>',
       'geonorge' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=geonorge">ISO-Norge-Inspire</a>',
       'inspire' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=inspire">Inspire</a>',
-      'wmo' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=wmo">WMO/a>',
+      'wmo' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=wmo">WMO</a>',
       'dif' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 9.8</a>',
       'dif10' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=dif">NASA DIF 10</a>',
       'mmd' => '<a class="w3-button w3-border" href="https://' . $host . '/dataset/' . explode(':', $fields['metadata_identifier'])[1] . '?export_type=mmd">METNO MMD</a>',
@@ -598,6 +598,16 @@ class DynamicLandingPagesController extends ControllerBase {
           '#suffix' => '</div>',
           '#allowed_tags' => ['a', 'em'],
         ];
+        $renderArray['related_information']['collection_image'] = [
+          '#theme' => 'image',
+          '#uri' => '/modules/metsis/metsis_search/images/collection.png',
+          // '#style_name' => 'your_image_style',
+          '#alt' => 'Collection icon',
+          // '#title' => $image['ImageTitle'],
+          '#attributes' => [
+            'class' => 'align-right',
+          ],
+        ];
       }
     }
 
@@ -657,7 +667,7 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['related_url_scientific_publication'])) {
       $i = 0;
       foreach ($fields['related_url_scientific_publication'] as $resource) {
-        $renderArray['related_information']['scientific_publication'] = [
+        $renderArray['related_information']['scientific_publication'][] = [
           '#type' => 'item',
           '#title' => $this->t('Scientific Publication:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -809,7 +819,7 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     $renderArray['#attached']['library'][] = 'metsis_lib/landing_page';
     $renderArray['#attached']['library'][] = 'metsis_lib/fa_academia';
-    $renderArray['#cache']['max-age'] = 0;
+    $renderArray['#cache']['max-age'] = 31536000;
 
     // ADD JSONLD META.
     $jsonld = $this->getJsonld($fields, $host);

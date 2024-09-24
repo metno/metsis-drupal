@@ -1337,12 +1337,14 @@ display:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
               temporal_extent_period_dr:
                 plugin_id: default
                 advanced:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
               related_dataset_id:
                 plugin_id: default
                 advanced:
@@ -1350,6 +1352,7 @@ display:
                   collapsible: false
                   collapsible_disable_automatic_open: false
                   is_secondary: false
+                  hide_label: false
       access:
         type: perm
         options:

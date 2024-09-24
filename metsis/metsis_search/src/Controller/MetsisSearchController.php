@@ -6,9 +6,9 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\RemoveCommand;
-
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\search_api\Entity\Index;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -17,11 +17,29 @@ use Symfony\Component\HttpFoundation\Request;
 class MetsisSearchController extends ControllerBase {
 
   /**
+   * Drupal\Core\Config\ConfigFactoryInterface definition.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    $instance = parent::create($container);
+    $instance->configFactory = $container->get('config.factory');
+    return $instance;
+  }
+
+  /**
    * Ajax callback to get the count of children datasets for a parent dataset.
    */
   public function getChildrenCount(Request $request) {
     $query_from_request = $request->query->all();
     $params = UrlHelper::filterQueryParameters($query_from_request);
+    $session = $request->getSession();
+    $config = $this->configFactory->get('metsis_search.settings');
     // dpm($params, __FUNCTION__);.
     $id = $params['metadata_identifier'];
     $start_date = $params['start_date'] ?? NULL;
@@ -100,6 +118,43 @@ class MetsisSearchController extends ControllerBase {
       // dpm($date_filter, __FUNCTION__);.
       $solarium_query->createFilterQuery('datefilter')->setQuery($date_filter);
     }
+    if ($session->has('bboxFilter')) {
+      $bboxFilter = $session->get('bboxFilter');
+    }
+    else {
+      $bboxFilter = NULL;
+    }
+
+    // Get filter predicate from config.
+    if ($session->has('cond')) {
+      $map_bbox_filter = ucfirst($session->get('cond'));
+    }
+    else {
+      $map_bbox_filter = $config->get('map_bbox_filter');
+    }
+    if ($session->get("place_filter") === 'Contains') {
+      $map_bbox_filter = 'Contains';
+    }
+
+    // Add bbox filter query if drawn bbox on map.
+    $bbox_filter_overlap = $config->get('bbox_overlap_sort');
+    if ($bboxFilter != NULL && $bboxFilter != "") {
+      $this->getLogger('children-count')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
+      if ($bbox_filter_overlap) {
+        $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+      }
+      else {
+        $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox}' . $map_bbox_filter . '(' . $bboxFilter . ')');
+      }
+    }
+    // Filter on selected collections from config.
+    $selected_collections = $config->get('selected_collections');
+    if (isset($selected_collections) && $selected_collections != NULL) {
+      // \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
+      $solarium_query->createFilterQuery('collection')->setQuery('collection:(' . implode(" ", array_keys($selected_collections)) . ')');
+    }
+
+    dpm($solarium_query, __FUNCTION__);
     $result = $connector->execute($solarium_query);
 
     // The total number of documents found by Solr.
