@@ -5,6 +5,7 @@ dependencies:
     - search_api.server.local_metsis
   module:
     - search_api_solr
+    - metsis_search
     - search_api
   enforced:
     module:
@@ -95,7 +96,7 @@ field_settings:
     label: Bbox
     datasource_id: solr_document
     property_path: bbox
-    type: string
+    type: solr_bbox
   bbox_rpt:
     label: 'Bbox rpt'
     datasource_id: solr_document

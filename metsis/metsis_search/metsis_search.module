@@ -292,6 +292,10 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 
     // }
     // }
+    dpm($view->result, __FUNCTION__);
+  }
+  if (isset($view) && ($view->storage->id() == 'metsis_search')) {
+    dpm($view->result, __FUNCTION__);
   }
 }
 
@@ -306,6 +310,9 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
 
     // dpm($view->field['nothing_5'], __FUNCTION__);
     // dpm($output['#rows'][0], __FUNCTION__);.
+    dpm($view->result, __FUNCTION__);
+    // $render_array = $view->getRenderArray();
+    dpm($output, 'Render array, prerender');
   }
 }
 
@@ -450,14 +457,24 @@ function metsis_search_views_data_alter(array &$data) {
   // var_dump($data);
   // Do something withe the veiws query here
   // }.
-  // dpm($data);
+  dpm($data, __FUNCTION__);
   // Override the views filter to custom date_range filter for the date range search.
   if (isset($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'])) {
     $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['id'] = 'search_api_date_range';
-    // $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['filter']['options callback'] = 'dr_get_options';
-    // dpm($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'], __FUNCTION__);
+    // dpm($data['search_api_index_metsis_simple_search']['temporal_extent_period_dr'], __FUNCTION__);.
     $data['search_api_index_metsis_simple_search']['temporal_extent_period_dr']['field']['id'] = 'daterange';
     // dpm($data['search_api_index_metsis_simple_search']['temporal_extent_start_date'], __FUNCTION__);.
+  }
+  // Overide boundingbox filter for both search views.
+  if (isset($data['search_api_index_metsis']['bbox'])) {
+    $data['search_api_index_metsis']['bbox']['filter']['id'] = 'metsis_search_bbox_filter';
+    $data['search_api_index_metsis']['bbox']['field']['id'] = 'solr_bbox';
+    // $data['search_api_index_metsis']['bbox']['field']['handler'] = 'views_handler_field_prerender_list';
+  }
+  if (isset($data['search_api_index_simple_search']['bbox'])) {
+    $data['search_api_index_simple_search']['bbox']['filter']['id'] = 'metsis_search_bbox_filter';
+    // $data['search_api_index_simple_search']['bbox']['field']['id'] = 'geofield';
+    // $data['search_api_index_simple_search']['bbox']['field']['handler'] = 'views_handler_field_prerender_list';
   }
 
 }

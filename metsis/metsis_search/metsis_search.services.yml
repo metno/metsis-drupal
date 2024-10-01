@@ -1,4 +1,8 @@
 services:
+  metsis_search.state:
+    class: Drupal\metsis_search\MetsisSearchState
+  metsis_search.query_helper:
+    class: Drupal\metsis_search\Solarium\MetsisQueryHelper
   metsis_search.event_subscriber:
     class: Drupal\metsis_search\EventSubscriber\MetsisSearchEventSubscriber
     arguments:
@@ -7,6 +11,7 @@ services:
       - '@session'
       - '@cache.default'
       - '@request_stack'
+      - '@metsis_search.state'
     tags:
       -
         name: event_subscriber

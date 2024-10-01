@@ -1,0 +1,33 @@
+views.filter.metsis_search_bbox_filter:
+  type: views.filter.in_operator
+  label: 'Bbox filter'
+  mapping:
+    operator:
+      type: mapping
+      label: 'Operator'
+      mapping:
+        'Contains':
+          type: string
+          label: 'Contains'
+        'Disjoint':
+          type: string
+          label: 'Disjoint'
+        'Intersects':
+          type: string
+          label: 'Intersects'
+    value:
+      type: mapping
+      label: 'Coordinates'
+      mapping:
+        minX:
+          type: string
+          label: 'minX'
+        maxX:
+          type: string
+          label: 'maxX'
+        minY:
+          type: string
+          label: 'minY'
+        maxY:
+          type: string
+          label: 'maxY'

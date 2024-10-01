@@ -130,7 +130,8 @@ class SearchApiDateRange extends Date {
     // Add a bogus filter to be able to read the operator in the preQueryEvent.
     $this->query->addWhere($this->options['group'] + 1, $field, 0, $this->operator);
 
-    // Let the parent classes handle the query generation using the parents operators.
+    // Let the parent classes handle the query generation
+    // using the parents operators.
     if ($a != 0 && $b == 0) {
       $this->query->addWhere($this->options['group'], $field, $a, '>=');
     }
@@ -141,7 +142,8 @@ class SearchApiDateRange extends Date {
       $this->query->addWhere($this->options['group'], $field, [$a, $b], "between");
     }
     // dpm($this->query, __FUNCTION__);
-    // $this->query->addWhereExpression($this->options['group'], "$field $operator $a AND $b");.
+    // $this->query->addWhereExpression($this->options['group'],
+    // "$field $operator $a AND $b");.
   }
 
 }

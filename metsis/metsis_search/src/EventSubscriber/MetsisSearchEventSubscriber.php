@@ -6,10 +6,9 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\metsis_search\MetsisSearchState;
 use Drupal\metsis_search\SearchUtils;
 use Drupal\search_api\LoggerTrait;
-use Drupal\search_api\Query\Condition;
-use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\PostExtractResultsEvent;
 use Drupal\search_api_solr\Event\PreQueryEvent;
@@ -22,11 +21,7 @@ use Solarium\Core\Event\PostExecuteRequest;
 use Solarium\Core\Event\PreCreateQuery;
 use Solarium\Core\Event\PreCreateRequest;
 use Solarium\Core\Event\PreExecuteRequest;
-use Solarium\QueryType\Select\Query;
-// Use Drupal\devel\DevelDumperManagerInterface;.
-use Solarium\QueryType\Select\Query as SolariumQuery;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -86,11 +81,24 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
   protected $mapInfo;
 
   /**
+   * MetsisSearchState service for holding data between events during request.
+   *
+   * @var array
+   */
+  protected $metsisState;
+
+  /**
    * Request stack.
    *
    * @var Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $request;
+
+  /**
+   * Parse mode plugin manager service.
+   *
+   * @var \Drupal\search_api\ParseMode\ParseModePluginManager
+   */
+  protected $parseModeService;
 
   /**
    * UUID Regexp pattern.
@@ -168,6 +176,10 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The cache backend.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The current request stack.
+   * @param \Drupal\metsis_search\MetsisSearchState $state
+   *   The metsisSearch state service.
+   * @param \Drupal\search_api\ParseMode\ParseModePluginManager $parse_mode_service
+   *   The parse mode plugin manager service.
    */
   public function __construct(
     AccountProxyInterface $current_user,
@@ -175,12 +187,16 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     SessionInterface $session,
     CacheBackendInterface $cache,
     RequestStack $request,
+    MetsisSearchState $state,
+    ParseModePluginManager $parse_mode_service,
   ) {
     $this->currentUser = $current_user;
     $this->config = $configFactory->get('metsis_search.settings');
     $this->session = $session;
     $this->cache = $cache;
     $this->request = $request->getCurrentRequest();
+    $this->metsisState = $state;
+    $this->parseModeService = $parse_mode_service;
   }
 
   /**
@@ -251,7 +267,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $main_query = ltrim($main_query, '"');
 
         // dpm($main_query);
-        // $solarium_query->setQuery($current_query . ' ' . $helper->join('related_dataset_id', 'id') . $current_query);.
         $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
         // $solarium_query->setQuery($current_query);
         //
@@ -275,15 +290,13 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
     $solarium_query = $event->getSolariumQuery();
-    $current_query = $solarium_query->getQuery();
+    // $current_query = $solarium_query->getQuery();
     // dpm($current_query, __FUNCTION__);.
-
     // Set t full_text as the default search field.
     $solarium_query->setQueryDefaultField('full_text');
 
     // Get the Query Helper from the Solarium API.
-    $helper = $solarium_query->getHelper();
-
+    // $helper = $solarium_query->getHelper();
     // Get the search id for this search view.
     $searchId = $query->getSearchId();
     $this->searchId = $searchId;
@@ -366,7 +379,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // Filter on selected collections from config.
       $selected_collections = $this->config->get('selected_collections');
       if (isset($selected_collections) && $selected_collections != NULL) {
-        // \Drupal::logger('metsis_search-hook_solr_qyery_alter')->debug("collections filter: " .implode(" ", array_keys($selected_collections)));
         $solarium_query->createFilterQuery('collection')->setQuery('collection:(' . implode(" ", array_keys($selected_collections)) . ')');
       }
 
@@ -396,7 +408,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           $solarium_query->addSort($field, $order);
           if (str_contains($field, "temporal")) {
             // dpm($field);
-            // $solarium_query->addParam('bf', "recip(abs(ms(NOW, {$field})),3.16e-11,10,0.1)");.
+            // $solarium_query->addParam('bf', "recip(abs(ms(NOW, {$field})),
+            // 3.16e-11,10,0.1)");.
           }
         }
 
@@ -459,10 +472,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       /*
        * Manipulate the parse mode for the query
        */
-
-      // Get parsemode plugin interface.
-      $parse_mode_service = \Drupal::service('plugin.manager.search_api.parse_mode');
-
       $keys = $query->getKeys();
       // Use direct query?
       $use_direct = FALSE;
@@ -470,6 +479,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         if (is_array($keys)) {
           // dpm($keys);
           foreach ($keys as $_ => $value) {
+            // @phpcs-ignore UnusedLocalVariable
             if (!is_array($value)) {
               if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value)) {
                 $use_direct = TRUE;
@@ -481,6 +491,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
 
             else {
               foreach ($value as $_ => $value2) {
+                // @phpcs-ignore UnusedLocalVariable
                 if (preg_match('/[' . preg_quote(implode(',', $this->specialChars)) . ']+/', $value2)) {
                   $use_direct = TRUE;
                 }
@@ -555,18 +566,11 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
             $new_fq .= ' AND temporal_extent_start_date:[ * TO ' . $end . ']) ';
             // $new_fq .= '(' . $end_fq;
             $new_fq .= ' OR (*:* -temporal_extent_end_date:*)';
-            // $new_fq = '(' . $end_fq . ' AND ';
-            // $new_fq .= 'temporal_extent_start_date:[* TO ' . $end . '])';
-            // $new_fq .= ' OR ';
-            // $new_fq .= '(' . $end_fq;
-            // $new_fq .= ' AND (*:* -temporal_extent_end_date:*))';
-            $end_fq = $new_fq;
             $filters[$filter_key]->setQuery($new_fq);
           }
           if ($date_filter === 'STARTEND') {
             $start = $matches[0][0];
             $end = $matches[0][1];
-            // $new_fq = $fq . ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND temporal_extent_end_date:[' . $end . ' TO *]) OR (*:* -temporal_extent_end_date:*)';
             $new_fq = '((temporal_extent_start_date:[' . $start . ' TO ' . $end . ']';
             $new_fq .= ' AND temporal_extent_end_date:[' . $start . ' TO ' . $end . '])';
             $new_fq .= ' OR (temporal_extent_start_date:[* TO ' . $start . '] AND -temporal_extent_end_date:[* TO *]))';
@@ -596,7 +600,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // dpm($query);
       // dpm($solarium_query);
       // dpm($query->getConditionGroup()->getConditions());
-      $current_query = $solarium_query->getQuery();
+      // $current_query = $solarium_query->getQuery();
       // dpm($current_query, __FUNCTION__);.
     }
 
@@ -656,7 +660,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     // dpm($event->getRequest());
     // $query = $event->getQuery();
     // dpm($query->getQuery());
-
   }
 
   /**
@@ -670,60 +673,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     // dpm($event->getQuery());
     // $req = $event->getRequest();
     // dpm($req->getParams());
-
-    /* Rewrite the query if we got an end date filter. */
-    // $end_date_query = $req->getParam('end_date_query');
-    // if (NULL != $end_date_query) {
-    // $qs = '(';
-    // $query = $req->getParam('q');
-    // $trim_query = rtrim($query, ')');
-    // $okeys = $req->getParam('okeys');
-    // $conjuction = '';
-    // if (NULL != $okeys) {
-    // if (array_key_exists('#conjunction', $okeys)) {
-    // if ($okeys['#conjunction'] === 'AND') {
-    // $qs = '+(';
-    // $conjuction = 'AND';
-    // }
-    // if ($okeys['#conjunction'] === 'OR') {
-    // $qs = '(';
-    // $conjuction = 'OR';
-    // }
-    // unset($okeys['#conjunction']);
-    // }
-
-    // Foreach ($okeys as $k) {
-    // if ($conjuction === 'AND') {
-    // $qs .= '+full_text:"' . $k . '" ';
-    // }
-    // if ($conjuction === 'OR') {
-    // $qs .= 'full_text:"' . $k . '" ';
-    // }
-    // }.
-
-    // $dkeys = explode(' ', $okeys);
-    // if (count($okeys) > 1) {
-    // $new_query = $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
-    // }
-    // else {
-    // $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . $qs . $this->openEndDateQuery . ')';
-    // }
-    // $req->addParam('q', $new_query, TRUE);
-
-    // $req->removeParam('okeys');
-    // }
-    // if (NULL == $okeys) {
-    // $new_query = '(' . $trim_query . ' AND ' . $end_date_query . ') OR ' . '(*:* ' . $this->openEndDateQuery . ')';
-    // $req->addParam('q', $new_query, TRUE);
-    // }
-    // $req->removeParam('end_date_query');
-    // // dpm($new_query);
-    // }
-    // /** @var Solarium\QueryType\Select\Query $query*/
-    // $query = $event->getQuery();
-    // // ->getFilterQueries());
-    // dpm(gettype($query));
-    // dpm($query['#filterQueries']);
   }
 
   /**
@@ -740,8 +689,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // dpm($this->searchId);
       // $result = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfo($event->getResult());
-      // \Drupal::logger('metsis_search-hook_search_results')->debug('<pre><code>' . print_r($event->getResult(), true) . '</code></pre>');
-      // \Drupal::logger('metsis_search-hook_search_extracted_info')->debug('<pre><code>' . print_r($extracted_info, true) . '</code></pre>');
       $this->session->set('extracted_info', $extracted_info);
       if ($this->session->has('basket_ref')) {
         $this->session->remove('basket_ref');

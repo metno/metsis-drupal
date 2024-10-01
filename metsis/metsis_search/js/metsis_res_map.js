@@ -2590,6 +2590,22 @@ console.log("Start of metsis search map script:");
             features: iconFeaturesPin,
             name: 'pinsSource',
             projection: prj,
+            style: function styleFunction(feature, resolution) {
+              var zoom = map.getView().getZoom();
+              var area = feature.getGeometry().getArea();
+
+              // Adjust these values as needed.
+              var zoomThreshold = 10;
+              var areaThreshold = 1000;
+
+              if (zoom <= zoomThreshold && area <= areaThreshold) {
+                // If the map is zoomed out and the polygon is small, use the pin style.
+                return pinStyle;
+              } else {
+                // Otherwise, use the polygon style.
+                return polygonStyle;
+              }
+            }
           });
           var pinsFeatureLayer = new ol.layer.Vector({
             title: 'Pins',

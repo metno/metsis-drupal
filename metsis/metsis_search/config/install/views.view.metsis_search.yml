@@ -5,6 +5,7 @@ dependencies:
     - search_api.index.metsis
   module:
     - better_exposed_filters
+    - metsis_search
     - search_api
     - views_fieldsets
 id: metsis_search
@@ -2958,6 +2959,51 @@ display:
             min_placeholder: ''
             max_placeholder: ''
             placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        bbox:
+          id: bbox
+          table: search_api_index_metsis
+          field: bbox
+          relationship: none
+          group_type: group
+          admin_label: 'Geographic Map filter'
+          plugin_id: metsis_search_bbox_filter
+          operator: intersects
+          value:
+            minX: ''
+            maxX: ''
+            minY: ''
+            maxY: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: bbox_op
+            label: Bbox
+            description: ''
+            use_operator: true
+            operator: bbox_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: bbox
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
           is_grouped: false
           group_info:
             label: ''

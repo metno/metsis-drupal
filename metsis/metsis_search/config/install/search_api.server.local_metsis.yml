@@ -32,7 +32,7 @@ dependencies:
 id: local_metsis
 name: local_metsis
 description: ''
-backend: search_api_solr
+backend: search_api_solr_metsis
 backend_config:
   retrieve_data: true
   highlight_data: true
