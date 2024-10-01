@@ -9,6 +9,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\metsis_search\MetsisSearchState;
 use Drupal\metsis_search\SearchUtils;
 use Drupal\search_api\LoggerTrait;
+use Drupal\search_api\ParseMode\ParseModePluginManager;
 use Drupal\search_api_solr\Event\PostConvertedQueryEvent;
 use Drupal\search_api_solr\Event\PostExtractResultsEvent;
 use Drupal\search_api_solr\Event\PreQueryEvent;
@@ -37,6 +38,12 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    * @var \Drupal\Core\Session\AccountProxyInterface
    */
   protected $currentUser;
+  /**
+   * The request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\Request
+   */
+  protected $requestStack;
 
   /**
    * Config factory.
@@ -174,7 +181,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current session.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
    *   The cache backend.
-   * @param \Symfony\Component\HttpFoundation\Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $requestStack
    *   The current request stack.
    * @param \Drupal\metsis_search\MetsisSearchState $state
    *   The metsisSearch state service.
@@ -186,7 +193,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     ConfigFactoryInterface $configFactory,
     SessionInterface $session,
     CacheBackendInterface $cache,
-    RequestStack $request,
+    RequestStack $requestStack,
     MetsisSearchState $state,
     ParseModePluginManager $parse_mode_service,
   ) {
@@ -194,7 +201,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $this->config = $configFactory->get('metsis_search.settings');
     $this->session = $session;
     $this->cache = $cache;
-    $this->request = $request->getCurrentRequest();
+    $this->requestStack = $requestStack;
     $this->metsisState = $state;
     $this->parseModeService = $parse_mode_service;
   }
@@ -341,8 +348,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * Invalidate the search result map cache
        */
       $this->cache->invalidate('metsis_search_map');
-      if ($this->request->headers->has('referer')) {
-        $this->session->set('back_to_search', $this->request->headers->get('referer'));
+      if ($this->requestStack->getCurrentRequest()->headers->has('referer')) {
+        $this->session->set('back_to_search', $this->requestStack->getCurrentRequest()->headers->get('referer'));
       }
       if ($this->session->has('bboxFilter')) {
         $bboxFilter = $this->session->get('bboxFilter');
@@ -510,7 +517,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       }
       $conjuction = $query->getParseMode()->getConjunction();
       if ($use_direct) {
-        $parse_mode = $parse_mode_service->createInstance('direct');
+        $parse_mode = $this->parseModeService->createInstance('direct');
         $parse_mode->setConjunction($conjuction);
         $query->setParseMode($parse_mode);
       }

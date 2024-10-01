@@ -12,6 +12,7 @@ services:
       - '@cache.default'
       - '@request_stack'
       - '@metsis_search.state'
+      - '@plugin.manager.search_api.parse_mode'
     tags:
       -
         name: event_subscriber
