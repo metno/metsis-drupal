@@ -5,27 +5,24 @@ core_version_requirement: '^10 || ^11'
 version: 2.0.1
 package: METSIS
 dependencies:
-  - search_api
-  - user
-  - views_fieldsets
-  - better_exposed_filters
-  - search_api_solr
-  - views
-  - search_api_autocomplete
-  - facets
-  - system
-  - metsis_search
-  - twig_tweak
-  - twig_views
-  - date_popup
-  - search_api_sorts
-  - lazy
-  - metsis_lib
-  - metsis_wms
-  - metsis_ts_bokeh
-  - metsis_csv_bokeh
-  - back_to_top
-  - extlink
-  - fontawesome
+  - search_api_solr:search_api_solr
+  - drupal:user
+  - views_fieldsets:views_fieldsets
+  - better_exposed_filters:better_exposed_filters
+  - drupal:views
+  - search_api_autocomplete:search_api_autocomplete
+  - facets:facets
+  - twig_tweak:twig_tweak
+  - twig_views:twig_views
+  - search_api_sorts:search_api_sorts
+  - lazy:lazy
+  - metsis_lib:metsis_lib
+  - metsis_wms:metsis_wms
+  - metsis_ts_bokeh:metsis_ts_bokeh
+  - metsis_csv_bokeh:metsis_csv_bokeh
+  - back_to_top:back_to_top
+  - extlink:extlink
+  - fontawesome:fontawesome
+  - date_popup:date_popup
   - views_autocomplete_filters
-  - search_api_solr_autocomplete
+  - search_api_solr_autocomplete:search_api_solr_autocomplete

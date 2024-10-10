@@ -23,6 +23,13 @@ class MetsisSearchState {
   }
 
   /**
+   * Get the all the state_data .
+   */
+  public function getAll() {
+    return $this->data;
+  }
+
+  /**
    * Set a value in the state data array.
    */
   public function set($key, $value) {

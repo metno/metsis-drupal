@@ -130,6 +130,59 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        parent_info:
+          id: parent_info
+          table: search_api_index_metsis
+          field: parent_info
+          relationship: none
+          group_type: group
+          admin_label: 'Info about parent placeholder'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         nothing_13:
           id: nothing_13
           table: views
@@ -289,6 +342,63 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        is_child:
+          id: is_child
+          table: search_api_index_metsis
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: isChild
+          plugin_id: search_api_boolean
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          type: true-false
+          type_custom_true: ''
+          type_custom_false: ''
+          not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         related_url_landing_page:
           id: related_url_landing_page
           table: search_api_index_metsis
@@ -395,6 +505,59 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
+        data_access_url_ogc_wms_1:
+          id: data_access_url_ogc_wms_1
+          table: search_api_index_metsis
+          field: data_access_url_ogc_wms
+          relationship: none
+          group_type: group
+          admin_label: 'wms link for thumbnail test'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         nothing_12:
           id: nothing_12
           table: views
@@ -407,7 +570,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{%endif %}"
+            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n{% if  data_access_url_ogc_wms_1 is defined  and data_access_url_ogc_wms_1 is not empty %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{% else %}\r\n{% endif %}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1507,6 +1670,59 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        children_search_string:
+          id: children_search_string
+          table: search_api_index_metsis
+          field: children_search_string
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         fieldset:
           id: fieldset
           table: views
@@ -1559,7 +1775,7 @@ display:
           fields:
             - nothing_2
             - nothing_3
-            - nothing_1
+            - num_children
             - nothing_6
             - nothing_4
             - data_access_url_http
@@ -1671,19 +1887,19 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
-        nothing_1:
-          id: nothing_1
-          table: views
-          field: nothing
+        num_children:
+          id: num_children
+          table: search_api_index_metsis
+          field: num_children
           relationship: none
           group_type: group
           admin_label: Children
-          plugin_id: custom
+          plugin_id: standard
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden adc-button adc-sbutton\" title=\"List children based on search criteria\" href=\"/metsis/elements/{{ id }}/search\"></a>\r\n</div>\r\n{% endif %}"
+            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"parent-{{ id}}\" >\r\n<a class=\"adc-button adc-sbutton\" title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/search{{ children_search_string }}\">Child data..[{{ num_children }}]</a>\r\n</div>\r\n{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -1714,12 +1930,16 @@ display:
           element_label_class: ''
           element_label_colon: false
           element_wrapper_type: ''
-          element_wrapper_class: 'ajax-wrapper metachild-wrapper inline'
+          element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
-          empty_zero: true
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
+          link_to_item: 0
+          use_highlighting: 0
+          multi_type: separator
+          multi_separator: ', '
         nothing_6:
           id: nothing_6
           table: views
@@ -2445,20 +2665,6 @@ display:
                   collapsible_disable_automatic_open: false
                   is_secondary: false
                   hide_label: false
-              temporal_extent_start_date:
-                plugin_id: default
-                advanced:
-                  collapsible: false
-                  collapsible_disable_automatic_open: false
-                  is_secondary: false
-                  hide_label: false
-              temporal_extent_end_date:
-                plugin_id: default
-                advanced:
-                  collapsible: false
-                  collapsible_disable_automatic_open: false
-                  is_secondary: false
-                  hide_label: false
               is_parent:
                 plugin_id: bef_single
                 advanced:
@@ -2481,13 +2687,50 @@ display:
                   collapsible_disable_automatic_open: false
                   is_secondary: false
                   hide_label: false
+              temporal_extent_start_date:
+                plugin_id: default
+                advanced:
+                  collapsible: false
+                  collapsible_disable_automatic_open: false
+                  is_secondary: false
+                  hide_label: false
+              temporal_extent_end_date:
+                plugin_id: default
+                advanced:
+                  collapsible: false
+                  collapsible_disable_automatic_open: false
+                  is_secondary: false
+                  hide_label: false
+              bbox:
+                plugin_id: default
+                advanced:
+                  rewrite:
+                    filter_rewrite_values: ''
+                    filter_rewrite_values_key: false
+                  collapsible: true
+                  collapsible_disable_automatic_open: false
+                  is_secondary: true
+                  hide_label: false
       access:
         type: none
         options: {  }
       cache:
         type: search_api_none
         options: {  }
-      empty: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: 'No Results default message'
+          plugin_id: text
+          empty: true
+          content:
+            value: '<h5 class="text-align-center"><strong><em>No Results found! Please refine your search.</em></strong></h5>'
+            format: full_html
+          tokenize: false
       sorts: {  }
       arguments: {  }
       filters:
@@ -2989,12 +3232,14 @@ display:
           exposed: true
           expose:
             operator_id: bbox_op
-            label: Bbox
+            label: 'Spatial filter'
             description: ''
             use_operator: true
             operator: bbox_op
-            operator_limit_selection: false
-            operator_list: {  }
+            operator_limit_selection: true
+            operator_list:
+              within: within
+              intersects: intersects
             identifier: bbox
             required: false
             remember: false
@@ -3004,6 +3249,53 @@ display:
               anonymous: '0'
               content_editor: '0'
               administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        related_dataset_id:
+          id: related_dataset_id
+          table: search_api_index_metsis
+          field: related_dataset_id
+          relationship: none
+          group_type: group
+          admin_label: 'Parent filter - show children of parent'
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: related_dataset_id_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: related_dataset_id_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: related_dataset_id
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -3054,6 +3346,15 @@ display:
       use_ajax: false
       show_admin_links: false
       header:
+        metsis_search_parent_info:
+          id: metsis_search_parent_info
+          table: views
+          field: metsis_search_parent_info
+          relationship: none
+          group_type: group
+          admin_label: 'Parent Info'
+          plugin_id: metsis_search_parent_info
+          empty: false
         result:
           id: result
           table: views
@@ -3082,12 +3383,8 @@ display:
     position: 1
     display_options:
       cache:
-        type: search_api_time
-        options:
-          results_lifespan: 300
-          results_lifespan_custom: 0
-          output_lifespan: 300
-          output_lifespan_custom: 0
+        type: search_api_none
+        options: {  }
       defaults:
         cache: false
         fields: true
@@ -3112,39 +3409,11 @@ display:
         parent: ''
         context: '0'
     cache_metadata:
-      max-age: 0
+      max-age: -1
       contexts:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
-        - user.roles
       tags:
-        - 'config:facets.facet.cloud_coverage'
-        - 'config:facets.facet.collection'
-        - 'config:facets.facet.data_center'
-        - 'config:facets.facet.dataset_level'
-        - 'config:facets.facet.end_date'
-        - 'config:facets.facet.gcmd_keywords'
-        - 'config:facets.facet.instrument_mode'
-        - 'config:facets.facet.instrument_short_name'
-        - 'config:facets.facet.isottopic_category'
-        - 'config:facets.facet.keywords'
-        - 'config:facets.facet.keywords_level2'
-        - 'config:facets.facet.keywords_level3'
-        - 'config:facets.facet.keywords_level4'
-        - 'config:facets.facet.keywords_level5'
-        - 'config:facets.facet.keywords_level6'
-        - 'config:facets.facet.keywords_level7'
-        - 'config:facets.facet.organisation'
-        - 'config:facets.facet.personnel'
-        - 'config:facets.facet.personnel_role'
-        - 'config:facets.facet.platform'
-        - 'config:facets.facet.project'
-        - 'config:facets.facet.publisher'
-        - 'config:facets.facet.start_date_day'
-        - 'config:facets.facet.start_date_month'
-        - 'config:facets.facet.start_date_year'
         - 'config:search_api.index.metsis'
-        - 'config:views.view.metsis_search'
         - 'search_api_list:metsis'

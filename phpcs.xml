@@ -6,6 +6,7 @@
   <rule ref="Drupal"/>
   <rule ref="DrupalPractice"/>
 
+
   <!-- Include path with the Drupal and DrupalPractice rules. -->
   <!--<config name="installed_paths" value="vendor/drupal/coder/coder_sniffer"/> -->
 
@@ -13,8 +14,7 @@
   <!-- @todo remove .css to check also the css files. -->
   <!-- @see https://www.drupal.org/node/2867601#comment-12075633 -->
   <arg name="ignore" value="*.js,*.md,*.txt"/>
-    <arg name="extensions"
-            value="php,
+  <arg name="extensions" value="php,
                 module,
                 inc,
                 install,
@@ -31,3 +31,4 @@
   <arg name="warning-severity" value="0"/>
   <file>metsis</file>
 </ruleset>
+

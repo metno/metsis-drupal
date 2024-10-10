@@ -1195,9 +1195,11 @@ processor_settings:
         m: '3.16e-11'
         a: 0.1
         b: 0.05
+        support_future_dates: false
   solr_date_range:
     weights:
       preprocess_index: 0
+  solr_dummy_fields: {  }
 tracker_settings:
   default:
     indexing_order: fifo

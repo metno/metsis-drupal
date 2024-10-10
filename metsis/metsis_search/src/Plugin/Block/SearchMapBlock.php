@@ -8,6 +8,7 @@ use Drupal\Core\Cache\UncacheableDependencyTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\metsis_search\MetsisSearchState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -46,6 +47,13 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
   protected $configFactory;
 
   /**
+   * MetsisSearchState service for holding data between events during request.
+   *
+   * @var array
+   */
+  protected $metsisState;
+
+  /**
    * The container create function.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
@@ -66,7 +74,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       $plugin_definition,
       $container->get('module_handler'),
       $container->get('request_stack')->getCurrentRequest(),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('metsis_search.state')
     );
   }
 
@@ -85,6 +94,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
    *   The request_stack service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory service.
+   * @param \Drupal\metsis_search\MetsisSearchState $state
+   *   The metsisSearch state service.
    */
   public function __construct(
     array $configuration,
@@ -93,11 +104,13 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     ModuleHandler $moduleHandler,
     Request $request,
     ConfigFactoryInterface $configFactory,
+    MetsisSearchState $state,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moduleHandler = $moduleHandler;
     $this->request = $request;
     $this->configFactory = $configFactory;
+    $this->metsisState = $state;
   }
 
   /**
@@ -117,8 +130,10 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     $brlat = $session->get('brlat');
     $brlon = $session->get('brlon');
     $filter = $session->get('cond');
+
     // Get saved configuration.
     $config = $this->configFactory->get('metsis_search.settings');
+    $bbox_filter_auto_show = $config->get('hide_bbox_filter_exposed');
     $map_location = $config->get('map_selected_location');
     $map_lat = $config->get('map_locations')[$map_location]['lat'];
     $map_lon = $config->get('map_locations')[$map_location]['lon'];
@@ -139,7 +154,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       $map_wms_layers_skip = [];
     }
     /* Get the extracted info from session. */
-    $extracted_info = $session->get('extracted_info');
+    $extracted_info = $this->metsisState->get('extracted_info');
 
     if ($session->get("place_filter") != NULL) {
       $map_filter = $session->get("place_filter");
@@ -208,7 +223,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     // Top panel current bbox filter text markup.
     $build['search-map']['top-panel']['filter'] = [
       '#type' => 'markup',
-      '#markup' => '<span class="current-bbox-filter"></span> <span class="current-bbox-select"></span>',
+      '#markup' => '<span class="current-bbox-filter-label"></span><span class="current-bbox-filter"></span> <span class="current-bbox-select"></span><span class="remove-bbox-filter"></span>',
       '#allowed_tags' => ['span', 'label', 'button', 'br', 'hr'],
     ];
 
@@ -407,6 +422,9 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
           'pywps_service' => $pywps_service,
           'current_search' => $searchUri,
           'wms_layers_skip' => $map_wms_layers_skip,
+          'bbox_filter' => $this->metsisState->get('bbox_filter'),
+          'bbox_op' => $this->metsisState->get('bbox_op'),
+          'bbox_filter_auto_show' => $bbox_filter_auto_show,
         ],
       ],
     ];

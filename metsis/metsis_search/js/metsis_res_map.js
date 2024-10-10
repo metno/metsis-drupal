@@ -42,6 +42,9 @@ console.log("Start of metsis search map script:");
         var pywpsUrl = drupalSettings.metsis_search_map_block.pywps_service;
         var current_search = drupalSettings.metsis_search_map_block.current_search;
         var wms_layers_skip = drupalSettings.metsis_search_map_block.wms_layers_skip;
+        var bbox_filter = drupalSettings.metsis_search_map_block.bbox_filter;
+        var bbox_operator = drupalSettings.metsis_search_map_block.bbox_op;
+        var bbox_filter_auto_show = drupalSettings.bbox_filter_auto_show;
 
         // Some debugging
         var debug = true;
@@ -62,6 +65,8 @@ console.log("Start of metsis search map script:");
           console.log(wms_layers_skip);
           console.log("Extracted info: ");
           console.log(extracted_info);
+          console.log(bbox_filter);
+          console.log(bbox_operator);
 
         }
 
@@ -218,12 +223,20 @@ console.log("Start of metsis search map script:");
 
         //Set default checked filter
         //var flt = document.getElementsByName('map-filter');
-        selected_filter = selected_filter.toLowerCase();
-        console.log('selected filter: ' + selected_filter.toLowerCase());
-        if (selected_filter !== 'contains') {
-          document.getElementById(selected_filter.toLowerCase()).checked = true;
+        if (bbox_operator != null) {
+          selected_filter = bbox_operator.toLowerCase();
+          console.log('selected filter: ' + selected_filter.toLowerCase());
+          if (selected_filter !== 'contains') {
+            document.getElementById(selected_filter.toLowerCase()).checked = true;
+          }
         }
-
+        else {
+          selected_filter = 'intersects';
+          console.log('selected filter: ' + selected_filter.toLowerCase());
+          if (selected_filter !== 'contains') {
+            document.getElementById(selected_filter.toLowerCase()).checked = true;
+          }
+        }
         //If additional lyers are set, create the layers dropdown button list
         if (additional_layers) {
           console.log('Creating additonal layers dropdown  button');
@@ -289,10 +302,24 @@ console.log("Start of metsis search map script:");
 
         //display current bbox search filter
 
-        const mapFilterInfo = selected_filter.charAt(0).toUpperCase() + selected_filter.slice(1)
-        if (bboxFilter != null) {
-          $('.current-bbox-filter').text('Spatial filter: ' + mapFilterInfo + ' ');
-          $('.current-bbox-select').text(bboxFilter);
+        if (bbox_filter != null && bbox_operator != null) {
+          const mapFilterInfo = selected_filter.charAt(0).toUpperCase() + selected_filter.slice(1)
+          $('.current-bbox-filter-label').html('<strong>Active spatial filter:</strong> ');
+          $('.current-bbox-filter').text(mapFilterInfo + ' ');
+          $('.current-bbox-select').text('ENVELOPE((' + bbox_filter[0] + ',' + bbox_filter[1] + ',' + bbox_filter[2] + ',' + bbox_filter[3] + ')');
+          $('.remove-bbox-filter').append(' <i id="remove-bbox-filter" class="fa fa-remove" style="color:red; cursor:pointer;" title="Remove geographic boundingbox filter"></i>');
+          $(".remove-bbox-filter").click(function () {
+            $('#edit-bbox-minx--2').val('');
+            $('#edit-bbox-maxx--2').val('');
+            $('#edit-bbox-maxy--2').val('');
+            $('#edit-bbox-miny--2').val('');
+
+            // Update the operator option.
+            $('#edit-bbox-op--2').val(selected_filter.toLowerCase()).prop('selected', true);;
+
+            $('#views-exposed-form-metsis-search-results').submit();
+          });
+
         }
 
         //Reset search button
@@ -2462,7 +2489,7 @@ console.log("Start of metsis search map script:");
             //console.log(extracted_info[i12]);
 
             //If we have a geographic extent, create polygon feature
-            if ((extracted_info[i12][2][0] !== extracted_info[i12][2][1]) || (extracted_info[i12][2][2] !== extracted_info[i12][2][3])) {
+            if ((extracted_info[i12][2][0].toFixed(4) !== extracted_info[i12][2][1].toFixed(4)) || (extracted_info[i12][2][2].toFixed(4) !== extracted_info[i12][2][3].toFixed(4))) {
               //Transform boundingbox to selected projection and create a polygon geometry
               box_tl = ol.proj.transform([extracted_info[i12][2][3], extracted_info[i12][2][0]], 'EPSG:4326', prj);
               box_tr = ol.proj.transform([extracted_info[i12][2][2], extracted_info[i12][2][0]], 'EPSG:4326', prj);
@@ -3097,31 +3124,47 @@ console.log("Start of metsis search map script:");
               choices.push($(this).attr('value'));
             });
             selected_filter = choices[0];
+            console.log("prediacte: " + selected_filter);
             //var flt = document.getElementsByName('map-filter');
             //console.log(flt);
+            /* Populate the bbox search api exposed form filter with this bbox*/
+            // Example: ENVELOPE(-10, 20, 15, 10) which is minX, maxX, maxY, minY order.
+            // 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
+            // Populate the input fields.
+            $('#edit-bbox-minx--2').val(topLeft[0]);
+            $('#edit-bbox-maxx--2').val(bottomRight[0]);
+            $('#edit-bbox-maxy--2').val(topLeft[1]);
+            $('#edit-bbox-miny--2').val(bottomRight[1]);
+
+            // Update the operator option.
+            $('#edit-bbox-op--2').val(selected_filter.toLowerCase()).prop('selected', true);;
+
+            // Submit the form.
+            $('#views-exposed-form-metsis-search-results').submit();
+
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj + '&cond=' + selected_filter;
-            console.log('calling controller url: ' + myurl);
+            // var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj + '&cond=' + selected_filter;
+            // console.log('calling controller url: ' + myurl);
 
-            data = Drupal.ajax({
-              url: myurl,
-              async: false
-            }).execute();
+            // data = Drupal.ajax({
+            //   url: myurl,
+            //   async: false
+            // }).execute();
 
-            //Do something after ajax call are complete
-            $(document).ajaxComplete(function (event, xhr, settings) {
-              console.log('ajax complete:' + drupalSettings.metsis_search_map_block.bboxFilter);
-              var bboxFilter = drupalSettings.metsis_search_map_block.bboxFilter;
-              $('.current-bbox-select').text(bboxFilter);
+            // //Do something after ajax call are complete
+            // $(document).ajaxComplete(function (event, xhr, settings) {
+            //   console.log('ajax complete:' + drupalSettings.metsis_search_map_block.bboxFilter);
+            //   var bboxFilter = drupalSettings.metsis_search_map_block.bboxFilter;
+            //   $('.current-bbox-select').text(bboxFilter);
 
-              var tllat = drupalSettings.metsis_search_map_block.tllat;
-              var tllon = drupalSettings.metsis_search_map_block.tllon;
-              var brlat = drupalSettings.metsis_search_map_block.brlat;
-              var brlon = drupalSettings.metsis_search_map_block.brlon;
+            //   var tllat = drupalSettings.metsis_search_map_block.tllat;
+            //   var tllon = drupalSettings.metsis_search_map_block.tllon;
+            //   var brlat = drupalSettings.metsis_search_map_block.brlat;
+            //   var brlon = drupalSettings.metsis_search_map_block.brlon;
 
-              location.href = window.location.href; //Redirect
+            //   location.href = window.location.href; //Redirect
 
-            });
+            // });
             //Create popup with search button
             //$('#popup-content').append("<p>" + feature_ids[id].title + "</p>");
             /*            console.log("Creating search button in popup content");

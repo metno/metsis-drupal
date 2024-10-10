@@ -1,0 +1,49 @@
+{#
+/**
+ * Template for showing parent info when searching children
+ */
+#}
+
+<div class="w3-leftbar w3-panel w3-border-green">
+	{% if data.title.0 and data.related_url_landing_page.0 %}
+		<div class="parent-filter-info">
+			Searching on children for parent:</div>
+		<h3 style="margin-bottom: 4px;">
+			<a href="{{ data.related_url_landing_page.0 }}" title="{{ data.related_url_landing_page_desc.0 ?? '' }}">
+				{{ data.title.0 }}
+			</a>
+		</h3>
+	{% endif %}
+	{% if data.title.0 and not data.related_url_landing_page.0 %}
+		<div class="parent-filter-info">
+			Searching on children for parent:</div>
+		<h3 style="margin-bottom: 4px;">
+			{{ data.title.0 }}
+		</h3>
+	{% endif %}
+
+	{#
+		  {% if data.metadata_identifier %}
+		    <div style="font-size: small; text-indent: 5em;">
+		      {{ data.metadata_identifier }}
+		    </div>
+		  {% endif %}
+		#}
+	{% if data.temporal_extent_start_date.0 %}
+		<p>
+			<strong>Start Date:</strong>
+			{{ data.temporal_extent_start_date.0 }}
+		</p>
+	{% endif %}
+	{% if data.temporal_extent_end_date.0 %}
+		<p>
+			<strong>End Date:</strong>
+			{{ data.temporal_extent_end_date.0 }}
+		</p>
+	{% endif %}
+	<div id="remove-parent-filter" style="cursor: pointer;">
+		<i class="fa fa-arrow-left" style="color:red;" title="Go back to main search"></i>
+		Go back to main search
+	</div>
+
+</div>

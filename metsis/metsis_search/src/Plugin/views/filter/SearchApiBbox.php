@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\search_api\Plugin\views\filter\SearchApiFilterTrait;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
+use Drupal\views\ViewExecutable;
 
 /**
  * Defines a filter for filtering on dates.
@@ -189,6 +190,40 @@ class SearchApiBbox extends FilterPluginBase implements ContainerFactoryPluginIn
       }
     }
     return $rc;
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * {@todo} Fix when webprofiler is not making problems anymore.
+   */
+  public function validateExposed(&$form, FormStateInterface $form_state) {
+    // parent::validateExposed($form, $form_state);.
+    if (empty($this->options['exposed'])) {
+      return;
+    }
+
+    // dpm($form_state->getValues(), __FUNCTION__);
+    // Validate BBox values for exposed form.
+    $coordinates = ['minX', 'maxX', 'maxY', 'minY'];
+    foreach ($coordinates as $coordinate) {
+      $value = &$form_state->getValue(['bbox', $coordinate]);
+      // dpm($value, __FUNCTION__ . " $coordinate");
+      // dpm($form, __FILE__ . ':' . __LINE__);
+      // dpm($form['bbox_wrapper']['bbox_wrapper'][$this->options['expose']['identifier']], __FILE__ . ':' . __LINE__);.
+      $elem = $form['bbox_wrapper']['bbox_wrapper'][$this->options['expose']['identifier']];
+      // dpm($elem);
+      if ($value == NULL || $value === '') {
+        // $form_state->setError($elem[$coordinate], $this->t('The @coordinate coordinate is required.', ['@coordinate' => $coordinate]));
+      }
+      else {
+        $value = trim($value);
+        if (!is_numeric($value)) {
+          // $form_state->setErrorByName('bbox][' . $coordinate . ']', $this->t('The @coordinate coordinate must be a number.', ['@coordinate' => $coordinate]));
+          // $form_state->setErrorByName('bbox][maxX]', $this->t('The maxX coordinate must be a number.'));
+        }
+      }
+    }
   }
 
   /**

@@ -47,10 +47,6 @@
   "phpsab.allowedAutoRulesets": [
     "phpcs.xml"
   ],
-  "phpcbf.enable": true,
-  "phpcbf.executablePath": "phpcbf",
-  "phpcbf.documentFormattingProvider": true,
-  "phpcbf.onsave": true,
   "php.validate.enable": true,
   "php.validate.executablePath": "/usr/bin/php",
   "php.validate.run": "onType",

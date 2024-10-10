@@ -148,3 +148,12 @@ export:
   version: 1.0.1
   js:
     js/export.js: {}
+
+parent_filter:
+  version: 1.0.1
+  js:
+    js/remove_parent_filter.js: {}
+  depedencies:
+    - core/jquery
+    - core/once
+    - core/drupal

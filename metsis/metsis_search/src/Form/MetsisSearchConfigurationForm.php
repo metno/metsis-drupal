@@ -156,6 +156,25 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       $this->t("Will return the parent of matching children when only returning level 1 datasets."),
       '#default_value' => $config->get('search_match_children'),
     ];
+
+    $form['show_bbox_filter_exposed'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check this box to show the bbox filter in the search exposed form.'),
+      '#description' => $this->t("A bbox filter element will be added to the search exosed form. Visually hidden by default"),
+      '#default_value' => $config->get('show_bbox_filter_exposed'),
+    ];
+    $form['hide_bbox_filter_exposed'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Only show the bbox exposed form when a bbox filer is active.'),
+      '#description' => $this->t("The bbox exposed form will only be shown when a bbox filter is active"),
+      '#default_value' => $config->get('hide_bbox_filter_exposed'),
+      '#states' => [
+        'visible' => [
+          ':input[name="show_bbox_filter_exposed"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     /*
     $form['csv_button_text'] = [
     '#type' => 'textfield',
@@ -252,6 +271,12 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ],
       '#default_value' => $config->get('map_bbox_filter'),
     ];
+    $form['searchmap']['autosubmit'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check this box to autosubmit the search when a boundingbox filter are drawn on the map.'),
+      '#description' => $this->t("Autosubmit the search when a boundingbox filter are drawn on the map"),
+      '#default_value' => $config->get('map_bbox_autosubmit'),
+    ];
 
     $form['searchmap']['search_text'] = [
       '#type' => 'textarea',
@@ -336,6 +361,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('map_zoom', $values['searchmap']['zoom'])
       ->set('map_selected_location', $values['searchmap']['location'])
       ->set('map_bbox_filter', $values['searchmap']['bbox_filter'])
+      ->set('map_bbox_autosubmit', $values['searchmap']['autosubmit'])
       ->set('map_search_text', $values['searchmap']['search_text'])
       ->set('map_wms_layers_skip', $values['searchmap']['wms_layers_skip'])
       ->set('selected_collections', $values['collections'])
@@ -349,6 +375,8 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('enable_cloud_coverage_elements', $values['enable_cloud_coverage_elements'])
       ->set('bbox_overlap_sort', $values['bbox_overlap_sort'])
       ->set('search_match_children', $values['search_match_children'])
+      ->set('show_bbox_filter_exposed', $values['show_bbox_filter_exposed'])
+      ->set('hide_bbox_filter_exposed', $values['hide_bbox_filter_exposed'])
       ->save();
 
     parent::submitForm($form, $form_state);

@@ -31,3 +31,10 @@ views.filter.metsis_search_bbox_filter:
         maxY:
           type: string
           label: 'maxY'
+views.area.metsis_search_parent_info:
+  type: views_area
+  label: 'Parent info for given child query'
+  mapping:
+    content:
+      type: text
+      label: 'The shown parent info'

@@ -30,7 +30,7 @@ class MapSearchController extends ControllerBase {
     $brlon = $params['brlon'];
     $proj = $params['proj'];
     $bboxFilter = 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
-
+    // Example: ENVELOPE(-10, 20, 15, 10) which is minX, maxX, maxY, minY order.
     // Get current session variables.
     $session = $request->getSession();
     $session->set('bboxFilter', $bboxFilter);
