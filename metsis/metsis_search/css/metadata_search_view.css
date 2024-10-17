@@ -120,3 +120,24 @@ label,
 span.field_content {
 
  }*/
+/**
+ * Add margin for facet items
+ */
+.facet-item__value {
+  margin-left: 0.2em !important;
+}
+
+/** Handle more parent info
+ *
+ */
+.parent-more-toggle {
+  display: none;
+}
+
+.parent-more-label {
+  cursor: pointer;
+}
+
+.parent-more-content {
+  display: none;
+}

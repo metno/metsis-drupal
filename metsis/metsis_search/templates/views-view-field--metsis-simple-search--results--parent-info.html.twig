@@ -1,0 +1,82 @@
+{#
+
+/**
+ * @file
+ * Default theme implementation for a single field in a view.
+ *
+ * Available variables:
+ * - view: The view that the field belongs to.
+ * - field: The field handler that can process the input.
+ * - row: The raw result of the database query that generated this field.
+ * - output: The processed output that will normally be used.
+ *
+ * When fetching output from the row this construct should be used:
+ * data = row[field.field_alias]
+ *
+ * The above will guarantee that you'll always get the correct data, regardless
+ * of any changes in the aliasing that might happen if the view is modified.
+ *
+ * @see template_preprocess_views_view_field()
+ *
+ * @ingroup themeable
+ */
+#}
+{% set pinfo = attribute(row, 'solr_document/parent_info') %}
+{% if pinfo is defined and pinfo is not empty %}
+
+{% set cid = attribute(row, 'solr_document/id')  %}
+{% set id = pinfo[0] %}
+{% set metadata_id = pinfo[1] %}
+{% set title = pinfo[2] %}
+{% set landing_page = pinfo[3] %}
+{% set abstract = pinfo[4] %}
+{% set start_date = pinfo[5] %}
+{% set end_date = pinfo[6] %}
+
+{% if pinfo is defined and pinfo is not empty %}
+	<span style="margin-right: 5px;">
+		<em class="w3-margin-left">appears in collection
+			{% if landing_page is not null and landing_page is not empty %}
+				<a class="w3-text-blue" href="{{ landing_page }}" title="Go to the landing page" target="_blank">{{ title }}</a>
+			{% else %}
+				{{ title }}
+			{% endif %}
+		</em>
+	</span>
+	{% if pinfo|length > 1 %}
+		<input id="more-toggle-{{ cid[0] }}" type="checkbox" class="parent-more-toggle">
+		<label for="more-toggle-{{ cid[0] }}" class="parent-more-label" title="Show more info about parent">
+			<i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+			<span class="w3-tiny">More</span>
+		</label>
+		<div class="parent-more-content-{{ cid[0] }} parent-more-content w3-panel w3-leftbar w3-border-green w3-light-grey">
+			<h5>
+				<strong>Abstract:</strong>
+			</h5>
+			<span class="w3-serif">
+				<em>{{abstract}}</em>
+			</span>
+			<p>
+				{% if start_date is not null and start_date is not empty %}
+					<strong>Start date:
+					</strong>
+					{{start_date}}
+					<br/>
+				{% endif %}
+				{% if end_date is not null and end_date is not empty %}
+					<strong>End date:
+					</strong>
+				{{end_date}}
+				<br/>
+			{% endif %}
+		</p>
+
+	</div>
+	<style>
+		#more-toggle-{{cid[0]}}:checked ~ .parent-more-content-{{cid[0]}}{
+			display: block;
+		}
+	</style>
+
+{% endif %}{% endif %}
+{% endif %}

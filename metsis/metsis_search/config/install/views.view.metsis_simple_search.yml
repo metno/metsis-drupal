@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block.block.metsis_metsissearchmap
     - search_api.index.metsis_simple_search
   module:
     - better_exposed_filters
     - metsis_search
     - search_api
-    - user
 id: metsis_simple_search
 label: 'METSIS Simple Search'
 module: views
@@ -244,6 +244,112 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        data_access_url_ogc_wms_1:
+          id: data_access_url_ogc_wms_1
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_ogc_wms
+          relationship: none
+          group_type: group
+          admin_label: 'wms link for thumbnail test'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        thumbnail_url:
+          id: thumbnail_url
+          table: search_api_index_metsis_simple_search
+          field: thumbnail_url
+          relationship: none
+          group_type: group
+          admin_label: 'Thumbnail URL'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         nothing_5:
           id: nothing_5
           table: views
@@ -290,9 +396,9 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
+          hide_empty: true
           empty_zero: false
-          hide_alter_empty: false
+          hide_alter_empty: true
         is_parent_1:
           id: is_parent_1
           table: search_api_index_metsis_simple_search
@@ -305,7 +411,7 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<h3><span><em>Parent dataset(s) - Collections </em></span></h3>\r\n{% elseif is_parent|lower == 'false' %}\r\n<h3><span><em>Other dataset(s)</em></span></h3>\r\n{% endif %}"
+            text: "{% if is_parent|lower == 'true' %}\r\n<h3><span><em>Parent dataset(s) - Collections </em></span></h3>\r\n{% elseif is_parent|lower == 'false' and is_child|lower == 'false' %}\r\n<h3><span><em>Other dataset(s)</em></span></h3>\r\n{% elseif is_child|lower == 'true' %}\r\n<h3><span><em>Child dataset(s) - Part of a collection</em></span></h3>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -357,6 +463,59 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Related dataset meta identifier'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        children_search_string:
+          id: children_search_string
+          table: search_api_index_metsis_simple_search
+          field: children_search_string
+          relationship: none
+          group_type: group
+          admin_label: 'Search string for children search'
           plugin_id: search_api
           label: ''
           exclude: true
@@ -529,7 +688,7 @@ display:
             replace_spaces: false
             path_case: none
             trim_whitespace: false
-            alt: ''
+            alt: 'Go to dataset landing page'
             rel: ''
             link_class: w3-text-blue
             prefix: ''
@@ -562,19 +721,72 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-        nothing_7:
-          id: nothing_7
+        parent_info:
+          id: parent_info
+          table: search_api_index_metsis_simple_search
+          field: parent_info
+          relationship: none
+          group_type: group
+          admin_label: 'Info about parent placeholder'
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        nothing_4:
+          id: nothing_4
           table: views
           field: nothing
           relationship: none
           group_type: group
-          admin_label: 'appears in collection'
+          admin_label: 'Collection Icon'
           plugin_id: custom
           label: ''
           exclude: false
           alter:
             alter_text: true
-            text: "{% if related_dataset_id_1 %}\r\n<span><em> appears in  collection <a class=\"w3-text-blue use-ajax\"  data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Parent Details&quot;}\" \r\n    data-dialog-type=\"dialog\" href=\"/metsis/metadata/parent/{{ related_dataset_id_1 }}\">{{ nothing_5 }}</a></em></span>\r\n{% endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/simple_search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -623,7 +835,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<div id=\"thumb-wrapper-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': '-', '.' : '-'}) }}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>"
+            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n{% if  data_access_url_ogc_wms_1 is defined  and data_access_url_ogc_wms_1 is not empty %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{% else %}\r\n{% endif %}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -927,55 +1139,6 @@ display:
           use_highlighting: true
           multi_type: separator
           multi_separator: ', '
-        nothing_4:
-          id: nothing_4
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: Children
-          plugin_id: custom
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"metachild\" class=\"metachild\" data-id={{ id }} isparent={{ is_parent }}>\r\n<a id=\"metachildlink\" reference=\"{{ id }}\" class=\"childlink visually-hidden w3-btn w3-border w3-border-grey\" href=/metsis/simple_search?related_dataset_id={{ id }}></a>\r\n</div>\r\n{% endif %}"
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: 'w3-container w3-cell'
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
         nothing_2:
           id: nothing_2
           table: views
@@ -988,7 +1151,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\">Show extended metadata</a>"
+            text: "<a class=\"use-ajax\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\" title=\"Show extended metadata information\">Show extended metadata</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1025,6 +1188,59 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        num_children:
+          id: num_children
+          table: search_api_index_metsis_simple_search
+          field: num_children
+          relationship: none
+          group_type: group
+          admin_label: Children
+          plugin_id: search_api
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if is_parent|lower == 'true' %}\r\n<span id=\"parent-{{ id}}\" class=\"w3-btn w3-border w3-border-grey\">\r\n<a title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/simple_search{{ children_search_string }}\">Child data..[{{ num_children }}]</a>\r\n</span>\r\n{% endif %}\r\n"
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: 'w3-container w3-cell'
+          element_default_classes: true
+          empty: ''
+          hide_empty: true
+          empty_zero: true
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         nothing_3:
           id: nothing_3
           table: views
@@ -1037,7 +1253,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\">Download dataset</a>"
+            text: "<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\" title=\"Download dataset(s)\">Download dataset</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1245,7 +1461,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_ogc_wms %} \r\n  <a class=\"w3-btn w3-border w3-border-grey\"  href=\"/metsis/map/wms?dataset={{ id }}\">Visualise WMS</a>\r\n{% elseif  data_access_url_opendap and (feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile') %}\r\n<a class=\"use-ajax  w3-btn w3-border w3-border-grey\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n{% endif %}"
+            text: "{% if data_access_url_ogc_wms %} \r\n  <a class=\"w3-btn w3-border w3-border-grey\"  href=\"/metsis/map/wms?dataset={{ id }} title=\"Visualise\">Visualise WMS</a>\r\n{% elseif  data_access_url_opendap and (feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile') %}\r\n<a class=\"use-ajax  w3-btn w3-border w3-border-grey\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\" title=\"Plot timeseries\">Visualise Timeseries</a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1282,6 +1498,55 @@ display:
           hide_empty: true
           empty_zero: false
           hide_alter_empty: true
+        nothing_8:
+          id: nothing_8
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: 'Horizontal line'
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: '<hr class="w3-light-gray w3-small">'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
       pager:
         type: full
         options:
@@ -1314,7 +1579,7 @@ display:
           expose_sort_order: false
           sort_asc_label: Asc
           sort_desc_label: Desc
-          text_input_required: 'Enter keywords to search for and press <em>search</em>'
+          text_input_required: 'Enter keywords to search for and press <em>search</em> in the search box above, and/or draw a boundingbox on the map for geographical filtering using the "Create boundingbox filter"- button.'
           text_input_required_format: basic_html
           bef:
             general:
@@ -1331,6 +1596,7 @@ display:
               search_api_fulltext:
                 plugin_id: default
                 advanced:
+                  placeholder_text: ''
                   rewrite:
                     filter_rewrite_values: ''
                     filter_rewrite_values_key: false
@@ -1353,10 +1619,19 @@ display:
                   collapsible_disable_automatic_open: false
                   is_secondary: false
                   hide_label: false
+              bbox:
+                plugin_id: default
+                advanced:
+                  rewrite:
+                    filter_rewrite_values: ''
+                    filter_rewrite_values_key: false
+                  collapsible: true
+                  collapsible_disable_automatic_open: false
+                  is_secondary: false
+                  hide_label: false
       access:
-        type: perm
-        options:
-          perm: 'access content'
+        type: none
+        options: {  }
       cache:
         type: search_api_none
         options: {  }
@@ -1423,7 +1698,7 @@ display:
           expose:
             operator_id: search_api_fulltext_op
             label: 'Search datasets'
-            description: ''
+            description: 'Provide some keywords to search on, and press Search.'
             use_operator: false
             operator: search_api_fulltext_op
             operator_limit_selection: true
@@ -1440,7 +1715,7 @@ display:
               content_editor: '0'
               administrator: '0'
             expose_fields: false
-            placeholder: ''
+            placeholder: 'Enter your search keywords here...'
             searched_fields_id: search_api_fulltext_searched_fields
             value_maxlength: 128
             autocomplete_filter: 1
@@ -1450,6 +1725,8 @@ display:
             autocomplete_raw_suggestion: 1
             autocomplete_raw_dropdown: 1
             autocomplete_dependent: 0
+            autocomplete_contextual: 0
+            autocomplete_autosubmit: 0
           is_grouped: false
           group_info:
             label: ''
@@ -1462,7 +1739,7 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: terms
+          parse_mode: sloppy_terms
           min_length: 2
           fields:
             - abstract
@@ -1611,7 +1888,7 @@ display:
           exposed: true
           expose:
             operator_id: related_dataset_id_op
-            label: 'Related dataset id'
+            label: ''
             description: ''
             use_operator: false
             operator: related_dataset_id_op
@@ -1629,6 +1906,53 @@ display:
             min_placeholder: ''
             max_placeholder: ''
             placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        bbox:
+          id: bbox
+          table: search_api_index_metsis_simple_search
+          field: bbox
+          relationship: none
+          group_type: group
+          admin_label: 'Geographic filter'
+          plugin_id: metsis_search_bbox_filter
+          operator: intersects
+          value:
+            minX: ''
+            maxX: ''
+            minY: ''
+            maxY: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: bbox_op
+            label: Bbox
+            description: ''
+            use_operator: true
+            operator: bbox_op
+            operator_limit_selection: true
+            operator_list:
+              within: within
+              intersects: intersects
+            identifier: bbox
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
           is_grouped: false
           group_info:
             label: ''
@@ -1662,6 +1986,11 @@ display:
           class: ''
       row:
         type: fields
+        options:
+          default_field_elements: true
+          inline: {  }
+          separator: ''
+          hide_empty: true
       query:
         type: search_api_query
         options:
@@ -1672,7 +2001,30 @@ display:
             - mlt
       relationships: {  }
       css_class: metsis-simple-search
+      show_admin_links: false
       header:
+        entity_block:
+          id: entity_block
+          table: views
+          field: entity_block
+          relationship: none
+          group_type: group
+          admin_label: 'Metsis Search Map Block'
+          plugin_id: entity
+          empty: true
+          target: metsis_metsissearchmap
+          view_mode: default
+          tokenize: false
+          bypass_access: true
+        metsis_search_parent_info:
+          id: metsis_search_parent_info
+          table: views
+          field: metsis_search_parent_info
+          relationship: none
+          group_type: group
+          admin_label: 'Parent info'
+          plugin_id: metsis_search_parent_info
+          empty: false
         result:
           id: result
           table: views
@@ -1691,7 +2043,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
       tags:
         - 'config:search_api.index.metsis_simple_search'
         - 'search_api_list:metsis_simple_search'
@@ -1711,7 +2062,7 @@ display:
             - simple_search
       defaults:
         query: false
-      exposed_block: true
+      exposed_block: false
       display_extenders:
         simple_sitemap_display_extender:
           variants: {  }
@@ -1722,7 +2073,6 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
-        - user.permissions
       tags:
         - 'config:search_api.index.metsis_simple_search'
         - 'search_api_list:metsis_simple_search'

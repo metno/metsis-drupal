@@ -3,7 +3,6 @@
 namespace Drupal\metsis_search\Plugin\views\area;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\metsis_search\MetsisSearchState;
 use Drupal\views\Plugin\views\area\AreaPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -18,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MetsisSearchParentInfoArea extends AreaPluginBase {
 
   /**
-   * The MetsisSearchState service for holding data between events during request.
+   * The MetsisSearchState service for holding data during a request.
    *
    * @var \Drupal\metsis_search\MetsisSearchState
    */
@@ -30,6 +29,13 @@ class MetsisSearchParentInfoArea extends AreaPluginBase {
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
+
+  /**
+   * To hold the parentInfo.
+   *
+   * @var array
+   */
+  public $parentInfo;
 
   /**
    * Constructs a new ParentInfoArea instance.
@@ -87,12 +93,22 @@ class MetsisSearchParentInfoArea extends AreaPluginBase {
   /**
    * {@inheritdoc}
    */
+  public function query() {
+    // $this->parentInfo = $this->metsisState->get('parent_info');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function render($empty = FALSE) {
     if ($empty && empty($this->options['empty'])) {
       return [];
     }
 
     $parent_info = $this->metsisState->get('parent_info');
+
+    // Clean the parent info to avoid rendering stale info.
+    // $this->metsisState->set('parent_info', []);.
     if (!empty($parent_info)) {
 
       return [

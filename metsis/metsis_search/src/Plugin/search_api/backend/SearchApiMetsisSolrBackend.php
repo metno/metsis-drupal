@@ -19,6 +19,8 @@ use Drupal\search_api\Item\Field;
 use Drupal\search_api\Item\FieldInterface;
 use Drupal\search_api\LoggerTrait;
 use Drupal\search_api\Plugin\search_api\data_type\value\TextValue;
+use Drupal\search_api\Query\Condition;
+use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\DataTypeHelperInterface;
 use Drupal\search_api\Utility\FieldsHelperInterface;
@@ -26,7 +28,6 @@ use Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend;
 use Drupal\search_api_solr\SolrConnector\SolrConnectorPluginManager;
 use Drupal\search_api_solr\Utility\Utility;
 use Solarium\Core\Query\Result\ResultInterface;
-use Solarium\QueryType\Select\Result\Result;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -227,7 +228,6 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
           }
           if (isset($doc_fields['total_children']['numFound'])
             && isset($doc_fields['found_children']['numFound'])) {
-            // $this->getLogger()->notice("Got Parent document with children count");
             $total_children = $doc_fields['total_children']['numFound'];
 
             $found_children = (int) $doc_fields['found_children']['numFound'];
@@ -285,13 +285,6 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
               $result_item->setField('children_search_string', $children_search_string_field);
               $updated_result_set[$datasource . '/' . $item_id] = $result_item;
             }
-            // If (isset($result_set[$item_id])) {
-            // dpm($result_set[$item_id], __FUNCTION__);
-            // dpm($document->getFieldValue('total_children'));
-            // dpm($document->getFieldValue('found_children'));.
-            // $result_set[$item_id]->setFieldValue('total_children', $document->getFieldValue('total_children'));
-            // $result_set[$item_id]->setFieldValue('num_children', $document->getFieldValue('num_children'));
-            // }.
           }
         }
       }
@@ -301,36 +294,103 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
           if ($index->isValidDatasource('solr_document')) {
             $datasource = 'solr_document';
           }
-        }
-        if (empty($parent_info)) {
-          $_parent_info = $doc_fields['parent']['docs'];
-          if (is_array($_parent_info) && count($_parent_info) > 0) {
-            $parent_info = $_parent_info[0];
+
+          if (isset($doc_fields['parent']['docs'])) {
+            $_parent_info = $doc_fields['parent']['docs'];
+            if (is_array($_parent_info) && count($_parent_info) > 0) {
+              if (empty($parent_info)) {
+                $parent_info = $_parent_info[0];
+                $this->metsisState->set('parent_info', $parent_info);
+              }
+              $parent_info = $_parent_info[0];
+              $parent_info_field_value = [];
+              $parent_info_field_value[] = $parent_info['id'] ?? '';
+              $parent_info_field_value[] = $parent_info['metadata_identifier'] ?? '';
+              $parent_info_field_value[] = $parent_info['title'][0] ?? '';
+              $parent_info_field_value[] = $parent_info['related_url_landing_page'][0] ?? '';
+              $parent_info_field_value[] = $parent_info['abstract'][0] ?? '';
+              $parent_info_field_value[] = $parent_info['temporal_extent_start_date'][0] ?? '';
+              $parent_info_field_value[] = $parent_info['temporal_extent_end_date'][0] ?? '';
+              // dpm($parent_info_field_value, __FUNCTION__);.
+              $parent_info_field = new Field($index, 'parent_info');
+              $parent_info_field->setDatasourceID($datasource);
+              $parent_info_field->setPropertyPath('parent_info');
+              $parent_info_field->setLabel('Parent Info');
+              $parent_info_field->setType('string');
+              $parent_info_field->setValues($parent_info_field_value);
+
+              // Add parentinfo for the item to our metsis-state.
+              $this->metsisState->set($item_id, $parent_info);
+
+              // Update the result items.
+              $result_items = $result_set->getResultItems();
+              if (isset($result_items[$datasource . '/' . $item_id])) {
+                $result_item = $result_items[$datasource . '/' . $item_id];
+                // dpm($result_item->getFields(), __FUNCTION__);.
+                $result_item->setField('parent_info', $parent_info_field);
+                $updated_result_set[$datasource . '/' . $item_id] = $result_item;
+              }
+            }
+            else {
+              $this->metsisState->set('parent_info', []);
+            }
           }
         }
       }
-
     }
-    // Merge the $result_set from the parent method with your custom $updated_result_set array.
+    // Merge the $result_set from the parent method with the
+    // custom $updated_result_set array.
     $merged_results = array_merge($result_set->getResultItems(), $updated_result_set);
     // Set the merged result items on the result set object before returning it.
     // dpm($result_set->getResultItems(), __FUNCTION__);
-    // Loop through each result item and remove it if num_children is equal to 0.
+    // Loop through each result item
+    // and remove it if num_children is equal to 0.
     $remove_count = 0;
     foreach ($result_set->getResultItems() as $item_id => $result_item) {
       if (in_array($item_id, $zero_children)) {
         unset($merged_results[$item_id]);
         $remove_count++;
-        $this->getLogger()->notice("Removing parent with 0 children in results $item_id");
-        // $result_set->removeResultItem($item_id);
       }
     }
     $result_set->setResultItems($merged_results);
     $update_count = $result_set->getResultCount() - $remove_count;
     $result_set->setResultCount($update_count);
-    $this->metsisState->set('parent_info', $parent_info);
+    // Speacial handeling for simple search.
+    if ($query->getSearchId(FALSE) === "views_page:metsis_simple_search__results") {
+      $conditions = $query->getConditionGroup()->getConditions();
+      // dpm($conditions, __FUNCTION__);.
+      $got_parent_filter = FALSE;
+      foreach ($conditions as $condition) {
+        if ($condition instanceof ConditionGroup) {
+          $conds = $condition->getConditions();
+          foreach ($conds as $cond) {
+            // Check if the condition is a filter.
+            if ($cond instanceof Condition) {
+              // Get the field name and value of the filter.
+              $fieldName = $cond->getField();
+              if ($fieldName === 'related_dataset_id') {
+                // dpm("Got parent filter", __FUNCTION__);
+                // dpm($cond->getValue(), __FUNCTION__);.
+                $got_parent_filter = TRUE;
+              }
+            }
+          }
+        }
+        else {
+          if ($condition instanceof Condition) {
+            $fieldName = $condition->getField();
+            if ($fieldName === 'related_dataset_id') {
+              $got_parent_filter = TRUE;
+            }
+          }
+        }
+      }
+      if (!$got_parent_filter) {
+        // dpm("Emptying parent_info", __FUNCTION__ . "()");.
+        $this->metsisState->set('parent_info', []);
+      }
+    }
     return $result_set;
-
   }
 
 }

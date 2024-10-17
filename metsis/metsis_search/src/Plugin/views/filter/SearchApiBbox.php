@@ -6,7 +6,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\search_api\Plugin\views\filter\SearchApiFilterTrait;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
-use Drupal\views\ViewExecutable;
 
 /**
  * Defines a filter for filtering on dates.
@@ -210,17 +209,21 @@ class SearchApiBbox extends FilterPluginBase implements ContainerFactoryPluginIn
       $value = &$form_state->getValue(['bbox', $coordinate]);
       // dpm($value, __FUNCTION__ . " $coordinate");
       // dpm($form, __FILE__ . ':' . __LINE__);
-      // dpm($form['bbox_wrapper']['bbox_wrapper'][$this->options['expose']['identifier']], __FILE__ . ':' . __LINE__);.
-      $elem = $form['bbox_wrapper']['bbox_wrapper'][$this->options['expose']['identifier']];
+      // $elem = $form['bbox_wrapper']['bbox_wrapper'][$this->options['expose']['identifier']];
       // dpm($elem);
       if ($value == NULL || $value === '') {
-        // $form_state->setError($elem[$coordinate], $this->t('The @coordinate coordinate is required.', ['@coordinate' => $coordinate]));
+        // $form_state->setError($elem[$coordinate],
+        // $this->t('The @coordinate coordinate is required.',
+        // ['@coordinate' => $coordinate]));
       }
       else {
         $value = trim($value);
         if (!is_numeric($value)) {
-          // $form_state->setErrorByName('bbox][' . $coordinate . ']', $this->t('The @coordinate coordinate must be a number.', ['@coordinate' => $coordinate]));
-          // $form_state->setErrorByName('bbox][maxX]', $this->t('The maxX coordinate must be a number.'));
+          // $form_state->setErrorByName('bbox][' . $coordinate . ']',
+          // $this->t('The @coordinate coordinate must be a number.',
+          // ['@coordinate' => $coordinate]));
+          // $form_state->setErrorByName('bbox][maxX]',
+          // $this->t('The maxX coordinate must be a number.'));
         }
       }
     }

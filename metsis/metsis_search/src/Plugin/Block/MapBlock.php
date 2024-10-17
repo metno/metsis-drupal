@@ -8,6 +8,7 @@ use Drupal\Core\Cache\UncacheableDependencyTrait;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\metsis_search\MetsisSearchState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -39,6 +40,13 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
   protected $request;
 
   /**
+   * MetsisSearchState service for holding data between events during request.
+   *
+   * @var array
+   */
+  protected $metsisState;
+
+  /**
    * Drupal\Core\Config\ConfigFactoryInterface definition.
    *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
@@ -66,7 +74,8 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
       $plugin_definition,
       $container->get('module_handler'),
       $container->get('request_stack')->getCurrentRequest(),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('metsis_search.state')
     );
   }
 
@@ -85,6 +94,8 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
    *   The request_stack service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory service.
+   * @param \Drupal\metsis_search\MetsisSearchState $state
+   *   The metsisSearch state service.
    */
   public function __construct(
     array $configuration,
@@ -93,11 +104,13 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
     ModuleHandler $moduleHandler,
     Request $request,
     ConfigFactoryInterface $configFactory,
+    MetsisSearchState $state,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moduleHandler = $moduleHandler;
     $this->request = $request;
     $this->configFactory = $configFactory;
+    $this->metsisState = $state;
   }
 
   /**
@@ -142,6 +155,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
     $map_base_layer_wms_south = $config->get('map_base_layer_wms_south');
     $map_search_text = $config->get('map_search_text');
     $map_layers_list = $config->get('map_layers');
+
     // Get the extracted info from tempstore
     // $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
     // $extracted_info = $session->get('extracted_info');.
@@ -209,6 +223,9 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
           'brlat' => $brlat,
           'proj' => $proj,
           'module_path' => $module_path,
+          'bbox_filter' => $this->metsisState->get('bbox_filter'),
+          'bbox_op' => $this->metsisState->get('bbox_op'),
+          'bbox_filter_auto_show' => $bbox_filter_auto_show,
         ],
       ],
 

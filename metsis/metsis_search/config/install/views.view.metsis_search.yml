@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - block.block.metsis_metsissearchmap
     - search_api.index.metsis
   module:
     - better_exposed_filters
@@ -130,108 +131,6 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        parent_info:
-          id: parent_info
-          table: search_api_index_metsis
-          field: parent_info
-          relationship: none
-          group_type: group
-          admin_label: 'Info about parent placeholder'
-          plugin_id: search_api
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-        nothing_13:
-          id: nothing_13
-          table: views
-          field: nothing
-          relationship: none
-          group_type: group
-          admin_label: 'Parent title placeholder'
-          plugin_id: custom
-          label: ''
-          exclude: true
-          alter:
-            alter_text: true
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
         thumbnail_url:
           id: thumbnail_url
           table: search_api_index_metsis
@@ -619,7 +518,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/elements/{{ id }}/search\" title=\"Show ALL chiildren in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1676,7 +1575,7 @@ display:
           field: children_search_string
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: 'Search string for children search'
           plugin_id: search_api
           label: ''
           exclude: true
@@ -2605,6 +2504,59 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
+        parent_info:
+          id: parent_info
+          table: search_api_index_metsis
+          field: parent_info
+          relationship: none
+          group_type: group
+          admin_label: 'Info about parent placeholder'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
       pager:
         type: full
         options:
@@ -2793,7 +2745,9 @@ display:
           parse_mode: terms
           min_length: null
           fields:
+            - abstract
             - full_text
+            - title
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -3039,6 +2993,100 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        bbox:
+          id: bbox
+          table: search_api_index_metsis
+          field: bbox
+          relationship: none
+          group_type: group
+          admin_label: 'Geographic Map filter'
+          plugin_id: metsis_search_bbox_filter
+          operator: intersects
+          value:
+            minX: ''
+            maxX: ''
+            minY: ''
+            maxY: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: bbox_op
+            label: 'Spatial filter'
+            description: ''
+            use_operator: true
+            operator: bbox_op
+            operator_limit_selection: true
+            operator_list:
+              within: within
+              intersects: intersects
+            identifier: bbox
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        related_dataset_id:
+          id: related_dataset_id
+          table: search_api_index_metsis
+          field: related_dataset_id
+          relationship: none
+          group_type: group
+          admin_label: 'Parent filter - show children of parent'
+          plugin_id: search_api_string
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: related_dataset_id_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: related_dataset_id_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: related_dataset_id
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              content_editor: '0'
+              administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
         is_parent_1:
           id: is_parent_1
           table: search_api_index_metsis
@@ -3214,100 +3262,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-        bbox:
-          id: bbox
-          table: search_api_index_metsis
-          field: bbox
-          relationship: none
-          group_type: group
-          admin_label: 'Geographic Map filter'
-          plugin_id: metsis_search_bbox_filter
-          operator: intersects
-          value:
-            minX: ''
-            maxX: ''
-            minY: ''
-            maxY: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: bbox_op
-            label: 'Spatial filter'
-            description: ''
-            use_operator: true
-            operator: bbox_op
-            operator_limit_selection: true
-            operator_list:
-              within: within
-              intersects: intersects
-            identifier: bbox
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              content_editor: '0'
-              administrator: '0'
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-        related_dataset_id:
-          id: related_dataset_id
-          table: search_api_index_metsis
-          field: related_dataset_id
-          relationship: none
-          group_type: group
-          admin_label: 'Parent filter - show children of parent'
-          plugin_id: search_api_string
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: related_dataset_id_op
-            label: ''
-            description: ''
-            use_operator: false
-            operator: related_dataset_id_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: related_dataset_id
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              content_editor: '0'
-              administrator: '0'
-            min_placeholder: ''
-            max_placeholder: ''
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
       filter_groups:
         operator: AND
         groups:
@@ -3346,6 +3300,19 @@ display:
       use_ajax: false
       show_admin_links: false
       header:
+        entity_block:
+          id: entity_block
+          table: views
+          field: entity_block
+          relationship: none
+          group_type: group
+          admin_label: 'Metsis Search Map Block'
+          plugin_id: entity
+          empty: false
+          target: metsis_metsissearchmap
+          view_mode: default
+          tokenize: false
+          bypass_access: true
         metsis_search_parent_info:
           id: metsis_search_parent_info
           table: views

@@ -45,6 +45,7 @@ console.log("Start of metsis search map script:");
         var bbox_filter = drupalSettings.metsis_search_map_block.bbox_filter;
         var bbox_operator = drupalSettings.metsis_search_map_block.bbox_op;
         var bbox_filter_auto_show = drupalSettings.bbox_filter_auto_show;
+        var search_view = drupalSettings.metsis_search.search_view;
 
         // Some debugging
         var debug = true;
@@ -67,6 +68,7 @@ console.log("Start of metsis search map script:");
           console.log(extracted_info);
           console.log(bbox_filter);
           console.log(bbox_operator);
+          console.log(search_view);
 
         }
 
@@ -87,7 +89,10 @@ console.log("Start of metsis search map script:");
 
         //Set the current selected filter
         if (selected_filter == null) {
-          selected_filter = mapFilter;
+          selected_filter = localStorage.getItem('map_bbox_op');
+          if (selected_filter == null) {
+            selected_filter = mapFilter;
+          }
 
         }
         // Create the  map baselayer input boxses
@@ -221,6 +226,11 @@ console.log("Start of metsis search map script:");
           }).html('Intersects')
         );
 
+        $('.map-filter-wrapper').on('change', 'input[type=radio][name=map-filter]', function () {
+          changed_filter = this.value.toLowerCase();
+          console.log(changed_filter);
+          $('select[name="bbox_op"][data-drupal-selector="edit-bbox-op"]').val(changed_filter).prop('selected', true);
+        });
         //Set default checked filter
         //var flt = document.getElementsByName('map-filter');
         if (bbox_operator != null) {
@@ -231,7 +241,10 @@ console.log("Start of metsis search map script:");
           }
         }
         else {
-          selected_filter = 'intersects';
+          selected_filter = localStorage.getItem('map_bbox_op');
+          if (selected_filter === null) {
+            selected_filter = 'intersects';
+          }
           console.log('selected filter: ' + selected_filter.toLowerCase());
           if (selected_filter !== 'contains') {
             document.getElementById(selected_filter.toLowerCase()).checked = true;
@@ -303,21 +316,26 @@ console.log("Start of metsis search map script:");
         //display current bbox search filter
 
         if (bbox_filter != null && bbox_operator != null) {
+          console.log("Setting active BBOX filter with remove X");
           const mapFilterInfo = selected_filter.charAt(0).toUpperCase() + selected_filter.slice(1)
           $('.current-bbox-filter-label').html('<strong>Active spatial filter:</strong> ');
           $('.current-bbox-filter').text(mapFilterInfo + ' ');
           $('.current-bbox-select').text('ENVELOPE((' + bbox_filter[0] + ',' + bbox_filter[1] + ',' + bbox_filter[2] + ',' + bbox_filter[3] + ')');
           $('.remove-bbox-filter').append(' <i id="remove-bbox-filter" class="fa fa-remove" style="color:red; cursor:pointer;" title="Remove geographic boundingbox filter"></i>');
-          $(".remove-bbox-filter").click(function () {
-            $('#edit-bbox-minx--2').val('');
-            $('#edit-bbox-maxx--2').val('');
-            $('#edit-bbox-maxy--2').val('');
-            $('#edit-bbox-miny--2').val('');
+          $('.remove-bbox-filter').click(function () {
+            $('input[name="bbox[minX]"][data-drupal-selector="edit-bbox-minx"]').val('');
+            $('input[name="bbox[maxX]"][data-drupal-selector="edit-bbox-maxx"]').val('');
+            $('input[name="bbox[maxY]"][data-drupal-selector="edit-bbox-maxy"]').val('');
+            $('input[name="bbox[minY]"][data-drupal-selector="edit-bbox-miny"]').val('');
 
             // Update the operator option.
-            $('#edit-bbox-op--2').val(selected_filter.toLowerCase()).prop('selected', true);;
-
-            $('#views-exposed-form-metsis-search-results').submit();
+            $('select[name="bbox_op"][data-drupal-selector="edit-bbox-op"]').val(selected_filter.toLowerCase()).prop('selected', true);;
+            if (search_view === 'metsis_search') {
+              $('#views-exposed-form-metsis-search-results').submit();
+            }
+            if (search_view === 'metsis_simple_search') {
+              $('#views-exposed-form-metsis-simple-search-results').submit();
+            }
           });
 
         }
@@ -3117,6 +3135,11 @@ console.log("Start of metsis search map script:");
               topLeft[0] = bottomRight[0];
               bottomRight[0] = topLeftCopy;
             }
+            if (topLeft[0] < bottomRight[0]) {
+              var topLeftCopy = topLeft[0];
+              topLeft[0] = bottomRight[0];
+              bottomRight[0] = topLeftCopy;
+            }
 
             //Get the current selected filter
             var choices = [];
@@ -3125,22 +3148,31 @@ console.log("Start of metsis search map script:");
             });
             selected_filter = choices[0];
             console.log("prediacte: " + selected_filter);
+            localStorage.setItem('map_bbox_op', selected_filter);
             //var flt = document.getElementsByName('map-filter');
             //console.log(flt);
             /* Populate the bbox search api exposed form filter with this bbox*/
             // Example: ENVELOPE(-10, 20, 15, 10) which is minX, maxX, maxY, minY order.
             // 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
             // Populate the input fields.
-            $('#edit-bbox-minx--2').val(topLeft[0]);
-            $('#edit-bbox-maxx--2').val(bottomRight[0]);
-            $('#edit-bbox-maxy--2').val(topLeft[1]);
-            $('#edit-bbox-miny--2').val(bottomRight[1]);
+            console.log("TopLeft");
+            console.log(topLeft);
+            console.log("BottomRight");
+            console.log(bottomRight);
 
-            // Update the operator option.
-            $('#edit-bbox-op--2').val(selected_filter.toLowerCase()).prop('selected', true);;
+            $('input[name="bbox[minX]"][data-drupal-selector="edit-bbox-minx"]').val(bottomRight[0]);
+            $('input[name="bbox[maxX]"][data-drupal-selector="edit-bbox-maxx"]').val(topLeft[0]);
+            $('input[name="bbox[maxY]"][data-drupal-selector="edit-bbox-maxy"]').val(topLeft[1]);
+            $('input[name="bbox[minY]"][data-drupal-selector="edit-bbox-miny"]').val(bottomRight[1]);
 
-            // Submit the form.
-            $('#views-exposed-form-metsis-search-results').submit();
+            $('select[name="bbox_op"][data-drupal-selector="edit-bbox-op"]').val(selected_filter.toLowerCase()).prop('selected', true);;
+
+            if (search_view === 'metsis_search') {
+              $('#views-exposed-form-metsis-search-results').submit();
+            }
+            if (search_view === 'metsis_simple_search') {
+              //$('#views-exposed-form-metsis-simple-search-results').submit();
+            }
 
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
             // var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj + '&cond=' + selected_filter;

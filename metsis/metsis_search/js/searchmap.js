@@ -454,18 +454,31 @@
               topLeft[0] = bottomRight[0];
               bottomRight[0] = topLeftCopy;
             }
-            console.log(brlat);
-            //jQuery(tllat).attr('value', topLeft[1]);
-            //jQuery(tllon).attr('value', topLeft[0]);
-            //jQuery(brlat).attr('value', bottomRight[1]);
-            //jQuery(brlon).attr('value', bottomRight[0]);
-            var myurl = '/metsis/search/map?tllat=' + topLeft[1] + '&tllon=' + topLeft[0] + '&brlat=' + bottomRight[1] + '&brlon=' + bottomRight[0] + '&proj=' + selected_proj;
-            console.log('calling controller url: ' + myurl);
-            Drupal.ajax({
-              url: myurl,
-              async: false
-            }).execute();
-            //});
+            //Get the current selected filter
+            var choices = [];
+            $("input[name='map-filter']:checked").each(function () {
+              choices.push($(this).attr('value'));
+            });
+            //selected_filter = choices[0];
+            selected_filter = 'intersects';
+            console.log("prediacte: " + selected_filter);
+            //var flt = document.getElementsByName('map-filter');
+            //console.log(flt);
+            /* Populate the bbox search api exposed form filter with this bbox*/
+            // Example: ENVELOPE(-10, 20, 15, 10) which is minX, maxX, maxY, minY order.
+            // 'ENVELOPE(' . $tllon . ',' . $brlon . ',' . $tllat . ',' . $brlat . ')';
+            // Populate the input fields.
+            $('#edit-bbox-minx').val(topLeft[0]);
+            $('#edit-bbox-maxx').val(bottomRight[0]);
+            $('#edit-bbox-maxy').val(topLeft[1]);
+            $('#edit-bbox-miny').val(bottomRight[1]);
+
+            // Update the operator option.
+            $('#edit-bbox-op').val(selected_filter.toLowerCase()).prop('selected', true);;
+
+            // Submit the form.
+            //$('#views-exposed-form-metsis-search-results').submit();
+
             console.log('finished');
           });
           map.addInteraction(draw);

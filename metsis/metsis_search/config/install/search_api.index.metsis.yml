@@ -45,6 +45,7 @@ third_party_settings:
     term_modifiers:
       slop: 3
       fuzzy: 1
+      fuzzy_analyzer: true
     advanced:
       index_prefix: ''
       collection: ''
@@ -55,6 +56,7 @@ third_party_settings:
       use_language_undefined_as_fallback_language: false
       specific_languages:
         en: '0'
+        nb: '0'
       use_universal_collation: false
 id: metsis
 name: metsis
@@ -66,7 +68,7 @@ field_settings:
     datasource_id: solr_document
     property_path: abstract
     type: text
-    boost: 2.0
+    boost: 1.3
   access_constraint:
     label: 'Access constraint'
     datasource_id: solr_document
@@ -323,6 +325,7 @@ field_settings:
     datasource_id: solr_document
     property_path: full_text
     type: text
+    boost: 1.1
   geographic_extent_ectangle_east:
     label: 'Geographic extent_rectangle_east'
     datasource_id: solr_document
@@ -377,7 +380,7 @@ field_settings:
     label: Keywords_keyword
     datasource_id: solr_document
     property_path: keywords_keyword
-    type: string
+    type: text
   keywords_level1:
     label: 'Keywords level1'
     datasource_id: solr_document
@@ -1108,6 +1111,7 @@ field_settings:
     datasource_id: solr_document
     property_path: text_suggester
     type: solr_text_suggester
+    boost: 1.4
   thumbnail_data:
     label: 'Thumbnail data'
     datasource_id: solr_document
@@ -1128,7 +1132,7 @@ field_settings:
     datasource_id: solr_document
     property_path: title
     type: text
-    boost: 3.0
+    boost: 1.5
   use_constraint_identifier:
     label: 'Use constraint_identifier'
     datasource_id: solr_document
@@ -1150,7 +1154,7 @@ datasource_settings:
     request_handler: ''
     default_query: '*:*'
     label_field: title
-    language_field: ''
+    language_field: ss_language
     url_field: related_url_landing_page
 processor_settings:
   add_url: {  }

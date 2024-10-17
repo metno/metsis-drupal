@@ -26,6 +26,9 @@
     "*.info": "ini",
     "*.html": "twig",
   },
+  "[twig]": {
+    "editor.formatOnSave": false
+  },
   "files.trimTrailingWhitespace": true,
   "files.restoreUndoStack": false,
   "files.insertFinalNewline": true,

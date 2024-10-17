@@ -439,4 +439,11 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     return 1;
   }
 
+  /**
+   * Return an empty tilte.
+   */
+  public function getTitle() {
+    return '';
+  }
+
 }

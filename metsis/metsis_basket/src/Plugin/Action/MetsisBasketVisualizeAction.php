@@ -147,7 +147,7 @@ class MetsisBasketVisualizeAction extends ViewsBulkOperationsActionBase {
    *
    * @todo Make sure this access function behave as expected.
    */
-  public function access($object, AccountInterface $account, $return_as_object = FALSE) {
+  public function access($object, ?AccountInterface $account = NULL, $return_as_object = FALSE) {
     if ($object->getEntityType() === 'metsis_basket_item  ') {
       $access = $object->access('transform', $account, TRUE)
         ->andIf($object->status->access('transform', $account, TRUE));

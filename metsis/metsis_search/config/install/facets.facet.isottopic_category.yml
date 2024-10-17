@@ -10,6 +10,8 @@ id: isottopic_category
 name: 'Iso Topic Category'
 weight: 0
 min_count: 1
+missing: false
+missing_label: others
 url_alias: isottopic_category
 facet_source_id: 'search_api:views_page__metsis_search__results'
 field_identifier: iso_topic_category
@@ -24,7 +26,7 @@ hierarchy:
 expand_hierarchy: false
 enable_parent_when_child_gets_disabled: true
 widget:
-  type: links
+  type: checkbox
   config:
     show_numbers: true
     soft_limit: 10

@@ -2,14 +2,12 @@
 
 namespace Drupal\metsis_search\EventSubscriber;
 
-use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\metsis_search\MetsisSearchState;
 use Drupal\metsis_search\SearchUtils;
-use Drupal\search_api\Entity\Index;
 use Drupal\search_api\Event\QueryPreExecuteEvent;
 use Drupal\search_api\Event\SearchApiEvents;
 use Drupal\search_api\LoggerTrait;
@@ -245,58 +243,23 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   the current Event.
    */
   public function queryPreExecute(QueryPreExecuteEvent $event): void {
-    $this->getLogger()->notice('queryPreExecute');
+    // $this->getLogger()->notice('queryPreExecute');
     $query = $event->getQuery();
     $searchId = $query->getSearchId();
+    // dpm($searchId, __FUNCTION__);.
     $this->searchId = $searchId;
-
-    // Check if we have a bbox query filter,
-    // and store in our metsisState service.
-    // Also if we have related_dataset_id (parent filter)
-    // We will need to update the isParent/isChild contions.
-    $conditions = $query->getConditionGroup()->getConditions();
-    // dpm($conditions, __FUNCTION__);.
-    $got_parent_filter = FALSE;
-    foreach ($conditions as $condition) {
-      if ($condition instanceof ConditionGroup) {
-        $conds = $condition->getConditions();
-        foreach ($conds as $cond) {
-          // Check if the condition is a filter.
-          if ($cond instanceof Condition) {
-            // Get the field name and value of the filter.
-            $fieldName = $cond->getField();
-            if ($fieldName === 'bbox') {
-              $value = $cond->getValue();
-              $operator = $cond->getOperator();
-              $this->metsisState->set('bbox_filter', $value);
-              $this->metsisState->set('bbox_op', $operator);
-            }
-            if ($fieldName === 'related_dataset_id') {
-              // dpm("Got parent filter", __LINE__);.
-              $got_parent_filter = TRUE;
-            }
-          }
-        }
-      }
-      else {
-        if ($condition instanceof Condition) {
-          $fieldName = $condition->getField();
-          if ($fieldName === 'bbox') {
-            $value = $condition->getValue();
-            $operator = $condition->getOperator();
-            $this->metsisState->set('bbox_filter', $value);
-            $this->metsisState->set('bbox_op', $operator);
-          }
-        }
-        if ($fieldName === 'related_dataset_id') {
-          // dpm("Got parent filter", __LINE__);.
-          $got_parent_filter = TRUE;
-        }
-      }
-    }
-    // If parent_fiter was found, we wil need to loop again
-    // and updated the isChild filter from false to true.
-    if ($got_parent_filter == TRUE) {
+    $idx_id = $query->getIndex()->id();
+    // We only want to do this for the metsis index.
+    if ($idx_id == 'metsis' && ($searchId === 'views_page:metsis_search__results')
+    || ($searchId === 'views_page:metsis_simple_search__results')) {
+      // dpm($query, __FUNCTION__);.
+      // Check if we have a bbox query filter,
+      // and store in our metsisState service.
+      // Also if we have related_dataset_id (parent filter)
+      // We will need to update the isParent/isChild contions.
+      $conditions = $query->getConditionGroup()->getConditions();
+      // dpm($conditions, __FUNCTION__);.
+      $got_parent_filter = FALSE;
       foreach ($conditions as $condition) {
         if ($condition instanceof ConditionGroup) {
           $conds = $condition->getConditions();
@@ -305,8 +268,15 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
             if ($cond instanceof Condition) {
               // Get the field name and value of the filter.
               $fieldName = $cond->getField();
-              if ($fieldName === 'is_child') {
-                $cond->setValue(1);
+              if ($fieldName === 'bbox') {
+                $value = $cond->getValue();
+                $operator = $cond->getOperator();
+                $this->metsisState->set('bbox_filter', $value);
+                $this->metsisState->set('bbox_op', $operator);
+              }
+              if ($fieldName === 'related_dataset_id') {
+                // dpm($cond->getValue(), __FUNCTION__ . ':' . __LINE__);.
+                $got_parent_filter = TRUE;
               }
             }
           }
@@ -314,15 +284,49 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         else {
           if ($condition instanceof Condition) {
             $fieldName = $condition->getField();
-            if ($fieldName === 'is_child') {
-              $got_parent_filter = TRUE;
+            if ($fieldName === 'bbox') {
+              $value = $condition->getValue();
+              $operator = $condition->getOperator();
+              $this->metsisState->set('bbox_filter', $value);
+              $this->metsisState->set('bbox_op', $operator);
+            }
+          }
+          if ($fieldName === 'related_dataset_id') {
+            // dpm("Got parent filter", __LINE__);.
+            $got_parent_filter = TRUE;
+          }
+        }
+      }
+      // If parent_fiter was found, we wil need to loop again
+      // and updated the isChild filter from false to true.
+      if ($got_parent_filter == TRUE) {
+        foreach ($conditions as $condition) {
+          if ($condition instanceof ConditionGroup) {
+            $conds = $condition->getConditions();
+            foreach ($conds as $cond) {
+              // Check if the condition is a filter.
+              if ($cond instanceof Condition) {
+                // Get the field name and value of the filter.
+                $fieldName = $cond->getField();
+                if ($fieldName === 'is_child') {
+                  $cond->setValue(1);
+                }
+              }
+            }
+          }
+          else {
+            if ($condition instanceof Condition) {
+              $fieldName = $condition->getField();
+              if ($fieldName === 'is_child') {
+                $got_parent_filter = TRUE;
+              }
             }
           }
         }
       }
+      // dpm($conditions, __FUNCTION__);.
+      // dpm($this->metsisState->getAll(), __FILE__ . ':' . __LINE__);.
     }
-    // dpm($conditions, __FUNCTION__);.
-
   }
 
   /**
@@ -337,8 +341,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current event.
    */
   public function postConvertQuery(PostConvertedQueryEvent $event): void {
-    $this->getLogger()->notice('postConvertQuery');
-
+    // $this->getLogger()->notice('postConvertQuery');
     // Search api query.
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
@@ -353,7 +356,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     $this->searchId = $searchId;
 
     // Only execute for special metsis search views.
-    if (($searchId !== NULL) && ($searchId === 'views_page:metsis_search__results')) {
+    if (($searchId !== NULL) && ($searchId === 'views_page:metsis_search__results')
+    || ($searchId === 'views_page:metsis_simple_search__results')) {
       // Get the current query object as it is now after
       // being converted by search api.
       $current_query = $solarium_query->getQuery();
@@ -362,13 +366,11 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // $current_query = str_replace(')', '', $current_query);
       // $current_query = str_replace('(', '', $current_query);
       // . ' OR ' .
-
       // Fix a bit on the current main query string q=.
       $main_query = $helper->escapePhrase($current_query);
       $main_query = rtrim($main_query, '"');
       $main_query = ltrim($main_query, '"');
       // dpm($main_query, __FUNCTION__);.
-
       /*
        * Add join query for querying the child datasets as well, when
        * main query only search Level-1 datasets.
@@ -390,17 +392,14 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       $filters = $solarium_query->getFilterQueries();
 
       // dpm($filters, __FUNCTION__);.
-
       // Array to hold the filters for the child query.
       $child_query_filters = [];
 
       // Add the same collection filter as from the main query.
       // $child_query_filters[] = $filters['collection']->getOption('query');.
-
       // Add bbox filter if exits in main query.
       // And to the metsis state for bbox filter.
       // dpm($filters);
-
       // Some helpers.
       $pattern = '/\+\w+_dataset_id:"[^"]+"/';
       foreach ($filters as $filter) {
@@ -413,7 +412,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
           if (preg_match($pattern, $filter->getOption('query'), $m) == 1) {
             $fq = preg_replace($pattern, '', $fq);
           }
+          if (strpos($fq, '+isParent:"true"') !== FALSE) {
+            // $this->getLogger()->notice("got is parent true");
+            $fq = str_replace('+isParent:"true"', '', $fq);
+          }
           $child_query_filters[] = $fq;
+        }
+
+        elseif (strpos($filter->getOption('query'), '+isParent') !== FALSE) {
+          $fq2 = str_replace('+isParent:"true"', '', $filter->getOption('query'));
+          $child_query_filters[] = $fq2;
+
         }
         elseif (preg_match($pattern, $filter->getOption('query'), $m) == 1) {
           $fq = preg_replace($pattern, '', $filter->getOption('query'));
@@ -461,8 +470,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The current event.
    */
   public function onPreQuery(PreQueryEvent $event): void {
-    $this->getLogger()->notice('onPreQuery');
-
+    // $this->getLogger()->notice('onPreQuery');
     // Search api query.
     $query = $event->getSearchApiQuery();
     // Solarium search api solr query.
@@ -518,36 +526,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       if ($this->requestStack->getCurrentRequest()->headers->has('referer')) {
         $this->session->set('back_to_search', $this->requestStack->getCurrentRequest()->headers->get('referer'));
       }
-      // If ($this->session->has('bboxFilter')) {
-      // $bboxFilter = $this->session->get('bboxFilter');
-      // }
-      // else {
-      // $bboxFilter = NULL;
-      // }
-      // // Get filter predicate from config.
-      // if ($this->session->has('cond')) {
-      // $map_bbox_filter = ucfirst($this->session->get('cond'));
-      // }
-      // else {
-      // $map_bbox_filter = $this->config->get('map_bbox_filter');
-      // }
-      // if ($this->session->get("place_filter") === 'Contains') {
-      // $map_bbox_filter = 'Contains';
-      // }.
-      // // Add bbox filter query if drawn bbox on map.
-      // $bbox_filter_overlap = $this->config->get('bbox_overlap_sort');
-      // if ($bboxFilter != NULL && $bboxFilter != "") {
-      // $this->getLogger('metsis_search-hook_solr_query_alter')->debug("bboxFilter: " . $map_bbox_filter . '(' . $bboxFilter . ')');
-      // if ($bbox_filter_overlap) {
-      // $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox score=overlapRatio}' . $map_bbox_filter . '(' . $bboxFilter . ')');
-      // }
-      // else {
-      // $solarium_query->createFilterQuery('bbox')->setQuery('{!field f=bbox}' . $map_bbox_filter . '(' . $bboxFilter . ')');
-      // }
-      // $search_string = $map_bbox_filter . '(' . $bboxFilter . ')';
-      // $request->query->set('bboxFilter', $search_string);
-      // $request->request->set('bboxFilter', $search_string);
-      // }.
 
       // Filter on selected collections from config.
       $selected_collections = $this->config->get('selected_collections');
@@ -778,7 +756,6 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * Test adding children subquery
        */
       // dpm("Adding children.q");.
-
     }
 
   }
@@ -791,9 +768,15 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   the current Event.
    */
   public function postExtractResults(PostExtractResultsEvent $event) {
-    $this->getLogger()->notice('postExtractResults');
-
+    // $this->getLogger()->notice('postExtractResults');
     if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'))) {
+      // Process the extracted_info for the map given the results.
+      $result_set = $event->getSearchApiResultSet();
+      $extracted_info = SearchUtils::getExtractedInfoSearchApiResults($result_set);
+      $this->metsisState->set('extracted_info', $extracted_info);
+      // dpm($this->metsisState->getAll());
+    }
+    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_simple_search__results'))) {
       // Process the extracted_info for the map given the results.
       $result_set = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfoSearchApiResults($result_set);
@@ -872,8 +855,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    *   The post create result event.
    */
   public function postCreateResult(PostCreateResult $event): void {
-    $this->getLogger()->notice('postCreateResult');
-
+    // $this->getLogger()->notice('postCreateResult');
     // \Drupal::logger('metsis-search')->debug("postCreateResult");
     // dpm($event->getResult());
     if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'

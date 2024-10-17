@@ -5,6 +5,7 @@ dependencies:
     - search_api.server.local_metsis
   module:
     - search_api_solr
+    - metsis_search
     - search_api
 third_party_settings:
   search_api_solr:
@@ -41,16 +42,18 @@ third_party_settings:
     term_modifiers:
       slop: 3
       fuzzy: 1
+      fuzzy_analyzer: true
     advanced:
       index_prefix: ''
       collection: ''
-      timezone: ''
+      timezone: UTC
     multilingual:
       limit_to_content_language: false
-      include_language_independent: true
+      include_language_independent: false
       use_language_undefined_as_fallback_language: false
       specific_languages:
         en: '0'
+        nb: '0'
       use_universal_collation: false
 id: metsis_simple_search
 name: 'METSIS Simple search'
@@ -72,6 +75,11 @@ field_settings:
     label: Bbox
     datasource_id: solr_document
     property_path: bbox
+    type: solr_bbox
+  collection:
+    label: Collection
+    datasource_id: solr_document
+    property_path: collection
     type: string
   data_access_url_ogc_wms:
     label: 'Data access url ogc wms'
@@ -169,11 +177,17 @@ field_settings:
     datasource_id: solr_document
     property_path: temporal_extent_start_date
     type: date
+  thumbnail_url:
+    label: 'Thumbnail URL'
+    datasource_id: solr_document
+    property_path: thumbnail_url
+    type: string
   timestamp:
     label: Timestamp
     datasource_id: solr_document
     property_path: timestamp
-    type: date
+    type: text
+    boost: 1.5
   title:
     label: Title
     datasource_id: solr_document
@@ -186,7 +200,7 @@ datasource_settings:
     request_handler: ''
     default_query: '*:*'
     label_field: title
-    language_field: ss_language
+    language_field: ''
     url_field: related_url_landing_page
 processor_settings:
   add_url: {  }
@@ -202,7 +216,6 @@ processor_settings:
     fields:
       - abstract
       - activity_type
-      - bbox
       - full_text
       - id
       - metadata_status
@@ -228,11 +241,12 @@ processor_settings:
   solr_date_range:
     weights:
       preprocess_index: 0
+  solr_dummy_fields: {  }
 tracker_settings:
   default:
     indexing_order: fifo
 options:
   cron_limit: 50
   index_directly: true
-  track_changes_in_references: true
+  track_changes_in_references: false
 server: local_metsis
