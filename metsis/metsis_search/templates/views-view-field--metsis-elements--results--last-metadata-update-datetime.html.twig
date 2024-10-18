@@ -19,5 +19,14 @@
  *
  * @ingroup themeable
  */
-#}
 {{ output |split(',') | first  -}}
+
+#}
+
+
+{% set output_array = output | split(',') %}
+{% for item in output_array %}
+	{{ item }}
+{% endfor %}
+
+

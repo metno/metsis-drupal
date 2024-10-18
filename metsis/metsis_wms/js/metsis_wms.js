@@ -1231,7 +1231,7 @@ console.log("Start of wms map script:");
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
-                          if ("elevation" === dimensions[j].name) {
+                          if ("elevation" === dimensions[j].name || "depth" === dimensions[j].name) {
                             elevationUnits = dimensions[j].units;
                             var elevations = dimensions[j].values.split(",");
                             return elevations;

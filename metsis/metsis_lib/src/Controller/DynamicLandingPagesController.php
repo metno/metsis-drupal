@@ -594,7 +594,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['related_information']['parent'] = [
           '#prefix' => '<div class="w3-container w3-bar">',
           '#type' => 'markup',
-          '#markup' => '<p><em>This is a parent dataset. See the <a class="w3-text-blue" href="/metsis/elements/' . $id_prefix . '-' . $id . '/search">list of children</a> for more information.</em></p>',
+          '#markup' => '<p><em>This is a parent dataset. See the <a class="w3-text-blue" href="/metsis/search?related_dataset_id=' . $id_prefix . '-' . $id . '">list of children</a> for more information.</em></p>',
           '#suffix' => '</div>',
           '#allowed_tags' => ['a', 'em'],
         ];

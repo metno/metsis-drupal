@@ -8,6 +8,7 @@
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Page\PageInterface;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -22,7 +23,6 @@ use Drupal\views\Views;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Drupal\Core\Page\PageInterface;
 
 /**
  * Implements hook_help().
@@ -141,19 +141,19 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
     // // dpm($filters, __FUNCTION__);.
     // $replace_text = $rUri;
     // foreach ($filters as $k => $v) {
-    //   if ($k === 'op') {
-    //     continue;
-    //   }
-    //   if ($k === 'is_parent') {
-    //     continue;
-    //   }
-    //   if ($k === 'fulltext') {
-    //     $v = '';
-    //   }
-    //   if (is_array($v)) {
-    //     continue;
-    //   }
-    //   $replace_text .= $k . '=' . $v . '&';
+    // if ($k === 'op') {
+    // continue;
+    // }
+    // if ($k === 'is_parent') {
+    // continue;
+    // }
+    // if ($k === 'fulltext') {
+    // $v = '';
+    // }
+    // if (is_array($v)) {
+    // continue;
+    // }
+    // $replace_text .= $k . '=' . $v . '&';
     // }
     // $rep_text_t = rtrim($replace_text, '&');
     // // dpm($rep_text_t);
@@ -163,30 +163,35 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
 
     // $fields['nothing_4']['alter']['text'] = $replaced_text;
 
-    // if (isset($filters['related_dataset_id']) && $filters['related_dataset_id'] != '') {
-    //   $parent_args = [$filters['related_dataset_id']];
-    //   // dpm($parent_args, __FUNCTION__. ':'. __LINE__);.
-    //   $parent_view = Views::getView('metsis_metadata_details_parent');
-    //   // If (is_object($view)) {.
-    //   $parent_view->setArguments($parent_args);
-    //   $parent_view->setDisplay('page_2');
-    //   // $view->preExecute();
-    //   $parent_view->execute();
-    //   // $content = $view->buildRenderable('results', $args);
-    //   dpm($parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText(),__FUNCTION__ . ':'. __LINE__);
-    //   $parent_title = $parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText();
-    //   $fields['nothing_5']['alter']['text'] = $parent_title;
-    //   // }
+    // If (isset($filters['related_dataset_id']) && $filters['related_dataset_id'] != '') {
+    // $parent_args = [$filters['related_dataset_id']];
+    // // dpm($parent_args, __FUNCTION__. ':'. __LINE__);.
+    // $parent_view = Views::getView('metsis_metadata_details_parent');
+    // // If (is_object($view)) {.
+    // $parent_view->setArguments($parent_args);
+    // parent_view->setDisplay('page_2');
+    // // $view->preExecute();
+    // $parent_view->execute();
+    // // $content = $view->buildRenderable('results', $args);
+    // dpm($parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText(),__FUNCTION__ . ':'. __LINE__);
+    // $parent_title = $parent_view->result[0]->_item->getFields(TRUE)['title']->getValues()[0]->getText();
+    // $fields['nothing_5']['alter']['text'] = $parent_title;
+    // // }
     // }
-    // $view->display_handler->overrideOption('fields', $fields);
+    // $view->display_handler->overrideOption('fields', $fields);.
 
   }
 }
+
+/**
+ * {@inheritdoc}
+ */
 function metsis_search_page_build(PageInterface $page) {
   // Get the render array for the page
-  //$page_array = &$page->getPageArray();
-  //dpm($page_array, __FUNCTION__);
+  // $page_array = &$page->getPageArray();
+  // dpm($page_array, __FUNCTION__);.
 }
+
 /**
  * Implements hook_views_pre_render().
  *
@@ -228,34 +233,33 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
       'pywps_service' => $pywps_service,
       'module_path' => $module_path
     ];
-    //Attach the name of the view, that we might need in the js later.
+    // Attach the name of the view, that we might need in the js later.
     $view->element['#attached']['drupalSettings']['metsis_search']['search_view'] = $view->storage->id();
-     //dpm($view->exposed_widgets, __FUNCTION__. 'exposed widgets');
+    // dpm($view->exposed_widgets, __FUNCTION__. 'exposed widgets');
     // $view->addCacheContext('url.query_args');
-    // \Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');
+    // \Drupal::logger('metsis')->debug('<pre><code>' . print_r($view->getCacheTags(), true) . '</code></pre>');.
 
-
-   /*
-    * NOTE THIS PART IS PROBABLY DOING NOTHING. INVESTIGATE.
-    */
+    /*
+     * NOTE THIS PART IS PROBABLY DOING NOTHING. INVESTIGATE.
+     */
     $parent_info = \Drupal::service('metsis_search.state')->get('parent_info');
-    //dpm($parent_info, __FUNCTION__ . ' parent info');
-   $exposedInput = $view->getExposedInput();
+    // dpm($parent_info, __FUNCTION__ . ' parent info');.
+    $exposedInput = $view->getExposedInput();
     if (empty($exposedInput['related_dataset_id'])) {
-    // \Drupal::logger('metsis')->notice('Hiding cloud coverage filter.');
+      // \Drupal::logger('metsis')->notice('Hiding cloud coverage filter.');
       // $view->exposed_widgets['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
       // $view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = FALSE;
-      //dpm($parent_info, __FUNCTION__ . '[PARENT INFO]');
+      // dpm($parent_info, __FUNCTION__ . '[PARENT INFO]');
     }
-    if(!empty($parent_info)) {
-    $ptitle = $parent_info['title'][0] ?? '';
-    if (!empty($exposedInput['related_dataset_id'] && str_starts_with($ptitle, 'S2') == TRUE)) {
-      //\Drupal::logger('metsis')->notice('Showing cloud coverage filter.');
+    if (!empty($parent_info)) {
+      $ptitle = $parent_info['title'][0] ?? '';
+      if (!empty($exposedInput['related_dataset_id'] && str_starts_with($ptitle, 'S2') == TRUE)) {
+        // \Drupal::logger('metsis')->notice('Showing cloud coverage filter.');
 
-      //$view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = TRUE;
+        // $view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = TRUE;
+      }
     }
-}
-}
+  }
   if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
     $view->element['#attached']['library'][] = 'metsis_search/metadata_search_view';
     $view->element['#attached']['library'][] = 'metsis_search/children_count';
@@ -295,7 +299,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 
   // For simple search.
   if (isset($view) && ($view->storage->id() == 'metsis_simple_search')) {
-     $view->element['#attached']['library'][] = 'views/views.responsive-grid';
+    $view->element['#attached']['library'][] = 'views/views.responsive-grid';
 
   }
   if (isset($view) && ($view->storage->id() == 'metsis_search')) {
@@ -309,7 +313,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
 function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePluginBase $cache) {
   if (isset($view) && (($view->storage->id() == 'metsis_search')
       ||($view->storage->id() == 'metsis_simple_search'))) {
-    //dpm($output, __FUNCTION__ . ': $output');
+    // dpm($output, __FUNCTION__ . ': $output');.
 
   }
 }
@@ -321,9 +325,12 @@ function metsis_search_preprocess_views_view_field(&$variables) {
 
 }
 
-function mestis_search_preprocess_page(&$variables){
-dpm($variables, __FUNCTION__);
-dpm('hei');
+/**
+ * {@inheritdoc}
+ */
+function metsis_search_preprocess_page(&$variables) {
+  // dpm($variables, __FUNCTION__);
+  // dpm('hei');.
 }
 
 /**
@@ -362,7 +369,7 @@ function metsis_search_theme($existing, $type, $theme, $path) {
       'base hook' => 'views view',
       'path' => 'modules/metsis/metsis_search/templates',
     ],
-      'views_view__metsis_search__results' => [
+    'views_view__metsis_search__results' => [
       'template' => 'views-view--metsis-search--results',
       'render element' => 'elements',
       'base hook' => 'views view',
@@ -374,9 +381,9 @@ function metsis_search_theme($existing, $type, $theme, $path) {
       'base hook' => 'views field',
       'path' => 'modules/metsis/metsis_search/templates',
     ],
-     'views_view_field__metsis_simple_search__results__parent_info' => [
-      //'variables' => ['items' => NULL],
-      //'template' => 'views-view-fields--metsis-simple-search--results--parent-info',
+    'views_view_field__metsis_simple_search__results__parent_info' => [
+      // 'variables' => ['items' => NULL],
+      // 'template' => 'views-view-fields--metsis-simple-search--results--parent-info',
       'render element' => 'elements',
       'base hook' => 'views field',
       'path' => 'modules/metsis/metsis_search/templates',
@@ -407,17 +414,18 @@ function metsis_search_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_theme_suggestions_views_view_fields_alter().
  */
-// function metsis_search_theme_suggestions_views_view_fields_alter(array &$suggestions, array $variables) {
-//    if ($variables['view']->id() === 'metsis_simple_search' && $variables['view']->current_display == 'results') {
-//     if ($variables['row']->_entity) {
-//     foreach ($variables['row']->_entity->getFields() as $field => $info) {
-//       if ($field === 'parent_info') {
-//         $suggestions[] = 'views_view_field__metsis_simple_search__results__parent_info';
-//       }
-//     }
-//   }
-//   }
+// Function metsis_search_theme_suggestions_views_view_fields_alter(array &$suggestions, array $variables) {
+// if ($variables['view']->id() === 'metsis_simple_search' && $variables['view']->current_display == 'results') {
+// if ($variables['row']->_entity) {
+// foreach ($variables['row']->_entity->getFields() as $field => $info) {
+// if ($field === 'parent_info') {
+// $suggestions[] = 'views_view_field__metsis_simple_search__results__parent_info';
 // }
+// }
+// }
+// }
+// }.
+
 /**
  * Implments hook_views_query_alter().
  */
@@ -523,8 +531,8 @@ function metsis_search_views_data_alter(array &$data) {
 
   // dpm($data['views']);.
 
-  //dpm($data['search_api_index_metsis_simple_search'], __FUNCTION__);
-  // dpm($data, __FUNCTION__);
+  // dpm($data['search_api_index_metsis_simple_search'], __FUNCTION__);
+  // dpm($data, __FUNCTION__);.
 }
 
 /**
@@ -532,7 +540,7 @@ function metsis_search_views_data_alter(array &$data) {
  */
 function metsis_search_views_pre_build(ViewExecutable $view) {
   if ($view->id() == 'metsis_search' || $view->id() == 'metsis_elements') {
-    //\Drupal::logger('metsis_search')->notice($view->id());
+    // \Drupal::logger('metsis_search')->notice($view->id());
     // Check if reset query and reset boundingbox if so.
     \Drupal::cache()->invalidate('metsis_search_map');
     $request = \Drupal::request();
@@ -601,6 +609,7 @@ function metsis_search_views_post_execute(ViewExecutable $view) {
 function metsis_search_block_view_alter(array &$build, BlockPluginInterface $block) {
   // Check if the block is the one containing your exposed form.
 }
+
 /**
  * Implements hook_form_alter().
  */
@@ -612,7 +621,7 @@ function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_
   // ];
   // var_dump($form);
   // }'
-  //dpm($form_id, __FUNCTION__);
+  // dpm($form_id, __FUNCTION__);
   $current_path = \Drupal::service('path.current')->getPath();
 
   if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-metsis-elements-results') {
@@ -638,7 +647,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
   $view = $form_state->getStorage('view');
   if (($view['view']->id() == 'metsis_search') && ($view['view']->current_display == 'results')) {
     // $form['actions']['submit']['#value'] = t('Apply Nowx1');
-    //dpm($form, __FUNCTION__);
+    // dpm($form, __FUNCTION__);
     // dpm($form_state, __FUNCTION__);
     // Always keep advanced options closed.
     unset($form['secondary']['#open']);
@@ -652,13 +661,13 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     if (!$enable_cloud_coverage) {
       // unset($form['#info']['filter-platform_ancillary_cloud_coverage']);.
       // $form['platform_ancillary_cloud_coverage']['#type'] = 'hidden';
-      //$form['platform_ancillary_cloud_coverage']['#access'] = FALSE;
-      // $form['platform_ancillary_cloud_coverage']['#multiple'] = FALSE;
+      // $form['platform_ancillary_cloud_coverage']['#access'] = FALSE;
+      // $form['platform_ancillary_cloud_coverage']['#multiple'] = FALSE;.
 
-    $form['platform_ancillary_cloud_coverage']['#attributes']['class'][] = 'visually-hidden';
-    $form['platform_ancillary_cloud_coverage']['#title'] = '';
-    $form['platform_ancillary_cloud_coverage']['#description'] = '';
-    //$form['platform_ancillary_cloud_coverage']['#size'] = 0;
+      $form['platform_ancillary_cloud_coverage']['#attributes']['class'][] = 'visually-hidden';
+      $form['platform_ancillary_cloud_coverage']['#title'] = '';
+      $form['platform_ancillary_cloud_coverage']['#description'] = '';
+      // $form['platform_ancillary_cloud_coverage']['#size'] = 0;
 
       $form['platform_ancillary_cloud_coverage_collapsible']['#type'] = 'hidden';
       $form['platform_ancillary_cloud_coverage_collapsible']['#access'] = FALSE;
@@ -690,22 +699,21 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     $form['related_dataset_id']['#description'] = '';
     $form['related_dataset_id']['#size'] = 0;
 
-
-    // dpm($form, __FUNCTION__. '[FORM]');
+    // dpm($form, __FUNCTION__. '[FORM]');.
 
     $header = $view['view']->header;
 
-     //dpm($header['metsis_search_parent_info']);
-     $parent_info = \Drupal::service('metsis_search.state')->get('parent_info');
-    //dpm($parent_info);
+    // dpm($header['metsis_search_parent_info']);.
+    $parent_info = \Drupal::service('metsis_search.state')->get('parent_info');
+    // dpm($parent_info);
     $ptitle = $parent_info['title'][0] ?? '';
     if (!empty($parent_info) && $ptitle !== '' && str_starts_with($ptitle, 'S2') == TRUE) {
       \Drupal::logger('metsis')->notice('Showing cloud coverage filter.');
-      //$form['platform_ancillary_cloud_coverage']['#access'] = TRUE;
+      // $form['platform_ancillary_cloud_coverage']['#access'] = TRUE;
       unset($form['platform_ancillary_cloud_coverage']['#attributes']);
       $form['platform_ancillary_cloud_coverage']['#title'] = 'Cloud Coverage';
       $form['platform_ancillary_cloud_coverage']['#description'] = '';
-       $form['platform_ancillary_cloud_coverage']['#weight'] = 5;
+      $form['platform_ancillary_cloud_coverage']['#weight'] = 5;
 
       unset($form['platform_ancillary_cloud_coverage_collapsible']);
       unset($form['platform_ancillary_cloud_coverage']['#group']);
@@ -713,9 +721,9 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
       // $form['platform_ancillary_cloud_coverage']['#type'] = 'select';
       // $form['platform_ancillary_cloud_coverage']['#access'] = TRUE;
       // $form['platform_ancillary_cloud_coverage']['#multiple'] = TRUE;
-      //$view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = TRUE;
-      //Avoid stale parent_info
-      //\Drupal::service('metsis_search.state')->set('parent_info', []);
+      // $view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = TRUE;
+      // Avoid stale parent_info
+      // \Drupal::service('metsis_search.state')->set('parent_info', []);
     }
     // dpm($view['view']->getExposedInput(), __FUNCTION__. '[VIEW]');
     // dpm($form);
@@ -759,7 +767,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
      *
      * @todo Add metsis search configuration option to show/hide this form element.
      */
-     $config = \Drupal::config('metsis_search.settings');
+    $config = \Drupal::config('metsis_search.settings');
     if (!$config->get('show_bbox_filter_exposed')) {
       $form['bbox_wrapper']['#attributes']['class'][] = 'visually-hidden';
       $form['bbox_collapsible']['#attributes']['class'][] = 'visually-hidden';
@@ -773,7 +781,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
     $form['related_dataset_id']['#description'] = '';
     $form['related_dataset_id']['#size'] = 0;
 
-    //Maximize the search box for better UI
+    // Maximize the search box for better UI.
     $form['search_api_fulltext"']['#size'] = 500;
     // $form['related_dataset_id']['#access'] = FALSE;
 
@@ -834,9 +842,11 @@ function metsis_search_update_9302() {
   module_set_weight('metsis_search', 11);
 }
 
-
+/**
+ * {@inheritdoc}
+ */
 function metsis_search_update_10223() {
-// Update the search api to use the new custom backend.
+  // Update the search api to use the new custom backend.
   $server = \Drupal::entityTypeManager()->getStorage('search_api_server')->load('local_metsis');
   $backend_id = $server->get('backend');
 
@@ -845,16 +855,16 @@ function metsis_search_update_10223() {
     // Set the new backend plugin ID.
     $server->set('backend', 'search_api_solr_metsis');
     $server->save();
-}
- // Update the config
+  }
+  // Update the config
   // Load the configuration object.
   $config = \Drupal::configFactory()->getEditable('metsis_search.settings');
 
-  //Disable parent/children filter
+  // Disable parent/children filter.
   $config->set('disable_children_filter', 1);
   $config->set('search_match_children', 1);
   $config->set('show_bbox_filter_exposed', 0);
-  $config->set('hide_bbox_filter_exposed',1);
+  $config->set('hide_bbox_filter_exposed', 1);
   $config->set('map_bbox_autosubmit', 0);
 
   // Save the updated configuration.

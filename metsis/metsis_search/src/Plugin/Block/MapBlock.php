@@ -144,6 +144,7 @@ class MapBlock extends BlockBase implements BlockPluginInterface, ContainerFacto
     // Get saved configuration.
     $config = $this->configFactory->get('metsis_search.settings');
     $map_location = $config->get('map_selected_location');
+    $bbox_filter_auto_show = $config->get('hide_bbox_filter_exposed');
     $map_lat = $config->get('map_locations')[$map_location]['lat'];
     $map_lon = $config->get('map_locations')[$map_location]['lon'];
     $map_zoom = $config->get('map_zoom');
