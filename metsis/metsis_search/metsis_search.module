@@ -901,23 +901,6 @@ function metsis_search_update_10300() {
       \Drupal::logger('metsis_update')->notice("Disabled block $block_plugin_id and updated visibilty pages");
       $config->set('region', 'none');
       // $config->set('visibility.pages', $visibilityPages);
-      $config->save();
-      foreach ($views_config_files as $view_config_file) {
-        // Update the views.view.metsis_search.yml file with the found block configuration ID.
-        $viewsConfig = &\Drupal::service('config.factory')->getEditable($view_config_file);
-
-        if ($viewsConfig !== NULL) {
-          $dependencies = &$viewsConfig->get('dependencies.config');
-          // Update the entity_block target in the header section with the found block configuration ID.
-          $headerEntityBlockTarget = &$viewsConfig->get('header.entity_block.target');
-          if ($headerEntityBlockTarget !== $configName) {
-            $headerEntityBlockTarget = str_replace('block.block.', '', $configName);
-            \Drupal::logger('metsis_update')->notice("Updated block id for header area with: $headerEntityBlockTarget");
-            $viewsConfig->set('header.entity_block.target', $headerEntityBlockTarget);
-          }
-          $viewsConfig->save();
-        }
-      }
     }
   }
 }

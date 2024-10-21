@@ -9512,7 +9512,7 @@ display:
           field: id
           relationship: none
           group_type: group
-          admin_label: ''
+          admin_label: Id
           plugin_id: search_api
           default_action: empty
           exception:
