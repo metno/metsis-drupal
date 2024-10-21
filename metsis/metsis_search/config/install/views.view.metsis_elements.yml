@@ -2341,6 +2341,7 @@ display:
               secondary_label: 'Advanced options'
               secondary_open: false
               reset_button_always_show: false
+              autosubmit_textfield_minimum_length: 3
             pager:
               plugin_id: default
               advanced:
