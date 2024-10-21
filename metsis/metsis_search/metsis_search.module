@@ -23,6 +23,7 @@ use Drupal\views\Views;
 use Solarium\QueryType\Select\Query\Query;
 use Solarium\QueryType\Select\Result\Result;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Implements hook_help().
@@ -855,6 +856,7 @@ function metsis_search_update_10223() {
     // Set the new backend plugin ID.
     $server->set('backend', 'search_api_solr_metsis');
     $server->save();
+    \Drupal::logger('metsis_update')->notice("Updated search_api_solr backend to 'search_api_solr_metsis'");
   }
   // Update the config
   // Load the configuration object.
@@ -872,25 +874,55 @@ function metsis_search_update_10223() {
 }
 
 /**
- * Update function to remove a block if it exists in the block layout.
+ * Update block configuration.
+ *
+ * {@inheritdoc}
  */
 function metsis_search_update_10300() {
-  // Define the block plugin ID you want to check for and remove.
+
   $block_plugin_id = 'metsis_search_map';
-
-  // Load the configuration factory service.
   $configFactory = \Drupal::service('config.factory');
-
-  // Get all the active configurations for block layouts (you may need to adjust this based on your needs).
   $blockConfigs = $configFactory->listAll('block.block.');
+  $views_config_files = ['views.view.metsis_search.yml',
+    'views.view.metsis_simple_search.yml',
+  ];
+  $index_config_files = ['search_api.index.metsis_simple_search.yml',
+    'search_api.index.metsis_search.yml'
+  ];
+
+  $modulePath = \Drupal::service('extension.list.module')->getPath('metsis_search');
+  $viewsConfigDir = "$modulePath/config/install";
 
   foreach ($blockConfigs as $configName) {
     $config = $configFactory->getEditable($configName);
     if ($config->get('plugin') == $block_plugin_id) {
-      // If the block is found, remove it by setting its region to 'none'.
-      \Drupal::logger('metsis_update')->notice("Removed block $block_plugin_id");
+      // Remove existing visibility page settings and add '/foo' and '/bar'.
+      $visibilityPages = ['/metsis/search', '/metsis/simple_search'];
+      \Drupal::logger('metsis_update')->notice("Disabled block $block_plugin_id and updated visibilty pages");
       $config->set('region', 'none');
+      // $config->set('visibility.pages', $visibilityPages);
       $config->save();
+      foreach ($views_config_files as $view_config_file) {
+        // Update the views.view.metsis_search.yml file with the found block configuration ID.
+        $viewsConfig = \Drupal::service('config.factory')->getEditable($view_config_file);
+
+        if ($viewsConfig !== NULL) {
+          $dependencies = &$viewsConfig->get('dependencies.config');
+          // Add the block configuration to the dependencies of the views config.
+          if (!in_array($configName, $dependencies)) {
+            $dependencies[] = $configName;
+            \Drupal::logger('metsis_update')->notice("Update block config dependencies with $configName");
+          }
+          // Update the entity_block target in the header section with the found block configuration ID.
+          $headerEntityBlockTarget = &$viewsConfig->get('header.entity_block.target');
+          if ($headerEntityBlockTarget !== $configName) {
+            $headerEntityBlockTarget = str_replace('block.block.', '', $configName);
+            \Drupal::logger('metsis_update')->notice("Updated block id for header area with: $headerEntityBlockTarget");
+            $viewsConfig->set('header.entity_block.target', $headerEntityBlockTarget);
+          }
+          $viewsConfig->save();
+        }
+      }
     }
   }
 }
