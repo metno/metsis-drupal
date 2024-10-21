@@ -904,15 +904,10 @@ function metsis_search_update_10300() {
       $config->save();
       foreach ($views_config_files as $view_config_file) {
         // Update the views.view.metsis_search.yml file with the found block configuration ID.
-        $viewsConfig = \Drupal::service('config.factory')->getEditable($view_config_file);
+        $viewsConfig = &\Drupal::service('config.factory')->getEditable($view_config_file);
 
         if ($viewsConfig !== NULL) {
           $dependencies = &$viewsConfig->get('dependencies.config');
-          // Add the block configuration to the dependencies of the views config.
-          if (!in_array($configName, $dependencies)) {
-            $dependencies[] = $configName;
-            \Drupal::logger('metsis_update')->notice("Update block config dependencies with $configName");
-          }
           // Update the entity_block target in the header section with the found block configuration ID.
           $headerEntityBlockTarget = &$viewsConfig->get('header.entity_block.target');
           if ($headerEntityBlockTarget !== $configName) {
