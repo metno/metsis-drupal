@@ -376,7 +376,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * main query only search Level-1 datasets.
        */
       $do_child_join = $this->config->get('search_match_children');
-      $remove_parent_zero_children->get('remove_parent_zero_children');
+      $remove_parent_zero_children = $this->config->get('remove_parent_zero_children');
       if ($do_child_join) {
         $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
       }
