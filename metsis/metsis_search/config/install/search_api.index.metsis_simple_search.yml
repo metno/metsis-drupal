@@ -81,6 +81,21 @@ field_settings:
     datasource_id: solr_document
     property_path: collection
     type: string
+  data_access_url_ftp:
+    label: 'Data access url ftp'
+    datasource_id: solr_document
+    property_path: data_access_url_ftp
+    type: string
+  data_access_url_http:
+    label: 'Data access url http'
+    datasource_id: solr_document
+    property_path: data_access_url_http
+    type: string
+  data_access_url_odata:
+    label: 'Data access url odata'
+    datasource_id: solr_document
+    property_path: data_access_url_odata
+    type: string
   data_access_url_ogc_wms:
     label: 'Data access url ogc wms'
     datasource_id: solr_document
@@ -127,6 +142,12 @@ field_settings:
     datasource_id: solr_document
     property_path: metadata_status
     type: string
+  phrase_suggester:
+    label: 'Phrase suggester'
+    datasource_id: solr_document
+    property_path: phrase_suggester
+    type: text
+    boost: 1.5
   project_long_name:
     label: 'Project long name'
     datasource_id: solr_document
@@ -177,6 +198,12 @@ field_settings:
     datasource_id: solr_document
     property_path: temporal_extent_start_date
     type: date
+  text_suggester:
+    label: 'Text suggester'
+    datasource_id: solr_document
+    property_path: text_suggester
+    type: text
+    boost: 1.3
   thumbnail_url:
     label: 'Thumbnail URL'
     datasource_id: solr_document
@@ -192,6 +219,12 @@ field_settings:
     label: Title
     datasource_id: solr_document
     property_path: title
+    type: text
+    boost: 1.5
+  title_en:
+    label: 'Title en'
+    datasource_id: solr_document
+    property_path: title_en
     type: text
     boost: 1.5
 datasource_settings:

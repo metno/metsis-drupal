@@ -761,6 +761,12 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_technical_role
     type: string
+  phrase_suggester:
+    label: 'Phrase suggester'
+    datasource_id: solr_document
+    property_path: phrase_suggester
+    type: text
+    boost: 1.5
   platform_ancillary_cloud_coverage:
     label: 'Platform ancillary cloud coverage'
     datasource_id: solr_document
@@ -1131,6 +1137,12 @@ field_settings:
     label: Title
     datasource_id: solr_document
     property_path: title
+    type: text
+    boost: 1.5
+  title_en:
+    label: 'Title en'
+    datasource_id: solr_document
+    property_path: title_en
     type: text
     boost: 1.5
   use_constraint_identifier:

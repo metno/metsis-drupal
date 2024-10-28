@@ -156,6 +156,21 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       $this->t("Will return the parent of matching children when only returning level 1 datasets."),
       '#default_value' => $config->get('search_match_children'),
     ];
+    $form['remove_parent_zero_children'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check this box to remove parent from search results if children subquery returns 0'),
+      '#description' =>
+      $this->t("Will remove the parent from the search results, if the children subquery returns zero children."),
+      '#default_value' => $config->get('remove_parent_zero_children'),
+    ];
+
+    $form['remove_keys_zero_children'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Check this box to remove the search fulltext key if children subquery returns 0'),
+      '#description' =>
+      $this->t("Will remove the searched fulltext keys from the child subquery so that the child button will show more than 0 results."),
+      '#default_value' => $config->get('remove_keys_zero_children'),
+    ];
 
     $form['show_bbox_filter_exposed'] = [
       '#type' => 'checkbox',
@@ -377,6 +392,8 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('search_match_children', $values['search_match_children'])
       ->set('show_bbox_filter_exposed', $values['show_bbox_filter_exposed'])
       ->set('hide_bbox_filter_exposed', $values['hide_bbox_filter_exposed'])
+      ->set('remove_parent_zero_children', $values['remove_parent_zero_children'])
+      ->set('remove_keys_zero_children', $values['remove_keys_zero_children'])
       ->save();
 
     parent::submitForm($form, $form_state);

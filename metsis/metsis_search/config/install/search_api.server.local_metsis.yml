@@ -43,7 +43,7 @@ backend_config:
   connector: standard
   connector_config:
     scheme: http
-    host: solr
+    host: metsis-solr.met.no
     port: 8983
     path: /
     core: testcore

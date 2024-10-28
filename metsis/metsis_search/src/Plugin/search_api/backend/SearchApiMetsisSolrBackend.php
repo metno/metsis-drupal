@@ -234,6 +234,11 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
             if ($found_children == 0) {
               $zero_children[] = $datasource . '/' . $item_id;
             }
+
+            if (!$this->metsisSearchSettings->get('remove_parent_zero_children')
+            && $found_children == 0) {
+              $found_children = $total_children;
+            }
             // Create value.
             $num_children_value = new TextValue(
               sprintf('%d of %d', $found_children, $total_children)
@@ -259,14 +264,28 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
                 }
               }
               else {
-                $search_string .= "&$key=$value";
+                if ($key === 'fulltext') {
+                  $fulltext_string = $value;
+                  // dpm($fulltext_string, __FUNCTION__);.
+                  $mid = $doc_fields['metadata_identifier'] ?? '';
+                  $mid = str_replace('?', ':', $mid);
+                  $doi = $doc_fields['dataset_citation_doi'][0] ?? '';
+                  if (($fulltext_string === $mid)
+                    || ($fulltext_string === $doc_fields['id']) || (strpos($doi, $fulltext_string) !== FALSE)) {
+                    $search_string .= "&$key=";
+                  }
+                }
+                else {
+                  $search_string .= "&$key=$value";
+                }
               }
             }
+
             $search_string .= "&related_dataset_id=$id";
             if ($search_string === '?') {
               $search_string = '';
             }
-            // dpm($search_string, __FUNCTION__);.
+            // dpm($search_string, __FUNCTION__);
             // Create th children search string field.
             $search_string_value = new TextValue($search_string);
             $children_search_string_field = new Field($index, 'children_search_string');
@@ -346,10 +365,13 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     // Loop through each result item
     // and remove it if num_children is equal to 0.
     $remove_count = 0;
-    foreach ($result_set->getResultItems() as $item_id => $result_item) {
-      if (in_array($item_id, $zero_children)) {
-        unset($merged_results[$item_id]);
-        $remove_count++;
+    if ($this->metsisSearchSettings->get('remove_parent_zero_children')) {
+      foreach ($result_set->getResultItems() as $item_id => $result_item) {
+        if (in_array($item_id, $zero_children)) {
+          unset($merged_results[$item_id]);
+          $this->getLogger("metsis_search")->debug("Removed $item_id with 0 children in result");
+          $remove_count++;
+        }
       }
     }
     $result_set->setResultItems($merged_results);

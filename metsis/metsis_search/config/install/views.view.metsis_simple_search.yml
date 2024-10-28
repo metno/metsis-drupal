@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - block.block.metsis_metsissearchmap
+    - block.block.metsissearchmap
     - search_api.index.metsis_simple_search
   module:
     - better_exposed_filters
@@ -187,6 +187,271 @@ display:
           type_custom_true: ''
           type_custom_false: ''
           not: false
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_ftp:
+          id: data_access_url_ftp
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_ftp
+          relationship: none
+          group_type: group
+          admin_label: 'FTP Data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_http:
+          id: data_access_url_http
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_http
+          relationship: none
+          group_type: group
+          admin_label: 'HTTP Data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_odata:
+          id: data_access_url_odata
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_odata
+          relationship: none
+          group_type: group
+          admin_label: 'ODATA Data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_opendap:
+          id: data_access_url_opendap
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_opendap
+          relationship: none
+          group_type: group
+          admin_label: 'OpenDAP data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
+        data_access_url_ogc_wms:
+          id: data_access_url_ogc_wms
+          table: search_api_index_metsis_simple_search
+          field: data_access_url_ogc_wms
+          relationship: none
+          group_type: group
+          admin_label: 'wms data access'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
           multi_type: separator
@@ -1253,7 +1518,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\" title=\"Download dataset(s)\">Download dataset</a>"
+            text: "{% if data_access_url_ftp is not empty or data_access_url_http is not empty or data_access_url_odata is not empty or data_access_url_opendap is not empty %}\r\n<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\" title=\"Download dataset(s)\">Download dataset</a>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1290,112 +1555,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-        data_access_url_ogc_wms:
-          id: data_access_url_ogc_wms
-          table: search_api_index_metsis_simple_search
-          field: data_access_url_ogc_wms
-          relationship: none
-          group_type: group
-          admin_label: 'wms data access'
-          plugin_id: search_api
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
-        data_access_url_opendap:
-          id: data_access_url_opendap
-          table: search_api_index_metsis_simple_search
-          field: data_access_url_opendap
-          relationship: none
-          group_type: group
-          admin_label: 'OpenDAP data access'
-          plugin_id: search_api
-          label: ''
-          exclude: true
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          link_to_item: false
-          use_highlighting: false
-          multi_type: separator
-          multi_separator: ', '
         feature_type:
           id: feature_type
           table: search_api_index_metsis_simple_search
@@ -1586,13 +1745,13 @@ display:
               autosubmit: false
               autosubmit_exclude_textfield: false
               autosubmit_textfield_delay: 500
+              autosubmit_textfield_minimum_length: 3
               autosubmit_hide: false
               input_required: true
               allow_secondary: false
               secondary_label: 'Advanced options'
               secondary_open: false
               reset_button_always_show: true
-              autosubmit_textfield_minimum_length: 3
             filter:
               search_api_fulltext:
                 plugin_id: default
@@ -1740,12 +1899,14 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: sloppy_terms
+          parse_mode: terms
           min_length: 2
           fields:
             - abstract
             - full_text
-            - title
+            - phrase_suggester
+            - text_suggester
+            - title_en
         is_parent:
           id: is_parent
           table: search_api_index_metsis_simple_search
@@ -2013,7 +2174,7 @@ display:
           admin_label: 'Metsis Search Map Block'
           plugin_id: entity
           empty: true
-          target: metsis_metsissearchmap
+          target: metsissearchmap
           view_mode: default
           tokenize: false
           bypass_access: true

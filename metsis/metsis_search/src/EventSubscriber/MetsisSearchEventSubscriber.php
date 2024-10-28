@@ -376,6 +376,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * main query only search Level-1 datasets.
        */
       $do_child_join = $this->config->get('search_match_children');
+      $remove_parent_zero_children->get('remove_parent_zero_children');
       if ($do_child_join) {
         $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
       }
@@ -450,6 +451,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * parent document in the main query result set.
        */
       $solarium_query->addParam('total_children.q', '{!terms f=related_dataset_id v=$row.id}');
+      $solarium_query->addParam('total_children.fq', '+metadata_status:"Active"');
       $solarium_query->addParam('total_children.rows', '0');
 
       /*
@@ -597,6 +599,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * with nameing authrity prefixes.
        */
       $keys = $query->getKeys();
+      $this->getLogger("metsis_search")->info("Original keys:" . print_r($keys, TRUE));
       // dpm($keys);
       if ($keys != NULL) {
         if (is_string($keys[0])) {
@@ -664,6 +667,9 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $parse_mode->setConjunction($conjuction);
         $query->setParseMode($parse_mode);
       }
+      $this->getLogger("metsis_search")->debug("New keys: " . print_r($keys, TRUE));
+      $this->getLogger("metsis_search")->debug("Parse_mode: " . $query->getParseMode()->label());
+      // dpm($query->getParseMode()->label(), __FUNCTION__);.
       /* Rewrite the query for when end date filter is provided. */
       $filters = $solarium_query->getFilterQueries();
       // Default date filter key for main search.

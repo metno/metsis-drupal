@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - block.block.metsis_metsissearchmap
+    - block.block.metsissearchmap
     - search_api.index.metsis
   module:
     - better_exposed_filters
@@ -2743,12 +2743,14 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          parse_mode: sloppy_phrase
+          parse_mode: terms
           min_length: null
           fields:
             - abstract
             - full_text
-            - title
+            - phrase_suggester
+            - text_suggester
+            - title_en
         is_parent:
           id: is_parent
           table: search_api_index_metsis
@@ -3310,7 +3312,7 @@ display:
           admin_label: 'Metsis Search Map Block'
           plugin_id: entity
           empty: false
-          target: metsis_metsissearchmap
+          target: metsissearchmap
           view_mode: default
           tokenize: false
           bypass_access: true

@@ -690,6 +690,7 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
      */
     if (!$config->get('show_bbox_filter_exposed')) {
       $form['bbox_wrapper']['#attributes']['class'][] = 'visually-hidden';
+      $form['bbox_collapsible']['#attributes']['class'][] = 'visually-hidden';
     }
 
     /*
@@ -904,3 +905,26 @@ function metsis_search_update_10300() {
     }
   }
 }
+
+/*
+// Load the View entity using the ViewEntityInterface storage class.
+$viewStorage = \Drupal::entityTypeManager()->getStorage('view');
+$viewId = 'your_view_id'; // Replace with your view's machine name.
+$view = $viewStorage->load($viewId);
+
+// Get an executable object for the View using the ViewExecutableFactory service.
+$executable = \Drupal::service('views.executable')->get($view);
+
+// Set the display to modify (in this case, 'default').
+$executable->setDisplay('default');
+
+// Get the Entity Block plugin in the header area of the view.
+$entityBlockPluginId = 'your_entity_block_plugin_id'; // Replace with the ID of your Entity Block plugin.
+$header = $executable->getHandler('header', $entityBlockPluginId);
+
+// Modify the block_id option of the Entity Block plugin in the header area of the view.
+$newBlockId = 'your_new_block_id'; // Replace with the new block ID you want to set.
+$executable->setHandlerOption('header', $entityBlockPluginId, 'options', ['block_id' => $newBlockId]);
+
+// Save the modified view entity.
+$view->save();*/
