@@ -768,7 +768,7 @@ field_settings:
     datasource_id: solr_document
     property_path: phrase_suggester
     type: solr_text_suggester
-    boost: 1.4
+    boost: 2.0
   platform_ancillary_cloud_coverage:
     label: 'Platform ancillary cloud coverage'
     datasource_id: solr_document

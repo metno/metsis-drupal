@@ -153,7 +153,7 @@ field_settings:
     datasource_id: solr_document
     property_path: phrase_suggester
     type: solr_text_suggester
-    boost: 1.4
+    boost: 2.0
   project_long_name:
     label: 'Project long name'
     datasource_id: solr_document
