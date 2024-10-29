@@ -1518,7 +1518,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_ftp is not empty or data_access_url_http is not empty or data_access_url_odata is not empty or data_access_url_opendap is not empty %}\r\n<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\" title=\"Download dataset(s)\">Download dataset</a>\r\n{% endif %}"
+            text: "{% if data_access_url_ftp is not empty or data_access_url_http is not empty or data_access_url_odata is not empty or data_access_url_opendap is not empty %}\r\n<span class=\"w3-btn w3-border w3-border-grey\">\r\n<a class=\"use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Download data&quot;}\" data-dialog-type=\"modal\"\r\n    href=\"/metsis/dataset/download/{{ id}}\" title=\"Download dataset(s)\">Download dataset</a>\r\n</span>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1544,7 +1544,7 @@ display:
             preserve_tags: ''
             html: false
           element_type: ''
-          element_class: 'w3-btn w3-border w3-border-grey'
+          element_class: ''
           element_label_type: ''
           element_label_class: ''
           element_label_colon: false
@@ -1904,7 +1904,9 @@ display:
           fields:
             - abstract
             - full_text
+            - personnel_name
             - phrase_suggester
+            - text_keywords_stemmed
             - text_suggester
             - title_en
         is_parent:

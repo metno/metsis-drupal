@@ -116,7 +116,6 @@ field_settings:
     datasource_id: solr_document
     property_path: full_text
     type: text
-    boost: 1.1
   id:
     label: Id
     datasource_id: solr_document
@@ -142,12 +141,19 @@ field_settings:
     datasource_id: solr_document
     property_path: metadata_status
     type: string
+    boost: 1.5
+  personnel_name:
+    label: 'Personnel name'
+    datasource_id: solr_document
+    property_path: personnel_name
+    type: text
+    boost: 1.4
   phrase_suggester:
     label: 'Phrase suggester'
     datasource_id: solr_document
     property_path: phrase_suggester
-    type: text
-    boost: 1.5
+    type: solr_text_suggester
+    boost: 1.4
   project_long_name:
     label: 'Project long name'
     datasource_id: solr_document
@@ -182,7 +188,7 @@ field_settings:
     label: 'Ss language'
     datasource_id: solr_document
     property_path: ss_language
-    type: string
+    type: date
   temporal_extent_end_date:
     label: 'Temporal extent end date'
     datasource_id: solr_document
@@ -198,22 +204,30 @@ field_settings:
     datasource_id: solr_document
     property_path: temporal_extent_start_date
     type: date
+    boost: 1.3
+  text_keywords_stemmed:
+    label: 'Keywords stemmed'
+    datasource_id: solr_document
+    property_path: text_keywords_stemmed
+    type: text
+    boost: 1.2
   text_suggester:
     label: 'Text suggester'
     datasource_id: solr_document
     property_path: text_suggester
-    type: text
+    type: solr_text_suggester
     boost: 1.3
   thumbnail_url:
     label: 'Thumbnail URL'
     datasource_id: solr_document
     property_path: thumbnail_url
     type: string
+    boost: 1.5
   timestamp:
     label: Timestamp
     datasource_id: solr_document
     property_path: timestamp
-    type: text
+    type: date
     boost: 1.5
   title:
     label: Title

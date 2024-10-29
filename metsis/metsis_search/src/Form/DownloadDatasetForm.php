@@ -37,9 +37,9 @@ class DownloadDatasetForm extends FormBase {
     $solarium_query->setQuery('id:' . $datasetId);
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);.
     $solarium_query->setRows(1);
-    // $fields[] = 'id';
+    $fields[] = 'data_access_url*';
     // $fields[] = 'mmd_xml_file';
-    // $solarium_query->setFields($fields);
+    $solarium_query->setFields($fields);
     $result = $connector->execute($solarium_query);
     // The total number of documents found by Solr.
     $found = $result->getNumFound();
@@ -92,7 +92,7 @@ class DownloadDatasetForm extends FormBase {
       foreach ($fields['data_access_url_opendap'] as $resource) {
         $dodsArr[] = ['#markup' => '<a class="w3-text-blue" href="' . $resource . '.html">' . $resource . '</a>'];
       }
-      if (count($httpArr) > 0) {
+      if (count($dodsArr) > 0) {
         $form['opendap'] = [
           '#type' => 'details',
           '#title' => $this
@@ -180,7 +180,7 @@ class DownloadDatasetForm extends FormBase {
     // if (count($form['data_access']) <= 3) {
     // $form['data_access'] = NULL;
     // }.
-
+    // dpm($form, __FUNCTION__);.
     return $form;
   }
 

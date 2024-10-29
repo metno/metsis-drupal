@@ -172,7 +172,12 @@ class DynamicLandingPagesController extends ControllerBase {
     $connector = $backend->getSolrConnector();
 
     $solarium_query = $connector->getSelectQuery();
-    $solarium_query->setQuery('id:' . $id_prefix . '-' . $id);
+    if ($id_prefix === 'no-met-nbs') {
+      $solarium_query->setQuery('id:' . $id);
+    }
+    else {
+      $solarium_query->setQuery('id:' . $id_prefix . '-' . $id);
+    }
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);.
     $solarium_query->setRows(1);
     // $fields[] = 'id';
@@ -188,6 +193,10 @@ class DynamicLandingPagesController extends ControllerBase {
 
     foreach ($result as $doc) {
       $fields = $doc->getFields();
+    }
+    if ($id_prefix === 'no-met-nbs') {
+      $mid = $fields['metadata_identifier'];
+      $fields['metadata_identifier'] = $id_prefix . ':' . $mid;
     }
     // dpm($fields);
     if (NULL != $request->query->get('export_type')) {
@@ -408,7 +417,7 @@ class DynamicLandingPagesController extends ControllerBase {
         }
       }
     }
-
+    // dpm($fields, __FUNCTION__);.
     $renderArray['constraints_and_info']['metadata_information'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Metadata Information'),
@@ -822,7 +831,7 @@ class DynamicLandingPagesController extends ControllerBase {
     $renderArray['#cache']['max-age'] = 31536000;
 
     // ADD JSONLD META.
-    $jsonld = $this->getJsonld($fields, $host);
+    $jsonld = $this->getJsonld($fields, $host, $id_prefix);
     $renderArray['#attached']['html_head'][] = [
       [
         '#type' => 'html_tag',
@@ -880,7 +889,7 @@ class DynamicLandingPagesController extends ControllerBase {
   /**
    * Get json-ld.
    */
-  public function getJsonld($fields, $host) {
+  public function getJsonld($fields, $host, $id_prefix) {
 
     $start_date = "";
     $end_date = "";
@@ -892,16 +901,19 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['temporal_extent_end_date'])) {
       $end_date = $fields['temporal_extent_end_date'][0];
     }
-
+    $mid = $fields['metadata_identifier'];
+    if ($id_prefix === 'no-met-nbs') {
+      $mid = explode(':', $fields['metadata_identifier'])[1];
+    }
     $json = [
       '@context' => 'https://schema.org/',
       '@type' => 'Dataset',
-      '@id' => $fields['related_url_landing_page'][0],
+      '@id' => $fields['related_url_landing_page'][0] ?? '',
       'name' => $fields['title'][0],
       'description' => $fields['abstract'][0],
-      'url' => $fields['related_url_landing_page'][0],
+      'url' => $fields['related_url_landing_page'][0] ?? '',
       'identifier' => [
-        $fields['metadata_identifier'],
+        $mid,
       ],
       'keywords' => $fields['keywords_keyword'],
       'license' => $fields['use_constraint_resource'] ?? "",

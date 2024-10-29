@@ -149,6 +149,13 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#default_value' => $config->get('bbox_overlap_sort'),
     ];
 
+    // Always sort by score first.
+    $form['sort_by_score'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Sort results by score before other sorts',
+      '#default_value' => $config->get('search_sort_score'),
+    ];
+
     $form['search_match_children'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Check this box to also search within children.'),
@@ -394,6 +401,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('hide_bbox_filter_exposed', $values['hide_bbox_filter_exposed'])
       ->set('remove_parent_zero_children', $values['remove_parent_zero_children'])
       ->set('remove_keys_zero_children', $values['remove_keys_zero_children'])
+      ->set('search_sort_score', $values['search_sort_score'])
       ->save();
 
     parent::submitForm($form, $form_state);

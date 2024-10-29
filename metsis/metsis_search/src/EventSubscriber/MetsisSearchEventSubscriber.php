@@ -376,7 +376,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * main query only search Level-1 datasets.
        */
       $do_child_join = $this->config->get('search_match_children');
-      $remove_parent_zero_children = $this->config->get('remove_parent_zero_children');
+      // $remove_parent_zero_children =
+      // $this->config->get('remove_parent_zero_children');
       if ($do_child_join) {
         $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
       }
@@ -538,11 +539,14 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       /*
        * We always want to sort by score, then date if its a tie.
        */
-      $def_sorts = $solarium_query->getSorts();
-      $solarium_query->clearSorts();
-      $solarium_query->addSort('score', $solarium_query::SORT_DESC);
-      foreach ($def_sorts as $field => $order) {
-        $solarium_query->addSort($field, $order);
+      $always_sort_score = $this->config->get('search_sort_score');
+      if ($always_sort_score) {
+        $def_sorts = $solarium_query->getSorts();
+        $solarium_query->clearSorts();
+        $solarium_query->addSort('score', $solarium_query::SORT_DESC);
+        foreach ($def_sorts as $field => $order) {
+          $solarium_query->addSort($field, $order);
+        }
       }
 
       /*
@@ -550,41 +554,26 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        */
       $score_parent = $this->config->get('score_parent');
       if ($score_parent) {
-        $def_sorts = $solarium_query->getSorts();
-        /*
-        if(isset($def_sorts['temporal_extent_start_date'])) {
-
-        }*/
-        $solarium_query->clearSorts();
-        $solarium_query->addSort('score', $solarium_query::SORT_DESC);
-        foreach ($def_sorts as $field => $order) {
-          $solarium_query->addSort($field, $order);
-          if (str_contains($field, "temporal")) {
-            // dpm($field);
-            // $solarium_query->addParam('bf', "recip(abs(ms(NOW, {$field})),
-            // 3.16e-11,10,0.1)");.
-          }
-        }
-
         // dpm($solarium_query->getSorts());
         $solarium_query->addParam('rq', '{!rerank reRankQuery=(isParent:true) reRankDocs=1000 reRankWeight=5}');
+        /*
+         * New score parents test.
+         *
+         * TODO: Add config posibility if this works well.
+         */
+        $solarium_query->addParam('bq',
+        [
+          'iParent' =>
+          '(isParent:true^4 OR isParent:false^2)',
+          'isChild' => 'isChild:true^1',
+        ]);
+
       }
 
       /*
        * Score start date test.
        */
 
-      /*
-       * New score parents test.
-       *
-       * TODO: Add config posibility if this works well.
-       */
-      $solarium_query->addParam('bq',
-      [
-        'iParent' =>
-        '(isParent:true^4 OR isParent:false^2)',
-        'isChild' => 'isChild:true^1',
-      ]);
       /*
        * Add fields not defined in search view but needed for
        * other metsis search backends. I.E MapSearch
@@ -599,7 +588,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
        * with nameing authrity prefixes.
        */
       $keys = $query->getKeys();
-      $this->getLogger("metsis_search")->info("Original keys:" . print_r($keys, TRUE));
+      // $this->getLogger("metsis_search")->
+      // info("Original keys:" . print_r($keys, TRUE));
       // dpm($keys);
       if ($keys != NULL) {
         if (is_string($keys[0])) {
@@ -667,8 +657,10 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $parse_mode->setConjunction($conjuction);
         $query->setParseMode($parse_mode);
       }
-      $this->getLogger("metsis_search")->debug("New keys: " . print_r($keys, TRUE));
-      $this->getLogger("metsis_search")->debug("Parse_mode: " . $query->getParseMode()->label());
+      // $this->getLogger("metsis_search")->
+      // debug("New keys: " . print_r($keys, TRUE));
+      // $this->getLogger("metsis_search")->
+      // debug("Parse_mode: " . $query->getParseMode()->label());
       // dpm($query->getParseMode()->label(), __FUNCTION__);.
       /* Rewrite the query for when end date filter is provided. */
       $filters = $solarium_query->getFilterQueries();

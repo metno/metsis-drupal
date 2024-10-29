@@ -2748,7 +2748,9 @@ display:
           fields:
             - abstract
             - full_text
+            - personnel_name
             - phrase_suggester
+            - text_keywords_stemmed
             - text_suggester
             - title_en
         is_parent:

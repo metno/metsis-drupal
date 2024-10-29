@@ -68,7 +68,7 @@ field_settings:
     datasource_id: solr_document
     property_path: abstract
     type: text
-    boost: 1.3
+    boost: 1.2
   access_constraint:
     label: 'Access constraint'
     datasource_id: solr_document
@@ -113,7 +113,7 @@ field_settings:
     label: 'Data access_description'
     datasource_id: solr_document
     property_path: data_access_description
-    type: text
+    type: string
   data_access_resource:
     label: 'Data access_resource'
     datasource_id: solr_document
@@ -203,7 +203,7 @@ field_settings:
     label: 'Data center_long name'
     datasource_id: solr_document
     property_path: data_center_long_name
-    type: text
+    type: string
   data_center_short_name:
     label: 'Data center_short name'
     datasource_id: solr_document
@@ -218,7 +218,7 @@ field_settings:
     label: 'Dataset citation author'
     datasource_id: solr_document
     property_path: dataset_citation_author
-    type: text
+    type: string
   dataset_citation_doi:
     label: 'Dataset citation doi'
     datasource_id: solr_document
@@ -325,7 +325,6 @@ field_settings:
     datasource_id: solr_document
     property_path: full_text
     type: text
-    boost: 1.1
   geographic_extent_ectangle_east:
     label: 'Geographic extent_rectangle_east'
     datasource_id: solr_document
@@ -381,6 +380,7 @@ field_settings:
     datasource_id: solr_document
     property_path: keywords_keyword
     type: text
+    boost: 1.3
   keywords_level1:
     label: 'Keywords level1'
     datasource_id: solr_document
@@ -425,7 +425,7 @@ field_settings:
     label: 'Last metadata update'
     datasource_id: solr_document
     property_path: last_metadata_update
-    type: date
+    type: string
   last_metadata_update_datetime:
     label: 'Last metadata update_datetime'
     datasource_id: solr_document
@@ -560,12 +560,12 @@ field_settings:
     label: 'Personnel datacenter name'
     datasource_id: solr_document
     property_path: personnel_datacenter_name
-    type: text
+    type: string
   personnel_datacenter_organisation:
     label: 'Personnel datacenter organisation'
     datasource_id: solr_document
     property_path: personnel_datacenter_organisation
-    type: text
+    type: string
   personnel_datacenter_phone:
     label: 'Personnel datacenter phone'
     datasource_id: solr_document
@@ -620,12 +620,12 @@ field_settings:
     label: 'Personnel investigator name'
     datasource_id: solr_document
     property_path: personnel_investigator_name
-    type: text
+    type: string
   personnel_investigator_organisation:
     label: 'Personnel investigator organisation'
     datasource_id: solr_document
     property_path: personnel_investigator_organisation
-    type: text
+    type: string
   personnel_investigator_phone:
     label: 'Personnel investigator phone'
     datasource_id: solr_document
@@ -675,12 +675,12 @@ field_settings:
     label: 'Personnel metadata author name'
     datasource_id: solr_document
     property_path: personnel_metadata_author_name
-    type: text
+    type: string
   personnel_metadata_author_organisation:
     label: 'Personnel metadata author organisation'
     datasource_id: solr_document
     property_path: personnel_metadata_author_organisation
-    type: text
+    type: string
   personnel_metadata_author_phone:
     label: 'Personnel metadata author phone'
     datasource_id: solr_document
@@ -696,6 +696,7 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_name
     type: text
+    boost: 1.3
   personnel_organisation:
     label: Personnel_organisation
     datasource_id: solr_document
@@ -706,6 +707,7 @@ field_settings:
     datasource_id: solr_document
     property_path: personnel_role
     type: string
+    boost: 1.5
   personnel_technical_address:
     label: 'Personnel technical address'
     datasource_id: solr_document
@@ -745,12 +747,12 @@ field_settings:
     label: 'Personnel technical name'
     datasource_id: solr_document
     property_path: personnel_technical_name
-    type: text
+    type: string
   personnel_technical_organisation:
     label: 'Personnel technical organisation'
     datasource_id: solr_document
     property_path: personnel_technical_organisation
-    type: text
+    type: string
   personnel_technical_phone:
     label: 'Personnel technical phone'
     datasource_id: solr_document
@@ -765,8 +767,8 @@ field_settings:
     label: 'Phrase suggester'
     datasource_id: solr_document
     property_path: phrase_suggester
-    type: text
-    boost: 1.5
+    type: solr_text_suggester
+    boost: 1.4
   platform_ancillary_cloud_coverage:
     label: 'Platform ancillary cloud coverage'
     datasource_id: solr_document
@@ -781,7 +783,7 @@ field_settings:
     label: 'Platform instrument long name'
     datasource_id: solr_document
     property_path: platform_instrument_long_name
-    type: text
+    type: string
   platform_instrument_mode:
     label: 'Platform instrument mode'
     datasource_id: solr_document
@@ -851,7 +853,7 @@ field_settings:
     label: 'Project_long name'
     datasource_id: solr_document
     property_path: project_long_name
-    type: text
+    type: string
   project_short_name:
     label: 'Project_short name'
     datasource_id: solr_document
@@ -876,7 +878,7 @@ field_settings:
     label: 'Related information_description'
     datasource_id: solr_document
     property_path: related_information_description
-    type: text
+    type: string
   related_information_resource:
     label: 'Related information_resource'
     datasource_id: solr_document
@@ -1112,12 +1114,19 @@ field_settings:
     datasource_id: solr_document
     property_path: temporal_extent_start_date
     type: date
+    boost: 1.4
+  text_keywords_stemmed:
+    label: 'Keywords stemmed'
+    datasource_id: solr_document
+    property_path: text_keywords_stemmed
+    type: text
+    boost: 1.3
   text_suggester:
     label: 'Text suggester'
     datasource_id: solr_document
     property_path: text_suggester
     type: solr_text_suggester
-    boost: 1.4
+    boost: 1.3
   thumbnail_data:
     label: 'Thumbnail data'
     datasource_id: solr_document
@@ -1127,12 +1136,13 @@ field_settings:
     label: 'Thumbnail URL'
     datasource_id: solr_document
     property_path: thumbnail_url
-    type: solr_string_storage
+    type: string
   timestamp:
     label: Timestamp
     datasource_id: solr_document
     property_path: timestamp
     type: date
+    boost: 1.5
   title:
     label: Title
     datasource_id: solr_document

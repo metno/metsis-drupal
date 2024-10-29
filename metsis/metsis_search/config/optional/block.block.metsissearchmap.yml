@@ -5,7 +5,9 @@ dependencies:
     - metsis_search
     - system
   theme:
+    - metsis
 id: metsissearchmap
+theme: metsis
 region: content
 weight: -13
 provider: null

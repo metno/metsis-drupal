@@ -301,7 +301,6 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
   // For simple search.
   if (isset($view) && ($view->storage->id() == 'metsis_simple_search')) {
     $view->element['#attached']['library'][] = 'views/views.responsive-grid';
-
   }
   if (isset($view) && ($view->storage->id() == 'metsis_search')) {
     // dpm($view->result, __FUNCTION__);.
@@ -323,7 +322,25 @@ function metsis_search_views_post_render(ViewExecutable $view, &$output, CachePl
  * Implements hook_preprocess_views_view_field()
  */
 function metsis_search_preprocess_views_view_field(&$variables) {
+  if ($variables['view']->id() == 'metsis_simple_search' && $variables['field']->options['id'] == 'keywords_keyword') {
+    // Get the result row.
+    $row = $variables['row'];
 
+    // Get the data for your multi-value field.
+    // The exact way to do this depends on your search index configuration.
+    // The example below assumes you have a field 'field_my_field' in the search index.
+    $field_data = $row->{'solr_document/keywords_keyword'};
+    // dpm($field_data, __FUNCTION__);.
+
+    // Summarize the field data.
+    if (count($field_data) > 5) {
+      $field_data = array_slice($field_data, 0, 5);
+      $field_data[] = '...';
+    }
+
+    // // Set the output of the field.
+    $variables['output'] = ['#markup' => implode(', ', $field_data)];
+  }
 }
 
 /**
@@ -904,6 +921,23 @@ function metsis_search_update_10300() {
       // $config->set('visibility.pages', $visibilityPages);
     }
   }
+}
+
+/**
+ * Update block configuration.
+ *
+ * {@inheritdoc}
+ */
+function metsis_search_update_10302() {
+  $config = \Drupal::configFactory()->getEditable('metsis_search.settings');
+
+  // Disable parent/children filter.
+  $config->set('remove_parent_zero_children', 0);
+  $config->set('remove_keys_zero_children', 0);
+  $config->set('search_sort_score', 0);
+  // Save the updated configuration.
+  $config->save();
+
 }
 
 /*

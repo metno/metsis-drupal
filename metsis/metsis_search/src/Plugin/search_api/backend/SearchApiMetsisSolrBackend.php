@@ -272,7 +272,11 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
                   $doi = $doc_fields['dataset_citation_doi'][0] ?? '';
                   if (($fulltext_string === $mid)
                     || ($fulltext_string === $doc_fields['id']) || (strpos($doi, $fulltext_string) !== FALSE)) {
+                    // dpm($value, __FUNCTION__);.
                     $search_string .= "&$key=";
+                  }
+                  else {
+                    $search_string .= "&$key=$value";
                   }
                 }
                 else {
