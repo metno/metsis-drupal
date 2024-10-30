@@ -111,3 +111,11 @@ metsis_search.download_dataset:
     _form: 'Drupal\metsis_search\Form\DownloadDatasetForm'
   requirements:
     _permission: 'access content'
+
+metsis_search.netcdf_on_demand:
+  path: '/metsis/netcdf-on-demand/{datasetId}'
+  defaults:
+    _title: 'NetCDF OnDemand'
+    _form: 'Drupal\metsis_search\Form\NetCDFOnDemandForm'
+  requirements:
+    _permission: 'netcdf on demand'

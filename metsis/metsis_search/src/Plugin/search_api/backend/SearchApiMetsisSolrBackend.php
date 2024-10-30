@@ -265,10 +265,9 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
               }
               else {
                 if ($key === 'fulltext') {
-                  $fulltext_string = $value;
-                  // dpm($fulltext_string, __FUNCTION__);.
+                  $fulltext_string = trim($value);
                   $mid = $doc_fields['metadata_identifier'] ?? '';
-                  $mid = str_replace('?', ':', $mid);
+
                   $doi = $doc_fields['dataset_citation_doi'][0] ?? '';
                   if (($fulltext_string === $mid)
                     || ($fulltext_string === $doc_fields['id']) || (strpos($doi, $fulltext_string) !== FALSE)) {

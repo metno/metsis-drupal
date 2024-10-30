@@ -142,6 +142,22 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ],
     ];
 
+    // Netcdf on demand config.
+    $form['enable_netcdf_ondemand'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Check this to enable the NetCDF OnDemand button',
+      '#default_value' => $config->get('enable_netcdf_ondemand'),
+    ];
+    $form['netcdf_ondemand_service_endpoint'] = [
+      '#type' => 'url',
+      '#title' => 'Enter the url endpoint for the NetCDF OnDemand service',
+      '#default_value' => $config->get('netcdf_ondemand_service_endpoint'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_netcdf_ondemand"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
     // Add cloud coverage filter.
     $form['bbox_overlap_sort'] = [
       '#type' => 'checkbox',
@@ -150,7 +166,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     ];
 
     // Always sort by score first.
-    $form['sort_by_score'] = [
+    $form['search_sort_score'] = [
       '#type' => 'checkbox',
       '#title' => 'Sort results by score before other sorts',
       '#default_value' => $config->get('search_sort_score'),
@@ -402,6 +418,8 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('remove_parent_zero_children', $values['remove_parent_zero_children'])
       ->set('remove_keys_zero_children', $values['remove_keys_zero_children'])
       ->set('search_sort_score', $values['search_sort_score'])
+      ->set('enable_netcdf_ondemand', $values['enable_netcdf_ondemand'])
+      ->set('netcdf_ondemand_service_endpoint', $values['netcdf_ondemand_service_endpoint'])
       ->save();
 
     parent::submitForm($form, $form_state);

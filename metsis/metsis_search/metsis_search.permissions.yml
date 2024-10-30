@@ -1,2 +1,5 @@
 access metsis search:
   title: 'Access to METSIS search and endpoints'
+
+netcdf on demand:
+  title: 'Access to the NetCDF OnDemand service'

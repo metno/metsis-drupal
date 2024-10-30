@@ -318,7 +318,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
             if ($condition instanceof Condition) {
               $fieldName = $condition->getField();
               if ($fieldName === 'is_child') {
-                $got_parent_filter = TRUE;
+                $condition->setValue(1);
               }
             }
           }
@@ -360,17 +360,17 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
     || ($searchId === 'views_page:metsis_simple_search__results')) {
       // Get the current query object as it is now after
       // being converted by search api.
-      $current_query = $solarium_query->getQuery();
+      $main_query = $solarium_query->getQuery();
 
-      // dpm($current_query, __FUNCTION__);
       // $current_query = str_replace(')', '', $current_query);
       // $current_query = str_replace('(', '', $current_query);
       // . ' OR ' .
       // Fix a bit on the current main query string q=.
-      $main_query = $helper->escapePhrase($current_query);
-      $main_query = rtrim($main_query, '"');
-      $main_query = ltrim($main_query, '"');
-      // dpm($main_query, __FUNCTION__);.
+      // $main_query = $helper->escapePhrase($current_query);
+      // $main_query = $current_query;
+      // $main_query = rtrim($main_query, '"');
+      // $main_query = ltrim($main_query, '"');
+      // dpm($main_query, __FUNCTION__);
       /*
        * Add join query for querying the child datasets as well, when
        * main query only search Level-1 datasets.
@@ -379,7 +379,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // $remove_parent_zero_children =
       // $this->config->get('remove_parent_zero_children');
       if ($do_child_join) {
-        $solarium_query->setQuery($main_query . ' OR _query_:"' . $helper->join('related_dataset_id', 'id') . $main_query . '"');
+        $child_q_join = "{!join from=related_dataset_id to=id v='$main_query'}";
+        $solarium_query->setQuery($main_query . ' OR _query_:' . $child_q_join);
       }
 
       /*
@@ -659,8 +660,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       }
       // $this->getLogger("metsis_search")->
       // debug("New keys: " . print_r($keys, TRUE));
-      // $this->getLogger("metsis_search")->
-      // debug("Parse_mode: " . $query->getParseMode()->label());
+      // $this->getLogger("metsis_search")
+      // ->debug("Parse_mode: " . $query->getParseMode()->label());
       // dpm($query->getParseMode()->label(), __FUNCTION__);.
       /* Rewrite the query for when end date filter is provided. */
       $filters = $solarium_query->getFilterQueries();

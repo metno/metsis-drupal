@@ -59,6 +59,8 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
 
   $disable_basket = $config->get('hide_add_to_basket');
 
+  $enable_netcdf_ondemand = $config->get('enable_netcdf_ondemand');
+
   $new_value = '<div><span id="goBackID"><a id="goBackMapButton" class="w3-center adc-button adc-sbutton" onclick="go_back()">Go back to main search</a></span></div>';
   if ($view->id() == 'metsis_elements' && $display_id === 'results') {
     // $fields = $view->display_handler->getOption('header');
@@ -94,6 +96,13 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       $fields['nothing_2']['exclude'] = TRUE;
       $view->display_handler->overrideOption('fields', $fields);
     }
+
+     if (!$enable_netcdf_ondemand) {
+      $fields = $view->display_handler->getOption('fields');
+      $fields['nothing_1']['exclude'] = TRUE;
+      $view->display_handler->overrideOption('fields', $fields);
+    }
+
 
     /* Pass metsis search view arguments to elements view. */
     // $filters = $view->getExposedInput();
@@ -935,6 +944,21 @@ function metsis_search_update_10302() {
   $config->set('remove_parent_zero_children', 0);
   $config->set('remove_keys_zero_children', 0);
   $config->set('search_sort_score', 0);
+  // Save the updated configuration.
+  $config->save();
+
+}
+
+/**
+ * Update metsis_search configuration.
+ *
+ * {@inheritdoc}
+ */
+function metsis_search_update_10303() {
+  $config = \Drupal::configFactory()->getEditable('metsis_search.settings');
+
+  // Disable parent/children filter.
+  $config->set('enable_netcdf_ondemand', 0);
   // Save the updated configuration.
   $config->save();
 
