@@ -97,12 +97,11 @@ function metsis_search_views_pre_view(ViewExecutable $view, $display_id, array &
       $view->display_handler->overrideOption('fields', $fields);
     }
 
-     if (!$enable_netcdf_ondemand) {
+    if (!$enable_netcdf_ondemand) {
       $fields = $view->display_handler->getOption('fields');
       $fields['nothing_1']['exclude'] = TRUE;
       $view->display_handler->overrideOption('fields', $fields);
     }
-
 
     /* Pass metsis search view arguments to elements view. */
     // $filters = $view->getExposedInput();
