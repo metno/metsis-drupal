@@ -214,8 +214,6 @@ class NetCDFOnDemandForm extends FormBase {
       $this->messenger()->deleteAll();
       if ($api_message['success']) {
         $this->messenger()->addMessage($api_message['message']);
-        $button = &$form['actions']['submit'];
-        $button['#attributes']['disabled'] = 'disabled';
       }
       else {
         $this->messenger()->addError($api_message['message']);
@@ -227,6 +225,8 @@ class NetCDFOnDemandForm extends FormBase {
         '#suffix' => '</div>',
         '#type' => 'status_messages',
       ];
+      $button = &$form['actions']['submit'];
+      $button['#attributes']['disabled'] = 'disabled';
       $response->addCommand(new ReplaceCommand('#edit-status-messages-wrapper', $form['msg-wrapper']));
     }
 
