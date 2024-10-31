@@ -6,13 +6,16 @@ namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\InvokeCommand;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormBase;
+use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\search_api\Entity\Index;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\RequestException;
@@ -37,16 +40,30 @@ class NetCDFOnDemandForm extends FormBase {
   protected $renderer;
 
   /**
+   * The FormBuilder service .
+   *
+   * @var \Drupal\Core\Form\FormBuilderInterface
+   */
+  protected $formBuilder;
+
+  /**
    * Constructs a new NetCDFOnDemandForm object.
    *
    * @param \GuzzleHttp\ClientInterface $http_client
    *   The Guzzle HTTP client.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer service.
+   * @param \Drupal\Core\Form\FormBuilderInterface $formBuilder
+   *   The formBuilder service.
    */
-  public function __construct(ClientInterface $http_client, RendererInterface $renderer) {
+  public function __construct(
+    ClientInterface $http_client,
+    RendererInterface $renderer,
+    FormBuilderInterface $formBuilder,
+  ) {
     $this->httpClient = $http_client;
     $this->renderer = $renderer;
+    $this->formBuilder = $formBuilder;
   }
 
   /**
@@ -55,7 +72,8 @@ class NetCDFOnDemandForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
     $container->get('http_client'),
-    $container->get('renderer')
+    $container->get('renderer'),
+    $container->get('form_builder')
     );
   }
 
@@ -76,7 +94,18 @@ class NetCDFOnDemandForm extends FormBase {
     $current_user = $this->currentUser();
     // Redirect anonymous users to login page.
     if ($current_user->isAnonymous()) {
-      return $this->redirect('user.login');
+      // This user is anonymous.
+      $response = new AjaxResponse();
+      // $response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
+      $login_form = [];
+      $login_form['login'] = $this->formBuilder->getForm('\Drupal\user\Form\UserLoginForm');
+      $login_form['register'] = [
+        '#type' => 'markup',
+        '#markup' => 'Or <a class="w3-button w3-border w3-theme-border button" href="/user/register">register</a> an account',
+        '#allowed_tags' => ['a'],
+      ];
+      $response->addCommand(new OpenModalDialogCommand('Please login to request netCDF OnDemand.', $login_form, ['width' => '500']));
+      return $response;
     }
     $index = Index::load('metsis');
 
@@ -105,7 +134,7 @@ class NetCDFOnDemandForm extends FormBase {
     $mid = $fields['metadata_identifier'] ?? '';
     $form_state->set('product_id', $mid);
     $title = $fields['title'][0] ?? '';
-
+    $form_state->set('product_id', trim($title));
     // Get current user's email.
     $user_email = $current_user->getEmail();
 
@@ -113,7 +142,7 @@ class NetCDFOnDemandForm extends FormBase {
       '#type' => 'markup',
       '#prefix' => '<div class="w3-container>',
       '#suffix' => '</div>',
-      '#markup' => "A netCDF-file will be generated from product with identifier <strong><em>$mid</em></strong> and title <strong>$title</strong>. An email with a download link will be sent to <strong><em>$user_email</em></strong>",
+      '#markup' => "A netCDF-file will be generated from product <strong>$title</strong>. An email with a download link will be sent to <strong><em>$user_email</em></strong>",
       '#required' => TRUE,
     ];
     $form['confirm'] = [
@@ -185,6 +214,8 @@ class NetCDFOnDemandForm extends FormBase {
       $this->messenger()->deleteAll();
       if ($api_message['success']) {
         $this->messenger()->addMessage($api_message['message']);
+        $button = &$form['actions']['submit'];
+        $button['#attributes']['disabled'] = 'disabled';
       }
       else {
         $this->messenger()->addError($api_message['message']);
@@ -201,6 +232,10 @@ class NetCDFOnDemandForm extends FormBase {
 
     // If the form doesn't have any errors, disable the submit button.
     if (!$form_state->hasAnyErrors()) {
+      $button = &$form['actions']['submit'];
+      $button['#attributes']['disabled'] = 'disabled';
+      // dpm($form);
+      // dpm($form_state);
       $response->addCommand(new InvokeCommand('#edit-submit', 'attr', ['disabled', 'true']));
     }
 
@@ -275,7 +310,15 @@ class NetCDFOnDemandForm extends FormBase {
     catch (RequestException $e) {
       return [
       'success' => FALSE,
-      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $e->getMessage])
+      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $e->getMessage()])
+      ];
+    }
+    catch (ConnectException $e) {
+      $response = $e->getRequest();
+      $responseBody = (string) $response->getBody();
+      return [
+      'success' => FALSE,
+      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $responseBody])
       ];
     }
     catch (ClientException $e) {

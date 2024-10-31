@@ -181,7 +181,8 @@ class MetsisBasketController extends DashboardBokehController {
       $response = new AjaxResponse();
       $response->addCommand(new HtmlCommand('#addtobasket-' . $selector_id, 'Add to Basket &#10004;'));
       $response->addCommand(new HtmlCommand($selector, $markup));
-      // $response->addCommand(new MessageCommand("Dataset %added to basket.", ['%added' => $metaid]));
+      // $response->addCommand(new MessageCommand("Dataset %added to basket.",
+      // ['%added' => $metaid]));
       Cache::invalidateTags(['basket:user:' . $user_id]);
       return $response;
     }
@@ -190,7 +191,7 @@ class MetsisBasketController extends DashboardBokehController {
       $response = new AjaxResponse();
       // $response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
       $login_form = [];
-      $login_form['login'] = \Drupal::formBuilder()->getForm('\Drupal\user\Form\UserLoginForm');
+      $login_form['login'] = $this->formBuilder()->getForm('\Drupal\user\Form\UserLoginForm');
       $login_form['register'] = [
         '#type' => 'markup',
         '#markup' => 'Or <a class="w3-button w3-border w3-theme-border button" href="/user/register">register</a> an account',

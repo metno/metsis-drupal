@@ -116,6 +116,6 @@ metsis_search.netcdf_on_demand:
   path: '/metsis/netcdf-on-demand/{datasetId}'
   defaults:
     _title: 'NetCDF OnDemand'
-    _form: 'Drupal\metsis_search\Form\NetCDFOnDemandForm'
+    _controller: 'Drupal\metsis_search\Controller\NetCDFOnDemandController::content'
   requirements:
-    _permission: 'netcdf on demand'
+    _permission: 'access content'

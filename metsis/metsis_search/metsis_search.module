@@ -434,6 +434,10 @@ function metsis_search_theme($existing, $type, $theme, $path) {
     'metsis_search_parent_info' => [
       'variables' => ['data' => NULL],
     ],
+     'metsis_search_netcdf_on_demand' => [
+      'render element' => 'form',
+      'path' => 'modules/metsis/metsis_search/templates',
+    ],
   ];
 }
 
