@@ -2158,7 +2158,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap is empty and data_access_url_odata is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;NetCDF OnDemand&quot;}\" data-dialog-type=\"modal\" title=\"NetCDF OnDemand\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">NetCDF OnDemand</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap is empty and data_access_url_odata is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Request CF-NetCDF file&quot;}\" data-dialog-type=\"modal\" title=\"Request CF-NetCDF file\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">NetCDF OnDemand</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false

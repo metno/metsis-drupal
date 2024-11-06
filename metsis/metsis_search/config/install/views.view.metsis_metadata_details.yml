@@ -2368,7 +2368,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2421,7 +2421,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2474,7 +2474,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2527,7 +2527,7 @@ display:
             link_class: '{{ related_url_data_paper_desc }} '
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2580,7 +2580,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2686,7 +2686,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2739,7 +2739,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -2792,7 +2792,7 @@ display:
             link_class: ''
             prefix: ''
             suffix: ''
-            target: ''
+            target: _blank
             nl2br: false
             max_length: 0
             word_boundary: true
@@ -3470,7 +3470,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  'https://doi.org'  in dataset_citation_doi %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi  | replace('https://doi.org/','')}}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org' not in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org'  in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            text: "{% if  'https://doi.org'  in dataset_citation_doi %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi  | replace('https://doi.org/','')}}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org' not in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org'  in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
             make_link: false
             path: '{{ dataset_citation_doi }}'
             absolute: false
