@@ -4,7 +4,7 @@ metsis_ts_bokeh.form:
     _form: '\Drupal\metsis_ts_bokeh\Form\MetsisTsPlotForm'
     _title: 'METSIS Timeseries plot'
   requirements:
-    _permission: 'access metsis ts bokeh'
+    _permission: 'access content'
 
 metsis_ts_bokeh.init_form:
   path: '/metsis/tsplot/init_form'

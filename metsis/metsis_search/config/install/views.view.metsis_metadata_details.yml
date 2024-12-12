@@ -3,9 +3,6 @@ status: true
 dependencies:
   config:
     - search_api.index.metsis
-    - user.role.administrator
-    - user.role.anonymous
-    - user.role.authenticated
   module:
     - search_api
     - user
@@ -3852,15 +3849,15 @@ display:
           label: Email
           exclude: false
           alter:
-            alter_text: false
-            text: ''
-            make_link: true
+            alter_text: true
+            text: '<a href="mailto:{{ personnel_investigator_email | trim }}">{{ personnel_investigator_email | trim }}</a>'
+            make_link: false
             path: '{{ personnel_investigator_email }}'
             absolute: false
             external: true
             replace_spaces: false
             path_case: none
-            trim_whitespace: false
+            trim_whitespace: true
             alt: ''
             rel: ''
             link_class: ''
@@ -4447,15 +4444,15 @@ display:
           label: Email
           exclude: false
           alter:
-            alter_text: false
-            text: ''
-            make_link: true
+            alter_text: true
+            text: '<a href="mailto:{{ personnel_technical_email | trim }}">{{ personnel_technical_email | trim }}</a> '
+            make_link: false
             path: '{{ personnel_technical_email }} '
             absolute: false
             external: false
             replace_spaces: false
             path_case: none
-            trim_whitespace: false
+            trim_whitespace: true
             alt: ''
             rel: ''
             link_class: ''
@@ -5042,15 +5039,15 @@ display:
           label: Email
           exclude: false
           alter:
-            alter_text: false
-            text: ''
-            make_link: true
+            alter_text: true
+            text: '<a href="mailto:{{ personnel_metadata_author_email | trim }}">{{ personnel_metadata_author_email | trim }}</a>'
+            make_link: false
             path: '{{ personnel_metadata_author_email }}'
             absolute: false
             external: true
             replace_spaces: false
             path_case: none
-            trim_whitespace: false
+            trim_whitespace: true
             alt: ''
             rel: ''
             link_class: ''
@@ -5854,15 +5851,15 @@ display:
           label: Email
           exclude: false
           alter:
-            alter_text: false
-            text: ''
-            make_link: true
+            alter_text: true
+            text: '<a href=mailto:{{ personnel_datacenter_email | trim }}>{{ personnel_datacenter_email | trim }}</a>'
+            make_link: false
             path: '{{ personnel_datacenter_email }}'
             absolute: false
             external: true
             replace_spaces: false
             path_case: none
-            trim_whitespace: false
+            trim_whitespace: true
             alt: ''
             rel: ''
             link_class: ''
@@ -9490,12 +9487,9 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       access:
-        type: role
+        type: perm
         options:
-          role:
-            anonymous: anonymous
-            authenticated: authenticated
-            administrator: administrator
+          perm: 'access content'
       cache:
         type: search_api_time
         options:
@@ -9575,7 +9569,7 @@ display:
       contexts:
         - 'languages:language_interface'
         - url
-        - user.roles
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis'
         - 'search_api_list:metsis'
@@ -9593,13 +9587,13 @@ display:
           geocluster_options: {  }
         views_merge_rows: {  }
         library_in_views_display_extender: {  }
-      path: metsis/metadata
+      path: metsis/metadata/%id
     cache_metadata:
       max-age: -1
       contexts:
         - 'languages:language_interface'
         - url
-        - user.roles
+        - user.permissions
       tags:
         - 'config:search_api.index.metsis'
         - 'search_api_list:metsis'
