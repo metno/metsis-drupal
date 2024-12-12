@@ -233,7 +233,10 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'metsis_search/map_geocoder';
     $view->element['#attached']['library'][] = 'metsis_search/parent_filter';
     // $view->element['#attached']['library'][] = 'metsis_search/map_ol';
-
+    $view->element['#attached']['library'][] = 'core/drupal';
+    $view->element['#attached']['library'][] = 'core/jquery';
+    $view->element['#attached']['library'][] = 'core/drupal.states';
+    $view->element['#attached']['library'][] = 'core/drupal.dialog.ajax';
     // $view->element['#cache']['max-age'] = 400;
 
     // Attach ts plot javascript and settings to view

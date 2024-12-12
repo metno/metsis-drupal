@@ -368,7 +368,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
       // Fix a bit on the current main query string q=.
       // $main_query = $helper->escapePhrase($current_query);
       // $main_query = $current_query;
-      // $main_query = rtrim($main_query, '"');
+      // $main_query = rtrim($main_query, ')');
+      // $main_query .= ' isParent:(true)^3';
       // $main_query = ltrim($main_query, '"');
       // dpm($main_query, __FUNCTION__);
       /*

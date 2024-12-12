@@ -47,35 +47,42 @@ class NetCDFOnDemandController extends ControllerBase {
    *   Return NetCDFOnDemandForm.
    */
   public function content(Request $request, $datasetId) {
+
     // Get current user.
     $current_user = $this->currentUser();
+
+    // Prepare ajax response object.
+    $response = new AjaxResponse();
+
     // Redirect anonymous users to login page.
-    if ($current_user->isAnonymous()) {
-      // This user is anonymous.
-      $referer = $request->headers->get('referer');
-      $refurl = parse_url($referer);
-      $refpath = $refurl['path'];
-      $refquery = $refurl['query'] ?? NULL;
-      $ref_dest = $refpath;
-      if ($refquery !== NULL) {
-        $ref_dest .= '?' . $refquery;
-      }
-      $response = new AjaxResponse();
+    if (!$current_user->isAuthenticated()) {
+      $this->getLogger("netcdfOnDemand")->info("User not logged in. Loading login form");
       $login_form = [];
-      $login_form['login'] = $this->formBuilder->getForm('Drupal\user\Form\UserLoginForm');
-      $login_form['login']['#action'] .= '?destination=' . urlencode($ref_dest);
+      $login_form['messges'] = [
+        '#type' => 'markup',
+        '#markup' => '<div data-drupal-messages=></div>',
+        '#allowed_tags' => ['div'],
+      ];
+      $login_form['login'] = $this->formBuilder->getForm('Drupal\metsis_lib\Form\MetsisAjaxLoginForm', $datasetId);
       $login_form['register'] = [
         '#type' => 'markup',
         '#markup' => 'Or <a class="w3-button w3-border w3-theme-border button" href="/user/register">register</a> an account',
         '#allowed_tags' => ['a'],
       ];
-      $response->addCommand(new OpenModalDialogCommand('Please login to request netCDF OnDemand.', $login_form, ['width' => '500']));
+      $response->addCommand(new OpenModalDialogCommand('Please login to request CF-NetCDF file.', $login_form, ['width' => '550']));
       return $response;
     }
-    // This user is authenticated.
-    $form = $this->formBuilder->getForm('Drupal\metsis_search\Form\NetCDFOnDemandForm', $datasetId);
-    $form['#attached']['library'][] = 'core/drupal.states';
-    return $form;
+    else {
+      // This user is authenticated.
+      $this->getLogger("netcdfOnDemand")->info("User authenticated. Loading netCDFOnDemandForm form");
+      $form = $this->formBuilder->getForm('Drupal\metsis_search\Form\NetCDFOnDemandForm', $datasetId);
+      $form['#attached']['library'][] = 'core/drupal.states';
+      $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+      $form['#attached']['library'][] = 'core/drupal';
+      $form['#attached']['library'][] = 'core/jquery';
+      $response->addCommand(new OpenModalDialogCommand('Request CF-NetCDF file.', $form, ['width' => '550']));
+      return $response;
+    }
   }
 
 }

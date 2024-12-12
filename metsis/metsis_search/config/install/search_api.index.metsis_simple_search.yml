@@ -4,9 +4,8 @@ dependencies:
   config:
     - search_api.server.local_metsis
   module:
-    - search_api_solr
     - metsis_search
-    - search_api
+    - search_api_solr
 third_party_settings:
   search_api_solr:
     finalize: false

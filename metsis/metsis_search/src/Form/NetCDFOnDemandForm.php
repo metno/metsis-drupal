@@ -90,22 +90,25 @@ class NetCDFOnDemandForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, $datasetId = NULL): array {
     // Attach the library necessary for using Form API's #states.
     $form['#attached']['library'][] = 'core/drupal.states';
+    $form['#attached']['library'][] = 'core/drupal.dialog.ajax';
+    $form['#attached']['library'][] = 'core/drupal';
+    $form['#attached']['library'][] = 'core/jquery';
     // Get current user.
     $current_user = $this->currentUser();
     // Redirect anonymous users to login page.
-    if ($current_user->isAnonymous()) {
+    if (!$current_user->isAuthenticated()) {
       // This user is anonymous.
       $response = new AjaxResponse();
       // $response->addCommand(new RedirectCommand(\Drupal\Core\Url::fromRoute('user.login')->toString()));
-      $login_form = [];
-      $login_form['login'] = $this->formBuilder->getForm('\Drupal\user\Form\UserLoginForm');
-      $login_form['register'] = [
+      $form['login'] = $this->formBuilder->getForm('Drupal\metsis_lib\Form\MetsisAjaxLoginForm', $datasetId);
+      $form['register'] = [
         '#type' => 'markup',
         '#markup' => 'Or <a class="w3-button w3-border w3-theme-border button" href="/user/register">register</a> an account',
         '#allowed_tags' => ['a'],
       ];
-      $response->addCommand(new OpenModalDialogCommand('Please login to request netCDF OnDemand.', $login_form, ['width' => '500']));
-      return $response;
+      $response->addCommand(new OpenModalDialogCommand('Please login to request CF-netCDF File.', $form, ['width' => '500']));
+      $form_state->setResponse($response);
+      return $form;
     }
     $index = Index::load('metsis');
 
@@ -118,7 +121,7 @@ class NetCDFOnDemandForm extends FormBase {
     $solarium_query->setQuery('id:' . $datasetId);
     // $solarium_query->addSort('sequence_id', Query::SORT_ASC);.
     $solarium_query->setRows(1);
-    $fields[] = 'metadata_identifier,title';
+    $fields = ['metadata_identifier', 'title'];
     // $fields[] = 'mmd_xml_file';
     $solarium_query->setFields($fields);
     $result = $connector->execute($solarium_query);
@@ -131,8 +134,6 @@ class NetCDFOnDemandForm extends FormBase {
     foreach ($result as $doc) {
       $fields = $doc->getFields();
     }
-    $mid = $fields['metadata_identifier'] ?? '';
-    $form_state->set('product_id', $mid);
     $title = $fields['title'][0] ?? '';
     $form_state->set('product_id', trim($title));
     // Get current user's email.
@@ -145,9 +146,9 @@ class NetCDFOnDemandForm extends FormBase {
       '#markup' => "A netCDF-file will be generated from product <strong>$title</strong>. An email with a download link will be sent to <strong><em>$user_email</em></strong>",
       '#required' => TRUE,
     ];
-    $form['confirm'] = [
+    $form['confirm-submit-nc'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Are you sure you want to order netCDF on demand?'),
+      '#title' => $this->t('Are you sure you want to request a CF-NetCDF file?'),
       '#required' => TRUE,
     ];
 
@@ -165,11 +166,7 @@ class NetCDFOnDemandForm extends FormBase {
 
     ];
 
-    $form['actions'] = [
-      '#type' => 'actions',
-    ];
-
-    $form['actions']['submit'] = [
+    $form['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Send'),
       '#ajax' => [
@@ -182,11 +179,10 @@ class NetCDFOnDemandForm extends FormBase {
       ],
       '#states' => [
         'disabled' => [
-          ':input[name="confirm"]' => ['checked' => FALSE],
+          ':input[name="confirm-submit-nc"]' => ['checked' => FALSE],
         ],
       ],
     ];
-
     return $form;
   }
 
@@ -195,7 +191,6 @@ class NetCDFOnDemandForm extends FormBase {
    */
   public function ajaxSubmit(array $form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-
     // If api_message exists, add the message.
     $api_message = $form_state->get('api_message');
     if ($api_message == NULL) {
@@ -230,23 +225,7 @@ class NetCDFOnDemandForm extends FormBase {
       $response->addCommand(new ReplaceCommand('#edit-status-messages-wrapper', $form['msg-wrapper']));
     }
 
-    // If the form doesn't have any errors, disable the submit button.
-    if (!$form_state->hasAnyErrors()) {
-      $button = &$form['actions']['submit'];
-      $button['#attributes']['disabled'] = 'disabled';
-      // dpm($form);
-      // dpm($form_state);
-      $response->addCommand(new InvokeCommand('#edit-submit', 'attr', ['disabled', 'true']));
-    }
-
     return $response;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function validateForm(array &$form, FormStateInterface $form_state): void {
-    // Validate your form here.
   }
 
   /**
@@ -257,6 +236,7 @@ class NetCDFOnDemandForm extends FormBase {
     if (empty($form_state->getErrors())) {
       $pid = $form_state->get('product_id');
       // Send the JSON request to the API endpoint.
+      $this->getLogger("netcdfOnDemand")->notice("Request netCDF File: " . $pid);
       $response = $this->sendJsonRequest($pid);
       $form_state->set('api_message', $response);
     }
@@ -309,24 +289,24 @@ class NetCDFOnDemandForm extends FormBase {
     }
     catch (RequestException $e) {
       return [
-      'success' => FALSE,
-      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $e->getMessage()])
+        'success' => FALSE,
+        'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $e->getMessage()]),
       ];
     }
     catch (ConnectException $e) {
       $response = $e->getRequest();
       $responseBody = (string) $response->getBody();
       return [
-      'success' => FALSE,
-      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $responseBody])
+        'success' => FALSE,
+        'message' => $this->t('An error occurred while connecting to the API: @error', ['@error' => $responseBody]),
       ];
     }
     catch (ClientException $e) {
       $response = $e->getResponse();
       $responseBody = (string) $response->getBody();
       return [
-      'success' => FALSE,
-      'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $responseBody])
+        'success' => FALSE,
+        'message' => $this->t('The client sendt a bad request: @error', ['@error' => $responseBody]),
       ];
     }
   }

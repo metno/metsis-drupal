@@ -676,24 +676,20 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['related_url_scientific_publication'])) {
       $i = 0;
       foreach ($fields['related_url_scientific_publication'] as $resource) {
+        $pub_desc = 'A scientific publication';
+        if (isset($fields['related_url_scientific_publication_desc'][$i])) {
+          $pub_desc = $fields['related_url_scientific_publication_desc'][$i];
+          if ($pub_desc === '' || $pub_desc === 'Not Available') {
+            $pub_desc = 'A scientific publication';
+          }
+        }
         $renderArray['related_information']['scientific_publication'][] = [
           '#type' => 'item',
           '#title' => $this->t('Scientific Publication:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" title="' . $pub_desc . 'href="' . $resource . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
 
-        if (isset($fields['related_url_scientific_publication_desc'])) {
-          $renderArray['related_information']['scientific_publication']['desc'] = [
-            '#type' => 'markup',
-                // '#title' => $this->t('Scientific Publication Citation:'),.
-            '#markup' => '<div class="w3-panel w3-leftbar">
-                  <p><i class="fa fa-quote-right w3-large"></i> <br>
-                    <i class="w3-serif ">' . $fields['related_url_scientific_publication_desc'][$i] . '</i></p>
-                      </div> ',
-            '#allowed_tags' => ['a', 'strong', 'div', 'i', 'p'],
-          ];
-        }
         $i++;
       }
     }
