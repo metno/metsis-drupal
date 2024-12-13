@@ -2207,7 +2207,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\" title=\"Export and download as ASCII format\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<div id=\"download-csv\" class=\"download-csv\">\r\n  <a class=\"adc-button adc-sbutton\" title=\"Export and download as ASCII format\" href=\"/metsis/bokeh/csv?opendap_urls={{ data_access_url_opendap | url_encode }}\" >Download as ASCII</a>\r\n</div>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false

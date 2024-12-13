@@ -278,6 +278,9 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
                     $search_string .= "&$key=$value";
                   }
                 }
+                elseif ($key === 'page') {
+                  continue;
+                }
                 else {
                   $search_string .= "&$key=$value";
                 }
