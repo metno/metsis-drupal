@@ -29,7 +29,7 @@ console.log("Start of wms map script:");
         var pywpsUrl = drupalSettings.metsis_wms_map.pywps_service;
         var wms_layers_skip = drupalSettings.metsis_wms_map.wms_layers_skip;
         var wms_data = drupalSettings.metsis_wms_map.wms_data;
-        var selected_proj = drupalSettings.metsis_wms_map.selected_proj;
+        let selected_proj = drupalSettings.metsis_wms_map.selected_proj;
         // Some debugging
         var debug = true;
         if (debug) {
@@ -48,7 +48,7 @@ console.log("Start of wms map script:");
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
-        var proj = null;
+        var proj = init_proj;
         //var selected_proj = null;
         if (selected_proj == null) {
           selected_proj = init_proj;
@@ -1136,6 +1136,7 @@ console.log("Start of wms map script:");
             //initialize result varuable
             var result;
             console.log("wms_layer from mmd: " + wmsLayerMmd);
+            console.log("Got WMS URL: " + wmsUrl)
             //Do ajax call.
             //   fetch(wmsUrl+getCapString,{
             //      mode: 'cors',
@@ -1603,6 +1604,7 @@ console.log("Start of wms map script:");
               });
             }
             else {
+              console.log("Else: " + wmsUrl);
               $.ajax({
                 type: 'GET',
                 url: wmsUrl + getCapString,
@@ -1614,7 +1616,14 @@ console.log("Start of wms map script:");
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);
                   console.log("Trying getCapProxy....");
-                  tryProxy(proxyURL, wmsUrlOrig)
+                  if (wmsUrl.includes('thredds.nersc')) {
+                    let _url = wmsUrlOrig.replace('http://', 'https://');
+                    console.log("tryproxy nersc: " + _url + getCapString);
+                    tryProxy(proxyURL, _url + getCapString)
+                  }
+                  else {
+                    tryProxy(proxyURL, wmsUrlOrig)
+                  }
                 },
                 success: function (response) {
                   onGetCapSuccess(response)

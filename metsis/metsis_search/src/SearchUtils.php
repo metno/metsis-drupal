@@ -20,11 +20,9 @@ class SearchUtils {
     // Get the request referer for go back button.
     $request = \Drupal::request();
     $referer = $request->headers->get('referer');
-    $session = \Drupal::request()->getSession();
     // Display facet results.
     $facet = $result_set->getFacetSet()->getFacet('gcmd');
 
-    $list = [];
     $markup = "";
     foreach ($facet as $pivot) {
       $markup .= SearchUtils::displayPivotFacet($pivot, $referer);

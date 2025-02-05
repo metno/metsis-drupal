@@ -4,13 +4,14 @@ namespace Drupal\metsis_search\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Block\BlockPluginInterface;
-use Drupal\Core\Cache\UncacheableDependencyTrait;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandler;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\metsis_search\MetsisSearchState;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Drupal\Core\Render\RendererInterface;
 
 /**
  * Provides a Block.
@@ -23,8 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  * {@inheritdoc}
  */
 class SearchMapBlock extends BlockBase implements BlockPluginInterface, ContainerFactoryPluginInterface {
-  use UncacheableDependencyTrait;
-
+  // Use UncacheableDependencyTrait;.
   /**
    * The injected module_handler service.
    *
@@ -54,6 +54,13 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
   protected $metsisState;
 
   /**
+   * The renderer service.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
    * The container create function.
    *
    * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
@@ -75,7 +82,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       $container->get('module_handler'),
       $container->get('request_stack')->getCurrentRequest(),
       $container->get('config.factory'),
-      $container->get('metsis_search.state')
+      $container->get('metsis_search.state'),
+      $container->get('renderer')
     );
   }
 
@@ -96,6 +104,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
    *   The config factory service.
    * @param \Drupal\metsis_search\MetsisSearchState $state
    *   The metsisSearch state service.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer service.
    */
   public function __construct(
     array $configuration,
@@ -105,12 +115,14 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     Request $request,
     ConfigFactoryInterface $configFactory,
     MetsisSearchState $state,
+    RendererInterface $renderer,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->moduleHandler = $moduleHandler;
     $this->request = $request;
     $this->configFactory = $configFactory;
     $this->metsisState = $state;
+    $this->renderer = $renderer;
   }
 
   /**
@@ -120,17 +132,16 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     // Get the module path.
     $module_path = $this->moduleHandler->getModule('metsis_search')->getPath();
     // Get the bounding box drawn on the map.
-    $session = $this->request->getSession();
-    $bboxFilter = $session->get('bboxFilter');
-    $proj = $session->get('proj');
+    // $session = $this->request->getSession();
+    // $bboxFilter = $session->get('bboxFilter');
+    // $proj = $session->get('proj');
     // Extract info from request object:
     $searchUri = $this->request->getRequestUri();
-    $tllat = $session->get('tllat');
-    $tllon = $session->get('tllon');
-    $brlat = $session->get('brlat');
-    $brlon = $session->get('brlon');
-    $filter = $session->get('cond');
-
+    // $tllat = $session->get('tllat');
+    // $tllon = $session->get('tllon');
+    // $brlat = $session->get('brlat');
+    // $brlon = $session->get('brlon');
+    // $filter = $session->get('cond');
     // Get saved configuration.
     $config = $this->configFactory->get('metsis_search.settings');
     $bbox_filter_auto_show = $config->get('hide_bbox_filter_exposed');
@@ -154,12 +165,10 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       $map_wms_layers_skip = [];
     }
     /* Get the extracted info from session. */
-    $extracted_info = $this->metsisState->get('extracted_info');
-
-    if ($session->get("place_filter") != NULL) {
-      $map_filter = $session->get("place_filter");
-    }
-
+    // $extracted_info = $this->metsisState->get('extracted_info');
+    // If ($session->get("place_filter") != NULL) {
+    // $map_filter = $session->get("place_filter");
+    // }.
     /*
      * Create the render array
      */
@@ -206,7 +215,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     ];
     $build['search-map']['top-panel']['buttons-container']['reset'] = [
       '#type' => 'markup',
-      '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sbutton">Reset search</a></span>',
+      '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sfaddbutton">Reset search</a></span>',
       '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'input'],
     ];
     $build['search-map']['top-panel']['buttons-container']['reset-map'] = [
@@ -228,12 +237,11 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     ];
 
     // Placeholder for additional layers select list.
-    $build['search-map']['top-panel']['layers'] = [
-      '#type' => 'markup',
-      '#markup' => '<div class="layers-wrapper"></div>',
-      '#allowed_tags' => ['div', 'label'],
-    ];
-
+    // $build['search-map']['top-panel']['layers'] = [
+    // '#type' => 'markup',
+    // '#markup' => '<div class="layers-wrapper"></div>',
+    // '#allowed_tags' => ['div', 'label'],
+    // ];.
     /*
      * Openlayers map viewport container
      */
@@ -397,37 +405,48 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
         'metsis_lib/adc-button',
         'metsis_search/search_map_block',
       ],
-      'drupalSettings' => [
-        'metsis_search_map_block' => [
-          'mapLat' => $map_lat,
-          'mapLon' => $map_lon,
-          'mapZoom' => $map_zoom,
-          'init_proj' => $map_init_proj,
-          'additional_layers' => $map_additional_layers,
-          'base_layer_wms_north' => $map_base_layer_wms_north,
-          'base_layer_wms_south' => $map_base_layer_wms_south,
-          'projections' => $map_projections,
-          'layers_list' => $map_layers_list,
-          'tllat' => $tllat,
-          'tllon' => $tllon,
-          'brlon' => $brlon,
-          'brlat' => $brlat,
-          'proj' => $proj,
-          'cond' => $filter,
-          'bboxFilter' => $bboxFilter,
-          'mapFilter' => $map_filter,
-          'pins' => $map_pins,
-          'path' => $module_path,
-          'extracted_info' => $extracted_info,
-          'pywps_service' => $pywps_service,
-          'current_search' => $searchUri,
-          'wms_layers_skip' => $map_wms_layers_skip,
-          'bbox_filter' => $this->metsisState->get('bbox_filter'),
-          'bbox_op' => $this->metsisState->get('bbox_op'),
-          'bbox_filter_auto_show' => $bbox_filter_auto_show,
-        ],
+    ];
+
+    // Cache settings for the block.
+    $build['#cache'] = [
+      'max-age' => Cache::PERMANENT,
+      'contexts' => ['url'],
+      'tags' => ['metsis_search_map'],
+    ];
+    $settings = [
+      'metsis_search_map_block' => [
+        'mapLat' => $map_lat,
+        'mapLon' => $map_lon,
+        'mapZoom' => $map_zoom,
+        'init_proj' => $map_init_proj,
+        'additional_layers' => $map_additional_layers,
+        'base_layer_wms_north' => $map_base_layer_wms_north,
+        'base_layer_wms_south' => $map_base_layer_wms_south,
+        'projections' => $map_projections,
+        'layers_list' => $map_layers_list,
+          // 'tllat' => $tllat,
+          // 'tllon' => $tllon,
+          // 'brlon' => $brlon,
+          // 'brlat' => $brlat,
+          // 'proj' => $proj,
+          // 'cond' => $filter,
+      // 'bboxFilter' => $bboxFilter,
+        'mapFilter' => $map_filter,
+        'pins' => $map_pins,
+        'path' => $module_path,
+        'extracted_info' => $this->metsisState->get('extracted_info'),
+        'pywps_service' => $pywps_service,
+        'current_search' => $searchUri,
+        'wms_layers_skip' => $map_wms_layers_skip,
+        'bbox_filter' => $this->metsisState->get('bbox_filter'),
+        'bbox_op' => $this->metsisState->get('bbox_op'),
+        'bbox_filter_auto_show' => $bbox_filter_auto_show,
       ],
     ];
+    // Placeholder for dynamic drupalSettings.
+    $build['#attached']['drupalSettings'] = $settings;
+    $this->metsisState->set('extracted_info', []);
+    $this->renderer->addCacheableDependency($build, $config);
 
     return $build;
   }
@@ -435,9 +454,9 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
   /**
    * Get the max age caching for this block.
    */
-  public function getCacheMaxAge() {
-    return 1;
-  }
+  /* public function getCacheMaxAge() {
+  return 1;
+  }*/
 
   /**
    * Return an empty tilte.

@@ -5,6 +5,7 @@ console.log("Start of metsis search map script:");
   /** Attach the metsis map to drupal behaviours function */
   Drupal.behaviors.metsisSearchBlock = {
     attach: function (context) {
+
       const mapEl = $(once('#map-res', '[data-map-res]', context));
       //console.log(mapEl);
       mapEl.each(function () {
@@ -13,42 +14,42 @@ console.log("Start of metsis search map script:");
         console.log('Initializing METSIS Map...');
 
         //Default Zoom value
-        var defzoom = 4;
+        const defzoom = 4;
 
-        // Import variables from drupalSettings send by block build array
+        // Import letiables from drupalSettings send by block build array
         var extracted_info = drupalSettings.metsis_search_map_block.extracted_info;
         var path = drupalSettings.metsis_search_map_block.path;
         var pins = drupalSettings.metsis_search_map_block.pins;
-        var site_name = drupalSettings.metsis_search_map_block.site_name;
+        const site_name = drupalSettings.metsis_search_map_block.site_name;
 
-        var lat = drupalSettings.metsis_search_map_block.mapLat;
-        var lon = drupalSettings.metsis_search_map_block.mapLon;
-        var mapZoom = drupalSettings.metsis_search_map_block.mapZoom;
-        var bboxFilter = drupalSettings.metsis_search_map_block.bboxFilter;
-        var mapFilter = drupalSettings.metsis_search_map_block.mapFilter;
+        const lat = drupalSettings.metsis_search_map_block.mapLat;
+        const lon = drupalSettings.metsis_search_map_block.mapLon;
+        const mapZoom = drupalSettings.metsis_search_map_block.mapZoom;
+        const bboxFilter = drupalSettings.metsis_search_map_block.bboxFilter;
+        const mapFilter = drupalSettings.metsis_search_map_block.mapFilter;
 
-        var init_proj = drupalSettings.metsis_search_map_block.init_proj;
-        var projections = drupalSettings.metsis_search_map_block.projections;
-        var layers_list = drupalSettings.metsis_search_map_block.layers_list;
-        var additional_layers = drupalSettings.metsis_search_map_block.additional_layers;
-        var tllat = drupalSettings.metsis_search_map_block.tllat;
-        var tllon = drupalSettings.metsis_search_map_block.tllon;
-        var brlat = drupalSettings.metsis_search_map_block.brlat;
-        var brlon = drupalSettings.metsis_search_map_block.brlon;
-        var selected_proj = drupalSettings.metsis_search_map_block.proj;
-        var selected_filter = drupalSettings.metsis_search_map_block.cond;
-        var base_layer_wms_north = drupalSettings.metsis_search_map_block.base_layer_wms_north;
-        var base_layer_wms_south = drupalSettings.metsis_search_map_block.base_layer_wms_south;
-        var pywpsUrl = drupalSettings.metsis_search_map_block.pywps_service;
-        var current_search = drupalSettings.metsis_search_map_block.current_search;
-        var wms_layers_skip = drupalSettings.metsis_search_map_block.wms_layers_skip;
-        var bbox_filter = drupalSettings.metsis_search_map_block.bbox_filter;
-        var bbox_operator = drupalSettings.metsis_search_map_block.bbox_op;
-        var bbox_filter_auto_show = drupalSettings.bbox_filter_auto_show;
-        var search_view = drupalSettings.metsis_search.search_view;
+        const init_proj = drupalSettings.metsis_search_map_block.init_proj;
+        const projections = drupalSettings.metsis_search_map_block.projections;
+        const layers_list = drupalSettings.metsis_search_map_block.layers_list;
+        const additional_layers = drupalSettings.metsis_search_map_block.additional_layers;
+        const tllat = drupalSettings.metsis_search_map_block.tllat;
+        const tllon = drupalSettings.metsis_search_map_block.tllon;
+        const brlat = drupalSettings.metsis_search_map_block.brlat;
+        const brlon = drupalSettings.metsis_search_map_block.brlon;
+        let selected_proj = drupalSettings.metsis_search_map_block.proj;
+        let selected_filter = drupalSettings.metsis_search_map_block.cond;
+        const base_layer_wms_north = drupalSettings.metsis_search_map_block.base_layer_wms_north;
+        const base_layer_wms_south = drupalSettings.metsis_search_map_block.base_layer_wms_south;
+        const pywpsUrl = drupalSettings.metsis_search_map_block.pywps_service;
+        const current_search = drupalSettings.metsis_search_map_block.current_search;
+        const wms_layers_skip = drupalSettings.metsis_search_map_block.wms_layers_skip;
+        const bbox_filter = drupalSettings.metsis_search_map_block.bbox_filter;
+        const bbox_operator = drupalSettings.metsis_search_map_block.bbox_op;
+        const bbox_filter_auto_show = drupalSettings.bbox_filter_auto_show;
+        const search_view = drupalSettings.metsis_search.search_view;
 
         // Some debugging
-        var debug = true;
+        const debug = true;
         if (debug) {
           console.log("Reading drupalSettings: ")
           console.log('base layer north: ' + base_layer_wms_north);
@@ -80,11 +81,12 @@ console.log("Start of metsis search map script:");
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
+        var proj = init_proj;
         if (selected_proj == null) {
-          var selected_proj = init_proj;
-          var proj = init_proj;
+          selected_proj = init_proj;
+          proj = init_proj;
         } else {
-          var proj = selected_proj;
+          proj = selected_proj;
         }
 
         //Set the current selected filter
@@ -166,8 +168,8 @@ console.log("Start of metsis search map script:");
                 });
         */
         // Create the projections input boxes
-        for (var key in projections) {
-          var value = projections[key];
+        for (let key in projections) {
+          let value = projections[key];
           $('.proj-wrapper').append(
             $(document.createElement('input')).prop({
               id: key,
@@ -232,7 +234,7 @@ console.log("Start of metsis search map script:");
           $('select[name="bbox_op"][data-drupal-selector="edit-bbox-op"]').val(changed_filter).prop('selected', true);
         });
         //Set default checked filter
-        //var flt = document.getElementsByName('map-filter');
+        //let flt = document.getElementsByName('map-filter');
         if (bbox_operator != null) {
           selected_filter = bbox_operator.toLowerCase();
           console.log('selected filter: ' + selected_filter.toLowerCase());
@@ -273,8 +275,8 @@ console.log("Start of metsis search map script:");
               id: "lrslist"
             }));
 
-          for (var key in layers_list) {
-            var value = layers_list[key];
+          for (let key in layers_list) {
+            let value = layers_list[key];
             console.log("Creating additional layer: " + value);
             $('#lrslist').append(
               $(document.createElement('li')).prop({
@@ -654,12 +656,76 @@ console.log("Start of metsis search map script:");
           }),
         });
 
+
+        const europaVeg = new ol.layer.Tile({
+          title: "Europaveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'europaveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+        const riksVeg = new ol.layer.Tile({
+          title: "Riksveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'riksveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+
+        const fylkesVeg = new ol.layer.Tile({
+          title: "Fylkesveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'fylkesveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+
+
         //Create a layergroup to hold the different basemaps
         const baseLayerGroup = new ol.layer.Group({
           title: 'Base Layers',
           //openInLayerSwitcher: true,
           layers: [
             osmStandard, osmHumanitarian, stamenTerrain, esriSatellite
+          ],
+        });
+
+        //Create a layergroup to hold the different basemaps
+        const additonalLayerGroup = new ol.layer.Group({
+          title: 'Additional Layers',
+          openInLayerSwitcher: true,
+          layers: [
+            europaVeg, riksVeg, fylkesVeg
           ],
         });
 
@@ -684,29 +750,29 @@ console.log("Start of metsis search map script:");
         });
 
         //Add overviewMap
-        var bboxLayer = getActiveBbox(selected_proj);
-        var ovMapLayers = [];
-        var ovBaseLayer = new ol.layer.Tile({
-          //baseLayer: true,
-          visible: true,
-          source: new ol.source.OSM(),
-          projection: selected_proj,
-        });
-        ovMapLayers.push(ovBaseLayer);
-        if (bboxLayer != null) {
-          console.log("Adding bbox to overviewMap");
-          ovMapLayers.push(bboxLayer);
-        }
+        // var bboxLayer = getActiveBbox(selected_proj);
+        // var ovMapLayers = [];
+        // var ovBaseLayer = new ol.layer.Tile({
+        //   //baseLayer: true,
+        //   visible: true,
+        //   source: new ol.source.OSM(),
+        //   projection: selected_proj,
+        // });
+        // ovMapLayers.push(ovBaseLayer);
+        // if (bboxLayer != null) {
+        //   console.log("Adding bbox to overviewMap");
+        //   ovMapLayers.push(bboxLayer);
+        // }
 
         //Add MapControls
 
         //Add OverVoewMapControl
-        var ovMapControl = new ol.control.OverviewMap({
-          //className: 'ol-overviewmap bboxViewMap',
-          title: 'overviewMap',
-          layers: ovMapLayers,
-          collapsed: true,
-        });
+        // var ovMapControl = new ol.control.OverviewMap({
+        //   //className: 'ol-overviewmap bboxViewMap',
+        //   title: 'overviewMap',
+        //   layers: ovMapLayers,
+        //   collapsed: true,
+        // });
 
         //Add fullScreenControl
         var fullScreenControl = new ol.control.FullScreen({
@@ -864,10 +930,11 @@ console.log("Start of metsis search map script:");
           return new ol.Map({
             target: 'map-res',
             pixelRatio: 1,
-            controls: ol.control.defaults().extend([ovMapControl, sideBarControl, fullScreenControl, scaleLineControl, mousePositionControl]),
+            // controls: ol.control.defaults().extend([ovMapControl, sideBarControl, fullScreenControl, scaleLineControl, mousePositionControl]),
+            controls: ol.control.defaults().extend([sideBarControl, fullScreenControl, scaleLineControl, mousePositionControl]),
             //controls: ol.control.defaults().extend([fullScreenControl]),
             //layers: [baseLayerGroup,featureLayersGroup],
-            layers: [baseLayerGroup, featureLayersGroup, wmsLayerGroup],
+            layers: [baseLayerGroup, additonalLayerGroup, featureLayersGroup, wmsLayerGroup],
             overlays: [overlayh, popUpOverlay],
             view: new ol.View({
               zoom: 2,
@@ -1853,11 +1920,11 @@ console.log("Start of metsis search map script:");
               featureLayersGroup.setVisible(false);
               // Add controls for wms style change
               //$('#wms-styles-select').change(function () {
-              const wmsSelect = document.getElementById("wms-styles-select");
+              let wmsSelect = document.getElementById("wms-styles-select");
               wmsSelect.addEventListener('change', function handleChange(event) {
                 //wmsLayerGroup.setOpacity(ui.value / 100);
                 console.log("Selected style: " + event.target.value);
-                const selected_style = event.target.value;
+                let selected_style = event.target.value;
                 //console.log("currentTime: " +timeDimensions[ui.value])
                 wmsGroup.getLayers().forEach(function (element, index, array) {
                   //console.log(element);
@@ -2712,7 +2779,7 @@ console.log("Start of metsis search map script:");
         });
 
         //Add geocoder search
-        const geocoder = new Geocoder('nominatim', {
+        let geocoder = new Geocoder('nominatim', {
           provider: 'osm',
           //geonorgeProvider,
           lang: 'nb-NO', //en-US, fr-FR
@@ -2839,10 +2906,10 @@ console.log("Start of metsis search map script:");
         }
 
         //Adding configured additional layers
-        if (additional_layers) {
-          console.log("Adding additional layers");
-          addExtraLayers(selected_proj);
-        }
+        // if (additional_layers) {
+        //   console.log("Adding additional layers");
+        //   addExtraLayers(selected_proj);
+        // }
 
 
         //Zoom to extent

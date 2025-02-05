@@ -230,7 +230,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     $view->element['#attached']['library'][] = 'metsis_search/thumbnail_lazy';
     // $view->element['#attached']['library'][] = 'lazy/lazy';
     // $view->element['#attached']['library'][] = 'lazy/lazysizes';
-    $view->element['#attached']['library'][] = 'metsis_search/map_geocoder';
+    // $view->element['#attached']['library'][] = 'metsis_search/map_geocoder';
     $view->element['#attached']['library'][] = 'metsis_search/parent_filter';
     // $view->element['#attached']['library'][] = 'metsis_search/map_ol';
     $view->element['#attached']['library'][] = 'core/drupal';
@@ -575,32 +575,32 @@ function metsis_search_views_pre_build(ViewExecutable $view) {
   if ($view->id() == 'metsis_search' || $view->id() == 'metsis_elements') {
     // \Drupal::logger('metsis_search')->notice($view->id());
     // Check if reset query and reset boundingbox if so.
-    \Drupal::cache()->invalidate('metsis_search_map');
-    $request = \Drupal::request();
-    $query_from_request = $request->query->all();
+    // \Drupal::cache()->invalidate('metsis_search_map');
+    // $request = \Drupal::request();
+    // $query_from_request = $request->query->all();
     // dpm($query_from_request, __FUNCTION__);
     // Check if operator op is set in query and op=Reset to reset boundingbox.
     if (isset($query_from_request['reset'])) {
       if ($query_from_request['reset'] == "Reset" || $query_from_request['reset'] == "Nullstill") {
         \Drupal::logger('metsis_search')->debug("Got reset event..resetting bbox");
-        $session = \Drupal::request()->getSession();
-        // $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
-        $session->remove('bboxFilter');
-        $session->remove('tllat');
-        $session->remove('tllon');
-        $session->remove('brlat');
-        $session->remove('brlon');
-        $session->remove('extracted_info');
-        $session->remove('proj');
-        $session->remove('gcmd');
-        $session->remove('keywords_level');
-        $session->remove('back_to_search');
-        $session->remove('place_filter');
-        $session->remove('cond');
-        $session->set('keywords_level', 1);
+        // $session = \Drupal::request()->getSession();
+        // // $tempstore = \Drupal::service('tempstore.private')->get('metsis_search');
+        // $session->remove('bboxFilter');
+        // $session->remove('tllat');
+        // $session->remove('tllon');
+        // $session->remove('brlat');
+        // $session->remove('brlon');
+        // $session->remove('extracted_info');
+        // $session->remove('proj');
+        // $session->remove('gcmd');
+        // $session->remove('keywords_level');
+        // $session->remove('back_to_search');
+        // $session->remove('place_filter');
+        // $session->remove('cond');
+        // $session->set('keywords_level', 1);
 
-        $session->remove('place_lat');
-        $session->remove('place_lon');
+        // $session->remove('place_lat');
+        // $session->remove('place_lon');
 
         // \Drupal::cache()->invalidate('block:metsis_search_map');
         // \Drupal::cache()->invalidate('block:metsis_search_map_block');

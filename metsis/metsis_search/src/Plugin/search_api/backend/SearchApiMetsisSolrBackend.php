@@ -43,6 +43,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements ContainerFactoryPluginInterface {
   use LoggerTrait;
+
   /**
    * A config object for 'metsis_search.settings'.
    *
@@ -93,22 +94,22 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     $this->requestStack = $requestStack;
     $this->metsisState = $metsis_state;
     parent::__construct($configuration,
-      $plugin_id,
-      $plugin_definition,
-      $module_handler,
-      $search_api_solr_settings,
-      $language_manager,
-      $solr_connector_plugin_manager,
-      $fields_helper,
-      $dataTypeHelper,
-      $query_helper,
-      $entityTypeManager,
-      $eventDispatcher,
-      $time,
-      $state,
-      $messenger,
-      $lock,
-      $module_extension_list);
+    $plugin_id,
+    $plugin_definition,
+    $module_handler,
+    $search_api_solr_settings,
+    $language_manager,
+    $solr_connector_plugin_manager,
+    $fields_helper,
+    $dataTypeHelper,
+    $query_helper,
+    $entityTypeManager,
+    $eventDispatcher,
+    $time,
+    $state,
+    $messenger,
+    $lock,
+    $module_extension_list);
   }
 
   /**
@@ -116,26 +117,26 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('module_handler'),
-      $container->get('config.factory')->get('search_api_solr.settings'),
-      $container->get('language_manager'),
-      $container->get('plugin.manager.search_api_solr.connector'),
-      $container->get('search_api.fields_helper'),
-      $container->get('search_api.data_type_helper'),
-      $container->get('metsis_search.query_helper'),
-      $container->get('entity_type.manager'),
-      $container->get('event_dispatcher'),
-      $container->get('datetime.time'),
-      $container->get('state'),
-      $container->get('messenger'),
-      $container->get('lock'),
-      $container->get('extension.list.module'),
-      $container->get('config.factory')->get('metsis_search.settings'),
-      $container->get('request_stack'),
-      $container->get('metsis_search.state')
+    $configuration,
+    $plugin_id,
+    $plugin_definition,
+    $container->get('module_handler'),
+    $container->get('config.factory')->get('search_api_solr.settings'),
+    $container->get('language_manager'),
+    $container->get('plugin.manager.search_api_solr.connector'),
+    $container->get('search_api.fields_helper'),
+    $container->get('search_api.data_type_helper'),
+    $container->get('metsis_search.query_helper'),
+    $container->get('entity_type.manager'),
+    $container->get('event_dispatcher'),
+    $container->get('datetime.time'),
+    $container->get('state'),
+    $container->get('messenger'),
+    $container->get('lock'),
+    $container->get('extension.list.module'),
+    $container->get('config.factory')->get('metsis_search.settings'),
+    $container->get('request_stack'),
+    $container->get('metsis_search.state')
     );
   }
 
@@ -227,7 +228,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
             $id = $doc_fields['id'];
           }
           if (isset($doc_fields['total_children']['numFound'])
-            && isset($doc_fields['found_children']['numFound'])) {
+          && isset($doc_fields['found_children']['numFound'])) {
             $total_children = $doc_fields['total_children']['numFound'];
 
             $found_children = (int) $doc_fields['found_children']['numFound'];
@@ -241,7 +242,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
             }
             // Create value.
             $num_children_value = new TextValue(
-              sprintf('%d of %d', $found_children, $total_children)
+            sprintf('%d of %d', $found_children, $total_children)
             );
 
             // Create and add values to the num_children field.
@@ -270,7 +271,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
 
                   $doi = $doc_fields['dataset_citation_doi'][0] ?? '';
                   if (($fulltext_string === $mid)
-                    || ($fulltext_string === $doc_fields['id']) || (strpos($doi, $fulltext_string) !== FALSE)) {
+                  || ($fulltext_string === $doc_fields['id']) || (strpos($doi, $fulltext_string) !== FALSE)) {
                     // dpm($value, __FUNCTION__);.
                     $search_string .= "&$key=";
                   }
@@ -385,38 +386,38 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     $result_set->setResultCount($update_count);
     // Speacial handeling for simple search.
     if ($query->getSearchId(FALSE) === "views_page:metsis_simple_search__results") {
-      $conditions = $query->getConditionGroup()->getConditions();
+      // $conditions = $query->getConditionGroup()->getConditions();
       // dpm($conditions, __FUNCTION__);.
-      $got_parent_filter = FALSE;
-      foreach ($conditions as $condition) {
-        if ($condition instanceof ConditionGroup) {
-          $conds = $condition->getConditions();
-          foreach ($conds as $cond) {
-            // Check if the condition is a filter.
-            if ($cond instanceof Condition) {
-              // Get the field name and value of the filter.
-              $fieldName = $cond->getField();
-              if ($fieldName === 'related_dataset_id') {
-                // dpm("Got parent filter", __FUNCTION__);
-                // dpm($cond->getValue(), __FUNCTION__);.
-                $got_parent_filter = TRUE;
-              }
-            }
-          }
-        }
-        else {
-          if ($condition instanceof Condition) {
-            $fieldName = $condition->getField();
-            if ($fieldName === 'related_dataset_id') {
-              $got_parent_filter = TRUE;
-            }
-          }
-        }
-      }
-      if (!$got_parent_filter) {
-        // dpm("Emptying parent_info", __FUNCTION__ . "()");.
-        $this->metsisState->set('parent_info', []);
-      }
+      // $got_parent_filter = FALSE;
+      // foreach ($conditions as $condition) {
+      // if ($condition instanceof ConditionGroup) {
+      // $conds = $condition->getConditions();
+      // foreach ($conds as $cond) {
+      // // Check if the condition is a filter.
+      // if ($cond instanceof Condition) {
+      // // Get the field name and value of the filter.
+      // $fieldName = $cond->getField();
+      // if ($fieldName === 'related_dataset_id') {
+      // // dpm("Got parent filter", __FUNCTION__);
+      // // dpm($cond->getValue(), __FUNCTION__);.
+      // $got_parent_filter = TRUE;
+      // }
+      // }
+      // }
+      // }
+      // else {
+      // if ($condition instanceof Condition) {
+      // $fieldName = $condition->getField();
+      // if ($fieldName === 'related_dataset_id') {
+      // $got_parent_filter = TRUE;
+      // }
+      // }
+      // }
+      // }
+      // if (!$got_parent_filter) {
+      // // dpm("Emptying parent_info", __FUNCTION__ . "()");.
+      // $this->metsisState->set('parent_info', []);
+      // }
     }
     return $result_set;
   }

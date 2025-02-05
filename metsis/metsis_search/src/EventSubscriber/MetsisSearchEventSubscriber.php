@@ -769,14 +769,8 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
    */
   public function postExtractResults(PostExtractResultsEvent $event) {
     // $this->getLogger()->notice('postExtractResults');
-    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'))) {
-      // Process the extracted_info for the map given the results.
-      $result_set = $event->getSearchApiResultSet();
-      $extracted_info = SearchUtils::getExtractedInfoSearchApiResults($result_set);
-      $this->metsisState->set('extracted_info', $extracted_info);
-      // dpm($this->metsisState->getAll());
-    }
-    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_simple_search__results'))) {
+    if (($this->searchId !== NULL) && (($this->searchId === 'views_page:metsis_search__results'))
+      || (($this->searchId === 'views_page:metsis_simple_search__results'))) {
       // Process the extracted_info for the map given the results.
       $result_set = $event->getSearchApiResultSet();
       $extracted_info = SearchUtils::getExtractedInfoSearchApiResults($result_set);

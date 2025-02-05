@@ -8,10 +8,16 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
-
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Drupal\Core\Cache\CacheFactoryInterface;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Render\RenderContext;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+
+use Drupal\Core\Cache\Cache;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -49,6 +55,26 @@ class DynamicLandingPagesController extends ControllerBase {
    */
   protected $json;
 
+  /**
+   * The CacheBackend.
+   *
+   * @var \Drupal\Core\Cache\CacheBackendInterface
+   */
+  protected $cache;
+
+  /**
+   * The Renderer.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
+   * The Cache-Invalidator.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  protected $cacheInvalidator;
 
   /**
    * Request stack.
@@ -142,14 +168,17 @@ class DynamicLandingPagesController extends ControllerBase {
     $instance->geoPhpWrapper = $container->get('geofield.geophp');
     $instance->request = $container->get('request_stack')->getCurrentRequest();
     $instance->leaflet = $container->get('leaflet.service');
+    $instance->cache = $container->get('cache.dynamic_landingpages');
+    $instance->renderer = $container->get('renderer');
+    $instance->cacheInvalidator = $container->get('cache_tags.invalidator');
     return $instance;
   }
 
   /**
    * Getlandingpage.
    *
-   * @return string
-   *   Return Hello string.
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   Return Http response.
    */
   public function getLandingPage(string $id, Request $request) {
     // Get the host of this drupal instance.
@@ -163,6 +192,160 @@ class DynamicLandingPagesController extends ControllerBase {
     $id_prefix = $main_config->get('landing_pages_prefix');
     $export_list = $main_config->get('export_metadata');
     // \Drupal::logger('metsis_lib')->debug(implode(', ', $export_list));
+    /* Handle caching. */
+    $dataset_id = $id_prefix . '-' . $id;
+    // The cache id (cid).
+    $cid = 'dataset:' . $dataset_id;
+
+    // Check if the content is already cached.
+    if ($cache = $this->cache->get($cid)) {
+      $renderArray = $cache->data;
+      $last_modified = $renderArray['timestamp']['#value'];
+      $this->getLogger('dynamic_landing_page')->notice("Cache HIT: " . $cid);
+    }
+    else {
+      // Fetch the solr document and generate the render array.
+      $result = $this->generateLandingPage($main_config, $host, $fullhost, $id, $id_prefix, $dataset_id, $export_list);
+      // Check if the data has changed.
+      $renderArray = $result['renderArray'];
+      $last_modified = $renderArray['timestamp']['#value'];
+
+      $this->getLogger('dynamic_landing_page')->notice("Cache MISS: " . $cid);
+      // Cache the rendered HTML.
+      $this->cache->set($cid, $renderArray);
+    }
+    // Handle metadata export.
+    if (NULL != $request->query->get('export_type')) {
+      $response = new Response();
+      $export_type = $request->query->get('export_type');
+      $fields = $this->fetchXml($id, $id_prefix);
+      $id = $fields['id'];
+      $mmd = $fields['mmd_xml_file'];
+      // By setting these 2 header options, the browser will see the URL
+      // and provide a download dialog.
+      $response->headers->set('Content-Type', 'text/xml');
+      $response->headers->set('Content-Disposition', 'attachment; filename="' . $id . '_' . $export_type . '.xml"');
+
+      if ($export_type === 'mmd') {
+        $response->setContent(base64_decode($mmd));
+      }
+      else {
+        $mmd_xml = base64_decode($mmd);
+        $content = $this->transformXml($mmd_xml, $export_type);
+        $response->setContent($content);
+      }
+      return $response;
+    }
+
+    // Check if the metadata has changed.
+    $current_data = $this->fetchDocument($id, $id_prefix);
+    $current_last_modified = strtotime($current_data['timestamp']);
+
+    if ($current_last_modified > $last_modified) {
+      // Update the cache if the data has changed.
+      $current_result = $this->generateLandingPage($main_config, $host, $fullhost, $id, $id_prefix, $dataset_id, $export_list);
+      // Check if the data has changed.
+      $current_last_modified = $current_result['timestamp'];
+      $renderArray = $current_result['renderArray'];
+      $this->cacheInvalidator->invalidateTags(['dataset:' . $dataset_id]);
+
+      $this->cache->set($cid, $renderArray);
+    }
+
+    return $renderArray;
+
+  }
+
+  /**
+   * Fetch solrDocument to get fields.
+   */
+  protected function fetchDocument($id, $id_prefix) {
+    /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
+    $index = Index::load('metsis');
+    $fields = ['id', 'metadata_identifier', 'timestamp'];
+    /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
+    $backend = $index->getServerInstance()->getBackend();
+
+    $connector = $backend->getSolrConnector();
+
+    $solarium_query = $connector->getSelectQuery();
+    if ($id_prefix === 'no-met-nbs') {
+      $solarium_query->setQuery('id:' . $id);
+    }
+    else {
+      $solarium_query->setQuery('id:' . $id_prefix . '-' . $id);
+    }
+    // $solarium_query->addSort('sequence_id', Query::SORT_ASC);.
+    $solarium_query->setRows(1);
+    // $fields[] = 'id';
+    // $fields[] = 'mmd_xml_file';
+    $solarium_query->setFields($fields);
+    $result = $connector->execute($solarium_query);
+    // The total number of documents found by Solr.
+    $found = $result->getNumFound();
+    /* Throw not found exception to make drupal create 404 page when not in index */
+    if ($found === 0) {
+      throw new NotFoundHttpException();
+    }
+
+    foreach ($result as $doc) {
+      $fields = $doc->getFields();
+    }
+    if ($id_prefix === 'no-met-nbs') {
+      $mid = $fields['metadata_identifier'];
+      $fields['metadata_identifier'] = $id_prefix . ':' . $mid;
+    }
+    return $fields;
+
+  }
+
+  /**
+   * Fetch solrDocument XML for metadata export.
+   */
+  protected function fetchXml($id, $id_prefix) {
+    /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
+    $index = Index::load('metsis');
+    $fields = ['id', 'mmd_xml_file', 'timestamp', 'metadata_identifier'];
+    /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
+    $backend = $index->getServerInstance()->getBackend();
+
+    $connector = $backend->getSolrConnector();
+
+    $solarium_query = $connector->getSelectQuery();
+    if ($id_prefix === 'no-met-nbs') {
+      $solarium_query->setQuery('id:' . $id);
+    }
+    else {
+      $solarium_query->setQuery('id:' . $id_prefix . '-' . $id);
+    }
+    // $solarium_query->addSort('sequence_id', Query::SORT_ASC);.
+    $solarium_query->setRows(1);
+    // $fields[] = 'id';
+    // $fields[] = 'mmd_xml_file';
+    $solarium_query->setFields($fields);
+    $result = $connector->execute($solarium_query);
+    // The total number of documents found by Solr.
+    $found = $result->getNumFound();
+    /* Throw not found exception to make drupal create 404 page when not in index */
+    if ($found === 0) {
+      throw new NotFoundHttpException();
+    }
+
+    foreach ($result as $doc) {
+      $fields = $doc->getFields();
+    }
+    if ($id_prefix === 'no-met-nbs') {
+      $mid = $fields['metadata_identifier'];
+      $fields['metadata_identifier'] = $id_prefix . ':' . $mid;
+    }
+    return $fields;
+
+  }
+
+  /**
+   * Generate the landingpage render array from the solrDocument.
+   */
+  protected function generateLandingPage($main_config, $host, $fullhost, $id, $id_prefix, $dataset_id, $export_list) {
     /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
 
@@ -198,31 +381,16 @@ class DynamicLandingPagesController extends ControllerBase {
       $mid = $fields['metadata_identifier'];
       $fields['metadata_identifier'] = $id_prefix . ':' . $mid;
     }
-    // dpm($fields);
-    if (NULL != $request->query->get('export_type')) {
-      $response = new Response();
-      $export_type = $request->query->get('export_type');
-      $id = $fields['id'];
-      $mmd = $fields['mmd_xml_file'];
-      // By setting these 2 header options, the browser will see the URL
-      // and provide a download dialog.
-      $response->headers->set('Content-Type', 'text/xml');
-      $response->headers->set('Content-Disposition', 'attachment; filename="' . $id . '_' . $export_type . '.xml"');
 
-      if ($export_type === 'mmd') {
-        $response->setContent(base64_decode($mmd));
-      }
-      else {
-        $mmd_xml = base64_decode($mmd);
-        $content = $this->transformXml($mmd_xml, $export_type);
-        $response->setContent($content);
-      }
-      return $response;
-    }
     // Add article prefix.
     $renderArray['#prefix'] = '<div class=dynamic-landing-page>';
     $renderArray['#suffix'] = '</div>';
     $renderArray = [];
+
+    $renderArray['timestamp'] = [
+      '#type' => 'value',
+      '#value' => strtotime($fields['timestamp']),
+    ];
 
     // Render the title.
     $renderArray['title'] = [
@@ -259,23 +427,23 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     else {
       $features = [
-          /*
-        [
-          'type' => 'json',
-          'json' => $geo_json_decoded,
+        /*
+      [
+        'type' => 'json',
+        'json' => $geo_json_decoded,
 
-        ],*/
-        [
-          'type' => 'polygon',
-          'points' => [
-            ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
-            ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__maxY']],
-            ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__maxY']],
-            ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__minY']],
-            ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
+      ],*/
+      [
+        'type' => 'polygon',
+        'points' => [
+          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
+          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__maxY']],
+          ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__maxY']],
+          ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__minY']],
+          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
 
-          ],
         ],
+      ],
       ];
     }
     /*
@@ -357,7 +525,7 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['dataset_citation_doi'])) {
       $renderArray['citation_wrapper']['doi'] = [
         '#type' => 'item',
-            // '#title' => $this->t('DOI:'),.
+          // '#title' => $this->t('DOI:'),.
         '#markup' => '<i class="ai ai-doi"></i> <a class="w3-text-blue" href="' . $fields['dataset_citation_doi'][0] . '">' . $fields['dataset_citation_doi'][0] . '</a>',
         '#allowed_tags' => ['a', 'strong', 'i'],
       ];
@@ -379,8 +547,8 @@ class DynamicLandingPagesController extends ControllerBase {
         '#type' => 'fieldset',
         '#title' => $this->t('Use and Access Constraints'),
         '#attributes' => [
-            // 'class' => ['w3-cell'],.
-          ],
+          // 'class' => ['w3-cell'],.
+        ],
         '#prefix' => '<div class="w3-container w3-cell">',
         '#suffix' => '</div>',
       ];
@@ -422,8 +590,8 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Metadata Information'),
       '#attributes' => [
-            // 'class' => ['w3-cell'],.
-          ],
+          // 'class' => ['w3-cell'],.
+        ],
       '#prefix' => '<div class="w3-container w3-cell">',
       '#suffix' => '</div>',
     ];
@@ -483,10 +651,10 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Data Access'),
       '#attributes' => [
-            // 'class' => ['w3-cell'],.
-          ],
-          // '#prefix' => '<div class="w3-container w3-cell">',
-          // '#suffix' => '</div>',.
+          // 'class' => ['w3-cell'],.
+        ],
+        // '#prefix' => '<div class="w3-container w3-cell">',
+        // '#suffix' => '</div>',.
     ];
     if (isset($fields['data_access_url_http'])) {
       foreach ($fields['data_access_url_http'] as $resource) {
@@ -581,8 +749,8 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Related Information'),
       '#attributes' => [
-            // 'class' => ['w3-cell'],.
-          ],
+          // 'class' => ['w3-cell'],.
+        ],
     ];
     if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
       if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
@@ -610,9 +778,9 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['related_information']['collection_image'] = [
           '#theme' => 'image',
           '#uri' => '/modules/metsis/metsis_search/images/collection.png',
-          // '#style_name' => 'your_image_style',
+        // '#style_name' => 'your_image_style',
           '#alt' => 'Collection icon',
-          // '#title' => $image['ImageTitle'],
+        // '#title' => $image['ImageTitle'],
           '#attributes' => [
             'class' => 'align-right',
           ],
@@ -824,21 +992,29 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     $renderArray['#attached']['library'][] = 'metsis_lib/landing_page';
     $renderArray['#attached']['library'][] = 'metsis_lib/fa_academia';
-    $renderArray['#cache']['max-age'] = 31536000;
+    $renderArray['#cache'] = [
+      'contexts' => ['url'],
+      'tags' => ['dataset:' . $dataset_id],
+      'max-age' => Cache::PERMANENT,
+    ];
 
     // ADD JSONLD META.
     $jsonld = $this->getJsonld($fields, $host, $id_prefix);
     $renderArray['#attached']['html_head'][] = [
-      [
-        '#type' => 'html_tag',
-        '#tag' => 'script',
-        '#value' => Json::encode($jsonld),
-        '#attributes' => ['type' => 'application/ld+json'],
-      ],
+    [
+      '#type' => 'html_tag',
+      '#tag' => 'script',
+      '#value' => Json::encode($jsonld),
+      '#attributes' => ['type' => 'application/ld+json'],
+    ],
       'schema_metatag',
     ];
 
-    return $renderArray;
+    return [
+      'renderArray' => $renderArray,
+      'timestamp' => strtotime($fields['timestamp']),
+    ];
+
   }
 
   /**

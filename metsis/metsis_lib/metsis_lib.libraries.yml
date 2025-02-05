@@ -65,4 +65,4 @@ fa_academia:
   header: true
   css:
     theme:
-      https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css: { type: external }
+      https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css: { type: external, minified: true}

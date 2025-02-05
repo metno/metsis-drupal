@@ -1,11 +1,11 @@
 metadata_search_view:
-  version: 1.0.2
+  version: 1.0.3
   css:
     theme:
       css/metadata_search_view.css: {}
 
 ts_plot:
-  version: 1.0.2
+  version: 1.0.3
   js:
     https://cdn.pydata.org/bokeh/release/bokeh-2.3.3.min.js: { type: external, minified: true}
     https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.3.min.js: { type: external, minified: true}
@@ -19,7 +19,7 @@ ts_plot:
     - core/drupalSettings
 
 search_map:
-  version: 1.0.3
+  version: 1.0.4
   css:
     theme:
       css/metsis_qsearch.css: {}
@@ -39,12 +39,19 @@ search_map:
     - metsis_search/map_ol_ext
 
 search_map_block:
-  version: 1.0.3
+  version: 1.0.4
   css:
     theme:
+      #/libraries/openlayers-6.5.0/ol.css: {minified: true}
+      #/libraries/ol-ext-3.1.17/dist/ol-ext.min.css: { minified: true}
+      #/libraries/ol-geocoder/ol-geocoder.min.css: { minified: true }
       css/metsis_res_map.css: {}
   js:
-    js/moment.min.js: { minified: true}
+    #/libraries/openlayers-6.5.0/ol.js: { minified: true}
+    #/libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false}
+    #/libraries/ol-ext-3.1.17/dist/ol-ext.min.js: { minified: true }
+    #js/moment.min.js: { minified: true}
+    #/libraries/ol-geocoder/ol-geocoder.js: { minified: true} # , preprocess: false  }
     js/metsis_res_map.js: {}
   dependencies:
     - core/jquery
@@ -55,38 +62,50 @@ search_map_block:
     - core/drupal.ajax
     - core/drupal.dialog
     - core/drupal.dialog.ajax
-    - jquery_ui_slider/slider
-   # - metsis_search/map_ol
-   # - metsis_search/map_projs
-    - metsis_search/map_ol_ext
+    #- jquery_ui_slider/slider
+    - metsis_search/map_ol
+    #- metsis_search/map_projs
+    # - metsis_search/map_ol_ext
+    # - metsis_search/map_geocoder
 
 
 
 map_ol:
-  version: 6.5.0
+  version: 6.5.1
+  header: true
   css:
-    component:
-      /libraries/openlayers-6.5.0/ol.css: {}
+    theme:
+      /libraries/openlayers-6.5.0/ol.css: {minified: true }
+      /libraries/ol-ext-3.1.17/dist/ol-ext.min.css: { minified: true }
+      /libraries/ol-geocoder/ol-geocoder.min.css: { minified: true }
   js:
-    /libraries/openlayers-6.5.0/ol.js: {}
+    /libraries/openlayers-6.5.0/ol.js: { minified: true }
+    /libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false }
+    /libraries/ol-ext-3.1.17/dist/ol-ext.min.js: { minified: true }
+    js/moment.min.js: { minified: true }
+    /libraries/ol-geocoder/ol-geocoder.js: { minified: true} # , preprocess: false  }
+
   dependencies:
-    - metsis_search/map_projs
-   # - metsis_search/map_geocoder
+    #- metsis_search/map_projs
+    #- metsis_search/map_geocoder
 
 map_projs:
+  header: true
   version: 2.6.3
   js:
-    /libraries/proj4js-2.6.3/dist/proj4.js: {}
+    /libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false}
+  dependencies:
+    #- metsis_search/map_ol
 
 map_ol_ext:
   version: 3.1.17
   css:
-    component:
+    theme:
        /libraries/ol-ext-3.1.17/dist/ol-ext.css: {}
   js:
     /libraries/ol-ext-3.1.17/dist/ol-ext.js: {}
   dependencies:
-    - metsis_search/map_ol
+   # - metsis_search/map_ol
 
 
 # map_geocoder:
@@ -103,17 +122,16 @@ map_ol_ext:
 #   - metsis_search/map_ol
 
 map_geocoder:
-  #version: 4.1.2
+  version: 4.3.3
   css:
-    component:
-      https://cdn.jsdelivr.net/npm/ol-geocoder/dist/ol-geocoder.min.css: { type: external, minified: true}
+    theme:
+      /libraries/ol-geocoder/ol-geocoder.min.css: { minified: true }
   js:
-    https://cdn.jsdelivr.net/npm/ol-geocoder/dist/ol-geocoder.js:  { type: external, minified: true} #, attributes: {async: true}}
+    /libraries/ol-geocoder/ol-geocoder.js: { minified: true, preprocess: false  }
   dependencies:
-  - core/drupal
-  - core/jquery
-  - jquery_ui/core
-  - metsis_search/map_ol
+  #- core/jquery
+  #- jquery_ui/core
+  #- metsis_search/map_ol
 
 children_count:
   version: 1.0.1

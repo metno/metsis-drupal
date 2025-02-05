@@ -11,3 +11,9 @@ services:
     class: Drupal\metsis_lib\Routing\RouteSubscriber
     tags:
       - { name: event_subscriber }
+
+  # Custom cache bin for dynamic landing pages
+  cache.dynamic_landingpages:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    factory: ['@cache_factory', 'get']
+    arguments: ['dynamic_landingpages']
