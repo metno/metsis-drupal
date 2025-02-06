@@ -212,7 +212,7 @@ class DynamicLandingPagesController extends ControllerBase {
 
       $this->getLogger('dynamic_landing_page')->notice("Cache MISS: " . $cid);
       // Cache the rendered HTML.
-      $this->cache->set($cid, $renderArray);
+      $this->cache->set($cid, $renderArray, [$cid]);
     }
     // Handle metadata export.
     if (NULL != $request->query->get('export_type')) {
@@ -247,9 +247,9 @@ class DynamicLandingPagesController extends ControllerBase {
       // Check if the data has changed.
       $current_last_modified = $current_result['timestamp'];
       $renderArray = $current_result['renderArray'];
-      $this->cacheInvalidator->invalidateTags(['dataset:' . $dataset_id]);
+      $this->cacheInvalidator->invalidateTags([$cid]);
 
-      $this->cache->set($cid, $renderArray);
+      $this->cache->set($cid, $renderArray, [$cid]);
     }
 
     return $renderArray;

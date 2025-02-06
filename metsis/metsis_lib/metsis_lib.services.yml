@@ -15,5 +15,7 @@ services:
   # Custom cache bin for dynamic landing pages
   cache.dynamic_landingpages:
     class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
     factory: ['@cache_factory', 'get']
     arguments: ['dynamic_landingpages']

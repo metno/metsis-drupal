@@ -27,6 +27,6 @@ metsis_lib.dynamic_landing_pages_controller_getLandingPage:
      _permission: 'access content'
 
   options:
-    # no_cache: 'TRUE'
+    no_cache: TRUE
     query:
       export_type: null

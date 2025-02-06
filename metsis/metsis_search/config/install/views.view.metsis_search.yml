@@ -518,7 +518,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" alt=\"An icon representing a collection\" width=\"96\" height=\"34\" src=\"/modules/metsis/metsis_search/images/collection.webp\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false

@@ -1051,7 +1051,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/simple_search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" src=\"/modules/metsis/metsis_search/images/collection.png\"></a>\r\n{%endif %}"
+            text: "{% if is_parent == 'True' %}\r\n<a href=\"/metsis/search?related_dataset_id={{ id }}\" title=\"Show ALL children in this collection\"> <img class=\"align-right\" loading=\"lazy\" alt=\"An icon representing a collection\" width=\"96\" height=\"34\" src=\"/modules/metsis/metsis_search/images/collection.webp\"></a>\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2129,6 +2129,44 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
+        is_child:
+          id: is_child
+          table: search_api_index_metsis_simple_search
+          field: is_child
+          relationship: none
+          group_type: group
+          admin_label: 'Do not show children'
+          plugin_id: search_api_boolean
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
       filter_groups:
         operator: AND
         groups:
@@ -2138,11 +2176,7 @@ display:
       style:
         type: html_list
         options:
-          grouping:
-            -
-              field: is_parent_1
-              rendered: true
-              rendered_strip: false
+          grouping: {  }
           row_class: simple-search-row
           default_row_class: true
           type: ol
