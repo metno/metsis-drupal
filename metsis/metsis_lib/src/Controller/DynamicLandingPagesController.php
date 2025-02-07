@@ -8,14 +8,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
-use Drupal\Core\Cache\CacheBackendInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Drupal\Core\Cache\CacheFactoryInterface;
-use Drupal\Core\Render\RendererInterface;
-use Drupal\Core\Render\RenderContext;
-use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
-
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Cache\Cache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -111,47 +106,47 @@ class DynamicLandingPagesController extends ControllerBase {
   public const LICENCES = [
     'CC0-1.0' => [
       'url' => 'https://spdx.org/licenses/CC0-1.0',
-      'img' => '/modules/metsis/metsis_search/icons/CC0.png',
+      'img' => '/modules/metsis/metsis_search/icons/CC0.webp',
     ],
     'CC-BY-3.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-3.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBY.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBY.webp',
     ],
     'CC-BY-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBY.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBY.webp',
     ],
     'CC-BY/NLOD' => [
       'url' => 'https://spdx.org/licenses/CC-BY-4.0',
-      'img' => '"/modules/metsis/metsis_search/icons/CCBY.png',
+      'img' => '"/modules/metsis/metsis_search/icons/CCBY.webp',
     ],
     'CC BY/NLOD' => [
       'url' => 'https://spdx.org/licenses/CC-BY-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBY.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBY.webp',
     ],
     'CC-BY-SA-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-SA-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYSA.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYSA.webp',
     ],
     'CC-BY-NC-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-NC-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYNC.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYNC.webp',
     ],
     'CC-BY-NC' => [
       'url' => 'https://spdx.org/licenses/CC-BY-NC-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYNC.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYNC.webp',
     ],
     'CC-BY-NC-SA-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-NC-SA-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYNCSA.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYNCSA.webp',
     ],
     'CC-BY-ND-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-ND-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYND.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYND.webp',
     ],
     'CC-BY-NC-ND-4.0' => [
       'url' => 'https://spdx.org/licenses/CC-BY-NC-ND-4.0',
-      'img' => '/modules/metsis/metsis_search/icons/CCBYNCND.png',
+      'img' => '/modules/metsis/metsis_search/icons/CCBYNCND.webp',
     ],
     'Not provided' => NULL,
   ];
@@ -212,7 +207,7 @@ class DynamicLandingPagesController extends ControllerBase {
 
       $this->getLogger('dynamic_landing_page')->notice("Cache MISS: " . $cid);
       // Cache the rendered HTML.
-      $this->cache->set($cid, $renderArray, [$cid]);
+      $this->cache->set($cid, $renderArray, CacheBackendInterface::CACHE_PERMANENT, [$cid]);
     }
     // Handle metadata export.
     if (NULL != $request->query->get('export_type')) {
@@ -242,6 +237,7 @@ class DynamicLandingPagesController extends ControllerBase {
     $current_last_modified = strtotime($current_data['timestamp']);
 
     if ($current_last_modified > $last_modified) {
+      $this->getLogger('dynamic_landing_page')->notice("Landingpage have been updated. Updating cache for: " . $cid);
       // Update the cache if the data has changed.
       $current_result = $this->generateLandingPage($main_config, $host, $fullhost, $id, $id_prefix, $dataset_id, $export_list);
       // Check if the data has changed.
@@ -249,7 +245,7 @@ class DynamicLandingPagesController extends ControllerBase {
       $renderArray = $current_result['renderArray'];
       $this->cacheInvalidator->invalidateTags([$cid]);
 
-      $this->cache->set($cid, $renderArray, [$cid]);
+      $this->cache->set($cid, $renderArray, CacheBackendInterface::CACHE_PERMANENT, [$cid]);
     }
 
     return $renderArray;
@@ -563,13 +559,12 @@ class DynamicLandingPagesController extends ControllerBase {
         ];
       }
       if (isset($fields['use_constraint_identifier'])) {
+
         if (NULL != self::LICENCES[$fields['use_constraint_identifier']]) {
           $renderArray['constraints_and_info']['constraints']['licence_img'] = [
             '#type' => 'markup',
-          // '#prefix' => '<p>',.
-            '#markup' => '<a rel="license" class="w3-text-blue" href="' . self::LICENCES[$fields['use_constraint_identifier']]['url'] . '"><img class="w3-image" loading="lazy" width="100" height="35" src="' . self::LICENCES[$fields['use_constraint_identifier']]['img'] . '"/></a>',
-          // '#suffix' => '</p>',.
-            '#allowed_tags' => ['img'],
+            '#markup' => '<a rel="license" class="w3-text-blue" title="Link to license information" href="' . self::LICENCES[$fields['use_constraint_identifier']]['url'] . '"><img loading="lazy" width="100px" height="35px" alt="Use constraint icon for licence ' . $fields['use_constraint_identifier'] . '" ' . 'src = "' . self::LICENCES[$fields['use_constraint_identifier']]['img'] . '" /> </a> ',
+            '#allowed_tags' => ['a', 'img'],
           ];
         }
         else {
@@ -777,12 +772,14 @@ class DynamicLandingPagesController extends ControllerBase {
         ];
         $renderArray['related_information']['collection_image'] = [
           '#theme' => 'image',
-          '#uri' => '/modules/metsis/metsis_search/images/collection.png',
+          '#uri' => '/modules/metsis/metsis_search/images/collection.webp',
         // '#style_name' => 'your_image_style',
           '#alt' => 'Collection icon',
         // '#title' => $image['ImageTitle'],
           '#attributes' => [
             'class' => 'align-right',
+            'width' => '96px',
+            'height' => '34px',
           ],
         ];
       }
