@@ -35,8 +35,8 @@ search_map:
     - core/drupal.dialog
     - core/drupal.dialog.ajax
     - metsis_search/map_ol
-    - metsis_search/map_projs
-    - metsis_search/map_ol_ext
+    # metsis_search/map_projs
+    #- metsis_search/map_ol_ext
 
 search_map_block:
   version: 1.0.4

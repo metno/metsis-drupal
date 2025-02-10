@@ -1701,7 +1701,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" title=\"Add product to basket\"  href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap %}\r\n<div id=\"basket\" class=\"basket\">\r\n<a id=\"addtobasket-{{ id }}\" class=\"adc-button adc-sbutton use-ajax\" title=\"Add product to basket\"  rel=\"noindex\" href=/metsis/basket/add/{{ id}}>Add to Basket</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1852,7 +1852,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\"><a class=\"adc-button adc-sbutton\" title=\"Visualise WMS\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a></div>\r\n{% endif %}"
+            text: "{% if data_access_url_ogc_wms %} \r\n<div id=\"visualise\" class=\"visualise\"><a class=\"adc-button adc-sbutton\" title=\"Visualise WMS\" rel=\"noindex\" href=\"/metsis/map/wms?dataset={{ id }}\">Visualise</a></div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1901,7 +1901,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" title=\"Visualise Timeseries\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
+            text: "{% if  data_access_url_opendap %}\r\n  {% if feature_type == 'timeSeries' or feature_type == 'timeSeriesProfile' or feature_type == 'profile' %}\r\n<a class=\"use-ajax adc-button adc-sbutton inline\" rel=\"noindex\" title=\"Visualise Timeseries\" href=\"/metsis/tsplot/form?url={{ data_access_url_opendap }}\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Timeseries Plot&quot;}\" data-dialog-type=\"modal\">Visualise Timeseries</a>\r\n  {% endif %}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -2158,7 +2158,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap is empty and data_access_url_odata is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Request CF-NetCDF file&quot;}\" data-dialog-type=\"modal\" title=\"Request CF-NetCDF file\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">Request CF-NetCDF file</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap is empty and data_access_url_odata is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" rel=\"noindex\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Request CF-NetCDF file&quot;}\" data-dialog-type=\"modal\" title=\"Request CF-NetCDF file\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">Request CF-NetCDF file</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
