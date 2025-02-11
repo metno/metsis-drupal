@@ -5,7 +5,6 @@ namespace Drupal\metsis_lib\Controller;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
 use Symfony\Component\HttpFoundation\Request;
@@ -1017,13 +1016,13 @@ class DynamicLandingPagesController extends ControllerBase {
   /**
    * A custom access check.
    *
-   * @param \Drupal\Core\Session\AccountInterface $account
+   * @param Symfony\Component\HttpFoundation\Request $request
    *   Run access checks for this account.
    *
    * @return \Drupal\Core\Access\AccessResultInterface
    *   The access result.
    */
-  public function access(AccountInterface $account) {
+  public function access(Request $request) {
     // Get the metsis general config (metsis_lib)
     $config = $this->configFactory->get('metsis_lib.settings');
     // Only enable access if dynamica landing pages are enabled
