@@ -392,13 +392,6 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       '#allowed_tags' => ['div'],
     ];
 
-    // Set the cache for this form.
-    /* $build['#cache'] = [
-    'contexts' => [
-    'url.query_args',
-    ],
-    ];
-     */
     // Add CSS and JS libraries and drupalSettings JS variables.
     $build['#attached'] = [
       'library' => [
@@ -410,7 +403,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     // Cache settings for the block.
     $build['#cache'] = [
       'max-age' => Cache::PERMANENT,
-      'contexts' => ['url'],
+      'contexts' => ['url.query_args'],
       'tags' => ['metsis_search_map'],
     ];
     $settings = [
