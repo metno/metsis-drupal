@@ -247,6 +247,8 @@ class DynamicLandingPagesController extends ControllerBase {
       $this->cache->set($cid, $renderArray, CacheBackendInterface::CACHE_PERMANENT, [$cid]);
     }
 
+    // Handle caching.
+    $this->renderer->addCacheableDependency($renderArray, $main_config);
     return $renderArray;
 
   }
@@ -378,15 +380,16 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     // Add article prefix.
+    $renderArray = [];
     $renderArray['#prefix'] = '<div class=dynamic-landing-page>';
     $renderArray['#suffix'] = '</div>';
-    $renderArray = [];
 
     $renderArray['timestamp'] = [
       '#type' => 'value',
       '#value' => strtotime($fields['timestamp']),
     ];
-
+    // Add page title.
+    $renderArray['#title'] = $fields['title'][0];
     // Render the title.
     $renderArray['title'] = [
       '#type' => 'markup',
@@ -989,7 +992,8 @@ class DynamicLandingPagesController extends ControllerBase {
     $renderArray['#attached']['library'][] = 'metsis_lib/landing_page';
     $renderArray['#attached']['library'][] = 'metsis_lib/fa_academia';
     $renderArray['#cache'] = [
-      'contexts' => ['url'],
+      'contexts' => ['url.path'],
+      'bin' => 'dynamic_landingpages',
       'tags' => ['dataset:' . $dataset_id],
       'max-age' => Cache::PERMANENT,
     ];
@@ -1069,28 +1073,149 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['temporal_extent_end_date'])) {
       $end_date = $fields['temporal_extent_end_date'][0];
     }
+    else {
+      $end_date = '..';
+    }
     $mid = $fields['metadata_identifier'];
     if ($id_prefix === 'no-met-nbs') {
       $mid = explode(':', $fields['metadata_identifier'])[1];
     }
+    $keywords = [];
+    if (isset($fields['keywords_gcmd'])) {
+      foreach ($fields['keywords_gcmd'] as $gcmd) {
+        $keywords[] = [
+        '@type' => 'DefinedTerm',
+                    'name' => $gcmd,
+                    'inDefinedTermSet' => 'https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords'
+        ];
+      }
+    }
+    if (isset($fields['keywords_cfstdn'])) {
+      foreach ($fields['keywords_cfstdn'] as $cfstdn) {
+        $keywords[] = [
+        '@type' => 'DefinedTerm',
+                    'name' => $cfstdn,
+                    'inDefinedTermSet' => 'https://vocab.nerc.ac.uk/standard_name/',
+                    'url' => 'https://vocab.nerc.ac.uk/standard_name/' . $cfstdn
+        ];
+      }
+    }
+    if (isset($fields['project_long_name'])) {
+      $projects = [];
+      foreach ($fields['project_long_name'] as $projectln) {
+        $projects[] = [
+        '@type' => 'MonetaryGrant',
+                       'name' => $projectln
+        ];
+      }
+    }
+    if (isset($fields['personnel_investigator_name'])) {
+      $creators = [];
+      foreach ($fields['personnel_investigator_name'] as $creator) {
+        $creators[] = [
+        '@type' => 'Person',
+                       'name' => $creator
+        ];
+      }
+    }
+    if (isset($fields['personnel_investigator_organisation'])) {
+      $providers = [];
+      foreach ($fields['personnel_investigator_organisation'] as $provider) {
+        $providers[] = [
+        '@type' => 'Organization',
+                       'name' => $provider
+        ];
+      }
+    }
+    if (isset($fields['personnel_technical_name']) or isset($fields['personnel_metadata_author_name'])) {
+      $contributors = [];
+      if (isset($fields['personnel_technical_name'])) {
+        foreach ($fields['personnel_investigator_name'] as $contributor) {
+          $contributors[] = [
+            '@type' => 'Person',
+            'name' => $contributor,
+          ];
+        }
+      }
+      if (isset($fields['personnel_metadata_author_name'])) {
+        foreach ($fields['personnel_metadata_author_name'] as $contributor) {
+          $contributors[] = [
+          '@type' => 'Person',
+                             'name' => $contributor
+          ];
+        }
+      }
+    }
+    if (isset($fields['data_access_url_http'])) {
+      $datadownloads = [];
+      foreach ($fields['data_access_url_http'] as $datadownload) {
+        $datadownloads[] = [
+          '@type' => 'DataDownload',
+          'description' => 'Direct dowload',
+          'contentUrl' => $datadownload
+        ];
+      }
+    }
+    if (isset($fields['geographic_extent_rectangle_north'])) {
+      $spatialcoverage = [
+        '@type' => 'Place',
+        'geo' => [
+          '@type' => 'GeoShape',
+          'box' => implode(" ", [$fields['geographic_extent_rectangle_south'],
+            $fields['geographic_extent_rectangle_west'],
+            $fields['geographic_extent_rectangle_north'],
+            $fields['geographic_extent_rectangle_east'],
+          ]),
+        ],
+        'additionalProperty' => [
+          '@type' => 'PropertyValue',
+          'propertyID' => 'http://inspire.ec.europa.eu/glossary/SpatialReferenceSystem',
+          'value' => 'http://www.opengis.net/def/crs/EPSG/0/'
+          . $fields['geographic_extent_rectangle_srsName'],
+        ],
+      ];
+    }
+    if (in_array("Created", $fields['last_metadata_update_type'])) {
+      $i = 0;
+      foreach ($fields['last_metadata_update_type'] as $mdupdatedt) {
+        if ($mdupdatedt == 'Created') {
+          $datecreated = $fields['last_metadata_update_datetime'][$i];
+        }
+        $i++;
+      }
+    }
     $json = [
-      '@context' => 'https://schema.org/',
+      '@context' => ['@vocab' => 'https://schema.org/'],
       '@type' => 'Dataset',
-      '@id' => $fields['related_url_landing_page'][0] ?? '',
+      '@id' => $fields['metadata_identifier'],
+      'identifier' => [
+        '@type' => 'PropertyValue',
+        '@id' => $fields['related_url_landing_page'][0] ?? '',
+        'url' => $fields['related_url_landing_page'][0] ?? '',
+        'value' => $mid,
+      ],
       'name' => $fields['title'][0],
       'description' => $fields['abstract'][0],
       'url' => $fields['related_url_landing_page'][0] ?? '',
-      'identifier' => [
-        $mid,
-      ],
-      'keywords' => $fields['keywords_keyword'],
-      'license' => $fields['use_constraint_resource'] ?? "",
+      'dateCreated' => $datecreated ?? '',
+      'license' => $fields['use_constraint_resource'] ?? '',
+      'keywords' => $keywords,
       'includedInDataCatalog' => [
         '@type' => 'DataCatalog',
         'name:' => $host,
       ],
-      'temporalCoverage' => $start_date . '/' . $end_date ?? '',
-
+      'temporalCoverage' => $start_date . '/' . $end_date ,
+      'spatialCoverage' => $spatialcoverage,
+      'conditionsOfAccess' => $fields['access_constraint'] ?? '',
+      'creator' => $creators ?? '',
+      'contributor' => $contributors ?? '',
+      'provider' => $providers ?? '',
+      'publisher' => [
+        '@type' => 'Organization',
+        'name' => $fields['data_center_long_name'][0] ?? '',
+        'url' => $fields['data_center_url'][0] ?? '',
+      ],
+      'funding' => $projects ?? '',
     ];
     return $json;
   }

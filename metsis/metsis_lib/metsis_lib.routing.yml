@@ -21,7 +21,6 @@ metsis_lib.dynamic_landing_pages_controller_getLandingPage:
   path: '/dataset/{id}'
   defaults:
     _controller: '\Drupal\metsis_lib\Controller\DynamicLandingPagesController::getLandingPage'
-    _title: ''
   requirements:
      _custom_access: '\Drupal\metsis_lib\Controller\DynamicLandingPagesController::access'
      _permission: 'access content'

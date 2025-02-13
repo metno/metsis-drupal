@@ -662,7 +662,7 @@ console.log("Start of metsis search map script:");
           baseLayer: false,
           visible: false,
           source: new ol.source.TileWMS({
-            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            url: 'https://wms.geonorge.no/skwms1/wms.vegnett2',
             params: {
               'LAYERS': 'europaveg',
               'TRANSPARENT': 'true',
@@ -679,7 +679,7 @@ console.log("Start of metsis search map script:");
           baseLayer: false,
           visible: false,
           source: new ol.source.TileWMS({
-            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            url: 'https://wms.geonorge.no/skwms1/wms.vegnett2',
             params: {
               'LAYERS': 'riksveg',
               'TRANSPARENT': 'true',
@@ -697,7 +697,7 @@ console.log("Start of metsis search map script:");
           baseLayer: false,
           visible: false,
           source: new ol.source.TileWMS({
-            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            url: 'https://wms.geonorge.no/skwms1/wms.vegnett2',
             params: {
               'LAYERS': 'fylkesveg',
               'TRANSPARENT': 'true',
@@ -3306,7 +3306,7 @@ console.log("Start of metsis search map script:");
             featureLayers['europaveg'] = new ol.layer.Tile({
               title: 'europaveg',
               source: new ol.source.TileWMS({
-                url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
+                url: 'https://wms.geonorge.no/skwms1/wms.vegnett2?',
                 params: {
                   'LAYERS': 'europaveg',
                   'TRANSPARENT': 'true',
@@ -3322,7 +3322,7 @@ console.log("Start of metsis search map script:");
               title: 'riksveg',
               displayInLayerSwitcher: true,
               source: new ol.source.TileWMS({
-                url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
+                url: 'https://wms.geonorge.no/skwms1/wms.vegnett2?',
                 params: {
                   'LAYERS': 'riksveg',
                   'TRANSPARENT': 'true',
@@ -3337,7 +3337,7 @@ console.log("Start of metsis search map script:");
             featureLayers['fylkesveg'] = new ol.layer.Tile({
               title: 'fylkesveg',
               source: new ol.source.TileWMS({
-                url: 'https://openwms.statkart.no/skwms1/wms.vegnett?',
+                url: 'https://wms.geonorge.no/skwms1/wms.vegnett2?',
                 params: {
                   'LAYERS': 'fylkesveg',
                   'TRANSPARENT': 'true',

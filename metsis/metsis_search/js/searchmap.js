@@ -65,66 +65,66 @@
         });
 
         //If additional lyers are set, create the layers dropdown button list
-        if (additional_layers) {
-          console.log('Creating additonal layers dropdown  button');
-          $('.layers-wrapper').append(
-            $(document.createElement('div')).prop({
-              id: 'droplayers',
-              class: 'layers'
-            }));
-          $('#droplayers').append(
-            $(document.createElement('button')).prop({
-              class: 'layers-button',
-              onclick: "document.getElementById('lrs').classList.toggle('show')",
-            }).html('Layers'));
-          $('#droplayers').append(
-            $(document.createElement('div')).prop({
-              id: "lrs",
-              class: "panel dropdown-lrs-content",
-            }));
-          $('#lrs').append(
-            $(document.createElement('ul')).prop({
-              id: "lrslist"
-            }));
+        // if (additional_layers) {
+        //   console.log('Creating additonal layers dropdown  button');
+        //   $('.layers-wrapper').append(
+        //     $(document.createElement('div')).prop({
+        //       id: 'droplayers',
+        //       class: 'layers'
+        //     }));
+        //   $('#droplayers').append(
+        //     $(document.createElement('button')).prop({
+        //       class: 'layers-button',
+        //       onclick: "document.getElementById('lrs').classList.toggle('show')",
+        //     }).html('Layers'));
+        //   $('#droplayers').append(
+        //     $(document.createElement('div')).prop({
+        //       id: "lrs",
+        //       class: "panel dropdown-lrs-content",
+        //     }));
+        //   $('#lrs').append(
+        //     $(document.createElement('ul')).prop({
+        //       id: "lrslist"
+        //     }));
 
-          for (var key in layers_list) {
-            var value = layers_list[key];
-            $('#lrslist').append(
-              $(document.createElement('li')).prop({
-                class: 'addl'
-              })
-                .append(
-                  $(document.createElement('input')).prop({
-                    id: value,
-                    class: 'check-layers',
-                    type: 'checkbox',
-                    value: value,
-                    name: "layers"
-                  }))
-                .append(
-                  $(document.createElement('label')).prop({
-                    class: "layer-labels",
-                    for: value
-                  }).html(value))
-            );
-          }
-          //Add event listener to layers button
-          $(".layers-button").click(function () {
-            document.getElementById('lrs').classList.toggle('show');
-          });
-          //Do some styling
-          $('.layer-labels').css({
-            "display": "inline-block",
-            "font-weight": "normal",
-            "padding-right": "10px",
-            "vertical-align": "middle"
-          });
-          $('.check-layers').css({
-            "vertical-align": "middle",
-            "padding-right": "5px",
-          });
+        //   for (var key in layers_list) {
+        //     var value = layers_list[key];
+        //     $('#lrslist').append(
+        //       $(document.createElement('li')).prop({
+        //         class: 'addl'
+        //       })
+        //         .append(
+        //           $(document.createElement('input')).prop({
+        //             id: value,
+        //             class: 'check-layers',
+        //             type: 'checkbox',
+        //             value: value,
+        //             name: "layers"
+        //           }))
+        //         .append(
+        //           $(document.createElement('label')).prop({
+        //             class: "layer-labels",
+        //             for: value
+        //           }).html(value))
+        //     );
+        //   }
+        //   //Add event listener to layers button
+        //   $(".layers-button").click(function () {
+        //     document.getElementById('lrs').classList.toggle('show');
+        //   });
+        //   //Do some styling
+        //   $('.layer-labels').css({
+        //     "display": "inline-block",
+        //     "font-weight": "normal",
+        //     "padding-right": "10px",
+        //     "vertical-align": "middle"
+        //   });
+        //   $('.check-layers').css({
+        //     "vertical-align": "middle",
+        //     "padding-right": "5px",
+        //   });
 
-        }
+        // }
 
         // 32661
         proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
@@ -358,9 +358,71 @@
             osmStandard
           ],
         });
+
+        const europaVeg = new ol.layer.Tile({
+          title: "Europaveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'europaveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+        const riksVeg = new ol.layer.Tile({
+          title: "Riksveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'riksveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+
+        const fylkesVeg = new ol.layer.Tile({
+          title: "Fylkesveg",
+          baseLayer: false,
+          visible: false,
+          source: new ol.source.TileWMS({
+            url: 'https://openwms.statkart.no/skwms1/wms.vegnett2?',
+            params: {
+              'LAYERS': 'fylkesveg',
+              'TRANSPARENT': 'true',
+              'VERSION': '1.3.0',
+              'FORMAT': 'image/png',
+              'CRS': proj
+            },
+            crossOrigin: 'anonymous'
+          })
+        });
+
+        //Create a layergroup to hold the different basemaps
+        const additonalLayerGroup = new ol.layer.Group({
+          title: 'Additional Layers',
+          openInLayerSwitcher: true,
+          layers: [
+            europaVeg, riksVeg, fylkesVeg
+          ],
+        });
+
         var map = new ol.Map({
           target: 'metmap',
-          layers: baseLayerGroup,
+          layers: [baseLayerGroup, additonalLayerGroup],
           view: new ol.View({
             zoom: defzoom,
             minZoom: 0,
