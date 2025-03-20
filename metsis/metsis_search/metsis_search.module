@@ -671,14 +671,6 @@ function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_
 
 }
 
-function metsis_search_antibot_form_status_alter(string $form_id, bool &$protection) {
-  dpm($form_id);
-  \Drupal::logger('antibot')->notice($form_id);
-  if ($form_id === 'my_form_id') {
-    $protection = TRUE;
-  }
-}
-
 
 /**
  * Implements hook_views_exposed_form_alter().
