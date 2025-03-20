@@ -1,3 +1,4 @@
+uuid: eb5a173c-4bc0-4587-a4cf-e1544f99bd29
 langcode: en
 status: true
 dependencies:
@@ -55,7 +56,6 @@ third_party_settings:
       use_language_undefined_as_fallback_language: false
       specific_languages:
         en: '0'
-        nb: '0'
       use_universal_collation: false
 id: metsis
 name: metsis
@@ -908,6 +908,16 @@ field_settings:
     datasource_id: solr_document
     property_path: related_url_data_paper_desc
     type: string
+  related_url_data_server_landing_page:
+    label: 'Related url data server landing page'
+    datasource_id: solr_document
+    property_path: related_url_data_server_landing_page
+    type: string
+  related_url_data_server_landing_page_desc:
+    label: 'Related url data server landing page desc'
+    datasource_id: solr_document
+    property_path: related_url_data_server_landing_page_desc
+    type: string
   related_url_ext_metadata:
     label: 'Related url ext metadata'
     datasource_id: solr_document
@@ -1230,6 +1240,7 @@ tracker_settings:
     indexing_order: fifo
 options:
   cron_limit: 50
+  delete_on_fail: true
   index_directly: true
   track_changes_in_references: false
 server: local_metsis

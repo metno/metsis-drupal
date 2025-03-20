@@ -671,7 +671,6 @@ function metsis_search_form_alter(&$form, FormStateInterface $form_state, $form_
 
 }
 
-
 /**
  * Implements hook_views_exposed_form_alter().
  *
