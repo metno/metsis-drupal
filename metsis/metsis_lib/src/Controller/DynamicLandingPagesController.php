@@ -413,11 +413,12 @@ class DynamicLandingPagesController extends ControllerBase {
      */
     // Check if we got point or polygon.
     $isPoint = FALSE;
-    if (($fields['bbox__minX'] === $fields['bbox__maxX']) && ($fields['bbox__minY'] === $fields['bbox__maxY'])) {
+    if (($fields['geographic_extent_rectangle_west'] === $fields['geographic_extent_rectangle_east'])
+      && ($fields['geographic_extent_rectangle_south'] === $fields['geographic_extent_rectangle_north'])) {
       $features = [[
         'type' => 'point',
-        'lat' => $fields['bbox__minY'],
-        'lon' => $fields['bbox__minX'],
+        'lat' => $fields['geographic_extent_rectangle_south'],
+        'lon' => $fields['geographic_extent_rectangle_west'],
       ],
       ];
       $isPoint = TRUE;
@@ -434,11 +435,11 @@ class DynamicLandingPagesController extends ControllerBase {
       [
         'type' => 'polygon',
         'points' => [
-          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
-          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__maxY']],
-          ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__maxY']],
-          ['lon' => $fields['bbox__maxX'], 'lat' => $fields['bbox__minY']],
-          ['lon' => $fields['bbox__minX'], 'lat' => $fields['bbox__minY']],
+          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
+          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_north']],
+          ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_north']],
+          ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_south']],
+          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
 
         ],
       ],
@@ -571,12 +572,14 @@ class DynamicLandingPagesController extends ControllerBase {
         }
         else {
           if (isset($fields['use_constraint_license_text'])) {
+            $lic_text = $fields['use_constraint_license_text'];
+            $lic_text_formatted = $this->convertUrlsToLinks($lic_text);
             $renderArray['constraints_and_info']['constraints']['licence_txt'] = [
               '#type' => 'markup',
-            // '#prefix' => '<p>',.
-              '#markup' => '<span>' . $fields['use_constraint_license_text'] . '</span>',
-            // '#suffix' => '</p>',.
-              '#allowed_tags' => ['span'],
+              '#prefix' => '<span>',
+              '#markup' => $lic_text_formatted,
+              '#suffix' => '</p>',
+              '#allowed_tags' => ['span', 'a'],
             ];
           }
         }
@@ -654,46 +657,46 @@ class DynamicLandingPagesController extends ControllerBase {
         // '#suffix' => '</div>',.
     ];
     if (isset($fields['data_access_url_http'])) {
-      foreach ($fields['data_access_url_http'] as $resource) {
+      foreach ($fields['data_access_url_http'] as $index => $resource) {
         $renderArray['data_access']['http'] = [
           '#type' => 'item',
           '#title' => $this->t('HTTP:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
     if (isset($fields['data_access_url_opendap'])) {
-      foreach ($fields['data_access_url_opendap'] as $resource) {
-        $renderArray['data_access']['opendap'] = [
+      foreach ($fields['data_access_url_opendap'] as $index => $resource) {
+        $renderArray['data_access']['opendap' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('OPeNDAP:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '.html">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '.html">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
 
     if (isset($fields['data_access_url_odata'])) {
-      foreach ($fields['data_access_url_odata'] as $resource) {
-        $renderArray['data_access']['odata'] = [
+      foreach ($fields['data_access_url_odata'] as $index => $resource) {
+        $renderArray['data_access']['odata' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('ODATA:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
 
     if (isset($fields['data_access_url_ogc_wms'])) {
-      foreach ($fields['data_access_url_ogc_wms'] as $resource) {
+      foreach ($fields['data_access_url_ogc_wms'] as $index => $resource) {
         if (str_contains($resource, '?')) {
-          $capLink = explode('?', $resource)[0];
+          $capLink = explode('?', mb_strimwidth($resource, 0, 80, '...'))[0];
         }
         else {
-          $capLink = $resource;
+          $capLink = mb_strimwidth($resource, 0, 80, '...');
         }
-        $renderArray['data_access']['ogc_wms'] = [
+        $renderArray['data_access']['ogc_wms' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WMS:'),
           '#markup' => '<a class="w3-text-blue" href="' . $capLink . '?service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
@@ -703,31 +706,31 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['data_access_url_ogc_wfs'])) {
-      foreach ($fields['data_access_url_ogc_wfs'] as $resource) {
-        $renderArray['data_access']['ogc_wfs'] = [
+      foreach ($fields['data_access_url_ogc_wfs'] as $index => $resource) {
+        $renderArray['data_access']['ogc_wfs' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WFS:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
     if (isset($fields['data_access_url_ogc_wcs'])) {
-      foreach ($fields['data_access_url_ogc_wcs'] as $resource) {
-        $renderArray['data_access']['ogc_wcs'] = [
+      foreach ($fields['data_access_url_ogc_wcs'] as $index => $resource) {
+        $renderArray['data_access']['ogc_wcs' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WCS:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
     if (isset($fields['data_access_url_ftp'])) {
-      foreach ($fields['data_access_url_ftp'] as $resource) {
-        $renderArray['data_access']['ftp'] = [
+      foreach ($fields['data_access_url_ftp'] as $index => $resource) {
+        $renderArray['data_access']['ftp' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('FTP:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -797,8 +800,8 @@ class DynamicLandingPagesController extends ControllerBase {
     ];
 
     if (isset($fields['related_url_user_guide'])) {
-      foreach ($fields['related_url_user_guide'] as $resource) {
-        $renderArray['related_information']['user_guide'] = [
+      foreach ($fields['related_url_user_guide'] as $index => $resource) {
+        $renderArray['related_information']['user_guide' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Users Guide:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -808,8 +811,8 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_home_page'])) {
-      foreach ($fields['related_url_home_page'] as $resource) {
-        $renderArray['related_information']['user_guide'] = [
+      foreach ($fields['related_url_home_page'] as $index => $resource) {
+        $renderArray['related_information']['user_guide' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Home Page:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -819,8 +822,8 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_obs_facility'])) {
-      foreach ($fields['related_url_obs_facility'] as $resource) {
-        $renderArray['related_information']['obs_facility'] = [
+      foreach ($fields['related_url_obs_facility'] as $index => $resource) {
+        $renderArray['related_information']['obs_facility' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Observation Facility:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -830,8 +833,8 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_ext_metadata'])) {
-      foreach ($fields['related_url_ext_metadata'] as $resource) {
-        $renderArray['related_information']['ext_metadata'] = [
+      foreach ($fields['related_url_ext_metadata'] as $index => $resource) {
+        $renderArray['related_information']['ext_metadata' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('External Metadata:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -842,7 +845,7 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_scientific_publication'])) {
       $i = 0;
-      foreach ($fields['related_url_scientific_publication'] as $resource) {
+      foreach ($fields['related_url_scientific_publication'] as $index => $resource) {
         $pub_desc = 'A scientific publication';
         if (isset($fields['related_url_scientific_publication_desc'][$i])) {
           $pub_desc = $fields['related_url_scientific_publication_desc'][$i];
@@ -850,7 +853,7 @@ class DynamicLandingPagesController extends ControllerBase {
             $pub_desc = 'A scientific publication';
           }
         }
-        $renderArray['related_information']['scientific_publication'][] = [
+        $renderArray['related_information']['scientific_publication'][$index] = [
           '#type' => 'item',
           '#title' => $this->t('Scientific Publication:'),
           '#markup' => '<a class="w3-text-blue" title="' . $pub_desc . 'href="' . $resource . '">' . $resource . '</a>',
@@ -862,8 +865,8 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_data_paper'])) {
-      foreach ($fields['related_url_data_paper'] as $resource) {
-        $renderArray['related_information']['data_paper'] = [
+      foreach ($fields['related_url_data_paper'] as $index => $resource) {
+        $renderArray['related_information']['data_paper' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Data Paper:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
@@ -873,7 +876,7 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_data_management_plan'])) {
-      foreach ($fields['related_url_data_management_plan'] as $resource) {
+      foreach ($fields['related_url_data_management_plan'] as $index => $resource) {
         $renderArray['related_information']['data_management_plan'] = [
           '#type' => 'item',
           '#title' => $this->t('Data Management Plan:'),
@@ -884,11 +887,22 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_other_documentation'])) {
-      foreach ($fields['related_other_documentation'] as $resource) {
-        $renderArray['related_information']['other_documentation'] = [
+      foreach ($fields['related_other_documentation'] as $index => $resource) {
+        $renderArray['related_information']['other_documentation' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Other Documentation:'),
           '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#allowed_tags' => ['a', 'strong'],
+        ];
+      }
+    }
+
+    if (isset($fields['related_url_data_server_landing_page'])) {
+      foreach ($fields['related_url_data_server_landing_page'] as $index => $resource) {
+        $renderArray['related_information']['data_server_landing_page' . $index] = [
+          '#type' => 'item',
+          '#title' => $this->t('Data server landing page:'),
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -1084,19 +1098,19 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['keywords_gcmd'])) {
       foreach ($fields['keywords_gcmd'] as $gcmd) {
         $keywords[] = [
-        '@type' => 'DefinedTerm',
-                    'name' => $gcmd,
-                    'inDefinedTermSet' => 'https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords'
+          '@type' => 'DefinedTerm',
+          'name' => $gcmd,
+          'inDefinedTermSet' => 'https://gcmd.earthdata.nasa.gov/kms/concepts/concept_scheme/sciencekeywords',
         ];
       }
     }
     if (isset($fields['keywords_cfstdn'])) {
       foreach ($fields['keywords_cfstdn'] as $cfstdn) {
         $keywords[] = [
-        '@type' => 'DefinedTerm',
-                    'name' => $cfstdn,
-                    'inDefinedTermSet' => 'https://vocab.nerc.ac.uk/standard_name/',
-                    'url' => 'https://vocab.nerc.ac.uk/standard_name/' . $cfstdn
+          '@type' => 'DefinedTerm',
+          'name' => $cfstdn,
+          'inDefinedTermSet' => 'https://vocab.nerc.ac.uk/standard_name/',
+          'url' => 'https://vocab.nerc.ac.uk/standard_name/' . $cfstdn,
         ];
       }
     }
@@ -1104,8 +1118,8 @@ class DynamicLandingPagesController extends ControllerBase {
       $projects = [];
       foreach ($fields['project_long_name'] as $projectln) {
         $projects[] = [
-        '@type' => 'MonetaryGrant',
-                       'name' => $projectln
+          '@type' => 'MonetaryGrant',
+          'name' => $projectln,
         ];
       }
     }
@@ -1113,8 +1127,8 @@ class DynamicLandingPagesController extends ControllerBase {
       $creators = [];
       foreach ($fields['personnel_investigator_name'] as $creator) {
         $creators[] = [
-        '@type' => 'Person',
-                       'name' => $creator
+          '@type' => 'Person',
+          'name' => $creator,
         ];
       }
     }
@@ -1122,8 +1136,8 @@ class DynamicLandingPagesController extends ControllerBase {
       $providers = [];
       foreach ($fields['personnel_investigator_organisation'] as $provider) {
         $providers[] = [
-        '@type' => 'Organization',
-                       'name' => $provider
+          '@type' => 'Organization',
+          'name' => $provider,
         ];
       }
     }
@@ -1140,8 +1154,8 @@ class DynamicLandingPagesController extends ControllerBase {
       if (isset($fields['personnel_metadata_author_name'])) {
         foreach ($fields['personnel_metadata_author_name'] as $contributor) {
           $contributors[] = [
-          '@type' => 'Person',
-                             'name' => $contributor
+            '@type' => 'Person',
+            'name' => $contributor,
           ];
         }
       }
@@ -1152,7 +1166,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $datadownloads[] = [
           '@type' => 'DataDownload',
           'description' => 'Direct dowload',
-          'contentUrl' => $datadownload
+          'contentUrl' => $datadownload,
         ];
       }
     }
@@ -1218,6 +1232,26 @@ class DynamicLandingPagesController extends ControllerBase {
       'funding' => $projects ?? '',
     ];
     return $json;
+  }
+
+  /**
+   * Convert URLs in text to HTML links.
+   *
+   * @param string $text
+   *   The text containing potential URLs.
+   *
+   * @return string
+   *   The text with URLs converted to HTML links.
+   */
+  public function convertUrlsToLinks($text) {
+    // Define a regular expression pattern to match URLs.
+    $pattern = '/(https?:\/\/[^\s]+)/';
+
+    // Replace URLs with HTML anchor tags.
+    $replacement = '<a class="w3-text-blue" href="$1" target="_blank">$1</a>';
+
+    // Perform the replacement.
+    return preg_replace($pattern, $replacement, $text);
   }
 
 }

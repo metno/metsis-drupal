@@ -642,7 +642,7 @@
         }
         if (additional_layers) {
           console.log("Adding additional layers");
-          addExtraLayers(init_proj);
+          // addExtraLayers(init_proj);
         }
         console.log("End of searchmap.js script");
       });
