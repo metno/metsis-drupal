@@ -131,6 +131,59 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+        platform_instrument_product_type:
+          id: platform_instrument_product_type
+          table: search_api_index_metsis
+          field: platform_instrument_product_type
+          relationship: none
+          group_type: group
+          admin_label: 'Platform instrument product type'
+          plugin_id: search_api
+          label: ''
+          exclude: true
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          link_to_item: false
+          use_highlighting: false
+          multi_type: separator
+          multi_separator: ', '
         thumbnail_url:
           id: thumbnail_url
           table: search_api_index_metsis
@@ -2158,7 +2211,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if data_access_url_opendap is empty and data_access_url_odata is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" rel=\"noindex\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Request CF-NetCDF file&quot;}\" data-dialog-type=\"modal\" title=\"Request CF-NetCDF file\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">Request CF-NetCDF file</a>\r\n</div>\r\n{% endif %}"
+            text: "{% if data_access_url_opendap is empty and data_access_url_http is not empty and is_parent == \"False\" %}\r\n<div id=\"netcdf-on-demand\" class=\"netcdf-on-demand\">\r\n<a class=\"adc-button adc-sbutton use-ajax\" rel=\"noindex\" data-dialog-options=\"{&quot;width&quot;:1200, &quot;title&quot;:&quot;Request CF-NetCDF file&quot;}\" data-dialog-type=\"modal\" title=\"Request CF-NetCDF file\"  href=\"/metsis/netcdf-on-demand/{{ id }}\">Request CF-NetCDF file</a>\r\n</div>\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false

@@ -48,6 +48,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
     $form['collections'] = [
       '#title' => $this->t('Select which collections to include in search (if none are selected, all collections will be included in the search)'),
       '#type' => 'select',
+      '#size' => 10,
     // '#header' => ['Collection'],
       '#options' => $collections,
       '#multiple' => TRUE,
@@ -158,6 +159,21 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
         ],
       ],
     ];
+    $productTypes = SearchUtils::getProductTypes();
+    // dpm($productTypes);
+    $form['product_types'] = [
+      '#title' => $this->t('Select which product types that should expose the NetCDF-Ondemand button'),
+      '#type' => 'select',
+      '#size' => 20,
+      '#options' => $productTypes,
+      '#multiple' => TRUE,
+      '#default_value' => $config->get('selected_product_types'),
+      '#states' => [
+        'visible' => [
+          ':input[name="enable_netcdf_ondemand"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
     // Add cloud coverage filter.
     $form['bbox_overlap_sort'] = [
       '#type' => 'checkbox',
@@ -254,6 +270,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
         'EPSG:4326' => $this->t('EPSG:4326'),
         'EPSG:32661' => $this->t('UPS North'),
         'EPSG:32761' => $this->t('UPS South'),
+        'EPSG:5041' => $this->t('EPSG:5041'),
       ],
       '#default_value' => $config->get('map_init_proj'),
     ];
@@ -420,6 +437,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('search_sort_score', $values['search_sort_score'])
       ->set('enable_netcdf_ondemand', $values['enable_netcdf_ondemand'])
       ->set('netcdf_ondemand_service_endpoint', $values['netcdf_ondemand_service_endpoint'])
+      ->set('selected_product_types', $values['product_types'])
       ->save();
 
     parent::submitForm($form, $form_state);

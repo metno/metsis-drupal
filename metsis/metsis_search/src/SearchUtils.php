@@ -872,7 +872,40 @@ EOD;
     foreach ($facet as $value => $count) {
       $collection[$value] = $value;
     }
+    asort($collection);
     return $collection;
+  }
+
+  /**
+   * Get a list of available collections in the index .
+   */
+  public static function getProductTypes() {
+    /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
+    $index = Index::load('metsis');
+
+    /** @var \Drupal\search_api_solr\Plugin\search_api\backend\SearchApiSolrBackend $backend */
+    $backend = $index->getServerInstance()->getBackend();
+
+    $connector = $backend->getSolrConnector();
+
+    $solarium_query = $connector->getSelectQuery();
+    // Get the facetset component.
+    $facetSet = $solarium_query->getFacetSet();
+
+    // Create a facet field instance and set options.
+    $facetSet->createFacetField('product_type')->setField('platform_instrument_product_type');
+
+    $result = $connector->execute($solarium_query);
+
+    // The total number of documents found by Solr.
+    // $found = $result->getNumFound();
+    $facet = $result->getFacetSet()->getFacet('product_type');
+    $product_types = [];
+    foreach ($facet as $value => $count) {
+      $product_types[$value] = $value;
+    }
+    asort($product_types);
+    return $product_types;
   }
 
 }

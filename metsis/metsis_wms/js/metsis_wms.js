@@ -40,6 +40,8 @@ console.log("Start of wms map script:");
           console.log('current selected proj: ' + selected_proj);
           console.log("WMS Layers to skip: ");
           console.log(wms_layers_skip);
+          console.log("Registerd projections: ");
+          console.log(projections);
 
         }
         console.log("Wms data is:");
@@ -176,6 +178,16 @@ console.log("Start of wms map script:");
           extent: ext32761
         });
 
+        // 5041
+        proj4.defs("EPSG:5041", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        ol.proj.proj4.register(proj4);
+        var ext5041 = [-8e+06, -8e+06, 12e+06, 10e+06];
+        var center5041 = [0, -90];
+        var proj5041 = new ol.proj.Projection({
+          code: 'EPSG:5041',
+          extent: ext5041
+        });
+
         // 4326
         var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000];
         var center4326 = [15, 0];
@@ -199,6 +211,11 @@ console.log("Start of wms map script:");
             extent: ext32761,
             center: center32761,
             projection: proj32761
+          },
+          'EPSG:5041': {
+            extent: ext5041,
+            center: center5041,
+            projection: proj5041
           }
         };
 
@@ -244,19 +261,22 @@ console.log("Start of wms map script:");
               projection: projObjectforCode[selected_proj].projection,
               //projection: selected_proj,
             }));
-            /*        map.getView().setZoom(map.getView().getZoom());
-                    wmsLayerGroup.getLayers().forEach(function(layer,index, array) {
-                      if ( layer instanceof ol.layer.Tile ) {
-                        layer.getSource().refresh();
-                      }
-                      else {
-                        layer.getLayers().forEach(function(layer,index, array) {
-                          if ( layer instanceof ol.layer.Tile ) {
-                            layer.getSource().refresh();
-                          }
-                    });
-                  }
-                });*/
+            /*        map.getView().setZoom(map.getView().getZoom());*/
+            /* wmsLayerGroup.getLayers().forEach(function (layer, index, array) {
+               if (layer instanceof ol.layer.Tile) {
+                 layer.getSource().setProperties({ 'projection': selected_proj });
+                 layer.getSource().refresh();
+               }
+               else {
+                 layer.getLayers().forEach(function (layer, index, array) {
+                   if (layer instanceof ol.layer.Tile) {
+                     layer.getSource().setProperties({ 'projection': selected_proj });
+                     layer.getSource().refresh();
+
+                   }
+                 });
+               }
+             });*/
             //progress_bar()
             map.getView().setZoom(map.getView().getZoom());
           }
@@ -1190,7 +1210,7 @@ console.log("Start of wms map script:");
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
-                          if ("time" === dimensions[j].name) {
+                          if ("time" === dimensions[j].name.toLowerCase()) {
                             var times = dimensions[j].values.split(",");
                             if (times.length == 1 && dimensions[j].values.indexOf('/')) {
                               var startDate = dimensions[j].values.split("/")[0];
@@ -1232,7 +1252,7 @@ console.log("Start of wms map script:");
                       var dimensions = ls[i].Dimension;
                       if (ls[i].Dimension) {
                         for (var j = 0; j < dimensions.length; j++) {
-                          if ("elevation" === dimensions[j].name || "depth" === dimensions[j].name) {
+                          if ("elevation" === dimensions[j].name.toLowerCase() || "depth" === dimensions[j].name.toLowerCase()) {
                             elevationUnits = dimensions[j].units;
                             var elevations = dimensions[j].values.split(",");
                             return elevations;
@@ -1374,7 +1394,7 @@ console.log("Start of wms map script:");
                             source: new ol.source.TileWMS(({
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
-                              projection: selected_proj,
+                              //projection: selected_proj,
                               params: {
                                 'LAYERS': ls[i].Name,
                                 'VERSION': result.version,
@@ -1407,7 +1427,7 @@ console.log("Start of wms map script:");
                             source: new ol.source.TileWMS(({
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
-                              projection: selected_proj,
+                              //projection: selected_proj,
                               params: {
                                 'LAYERS': ls[i].Name,
                                 'VERSION': result.version,
