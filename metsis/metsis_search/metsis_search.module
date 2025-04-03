@@ -215,7 +215,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
   $config = \Drupal::config('metsis_search.settings');
   $pywps_service = $config->get('pywps_service');
 
-  # Read some config values needed for NetCDF OnDemand.
+  // Read some config values needed for NetCDF OnDemand.
   $enable_netcdf_ondemand = $config->get('enable_netcdf_ondemand');
   $netcdf_ondemand_enabled_products = $config->get('selected_product_types');
 
@@ -276,25 +276,29 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
       }
     }
 
-    # Handeling of the NetCDF Ondemand field
-    if($enable_netcdf_ondemand) {
-      //dpm( $netcdf_ondemand_enabled_products);
+    // Handeling of the NetCDF Ondemand field.
+    if ($enable_netcdf_ondemand) {
+      // dpm( $netcdf_ondemand_enabled_products);.
       foreach ($view->result as $row) {
-      // Check your condition
-      $product_type = $row->{'solr_document/platform_instrument_product_type'};
-      $opendap_url = $row->{'solr_document/data_access_url_opendap'};
-      $http_url = $row->{'solr_document/data_access_url_http'};
+        // Check your condition.
+        $product_type = $row->{'solr_document/platform_instrument_product_type'};
+        $opendap_url = $row->{'solr_document/data_access_url_opendap'};
+        $http_url = $row->{'solr_document/data_access_url_http'};
 
-      //dpm($row);
-      if (!empty($product_type)) {
-        if (in_array($product_type[0], $netcdf_ondemand_enabled_products)) {
-          if(empty($opendap_url) && !empty($http_url)) {
-          // Modify the render array for your field
-          // $row->_entity->get('nothing_1')->view[0]['#access'] = FALSE;
-          //$fields = $view->display_handler->getOption('fields');
-      //$fields['nothing_1']['exclude'] = TRUE;
-       $view->field['nothing_1']->options['exclude'] = FALSE;
-      //$view->display_handler->overrideOption('fields', $fields);
+        // dpm($row);
+        if (!empty($product_type)) {
+          if (in_array($product_type[0], $netcdf_ondemand_enabled_products)) {
+            if (empty($opendap_url) && !empty($http_url)) {
+              // Modify the render array for your field
+              // $row->_entity->get('nothing_1')->view[0]['#access'] = FALSE;
+              // $fields = $view->display_handler->getOption('fields');
+              // $fields['nothing_1']['exclude'] = TRUE;.
+              $view->field['nothing_1']->options['exclude'] = FALSE;
+              // $view->display_handler->overrideOption('fields', $fields);
+            }
+            else {
+              $view->field['nothing_1']->options['exclude'] = TRUE;
+            }
           }
           else {
             $view->field['nothing_1']->options['exclude'] = TRUE;
@@ -304,11 +308,7 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
           $view->field['nothing_1']->options['exclude'] = TRUE;
         }
       }
-      else {
-          $view->field['nothing_1']->options['exclude'] = TRUE;
-      }
     }
-  }
 
   }
   if (isset($view) && ($view->storage->id() == 'metsis_elements')) {
@@ -1010,11 +1010,14 @@ function metsis_search_update_10303() {
 
 }
 
+/**
+ * Update metsis_search configuration with new projection and netCDF-OnDemand logic.
+ */
 function metsis_search_update_10310() {
   // Load the configuration.
   $config = \Drupal::configFactory()->getEditable('metsis_search.settings');
 
-  // Add the new projection
+  // Add the new projection.
   $projections = $config->get('map_projections');
   $projections['EPSG:5041'] = 'EPSG:5041';
   // Add an element to the list.
