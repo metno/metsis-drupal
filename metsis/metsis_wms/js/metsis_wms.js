@@ -156,11 +156,15 @@ console.log("Start of wms map script:");
         /**
          * Define the proj4 map_projections
          */
-        //console.log(proj4);
-        // two projections will be possible
-        // 32661
-        proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+        proj4.defs("EPSG:32661", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        //proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+        proj4.defs("EPSG:32761", "+proj=stere +lat_0=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        // proj4.defs('EPSG:32761', '+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+        proj4.defs("EPSG:5041", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
         ol.proj.proj4.register(proj4);
+
+        // 32661
         var ext32661 = [-6e+06, -3e+06, 9e+06, 6e+06];
         var center32661 = [0, 80];
         var proj32661 = new ol.proj.Projection({
@@ -169,8 +173,6 @@ console.log("Start of wms map script:");
         });
 
         // 32761
-        proj4.defs('EPSG:32761', '+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
-        ol.proj.proj4.register(proj4);
         var ext32761 = [-8e+06, -8e+06, 12e+06, 10e+06];
         var center32761 = [0, -90];
         var proj32761 = new ol.proj.Projection({
@@ -179,8 +181,6 @@ console.log("Start of wms map script:");
         });
 
         // 5041
-        proj4.defs("EPSG:5041", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
-        ol.proj.proj4.register(proj4);
         var ext5041 = [-8e+06, -8e+06, 12e+06, 10e+06];
         var center5041 = [0, -90];
         var proj5041 = new ol.proj.Projection({
@@ -190,12 +190,13 @@ console.log("Start of wms map script:");
 
         // 4326
         var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000];
-        var center4326 = [15, 0];
+        var center4326 = [0, 0];
+        //var proj4326 = new ol.proj.Projection('EPSG:4326');
         var proj4326 = new ol.proj.Projection({
           code: 'EPSG:4326',
           extent: ext4326
         });
-
+        console.log("Defined extension for this proj: " + proj4326.getExtent());
         var projObjectforCode = {
           'EPSG:4326': {
             extent: ext4326,
@@ -249,7 +250,8 @@ console.log("Start of wms map script:");
             selected_proj = this.value;
             console.log("change projection event: " + selected_proj);
 
-            console.log("Update view to new selected projection: " + selected_proj);
+            console.log("Update view to new selected projection: " + projObjectforCode[selected_proj].projection.getCode());
+            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation())
             //console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
               //center: ol.extent.getCenter(featuresExtent),
@@ -258,7 +260,7 @@ console.log("Start of wms map script:");
               //maxZoom: 23,
               center: projObjectforCode[selected_proj].center,
               extent: projObjectforCode[selected_proj].extent,
-              projection: projObjectforCode[selected_proj].projection,
+              projection: projObjectforCode[selected_proj].projection.getCode(),
               //projection: selected_proj,
             }));
             /*        map.getView().setZoom(map.getView().getZoom());*/
@@ -1395,7 +1397,9 @@ console.log("Start of wms map script:");
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
                               //projection: selected_proj,
+                              hidpi: false,
                               params: {
+                                'TILED': true,
                                 'LAYERS': ls[i].Name,
                                 'VERSION': result.version,
                                 'FORMAT': 'image/png',
@@ -1427,8 +1431,10 @@ console.log("Start of wms map script:");
                             source: new ol.source.TileWMS(({
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
+                              hidpi: false,
                               //projection: selected_proj,
                               params: {
+                                'TILED': true,
                                 'LAYERS': ls[i].Name,
                                 'VERSION': result.version,
                                 'FORMAT': 'image/png',
@@ -1631,7 +1637,7 @@ console.log("Start of wms map script:");
                 dataType: 'xml',
                 crossDomain: true,
                 // xhrFields: { withCredentials: true },
-                headers: { "Access-Control-Allow-Origin": '*' },
+                // headers: { "Access-Control-Allow-Origin": '*' },
                 //async: false,
                 error: function () {
                   console.log("Request failed: " + wmsUrl + getCapString);

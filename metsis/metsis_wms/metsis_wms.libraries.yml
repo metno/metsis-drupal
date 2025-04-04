@@ -2,13 +2,13 @@ wms_ol6:
   version: 1.4.1
   css:
     theme:
-      /libraries/openlayers-6.5.0/ol.css: {minified: true}
+      /libraries/ol-6.15.1/ol.css: {minified: true}
       /libraries/ol-ext-3.1.17/dist/ol-ext.min.css: { minified: true}
       /libraries/ol-geocoder/ol-geocoder.min.css: { minified: true }
       css/metsis_wms.css: {}
   js:
-    /libraries/openlayers-6.5.0/ol.js: { minified: true}
-    /libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false}
+    /libraries/ol-6.15.1/ol.js: { minified: true}
+    /libraries/proj4js-2.15.0/dist/proj4.js: { minified: true, preprocess: false}
     /libraries/ol-ext-3.1.17/dist/ol-ext.min.js: { minified: true }
     js/moment.min.js: { minified: true}
     /libraries/ol-geocoder/ol-geocoder.js: { minified: true} # , preprocess: false  }
@@ -20,3 +20,4 @@ wms_ol6:
     - core/drupal
     - core/drupalSettings
     - core/drupal.ajax
+    - jquery_ui_slider/slider
