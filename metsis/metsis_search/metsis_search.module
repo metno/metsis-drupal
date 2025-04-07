@@ -1018,10 +1018,10 @@ function metsis_search_update_10310() {
   $config = \Drupal::configFactory()->getEditable('metsis_search.settings');
 
   // Add the new projection.
-  $projections = $config->get('map_projections');
-  $projections['EPSG:5041'] = 'EPSG:5041';
+  // $projections = $config->get('map_projections');
+  // $projections['EPSG:5041'] = 'EPSG:5041';
   // Add an element to the list.
-  $config->set('map_projections', $projections);
+  // $config->set('map_projections', $projections);.
 
   $products = [
     'GRD' => 'GRD',
