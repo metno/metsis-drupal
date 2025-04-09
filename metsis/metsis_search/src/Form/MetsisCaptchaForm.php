@@ -92,39 +92,48 @@ class MetsisCaptchaForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state): void {
-    // @todo Validate the form here.
-    // Example:
-    // @code
-    //   if (mb_strlen($form_state->getValue('message')) < 10) {
-    //     $form_state->setErrorByName(
-    //       'message',
-    //       $this->t('Message should be at least 10 characters.'),
-    //     );
-    //   }
-    // @endcode
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $destination_url = $this->getRequest()->query->get('destination_url');
+    $query_params = $this->getRequest()->query->all();
+
+    // Extract the destination URL.
+    $destination_url = $query_params['destination_url'] ?? NULL;
+
+    // Remove the destination_url from the parameters array.
+    unset($query_params['destination_url']);
 
     // Check if the destination URL is valid.
-    if (filter_var($destination_url, FILTER_VALIDATE_URL, FILTER_SANITIZE_URL)) {
-      // dpm($destination_url);
-      $dest_url = filter_var($destination_url, FILTER_VALIDATE_URL, FILTER_SANITIZE_URL);
-      // dpm($dest_url);
-      $form_state->setRedirectUrl(Url::fromUri($dest_url));
+    if (filter_var($destination_url, FILTER_VALIDATE_URL)) {
+      // Parse the URL to handle query parameters correctly.
+      $parsed_url = parse_url($destination_url);
+      $query = $parsed_url['query'] ?? '';
+
+      // Reconstruct the full URL with original and additional query parameters.
+      $full_url = $parsed_url['scheme'] . '://' . $parsed_url['host'] . $parsed_url['path'];
+
+      // Add original query parameters.
+      if ($query) {
+        $full_url .= '?' . $query;
+      }
+
+      // Append additional query parameters from the request.
+      if (!empty($query_params)) {
+        $additional_query = http_build_query($query_params);
+        $full_url .= $query ? '&' . $additional_query : '?' . $additional_query;
+      }
+      // dpm($full_url);
+
+      // Redirect to the constructed URL.
+      $form_state->setRedirectUrl(Url::fromUri($full_url));
+      $this->messenger()->addStatus($this->t('The captcha has been solved successfully.'));
     }
     else {
       // If the URL is not valid, send a client error response.
       $response = new Response(
       'Invalid destination URL.',
       Response::HTTP_BAD_REQUEST
-      );
+          );
       $response->send();
+      exit;
     }
   }
 
