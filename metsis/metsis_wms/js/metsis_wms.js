@@ -262,21 +262,21 @@ console.log("Start of wms map script:");
               //projection: selected_proj,
             }));
             /*        map.getView().setZoom(map.getView().getZoom());*/
-            /* wmsLayerGroup.getLayers().forEach(function (layer, index, array) {
-               if (layer instanceof ol.layer.Tile) {
-                 layer.getSource().setProperties({ 'projection': selected_proj });
-                 layer.getSource().refresh();
-               }
-               else {
-                 layer.getLayers().forEach(function (layer, index, array) {
-                   if (layer instanceof ol.layer.Tile) {
-                     layer.getSource().setProperties({ 'projection': selected_proj });
-                     layer.getSource().refresh();
+            wmsLayerGroup.getLayers().forEach(function (layer, index, array) {
+              if (layer instanceof ol.layer.Tile) {
+                // layer.getSource().setProperties({ 'projection': selected_proj });
+                layer.getSource().refresh();
+              }
+              else {
+                layer.getLayers().forEach(function (layer, index, array) {
+                  if (layer instanceof ol.layer.Tile) {
+                    // layer.getSource().setProperties({ 'projection': selected_proj });
+                    layer.getSource().refresh();
 
-                   }
-                 });
-               }
-             });*/
+                  }
+                });
+              }
+            });
             //progress_bar()
             map.getView().setZoom(map.getView().getZoom());
           }
@@ -673,7 +673,7 @@ console.log("Start of wms map script:");
               //rotation: 0.5,
               center: projObjectforCode[selected_proj].center,
               extent: projObjectforCode[selected_proj].extent,
-              projection: projObjectforCode[selected_proj].projection,
+              projection: projObjectforCode[selected_proj].projection.getCode(),
               //projection: selected_proj,
             }),
           });

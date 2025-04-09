@@ -867,6 +867,23 @@ function metsis_search_form_views_exposed_form_alter(&$form, FormStateInterface 
   }
 
 }
+/**
+ * Add antibot to protection to the search form and captcha form
+ *
+ * @param string $form_id
+ * @param bool $protection
+ * @return void
+ */
+function metsis_search_antibot_form_status_alter(string $form_id, bool &$protection) {
+  if ($form_id === 'metsis_search_metsis_captcha') {
+    $protection = TRUE;
+  }
+  if ($form_id == 'views_exposed_form' && $form['#id'] == 'views-exposed-form-metsis-search-results') {
+    $protection = TRUE;
+  }
+}
+
+
 
 /**
  * Alter the Font Awesome categories metadata.

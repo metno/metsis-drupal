@@ -139,7 +139,12 @@ class GetCapController extends ControllerBase {
       $responseCustom = new Response(
             $responseXml->getBody(),
             Response::HTTP_OK,
-            ['Content-Type' => 'application/xml']
+            [
+              'Content-Type' => 'application/xml',
+              'Access-Control-Allow-Origin' => '"*"',
+              'Access-Control-Allow-Headers' => '"*"',
+              'Access-Control-Allow-Methods' => 'GET, HEAD, POST, OPTIONS',
+            ]
         );
       // $body = (string) $responseCustom;
       $body = (string) $response->getBody();

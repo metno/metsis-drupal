@@ -119,3 +119,11 @@ metsis_search.netcdf_on_demand:
     _controller: 'Drupal\metsis_search\Controller\NetCDFOnDemandController::content'
   requirements:
     _permission: 'access content'
+
+metsis_search.metsis_captcha:
+  path: '/metsis/captcha'
+  defaults:
+    _title: 'Solve captcha to continue'
+    _form: 'Drupal\metsis_search\Form\MetsisCaptchaForm'
+  requirements:
+    _permission: 'access content'
