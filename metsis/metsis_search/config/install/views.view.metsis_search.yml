@@ -286,9 +286,9 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          type: true-false
-          type_custom_true: ''
-          type_custom_false: ''
+          type: custom
+          type_custom_true: 'True'
+          type_custom_false: 'False'
           not: false
           link_to_item: false
           use_highlighting: false
@@ -343,9 +343,9 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          type: true-false
-          type_custom_true: ''
-          type_custom_false: ''
+          type: custom
+          type_custom_true: 'True'
+          type_custom_false: 'False'
           not: false
           link_to_item: false
           use_highlighting: false
@@ -1852,7 +1852,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<div id=\"parent-{{ id}}\" >\r\n<a class=\"adc-button adc-sbutton\" title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/search{{ children_search_string }}\">Child data..[{{ num_children }}]</a>\r\n</div>\r\n{% endif %}\r\n"
+            text: "{{ is_parent}}, {{ num_children }}, {{ children_search_string }}\r\n{% if is_parent|lower == 'true' %}\r\n<div id=\"parent-{{ id}}\" >\r\n<a class=\"adc-button adc-sbutton\" title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/search{{ children_search_string }}\">Child data..[{{ num_children }}]</a>\r\n</div>\r\n{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false

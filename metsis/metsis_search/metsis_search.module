@@ -603,7 +603,8 @@ function metsis_search_views_data_alter(array &$data) {
 
   // dpm($data['views']);.
 
-  // dpm($data['search_api_index_metsis_simple_search'], __FUNCTION__);
+  // dpm($data['search_api_index_metsis']['abstract'], __FUNCTION__);
+  // dpm($data['search_api_index_metsis']['num_children'], __FUNCTION__);
   // dpm($data, __FUNCTION__);.
 }
 

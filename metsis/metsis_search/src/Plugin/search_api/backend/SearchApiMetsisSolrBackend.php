@@ -245,6 +245,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
             sprintf('%d of %d', $found_children, $total_children)
             );
 
+            // dpm($num_children_value, __FUNCTION__);
             // Create and add values to the num_children field.
             $num_children_field = new Field($index, 'num_children');
             $num_children_field->setDatasourceID($datasource);
