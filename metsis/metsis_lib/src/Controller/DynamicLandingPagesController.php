@@ -813,16 +813,20 @@ class DynamicLandingPagesController extends ControllerBase {
     $renderArray['related_information']['landing_page'] = [
       '#type' => 'item',
       '#title' => $this->t('Landing Page:'),
-      '#markup' => '<a class="w3-text-blue" href="' . $landingPage . '">' . $landingPage . '</a>',
+      '#markup' => '<a class="w3-text-blue" href="' . $landingPage . '" title="Dataset landing page">' . $landingPage . '</a>',
       '#allowed_tags' => ['a', 'strong'],
     ];
 
     if (isset($fields['related_url_user_guide'])) {
       foreach ($fields['related_url_user_guide'] as $index => $resource) {
+        $desc_title = 'Users guide';
+        if (isset($fields['related_url_user_guide_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_user_guide_desc'][$index]);
+        }
         $renderArray['related_information']['user_guide' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Users Guide:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -830,10 +834,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_home_page'])) {
       foreach ($fields['related_url_home_page'] as $index => $resource) {
+        $desc_title = 'Home page';
+        if (isset($fields['related_url_home_page_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_home_page_desc'][$index]);
+        }
         $renderArray['related_information']['user_guide' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Home Page:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -841,10 +849,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_obs_facility'])) {
       foreach ($fields['related_url_obs_facility'] as $index => $resource) {
+        $desc_title = 'Observation facility';
+        if (isset($fields['related_url_obs_facility_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_obs_facility_desc'][$index]);
+        }
         $renderArray['related_information']['obs_facility' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Observation Facility:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -852,42 +864,68 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_ext_metadata'])) {
       foreach ($fields['related_url_ext_metadata'] as $index => $resource) {
+        $desc_title = 'External metadata';
+        if (isset($fields['related_url_ext_metadata_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_ext_metadata_desc'][$index]);
+        }
+
         $renderArray['related_information']['ext_metadata' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('External Metadata:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
     }
 
     if (isset($fields['related_url_scientific_publication'])) {
-      $i = 0;
+      // $i = 0;
       foreach ($fields['related_url_scientific_publication'] as $index => $resource) {
         $pub_desc = 'A scientific publication';
-        if (isset($fields['related_url_scientific_publication_desc'][$i])) {
-          $pub_desc = $fields['related_url_scientific_publication_desc'][$i];
+        if (isset($fields['related_url_scientific_publication_desc'][$index])) {
+          $pub_desc = htmlspecialchars($fields['related_url_scientific_publication_desc'][$index]);
           if ($pub_desc === '' || $pub_desc === 'Not Available') {
             $pub_desc = 'A scientific publication';
           }
         }
-        $renderArray['related_information']['scientific_publication'][$index] = [
+        $renderArray['related_information']['scientific_publication' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Scientific Publication:'),
-          '#markup' => '<a class="w3-text-blue" title="' . $pub_desc . 'href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $pub_desc . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
 
-        $i++;
+        // $i++;
+      }
+    }
+
+    if (isset($fields['related_url_software'])) {
+      foreach ($fields['related_url_software'] as $index => $resource) {
+        $desc_title = 'External metadata';
+        if (isset($fields['related_url_software_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_software_desc'][$index]);
+        }
+
+        $renderArray['related_information']['software' . $index] = [
+          '#type' => 'item',
+          '#title' => $this->t('Software:'),
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
+          '#allowed_tags' => ['a', 'strong'],
+        ];
       }
     }
 
     if (isset($fields['related_url_data_paper'])) {
+
       foreach ($fields['related_url_data_paper'] as $index => $resource) {
+        $desc_title = 'Data paper';
+        if (isset($fields['related_url_data_paper_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_data_paper_desc'][$index]);
+        }
         $renderArray['related_information']['data_paper' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Data Paper:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -895,10 +933,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_data_management_plan'])) {
       foreach ($fields['related_url_data_management_plan'] as $index => $resource) {
+        $desc_title = 'Data management plan';
+        if (isset($fields['related_url_data_management_plan_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_data_management_plan_desc'][$index]);
+        }
         $renderArray['related_information']['data_management_plan'] = [
           '#type' => 'item',
           '#title' => $this->t('Data Management Plan:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -906,10 +948,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_other_documentation'])) {
       foreach ($fields['related_other_documentation'] as $index => $resource) {
+        $desc_title = 'Other documentation';
+        if (isset($fields['related_url_other_documentation_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_other_documentation_desc'][$index]);
+        }
         $renderArray['related_information']['other_documentation' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Other Documentation:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . $resource . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . $resource . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -917,10 +963,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     if (isset($fields['related_url_data_server_landing_page'])) {
       foreach ($fields['related_url_data_server_landing_page'] as $index => $resource) {
+        $desc_title = 'Data server landing page';
+        if (isset($fields['related_url_data_server_landing_page_desc'][$index])) {
+          $desc_title = htmlspecialchars($fields['related_url_data_server_landing_page_desc'][$index]);
+        }
         $renderArray['related_information']['data_server_landing_page' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('Data server landing page:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $resource . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '" title="' . $desc_title . '">' . mb_strimwidth($resource, 0, 80, '...') . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
@@ -1036,7 +1086,7 @@ class DynamicLandingPagesController extends ControllerBase {
     [
       '#type' => 'html_tag',
       '#tag' => 'script',
-      '#value' => Json::encode($jsonld),
+      '#value' => json_encode($jsonld, JSON_UNESCAPED_SLASHES),
       '#attributes' => ['type' => 'application/ld+json'],
     ],
       'schema_metatag',

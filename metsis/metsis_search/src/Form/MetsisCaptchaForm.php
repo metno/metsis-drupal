@@ -121,7 +121,6 @@ class MetsisCaptchaForm extends FormBase {
         $full_url .= $query ? '&' . $additional_query : '?' . $additional_query;
       }
       // dpm($full_url);
-
       // Redirect to the constructed URL.
       $form_state->setRedirectUrl(Url::fromUri($full_url));
       $this->messenger()->addStatus($this->t('The captcha has been solved successfully.'));
