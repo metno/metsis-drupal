@@ -884,7 +884,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if  'https://doi.org'  in dataset_citation_doi %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi  | replace('https://doi.org/','')}}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org' not in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://doi.org/{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% elseif  ('http' not in dataset_citation_doi) and ('doi.org'  in dataset_citation_doi) %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"https://{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% else %}\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ dataset_citation_doi }}\" target=\"_blank\">{{ dataset_citation_doi }}</a>\r\n{% endif %}"
+            text: "{% set doi_base_url = 'https://doi.org/' %}\r\n\r\n{% set doi_url = dataset_citation_doi|trim|striptags %}\r\n\r\n{% if \"doi.org/\" in doi_url  %}\r\n  {% set doi = doi_url | replace({'http://doi.org/': '', 'https://doi.org/': '', 'doi.org/': ''}) %}\r\n{% else %}\r\n  {% set doi = doi_url %}\r\n{% endif %}\r\n\r\n<i class=\"ai ai-doi\"></i> <a href=\"{{ doi_base_url ~ doi }}\" target=\"_blank\">{{ doi }}</a>"
             make_link: false
             path: ''
             absolute: false
@@ -925,7 +925,7 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-          filter_type: plain
+          filter_type: xss
         fieldset_1:
           id: fieldset_1
           table: views

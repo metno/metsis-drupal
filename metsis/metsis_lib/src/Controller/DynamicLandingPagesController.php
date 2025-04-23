@@ -511,6 +511,15 @@ class DynamicLandingPagesController extends ControllerBase {
         '#allowed_tags' => ['a', 'strong'],
       ];
     }
+    if (isset($fields['dataset_citation_publication_date'])) {
+      $pub_time = strtotime($fields['dataset_citation_publication_date'][0]);
+      $renderArray['citation_wrapper']['publisher_date'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Publication date:'),
+        '#markup' => date('Y-m-d', $pub_time),
+        '#allowed_tags' => ['a', 'strong'],
+      ];
+    }
 
     if (isset($fields['dataset_citation_publisher'])) {
       $renderArray['citation_wrapper']['publisher'] = [
@@ -529,6 +538,15 @@ class DynamicLandingPagesController extends ControllerBase {
         '#allowed_tags' => ['a', 'strong', 'i'],
       ];
     }
+    if (isset($fields['dataset_citation_url'])) {
+      $renderArray['citation_wrapper']['publisher_url'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Publication Url:'),
+        '#url' => Url::fromUri($fields['dataset_citation_url'][0]),
+        '#allowed_tags' => ['a', 'strong'],
+      ];
+    }
+
     // dpm(sizeof($renderArray['citation_wrapper']));.
     if (count($renderArray['citation_wrapper']) <= 2) {
       $renderArray['citation_wrapper'] = NULL;
