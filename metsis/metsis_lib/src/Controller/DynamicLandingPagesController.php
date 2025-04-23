@@ -2,7 +2,6 @@
 
 namespace Drupal\metsis_lib\Controller;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
@@ -414,7 +413,7 @@ class DynamicLandingPagesController extends ControllerBase {
     // Check if we got point or polygon.
     $isPoint = FALSE;
     if (($fields['geographic_extent_rectangle_west'] === $fields['geographic_extent_rectangle_east'])
-      && ($fields['geographic_extent_rectangle_south'] === $fields['geographic_extent_rectangle_north'])) {
+    && ($fields['geographic_extent_rectangle_south'] === $fields['geographic_extent_rectangle_north'])) {
       $features = [[
         'type' => 'point',
         'lat' => $fields['geographic_extent_rectangle_south'],
@@ -426,20 +425,20 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     else {
       $features = [
-        /*
+      /*
       [
-        'type' => 'json',
-        'json' => $geo_json_decoded,
+      'type' => 'json',
+      'json' => $geo_json_decoded,
 
       ],*/
       [
         'type' => 'polygon',
         'points' => [
-          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
-          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_north']],
-          ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_north']],
-          ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_south']],
-          ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
+      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
+      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_north']],
+      ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_north']],
+      ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_south']],
+      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
 
         ],
       ],
@@ -533,7 +532,7 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['dataset_citation_doi'])) {
       $renderArray['citation_wrapper']['doi'] = [
         '#type' => 'item',
-          // '#title' => $this->t('DOI:'),.
+      // '#title' => $this->t('DOI:'),.
         '#markup' => '<i class="ai ai-doi"></i> <a class="w3-text-blue" href="' . $fields['dataset_citation_doi'][0] . '">' . $fields['dataset_citation_doi'][0] . '</a>',
         '#allowed_tags' => ['a', 'strong', 'i'],
       ];
@@ -564,8 +563,8 @@ class DynamicLandingPagesController extends ControllerBase {
         '#type' => 'fieldset',
         '#title' => $this->t('Use and Access Constraints'),
         '#attributes' => [
-          // 'class' => ['w3-cell'],.
-        ],
+      // 'class' => ['w3-cell'],.
+      ],
         '#prefix' => '<div class="w3-container w3-cell">',
         '#suffix' => '</div>',
       ];
@@ -608,8 +607,8 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Metadata Information'),
       '#attributes' => [
-          // 'class' => ['w3-cell'],.
-        ],
+      // 'class' => ['w3-cell'],.
+    ],
       '#prefix' => '<div class="w3-container w3-cell">',
       '#suffix' => '</div>',
     ];
@@ -669,10 +668,10 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Data Access'),
       '#attributes' => [
-          // 'class' => ['w3-cell'],.
-        ],
-        // '#prefix' => '<div class="w3-container w3-cell">',
-        // '#suffix' => '</div>',.
+      // 'class' => ['w3-cell'],.
+    ],
+      // '#prefix' => '<div class="w3-container w3-cell">',
+      // '#suffix' => '</div>',.
     ];
     if (isset($fields['data_access_url_http'])) {
       foreach ($fields['data_access_url_http'] as $index => $resource) {
@@ -767,8 +766,8 @@ class DynamicLandingPagesController extends ControllerBase {
       '#type' => 'fieldset',
       '#title' => $this->t('Related Information'),
       '#attributes' => [
-          // 'class' => ['w3-cell'],.
-        ],
+      // 'class' => ['w3-cell'],.
+    ],
     ];
     if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
       if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
@@ -1193,11 +1192,17 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     if (isset($fields['personnel_investigator_name'])) {
       $creators = [];
-      foreach ($fields['personnel_investigator_name'] as $creator) {
-        $creators[] = [
+      foreach ($fields['personnel_investigator_name'] as $idx => $creator) {
+        $creators[$idx] = [
           '@type' => 'Person',
           'name' => $creator,
         ];
+        if (isset($fields['personnel_investigator_email'][$idx])) {
+          $email_string = $fields['personnel_investigator_email'][$idx];
+          if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
+            $creators[$idx]['email'] = $email_string;
+          }
+        }
       }
     }
     if (isset($fields['personnel_investigator_organisation'])) {
@@ -1212,19 +1217,31 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['personnel_technical_name']) or isset($fields['personnel_metadata_author_name'])) {
       $contributors = [];
       if (isset($fields['personnel_technical_name'])) {
-        foreach ($fields['personnel_investigator_name'] as $contributor) {
-          $contributors[] = [
+        foreach ($fields['personnel_technical_name'] as $idx => $contributor) {
+          $contributors[$idx] = [
             '@type' => 'Person',
             'name' => $contributor,
           ];
+          if (isset($fields['personnel_technical_email'][$idx])) {
+            $email_string = $fields['personnel_technical_email'][$idx];
+            if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
+              $creators[$idx]['email'] = $email_string;
+            }
+          }
         }
       }
       if (isset($fields['personnel_metadata_author_name'])) {
-        foreach ($fields['personnel_metadata_author_name'] as $contributor) {
-          $contributors[] = [
+        foreach ($fields['personnel_metadata_author_name'] as $idx => $contributor) {
+          $contributors[$idx] = [
             '@type' => 'Person',
             'name' => $contributor,
           ];
+          if (isset($fields['personnel_metadata_author_email'][$idx])) {
+            $email_string = $fields['personnel_metadata_author_email'][$idx];
+            if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
+              $creators[$idx]['email'] = $email_string;
+            }
+          }
         }
       }
     }
@@ -1272,7 +1289,6 @@ class DynamicLandingPagesController extends ControllerBase {
       '@id' => $fields['metadata_identifier'],
       'identifier' => [
         '@type' => 'PropertyValue',
-        '@id' => $fields['related_url_landing_page'][0] ?? '',
         'url' => $fields['related_url_landing_page'][0] ?? '',
         'value' => $mid,
       ],
@@ -1295,10 +1311,16 @@ class DynamicLandingPagesController extends ControllerBase {
       'publisher' => [
         '@type' => 'Organization',
         'name' => $fields['data_center_long_name'][0] ?? '',
-        'url' => $fields['data_center_url'][0] ?? '',
+        'url' => $fields['data_center_data_center_url'][0] ?? '',
       ],
       'funding' => $projects ?? '',
     ];
+    if (isset($fields['personnel_datacenter_email'][0])) {
+      $email_string = $fields['personnel_datacenter_email'][0];
+      if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
+        $json['publisher']['email'] = $email_string;
+      }
+    }
     return $json;
   }
 
