@@ -460,9 +460,13 @@ class DynamicLandingPagesController extends ControllerBase {
     // $settings['map_position']['center']['lon'] = $features['lon'];
     // Set $map array with leafletMapGetInfo.
     $map = $this->leaflet->leafletMapGetInfo();
-    // dpm($map);
     // $map = leaflet_leaflet_map_info();
     $map['OSM Mapnik']['settings']['leaflet_markercluster'] = [
+
+      'control' => FALSE,
+
+    ];
+    $map['OSM Mapnik']['settings']['reset_map'] = [
 
       'control' => FALSE,
 
