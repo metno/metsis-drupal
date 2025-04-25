@@ -1207,6 +1207,13 @@ class DynamicLandingPagesController extends ControllerBase {
             $creators[$idx]['email'] = $email_string;
           }
         }
+        if (isset($fields['personnel_investigator_organisation'][$idx])) {
+          $affiliation = $fields['personnel_investigator_organisation'][$idx];
+            $creators[$idx]['affiliation'] = [
+              '@type' => 'Organization',
+              'name' => $affiliation,
+            ];
+        }
       }
     }
     if (isset($fields['personnel_investigator_organisation'])) {
@@ -1229,8 +1236,15 @@ class DynamicLandingPagesController extends ControllerBase {
           if (isset($fields['personnel_technical_email'][$idx])) {
             $email_string = $fields['personnel_technical_email'][$idx];
             if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
-              $creators[$idx]['email'] = $email_string;
+              $contributors[$idx]['email'] = $email_string;
             }
+          }
+          if (isset($fields['personnel_technical_organisation'][$idx])) {
+            $affiliation = $fields['personnel_technical_organisation'][$idx];
+              $contributors[$idx]['affiliation'] = [
+                '@type' => 'Organization',
+                'name' => $affiliation,
+              ];
           }
         }
       }
@@ -1243,8 +1257,15 @@ class DynamicLandingPagesController extends ControllerBase {
           if (isset($fields['personnel_metadata_author_email'][$idx])) {
             $email_string = $fields['personnel_metadata_author_email'][$idx];
             if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
-              $creators[$idx]['email'] = $email_string;
+              $contributors[$idx]['email'] = $email_string;
             }
+          }
+          if (isset($fields['personnel_metadata_author_organisation'][$idx])) {
+            $affiliation = $fields['personnel_metadata_author_organisation'][$idx];
+              $contributors[$idx]['affiliation'] = [
+                '@type' => 'Organization',
+                'name' => $affiliation,
+              ];
           }
         }
       }
@@ -1304,7 +1325,7 @@ class DynamicLandingPagesController extends ControllerBase {
       'keywords' => $keywords,
       'includedInDataCatalog' => [
         '@type' => 'DataCatalog',
-        'name:' => $host,
+        'url' => 'https://' . $host,
       ],
       'temporalCoverage' => $start_date . '/' . $end_date ,
       'spatialCoverage' => $spatialcoverage,
@@ -1315,7 +1336,7 @@ class DynamicLandingPagesController extends ControllerBase {
       'publisher' => [
         '@type' => 'Organization',
         'name' => $fields['data_center_long_name'][0] ?? '',
-        'url' => $fields['data_center_data_center_url'][0] ?? '',
+        'url' => $fields['data_center_url'][0] ?? '',
       ],
       'funding' => $projects ?? '',
     ];
@@ -1324,6 +1345,17 @@ class DynamicLandingPagesController extends ControllerBase {
       if (filter_var($email_string, FILTER_VALIDATE_EMAIL)) {
         $json['publisher']['email'] = $email_string;
       }
+    }
+    if (isset($fields['personnel_datacenter_name'][0])) {
+      $json['publisher']['contactPoint'] = [
+        '@type' => "ContactPoint",
+        'name' => $fields['personnel_datacenter_name'][0],
+        'email' => $fields['personnel_datacenter_email'][0],
+        'contactType'=> "Data center contact",
+      ];
+    }
+    if ($host === 'adc.met.no') {
+      $json['includedInDataCatalog']['name'] = "Arctic Data Centre";
     }
     return $json;
   }
