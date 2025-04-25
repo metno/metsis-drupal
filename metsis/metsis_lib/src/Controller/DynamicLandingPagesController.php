@@ -1273,7 +1273,7 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
       if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
         $parent_id = $fields['related_dataset'][0];
-        $parent = 'https://' . $host . '/dataset/'. substr($parent_id, strlen($id_prefix) + 1);
+        $parent = 'https://' . $host . '/dataset/' . substr($parent_id, strlen($id_prefix) + 1);
       }
     }
     if (isset($fields['data_access_url_http'])) {
