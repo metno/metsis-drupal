@@ -1137,24 +1137,21 @@ class DynamicLandingPagesController extends ControllerBase {
     $style = file_get_contents(DRUPAL_ROOT . $stylepath);
 
     // Define the base directory for resolving relative paths.
-    define('BASE_DIR', DRUPAL_ROOT . $xslt_path);
-    dpm(BASE_DIR);
-    // Custom entity loader function.
-    $entityLoader = function ($public_id, $system_id, $context) {
-      // Resolve the path if it's relative.
-      dpm($public_id);
-      dpm($system_id);
-      if (str_contains($system_id, 'thesauri')) {
+    define('BASE_DIR', DRUPAL_ROOT . '/libraries/mmd/');
 
-        $system_id = BASE_DIR;
+    // Define custom entityloader function for making the relative thesauri load.
+    $entityLoader = function ($public, $system, $context) {
+      // Resolve the path if it's relative.
+      if (str_contains($system, 'thesauri/mmd-vocabulary.xml')) {
+        $this->getLogger('export_xml')->notice("thesauri-dir is %system",
+          ['%system' => $system]);
+        $system = realpath(BASE_DIR . 'thesauri/mmd-vocabulary.xml');
+        $this->getLogger('export_xml')->notice("thesauri-dir rewritten to: %system",
+             ['%system' => $system]);
+
       }
-      dpm($context);
-      if (substr($system_id, 0, 1) !== '/') {
-        $system_id = BASE_DIR . $system_id . 'IF';
-      }
-      return $system_id;
+      return $system;
     };
-    dpm($entityLoader);
     // Set the custom entity loader for libxml.
     libxml_set_external_entity_loader($entityLoader);
 
@@ -1170,13 +1167,8 @@ class DynamicLandingPagesController extends ControllerBase {
     $xmlDoc = new \DOMDocument();
     $xmlDoc->loadXML($xml);
 
-    // $xslt = new \XSLTProcessor();
-    // $xslt->importStylesheet(new \SimpleXMLElement($style));
-    // dpm(rtrim(DRUPAL_ROOT . $xslt_path, '/'), __FUNCTION__);
-    // $xslt->setParameter('', 'baseUri', DRUPAL_ROOT . $xslt_path . 'thesauri/');
-
     // Return the transformed XML.
-    return $xslt->transformToXml(new \SimpleXMLElement($xml));
+    return $xslt->transformToXml($xmlDoc);
   }
 
   /**
