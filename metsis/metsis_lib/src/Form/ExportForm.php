@@ -54,7 +54,7 @@ class ExportForm extends FormBase {
 
     $form['export']['iso'] = [
       '#type' => 'submit',
-      '#value' => $this->t('ISO-Inspire'),
+      '#value' => $this->t('ISO 19115'),
       '#export_type' => 'iso',
       '#ajax' => [
         'callback' => '::ajaxCallback',
@@ -62,9 +62,29 @@ class ExportForm extends FormBase {
 
     ];
 
-    $form['export']['iso-norge'] = [
+    $form['export']['iso2'] = [
       '#type' => 'submit',
-      '#value' => $this->t('ISO-Norge-Inspire'),
+      '#value' => $this->t('ISO 19115-2'),
+      '#export_type' => 'iso2',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
+
+    ];
+
+    $form['export']['inspire'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('ISO Inspire'),
+      '#export_type' => 'inspire',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
+
+    ];
+
+    $form['export']['geonorge'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Norwegian ISO Inspire'),
       '#export_type' => 'geonorge',
     /*'#ajax' => [
     'callback' => '::submitForm',
@@ -72,10 +92,31 @@ class ExportForm extends FormBase {
      */
 
     ];
+
     $form['export']['dif'] = [
       '#type' => 'submit',
-      '#value' => $this->t('NASA DIF 9.8'),
+      '#value' => $this->t('NASA DIF 9'),
       '#export_type' => 'dif',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
+
+    ];
+
+    $form['export']['dif10'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('NASA DIF 10'),
+      '#export_type' => 'dif10',
+      '#ajax' => [
+        'callback' => '::ajaxCallback',
+      ],
+
+    ];
+
+    $form['export']['dcatap'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('DCAT'),
+      '#export_type' => 'dcatap',
       '#ajax' => [
         'callback' => '::ajaxCallback',
       ],
