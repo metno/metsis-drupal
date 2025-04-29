@@ -45,9 +45,9 @@
 {% set newheader = header|without('entity_block') %}
 
 <div{{attributes.addClass(classes)}}>
-	<div class="views-view-responsive-grid views-view-responsive-grid--horizontal" style="--views-responsive-grid--column-count:2;--views-responsive-grid--cell-min-width:100px;--views-responsive-grid--layout-gap:0.5em;">
+	<div class="views-view-responsive-grid views-view-responsive-grid--horizontal" style="--views-responsive-grid--column-count:1;--views-responsive-grid--cell-min-width:100px;--views-responsive-grid--layout-gap:0.5em;">
 		<div class="views-view-responsive-grid__item">
-			<div class="views-view-responsive-grid__item-inner">
+			<div class="views-view-responsive-grid__item-inner simple-search-box">
 				{% if exposed %}
 					<div class="view-filters form-group w3-container w3-card-2">
 						{{ exposed }}

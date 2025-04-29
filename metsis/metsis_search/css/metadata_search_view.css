@@ -141,3 +141,8 @@ span.field_content {
 .parent-more-content {
   display: none;
 }
+
+/* Simple searchbox */
+.simple-search-box {
+  display: flex;
+}

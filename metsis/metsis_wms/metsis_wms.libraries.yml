@@ -8,10 +8,10 @@ wms_ol6:
       /libraries/ol-geocoder/ol-geocoder.min.css: { minified: true }
       css/metsis_wms.css: {}
   js:
-    # /libraries/ol-6.15.1/ol.js: { minified: true}
-    /libraries/openlayers-6.5.0/ol.js: { minified: true }
-    # /libraries/proj4js-2.15.0/dist/proj4.js: { minified: true, preprocess: false}
-    /libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false }
+    /libraries/ol-6.15.1/ol.js: { minified: true}
+    # /libraries/openlayers-6.5.0/ol.js: { minified: true }
+    /libraries/proj4js-2.15.0/dist/proj4.js: { minified: true, preprocess: false}
+    # /libraries/proj4js-2.6.3/dist/proj4.js: { minified: true, preprocess: false }
     /libraries/ol-ext-3.1.17/dist/ol-ext.min.js: { minified: true }
     js/moment.min.js: { minified: true}
     /libraries/ol-geocoder/ol-geocoder.js: { minified: true} # , preprocess: false  }

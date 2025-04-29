@@ -950,7 +950,7 @@ class DynamicLandingPagesController extends ControllerBase {
     }
 
     if (isset($fields['related_url_other_documentation'])) {
-      foreach ($fields['related_other_documentation'] as $index => $resource) {
+      foreach ($fields['related_url_other_documentation'] as $index => $resource) {
         $desc_title = 'Other documentation';
         if (isset($fields['related_url_other_documentation_desc'][$index])) {
           $desc_title = htmlspecialchars($fields['related_url_other_documentation_desc'][$index]);
