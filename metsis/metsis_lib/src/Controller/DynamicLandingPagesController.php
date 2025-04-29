@@ -1136,8 +1136,44 @@ class DynamicLandingPagesController extends ControllerBase {
     $stylepath = $xslt_path . $prefix . $type . '.xsl';
     $style = file_get_contents(DRUPAL_ROOT . $stylepath);
 
+    // Define the base directory for resolving relative paths.
+    define('BASE_DIR', DRUPAL_ROOT . $xslt_path);
+    dpm(BASE_DIR);
+    // Custom entity loader function.
+    $entityLoader = function ($public_id, $system_id, $context) {
+      // Resolve the path if it's relative.
+      dpm($public_id);
+      dpm($system_id);
+      if (str_contains($system_id, 'thesauri')) {
+
+        $system_id = BASE_DIR;
+      }
+      dpm($context);
+      if (substr($system_id, 0, 1) !== '/') {
+        $system_id = BASE_DIR . $system_id . 'IF';
+      }
+      return $system_id;
+    };
+    dpm($entityLoader);
+    // Set the custom entity loader for libxml.
+    libxml_set_external_entity_loader($entityLoader);
+
+    // Load the XSLT stylesheet.
+    $xslDoc = new \DOMDocument();
+    $xslDoc->loadXML($style);
+
+    // Initialize the XSLTProcessor.
     $xslt = new \XSLTProcessor();
-    $xslt->importStylesheet(new \SimpleXMLElement($style));
+    $xslt->importStylesheet($xslDoc);
+
+    // Load the XML document.
+    $xmlDoc = new \DOMDocument();
+    $xmlDoc->loadXML($xml);
+
+    // $xslt = new \XSLTProcessor();
+    // $xslt->importStylesheet(new \SimpleXMLElement($style));
+    // dpm(rtrim(DRUPAL_ROOT . $xslt_path, '/'), __FUNCTION__);
+    // $xslt->setParameter('', 'baseUri', DRUPAL_ROOT . $xslt_path . 'thesauri/');
 
     // Return the transformed XML.
     return $xslt->transformToXml(new \SimpleXMLElement($xml));
@@ -1270,12 +1306,7 @@ class DynamicLandingPagesController extends ControllerBase {
         }
       }
     }
-    if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
-      if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
-        $parent_id = $fields['related_dataset'][0];
-        $parent = 'https://' . $host . '/dataset/' . substr($parent_id, strlen($id_prefix) + 1);
-      }
-    }
+
     if (isset($fields['data_access_url_http'])) {
       $datadownloads = [];
       foreach ($fields['data_access_url_http'] as $datadownload) {
@@ -1335,7 +1366,6 @@ class DynamicLandingPagesController extends ControllerBase {
       ],
       'temporalCoverage' => $start_date . '/' . $end_date ,
       'spatialCoverage' => $spatialcoverage,
-      'isPartOf' => $parent,
       'conditionsOfAccess' => $fields['access_constraint'] ?? '',
       'creator' => $creators ?? '',
       'contributor' => $contributors ?? '',
@@ -1364,6 +1394,14 @@ class DynamicLandingPagesController extends ControllerBase {
     if ($host === 'adc.met.no') {
       $json['includedInDataCatalog']['name'] = "Arctic Data Centre";
     }
+    if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
+      if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
+        $parent_id = $fields['related_dataset'][0];
+        $parent = 'https://' . $host . '/dataset/' . substr($parent_id, strlen($id_prefix) + 1);
+        $json['isPartOf'] = $parent;
+      }
+    }
+
     return $json;
   }
 
