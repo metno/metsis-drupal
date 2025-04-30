@@ -179,7 +179,7 @@ class MetsisExportController extends ControllerBase {
    * Transform the XML given stylesheet.
    */
   public function transformXml($xml, $style) {
-     // Define the base directory for resolving relative paths.
+    // Define the base directory for resolving relative paths.
     define('BASE_DIR', DRUPAL_ROOT . '/libraries/mmd/');
 
     // Define custom entityloader function for making the relative thesauri load.
@@ -197,7 +197,7 @@ class MetsisExportController extends ControllerBase {
     };
     // Set the custom entity loader for libxml.
     libxml_set_external_entity_loader($entityLoader);
-     // Load the XSLT stylesheet.
+    // Load the XSLT stylesheet.
     $xslDoc = new \DOMDocument();
     $xslDoc->loadXML($style);
 
