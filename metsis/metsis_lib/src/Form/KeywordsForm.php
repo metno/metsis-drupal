@@ -36,13 +36,24 @@ class KeywordsForm extends FormBase {
       ];
       foreach ($fields['iso_topic_category'] as $iso) {
         // dpm($iso);
-        $form['iso'][$iso] = [
-          '#prefix' => '<p>',
-          '#type' => 'markup',
-          '#markup' => '<a href="https://vocab.met.no/mmd/ISO_Topic_Category/' . $iso . '">' . $iso . '</a>',
-          '#allowed_tags' => ['a', 'p'],
-          '#suffix' => '</p>',
-        ];
+        if (strtolower($iso) == 'not available') {
+          $form['iso'][$iso] = [
+            '#prefix' => '<p>',
+            '#type' => 'markup',
+            '#markup' => '<a href="https://vocab.met.no/mmd/ISO_Topic_Category/NotAvailable">Not available</a>',
+            '#allowed_tags' => ['a', 'p'],
+            '#suffix' => '</p>',
+          ];
+        }
+        else {
+          $form['iso'][$iso] = [
+            '#prefix' => '<p>',
+            '#type' => 'markup',
+            '#markup' => '<a href="https://vocab.met.no/mmd/ISO_Topic_Category/' . $iso . '">' . $iso . '</a>',
+            '#allowed_tags' => ['a', 'p'],
+            '#suffix' => '</p>',
+          ];
+        }
 
       }
 
@@ -72,35 +83,36 @@ class KeywordsForm extends FormBase {
         '#weight' => '0',
         '#group' => 'keywords',
         '#attributes' => [
-          'class' => ['w3-cell-row'],
+          // 'class' => ['w3-cell-row'],
+          'keywords' => 'yes',
         ],
       ];
-    }
 
-    $i = 0;
-    foreach ($fields['keywords_vocabulary'] as $vocab) {
-      $vocab_tag = str_replace(' ', '_', strtolower($vocab));
-      if ($vocab === "GCMDSK") {
-        $vocab = 'GCMD Science Keywords';
-      }
-      if ($vocab === "CFSTDN") {
-        $vocab = 'CF Standard Name';
-      }
-      if ($vocab === "GCMDLOC") {
-        $vocab = 'GCMD Location Keywords';
-      }
-      if ($vocab === "GCMDPROV") {
-        $vocab = 'GCMD Provider Keywords';
-      }
-      if ($vocab === "None") {
-        $vocab = 'Other Keywords';
-      }
+      $i = 0;
+      foreach ($fields['keywords_vocabulary'] as $vocab) {
+        $vocab_tag = str_replace(' ', '_', strtolower($vocab));
+        if ($vocab === "GCMDSK") {
+          $vocab = 'GCMD Science Keywords';
+        }
+        if ($vocab === "CFSTDN") {
+          $vocab = 'CF Standard Name';
+        }
+        if ($vocab === "GCMDLOC") {
+          $vocab = 'GCMD Location Keywords';
+        }
+        if ($vocab === "GCMDPROV") {
+          $vocab = 'GCMD Provider Keywords';
+        }
+        if ($vocab === "None") {
+          $vocab = 'Other Keywords';
+        }
 
-      $form[$vocab_tag][$i] = [
-        '#type' => 'markup',
-        '#markup' => '<p>' . $fields['keywords_keyword'][$i] . '</p>',
-      ];
-      $i++;
+        $form[$vocab_tag][$i] = [
+          '#type' => 'markup',
+          '#markup' => '<p>' . $fields['keywords_keyword'][$i] . '</p>',
+        ];
+        $i++;
+      }
     }
     /*
     if (isset($fields['keywords_investigator_name'])) {

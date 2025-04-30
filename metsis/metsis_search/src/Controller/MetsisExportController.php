@@ -179,11 +179,38 @@ class MetsisExportController extends ControllerBase {
    * Transform the XML given stylesheet.
    */
   public function transformXml($xml, $style) {
+    // Define the base directory for resolving relative paths.
+    define('BASE_DIR', DRUPAL_ROOT . '/libraries/mmd/');
+
+    // Define custom entityloader function for making the relative thesauri load.
+    $entityLoader = function ($public, $system, $context) {
+      // Resolve the path if it's relative.
+      if (str_contains($system, 'thesauri/mmd-vocabulary.xml')) {
+        $this->getLogger('export_xml')->notice("thesauri-dir is %system",
+          ['%system' => $system]);
+        $system = realpath(BASE_DIR . 'thesauri/mmd-vocabulary.xml');
+        $this->getLogger('export_xml')->notice("thesauri-dir rewritten to: %system",
+             ['%system' => $system]);
+
+      }
+      return $system;
+    };
+    // Set the custom entity loader for libxml.
+    libxml_set_external_entity_loader($entityLoader);
+    // Load the XSLT stylesheet.
+    $xslDoc = new \DOMDocument();
+    $xslDoc->loadXML($style);
+
+    // Initialize the XSLTProcessor.
     $xslt = new \XSLTProcessor();
-    $xslt->importStylesheet(new \SimpleXMLElement($style));
+    $xslt->importStylesheet($xslDoc);
 
-    return $xslt->transformToXml(new \SimpleXMLElement($xml));
+    // Load the XML document.
+    $xmlDoc = new \DOMDocument();
+    $xmlDoc->loadXML($xml);
 
+    // Return the transformed XML.
+    return $xslt->transformToXml($xmlDoc);
     // Return $newXml;.
   }
 
