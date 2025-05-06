@@ -101,8 +101,13 @@ class GetCapController extends ControllerBase {
     $host = $request->getSchemeAndHttpHost();
     // $getCapString = '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities';
     $getCapString = '?VERSION=1.3.0&REQUEST=GetCapabilities&SERVICE=WMS';
-    $getCapUrl = $url . $getCapString;
-    $this->getLogger('metsis_wms::getCapDocFromUrl')->debug($getCapUrl);
+    if (str_contains($url, 'mapserver.wps.met.no')) {
+      $getCapUrl = $url . '&service=WMS&version=1.3.0&request=GetCapabilities';
+    }
+    else {
+      $getCapUrl = $url . $getCapString;
+    }
+    $this->getLogger('metsis_wms::getCapDocFromUrl')->notice($getCapUrl);
     // $getCapUrl = 'https://sampleserver1.arcgisonline.com/ArcGIS/services/Specialty/ESRI_StatesCitiesRivers_USA/MapServer/WMSServer?version=1.3.0&request=GetCapabilities&service=WMS';
     // Make the xml request on thredds wms service.
     $options = [

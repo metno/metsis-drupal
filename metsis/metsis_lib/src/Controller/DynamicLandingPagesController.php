@@ -1139,7 +1139,7 @@ class DynamicLandingPagesController extends ControllerBase {
     // Define the base directory for resolving relative paths.
     define('BASE_DIR', DRUPAL_ROOT . '/libraries/mmd/');
 
-    // Define custom entityloader function for making the relative thesauri load.
+    // Define custom entityloader func for making the relative thesauri load.
     $entityLoader = function ($public, $system, $context) {
       // Resolve the path if it's relative.
       if (str_contains($system, 'thesauri/mmd-vocabulary.xml')) {

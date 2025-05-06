@@ -245,6 +245,14 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#title' => 'Configure Search map / result map',
       '#tree' => TRUE,
     ];
+
+    $form['searchmap']['map_ups_north_proj'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use Mapserver 8.x compatible UPS North projection'),
+      '#description' => $this->t("Use correct EPSG:32661 projection for mapserver 8.x"),
+      '#default_value' => $config->get('map_ups_north_proj'),
+    ];
+
     /*
     $form['searchmap']['map_base_layer_wms_north'] = [
     '#type' => 'url',
@@ -438,6 +446,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       ->set('enable_netcdf_ondemand', $values['enable_netcdf_ondemand'])
       ->set('netcdf_ondemand_service_endpoint', $values['netcdf_ondemand_service_endpoint'])
       ->set('selected_product_types', $values['product_types'])
+      ->set('map_ups_north_proj', $values['searchmap']['map_ups_north_proj'])
       ->save();
 
     parent::submitForm($form, $form_state);

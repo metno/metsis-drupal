@@ -90,6 +90,7 @@ class DefaultController extends ControllerBase {
     $map_projections = $config->get('map_projections');
     $map_init_proj = $config->get('map_init_proj');
     $map_layers_list = $config->get('map_layers');
+    $map_ups_north_proj = $config->get('map_ups_north_proj');
     $pywps_service = $config->get('pywps_service');
     $map_wms_layers_skip = explode(',', $config->get('map_wms_layers_skip'));
 
@@ -380,6 +381,7 @@ class DefaultController extends ControllerBase {
             'wms_layers_skip' => $map_wms_layers_skip,
             'wms_data' => $wms_data,
             'selected_proj' => $proj,
+            'ups_north_proj' => $map_ups_north_proj,
           ],
         ],
       ];

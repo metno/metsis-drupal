@@ -29,6 +29,7 @@ console.log("Start of wms map script:");
         var pywpsUrl = drupalSettings.metsis_wms_map.pywps_service;
         var wms_layers_skip = drupalSettings.metsis_wms_map.wms_layers_skip;
         var wms_data = drupalSettings.metsis_wms_map.wms_data;
+        var ups_north_proj = drupalSettings.metsis_wms_map.ups_north_proj ? true : false;
         let selected_proj = drupalSettings.metsis_wms_map.selected_proj;
         // Some debugging
         var debug = true;
@@ -42,6 +43,7 @@ console.log("Start of wms map script:");
           console.log(wms_layers_skip);
           console.log("Registerd projections: ");
           console.log(projections);
+          console.log("Use mapserver 8.x proj? " + ups_north_proj);
 
         }
         console.log("Wms data is:");
@@ -156,7 +158,14 @@ console.log("Start of wms map script:");
         /**
          * Define the proj4 map_projections
          */
-        proj4.defs("EPSG:32661", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        // proj4.defs("EPSG:32661", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs +axis=neu");
+        if (ups_north_proj == true) {
+          proj4.defs("EPSG:32661", 'PROJCS["WGS 84 / UPS North (N,E)",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Polar_Stereographic"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.994],PARAMETER["false_easting",2000000],PARAMETER["false_northing",2000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Northing",SOUTH],AXIS["Easting",SOUTH],AUTHORITY["EPSG","32661"]]');
+        }
+        else {
+          proj4.defs("EPSG:32661", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        }
+
         proj4.defs("EPSG:32761", "+proj=stere +lat_0=-90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
         proj4.defs("EPSG:5041", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
         proj4.defs("EPSG:4326", "+proj=longlat +datum=WGS84 +no_defs +type=crs");
@@ -169,6 +178,8 @@ console.log("Start of wms map script:");
           code: 'EPSG:32661',
           extent: ext32661
         });
+        console.log("Debug 32661");
+        console.log(proj32661);
 
         // 32761
         var ext32761 = [-8e+06, -8e+06, 12e+06, 10e+06];
@@ -1161,11 +1172,17 @@ console.log("Start of wms map script:");
             //   fetch(wmsUrl+getCapString,{
             //      mode: 'cors',
             //    }).then(function(response) {
+            wmsUrl.replace('http://', 'https://');
             wmsUrl = wmsUrl.replace(/(^\w+:|^)\/\//, '//');
             wmsUrl = wmsUrl.replace('//lustre', '/lustre');
             if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
               wmsUrlOrig = wmsUrl;
             }
+            else if (wmsUrl.includes('mapserver.wps.met.no')) {
+
+              wmsUrl = wmsUrlOrig + '&service=WMS&request=GetCapabilities&version=1.3.0';
+            }
+
             else {
               wmsUrl = wmsUrl.split("?")[0];
               wmsUrlOrig = wmsUrlOrig.split("?")[0];
@@ -1573,8 +1590,11 @@ console.log("Start of wms map script:");
               if (geom == undefined) {
                 //map.getView().fit(makeAxisAwareExtent)
                 console.log(bbox);
-                geom = extent = ol.proj.transformExtent(bbox, 'EPSG:4326', selected_proj);
-                map.getView().fit(geom);
+                if (bbox != undefined) {
+                  geom = extent = ol.proj.transformExtent(bbox, 'EPSG:4326', selected_proj);
+                  map.getView().fit(geom);
+                }
+
               }
               else {
                 map.getView().fit(geom.getExtent());
@@ -1596,7 +1616,7 @@ console.log("Start of wms map script:");
                 url: proxyURL + wmsUrlOrig,
                 dataType: 'xml',
                 //xhrFields: { withCredentials: true },
-                headers: { "Access-Control-Allow-Origin": '*' },
+                // headers: { "Access-Control-Allow-Origin": '*' },
                 crossDomain: true,
                 //async: false,
                 error: function () {
@@ -1604,6 +1624,8 @@ console.log("Start of wms map script:");
 
                 },
                 success: function (response) {
+                  console.log("Proxy getcap success");
+                  //wmsURL = proxyURL + wmsUrlOrig;
                   onGetCapSuccess(response)
                 },
               });
@@ -1614,7 +1636,7 @@ console.log("Start of wms map script:");
                 url: wmsUrl,
                 dataType: 'xml',
                 // xhrFields: { withCredentials: true },
-                headers: { "Access-Control-Allow-Origin": '*' },
+                // headers: { "Access-Control-Allow-Origin": '*' },
                 crossDomain: true,
                 //async: false,
                 error: function () {
@@ -1623,6 +1645,54 @@ console.log("Start of wms map script:");
                   tryProxy(proxyURL, wmsUrlOrig)
                 },
                 success: function (response) {
+
+                  onGetCapSuccess(response)
+                },
+              });
+            }
+
+            else if (wmsUrl.includes('mapserver.wps.met.no')) {
+              console.log("Special mapserver test url");
+              console.log(wmsUrl);
+              wmsUrlOrig = wmsUrl;
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl,
+                dataType: 'xml',
+                // xhrFields: { withCredentials: true },
+                // headers: { "Access-Control-Allow-Origin": '*' },
+                crossDomain: true,
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl);
+                  console.log("Trying getCapProxy.... " + wmsUrlOrig);
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+
+                  onGetCapSuccess(response)
+                },
+              });
+            }
+            else if (wmsUrl.includes('thredds.nersc.no')) {
+              console.log("Special handeling thredds.nersc.no");
+              console.log(wmsUrl);
+              wmsUrlOrig = wmsUrl;
+              $.ajax({
+                type: 'GET',
+                url: wmsUrl,
+                dataType: 'xml',
+                // xhrFields: { withCredentials: true },
+                headers: { "AccOrigin": '‘https://blueinsight.io' },
+                crossDomain: true,
+                //async: false,
+                error: function () {
+                  console.log("Request failed: " + wmsUrl);
+                  console.log("Trying getCapProxy.... " + wmsUrlOrig);
+                  tryProxy(proxyURL, wmsUrlOrig)
+                },
+                success: function (response) {
+
                   onGetCapSuccess(response)
                 },
               });
