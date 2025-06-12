@@ -1100,7 +1100,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n{% if  data_access_url_ogc_wms_1 is defined  and data_access_url_ogc_wms_1 is not empty %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{% else %}\r\n{% endif %}\r\n{%endif %}"
+            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image adc-thumb\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n{% if  data_access_url_ogc_wms_1 is defined  and data_access_url_ogc_wms_1 is not empty %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{% else %}\r\n{% endif %}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false
@@ -1134,9 +1134,9 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: false
+          hide_empty: true
+          empty_zero: true
+          hide_alter_empty: true
         keywords_keyword:
           id: keywords_keyword
           table: search_api_index_metsis_simple_search
@@ -1416,7 +1416,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "<a class=\"use-ajax\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\" title=\"Show extended metadata information\">Show extended metadata</a>"
+            text: "<a class=\"use-ajax w3-btn w3-border w3-border-grey\" \r\n    data-dialog-options=\"{&quot;width&quot;:600, &quot;title&quot;:&quot;Metadata Details&quot;}\" \r\n    data-dialog-type=\"dialog\"\r\n    data-dialog-renderer=\"off_canvas\"\r\n    href=\"/metsis/metadata/{{ id}}\" title=\"Show extended metadata information\">Show extended metadata</a>"
             make_link: false
             path: ''
             absolute: false
@@ -1442,7 +1442,7 @@ display:
             preserve_tags: ''
             html: false
           element_type: ''
-          element_class: 'w3-btn w3-border w3-border-grey'
+          element_class: ''
           element_label_type: ''
           element_label_class: ''
           element_label_colon: false
@@ -1465,7 +1465,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if is_parent|lower == 'true' %}\r\n<span id=\"parent-{{ id}}\" class=\"w3-btn w3-border w3-border-grey\">\r\n<a title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/simple_search{{ children_search_string }}\">Child data..[{{ num_children }}]</a>\r\n</span>\r\n{% endif %}\r\n"
+            text: "{% if is_parent|lower == 'true' %}\r\n<a  class=\"w3-btn w3-border w3-border-grey\" title=\"Child data found based on search and filter criterias. Click here to show found children.\" href=\"/metsis/simple_search{{ children_search_string }}\"><span id=\"parent-{{ id}}\">Child data..[{{ num_children }}</span>]</a>\r\n{% endif %}\r\n"
             make_link: false
             path: ''
             absolute: false
@@ -1670,6 +1670,55 @@ display:
           alter:
             alter_text: true
             text: '<hr class="w3-light-gray w3-small">'
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+        nothing_7:
+          id: nothing_7
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: Thumbnail
+          plugin_id: custom
+          label: ''
+          exclude: false
+          alter:
+            alter_text: true
+            text: "{% if thumbnail_url is not null and thumbnail_url is not empty %}\r\n<div id=\"thumb-ext-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a href=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image adc-thumb\" loading=\"lazy\"\r\n src=\"{{thumbnail_url}}\" typeof=\"Image\"/></a>\r\n</div>\r\n{% else %}\r\n{% if  data_access_url_ogc_wms_1 is defined  and data_access_url_ogc_wms_1 is not empty %}\r\n<div id=\"thumb-wrapper-{{id|replace({'_': \"-\", \".\" : \"-\"}) }}\" class=\"res-thumb w3-padding w3-left\">\r\n<a \r\nhref=\"/metsis/map/wms?dataset={{ id}}\" >\r\n<div class=\"lazyload\" data-ajax=\"/metsis/thumbnail/{{id}}\">\r\n<img  id=\"thumb-{{id|replace({'_': \"-\", \".\" : \"-\"})}}\" class=\"w3-image\"\r\n src=\"/modules/metsis/metsis_search/images/missing_map_place_holder.png\" typeof=\"Image\"/>\r\n</div>\r\n</a>\r\n</div>\r\n{% else %}\r\n{% endif %}\r\n{%endif %}"
             make_link: false
             path: ''
             absolute: false

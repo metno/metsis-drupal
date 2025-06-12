@@ -1164,6 +1164,11 @@ console.log("Start of wms map script:");
             var proxyURL = '/metsis/map/getcapfromurl?url=';
             var wmsUrlOrig = wmsUrl;
             var productTitle = title;
+
+            // Set some default values
+            var hidpi = false;
+            var server_type = undefined;
+
             //initialize result varuable
             var result;
             console.log("wms_layer from mmd: " + wmsLayerMmd);
@@ -1177,6 +1182,11 @@ console.log("Start of wms map script:");
             wmsUrl = wmsUrl.replace('//lustre', '/lustre');
             if (wmsUrl.includes('wms.wps.met.no/get_wms')) {
               wmsUrlOrig = wmsUrl;
+            }
+            else if (wmsUrl.includes('adc-wms.met.no') || wmsUrl.includes('k8s.met.no')) {
+              hidpi = true;
+              server_type = 'mapserver';
+
             }
             else if (wmsUrl.includes('mapserver.wps.met.no')) {
 
@@ -1412,7 +1422,8 @@ console.log("Start of wms map script:");
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
                               //projection: selected_proj,
-                              hidpi: false,
+                              hidpi: hidpi,
+                              serverType: server_type,
                               params: {
                                 'TILED': true,
                                 'LAYERS': ls[i].Name,
@@ -1427,6 +1438,7 @@ console.log("Start of wms map script:");
                             })),
                           }));
                         console.log("Added layer: " + title + " visible: " + visible);
+                        console.log("hidpi: " + hidpi + " serverType: " + server_type);
                       }
                     }
                     else {
@@ -1446,7 +1458,8 @@ console.log("Start of wms map script:");
                             source: new ol.source.TileWMS(({
                               url: wmsUrl,
                               reprojectionErrorThreshold: 0.1,
-                              hidpi: false,
+                              hidpi: hidpi,
+                              serverType: server_type,
                               //projection: selected_proj,
                               params: {
                                 'TILED': true,
@@ -1462,6 +1475,7 @@ console.log("Start of wms map script:");
                             })),
                           }));
                         console.log("Added layer: " + title + " visible: " + visible);
+                        console.log("hidpi: " + hidpi + " serverType: " + server_type);
                       }
                     }
                   }
