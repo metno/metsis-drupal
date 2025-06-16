@@ -109,7 +109,7 @@ class WmsController extends ControllerBase {
       "metadata_identifier",
     ];
     // @todo Read this from routing config
-    $wms_url_lhs = $base_url . "/" . "metsis/map/getcap?dataset=";
+    $wms_url_lhs = $base_url . "/metsis/map/getcap?dataset=";
     $wms_data = [];
     $layers = [];
     $web_map_servers = [];

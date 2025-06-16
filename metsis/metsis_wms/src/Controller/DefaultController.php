@@ -53,7 +53,7 @@ class DefaultController extends ControllerBase {
     $datasetURL = filter_input(INPUT_GET, "datasetURL");
     // var_dump($datasetURL);
     $content = [
-      '#markup' => '<div class="map container"><div id="map"></div><div id="lyr-switcher"></div>' . '<div id="proj-container"></div><div id="timeslider-container"></div></div>' . '<div id="wmsURL" class="element-hidden">' . $datasetURL . '</div>',
+      '#markup' => '<div class="map container"><div id="map"></div><div id="lyr-switcher"></div><div id="proj-container"></div><div id="timeslider-container"></div></div><div id="wmsURL" class="element-hidden">' . $datasetURL . '</div>',
     ];
     return $content;
   }

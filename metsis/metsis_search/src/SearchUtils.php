@@ -763,7 +763,7 @@ class SearchUtils {
    * Get the markup for the opendap url.
    */
   public static function getDataAccessMarkupOpenDapOpenDap($dataset_id, $data_access) {
-    $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '">' . $dataset_id . '</a>' . '</div>';
+    $url = '<div class="botton-wrap ext_data_source"><a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '">' . $dataset_id . '</a></div>';
     return $url;
   }
 
@@ -771,7 +771,7 @@ class SearchUtils {
    * Get the markup for the opendap html landing page.
    */
   public static function getDataAccessMarkupOpenDapOpenDapHtml($dataset_id, $data_access) {
-    $url = '' . '<div class="botton-wrap ext_data_source">' . '<a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '.html' . '">' . $dataset_id . '</a>' . '</div>';
+    $url = '<div class="botton-wrap ext_data_source"><a class="adc-button adc-sbutton ext_data_source" href="' . $data_access . '.html">' . $dataset_id . '</a></div>';
     return $url;
   }
 
@@ -804,7 +804,7 @@ EOD;
    * Get the button markup.
    */
   public static function getButtonMarkupNt($metadata_identifier, $button_uri) {
-    $url = '' . '<div class="botton-wrap">' . '<a class="adc-button adc-sbutton" target="_blank" href="' . $button_uri . '">' . $metadata_identifier . '</a>' . '</div>';
+    $url = '<div class="botton-wrap"><a class="adc-button adc-sbutton" target="_blank" href="' . $button_uri . '">' . $metadata_identifier . '</a></div>';
     return $url;
   }
 
@@ -814,7 +814,7 @@ EOD;
   public static function getFimexLink($dataset_id, $calling_results_page) {
     $url = '';
     $url .= '<div class="botton-wrap">';
-    $url .= '<a class="adc-button adc-sbutton" href="' . '/metsis_fimex?dataset_id=' . $dataset_id . '&calling_results_page=' . $calling_results_page . '" >Transform</a>';
+    $url .= '<a class="adc-button adc-sbutton" href="/metsis_fimex?dataset_id=' . $dataset_id . '&calling_results_page=' . $calling_results_page . '" >Transform</a>';
     $url .= '</div>';
     return $url;
   }

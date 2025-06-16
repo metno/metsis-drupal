@@ -587,7 +587,7 @@ class DynamicLandingPagesController extends ControllerBase {
         if (NULL != self::LICENCES[$fields['use_constraint_identifier']]) {
           $renderArray['constraints_and_info']['constraints']['licence_img'] = [
             '#type' => 'markup',
-            '#markup' => '<a rel="license" class="w3-text-blue" title="Link to license information" href="' . self::LICENCES[$fields['use_constraint_identifier']]['url'] . '"><img loading="lazy" width="100px" height="35px" alt="Use constraint icon for licence ' . $fields['use_constraint_identifier'] . '" ' . 'src = "' . self::LICENCES[$fields['use_constraint_identifier']]['img'] . '" /> </a> ',
+            '#markup' => '<a rel="license" class="w3-text-blue" title="Link to license information" href="' . self::LICENCES[$fields['use_constraint_identifier']]['url'] . '"><img loading="lazy" width="100px" height="35px" alt="Use constraint icon for licence ' . $fields['use_constraint_identifier'] . '" src = "' . self::LICENCES[$fields['use_constraint_identifier']]['img'] . '" /> </a> ',
             '#allowed_tags' => ['a', 'img'],
           ];
         }
@@ -713,6 +713,7 @@ class DynamicLandingPagesController extends ControllerBase {
       foreach ($fields['data_access_url_ogc_wms'] as $index => $resource) {
         if (str_contains($resource, '?')) {
           $capLink = explode('?', mb_strimwidth($resource, 0, 80, '...'))[0];
+          $resource = explode('?', $resource)[0];
         }
         else {
           $capLink = mb_strimwidth($resource, 0, 80, '...');
@@ -720,7 +721,7 @@ class DynamicLandingPagesController extends ControllerBase {
         $renderArray['data_access']['ogc_wms' . $index] = [
           '#type' => 'item',
           '#title' => $this->t('OGC WMS:'),
-          '#markup' => '<a class="w3-text-blue" href="' . $capLink . '?service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
+          '#markup' => '<a class="w3-text-blue" href="' . $resource . '?service=WMS&version=1.3.0&request=GetCapabilities">' . $capLink . '</a>',
           '#allowed_tags' => ['a', 'strong'],
         ];
       }
