@@ -1,0 +1,11 @@
+uuid: f82d128b-5726-4878-a125-79d72bc45979
+langcode: en
+status: true
+dependencies: {  }
+id: views_page---metsis_simple_search__results_temporal_extent_start_date
+label: 'Temporal extent start date'
+weight: 0
+display_id: views_page---metsis_simple_search__results
+field_identifier: temporal_extent_start_date
+default_sort: true
+default_order: desc

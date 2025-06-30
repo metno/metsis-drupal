@@ -1907,7 +1907,7 @@ display:
           expose:
             operator_id: search_api_fulltext_op
             label: 'Search datasets'
-            description: 'Provide some keywords to search on, and press Search.'
+            description: ''
             use_operator: false
             operator: search_api_fulltext_op
             operator_limit_selection: true
