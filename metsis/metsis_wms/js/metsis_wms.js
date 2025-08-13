@@ -1407,6 +1407,12 @@ console.log("Start of wms map script:");
                       // ($.inArray(ls[i].Title, wmsLayerMmd) === -1)))
                       {
                         //visible = (idx === 0) ? true : false;
+			 if (wmsUrl.includes('?')) {
+        			// Remove everything starting from the '?' character
+        			wmsUrl = wmsUrl.split('?')[0];
+    			}
+			console.log("Adding layer: " + ls[i].Name + " with url: " + wmsUrl);
+
                         wmsGroup.getLayers().insertAt(i,
                           new ol.layer.Tile({
                             title: title,
@@ -1444,6 +1450,12 @@ console.log("Start of wms map script:");
                     else {
                       console.log("No given mmd layers. Loading all");
                       if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
+			if (wmsUrl.includes('?')) {
+                                // Remove everything starting from the '?' character
+                                wmsUrl = wmsUrl.split('?')[0];
+                        }
+
+			console.log("Adding layer: " + ls[i].Name + " with url: " + wmsUrl);
                         wmsGroup.getLayers().insertAt(i,
                           new ol.layer.Tile({
                             title: title,
