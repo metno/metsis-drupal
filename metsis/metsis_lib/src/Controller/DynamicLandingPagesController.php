@@ -623,6 +623,20 @@ class DynamicLandingPagesController extends ControllerBase {
       '#allowed_tags' => ['a', 'strong'],
 
     ];
+
+    if (isset($fields['isChild']) && isset($fields['related_dataset'])) {
+      if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
+        $parent_id = $fields['related_dataset'][0];
+        $parent = substr($parent_id, strlen($id_prefix) + 1);
+        $renderArray['constraints_and_info']['metadata_information']['parent_identifier'] = [
+          '#type' => 'item',
+          '#title' => $this->t('Parent Identifier:'),
+          '#markup' => '<a class="w3-text-blue" href="/dataset/' . $parent . '">' . $parent_id . '</a>',
+          '#allowed_tags' => ['a', 'strong'],
+        ];
+      }
+    }
+
     /*
     $renderArray['constraints_and_info']['metadata_information']['status'] = [
     '#type' => 'item',
@@ -778,7 +792,7 @@ class DynamicLandingPagesController extends ControllerBase {
       if (($fields['isChild']) && ($fields['related_dataset'][0] !== NULL)) {
         $parent_id = $fields['related_dataset'][0];
         $parent = substr($parent_id, strlen($id_prefix) + 1);
-        $renderArray['related_information']['parent'] = [
+        $renderArray['related_information']['child'] = [
           '#prefix' => '<div class="w3-container w3-bar">',
           '#type' => 'markup',
           '#markup' => '<p><em>This is a child dataset. See the <a class="w3-text-blue" href="/dataset/' . $parent . '">Parent dataset landing page</a> for more information.</em></p>',

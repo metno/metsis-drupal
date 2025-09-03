@@ -275,7 +275,30 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
         // $view->exposed_widgets['platform_ancillary_cloud_coverage']['#access'] = TRUE;
       }
     }
+    // Remove duplicates from the institution field:
+    $unique_field = 'solr_document/personnel_organisation';
 
+    // Array to track seen values.
+    $seen = [];
+
+    // Iterate through the result set.
+   /*  foreach ($view->result as $key => $row) {
+      // Check if the field exists in the row.
+      if (isset($row->{$unique_field}->value)) {
+        $field_value = $row->{$unique_field}->value;
+
+        // If the value has already been seen, remove the result.
+        if (in_array($field_value, $seen, TRUE)) {
+          unset($view->result[$key]);
+        } else {
+          // Otherwise, add it to the seen list.
+          $seen[] = $field_value;
+        }
+      }
+    } */
+
+    // Re-index the array to avoid gaps after unsetting.
+    $view->result = array_values($view->result);
     // Handeling of the NetCDF Ondemand field.
     if ($enable_netcdf_ondemand) {
       // dpm( $netcdf_ondemand_enabled_products);.

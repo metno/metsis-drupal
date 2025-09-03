@@ -2988,7 +2988,7 @@ console.log("Start of metsis search map script:");
           wms = extracted_info[i][0][1];
           wmslayer = extracted_info[i][17];
           //if(debug) {console.log("id: "+id+ ",wms:" +wms)};
-          if (wms != null && wms != "" && isSentinelProduct(wms, ['S1B', 'S1A', 'S2B', 'S2A'])) {
+          if (wms != null && wms != "" && isSentinelProduct(title, ['S1B', 'S1A', 'S2B', 'S2A', 'S2C', 'S1C'])) {
             wmsProducts.push(title);
             wmsProductLayers.push(wms);
             if (wmslayer != null) {
@@ -3013,6 +3013,7 @@ console.log("Start of metsis search map script:");
             //Loop over the wmsLayers and render them on map.
             for (let i = 0; i < wmsProductLayers.length; i++) {
               if (debug) { console.log(i + " - " + wmsProducts[i]); }
+
               if (debug) { console.log("wms_layer_name_from_mmd: " + wmsLayersFromMmd[i]); }
               //alert(wmsProducts[i]);
 
@@ -3042,7 +3043,18 @@ console.log("Start of metsis search map script:");
                 layer_name = 'true_color_vegetation';
               }
               else {
-                layer_name = 'Composites';
+                if (wmsProducts[i].startsWith('S1')) {
+                  if (wmsProducts[i].includes('EW')) {
+                    layer_name = "amplitude_hh";
+                  }
+                  if (wmsProducts[i].includes('IW')) {
+                    layer_name = "amplitude_vv";
+                  }
+                }
+                else {
+                  layer_name = 'true_color_vegetation';
+                }
+                console.log("Fallback layer: " + layer_name)
               }
               myGroup.getLayers().push(
                 //map.addLayer(

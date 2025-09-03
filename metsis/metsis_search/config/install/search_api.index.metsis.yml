@@ -1201,35 +1201,12 @@ processor_settings:
     excerpt_always: false
     excerpt_length: 320
     exclude_fields:
-      - data_access_description
-      - data_center_long_name
-      - dataset_citation_author
       - dataset_citation_publisher
-      - personnel_datacenter_name
-      - personnel_datacenter_organisation
-      - personnel_investigator_name
-      - personnel_investigator_organisation
-      - personnel_metadata_author_name
-      - personnel_metadata_author_organisation
-      - personnel_technical_name
-      - personnel_technical_organisation
-      - related_information_description
       - text_suggester
     highlight: server
     highlight_partial: true
   language_with_fallback: {  }
   rendered_item: {  }
-  solr_boost_more_recent:
-    weights:
-      preprocess_query: 0
-    boosts:
-      temporal_extent_start_date:
-        boost: 1.3
-        resolution: NOW/SECOND
-        m: '3.16e-11'
-        a: 0.1
-        b: 0.05
-        support_future_dates: false
   solr_date_range:
     weights:
       preprocess_index: 0
