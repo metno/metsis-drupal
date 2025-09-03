@@ -282,19 +282,19 @@ function metsis_search_views_pre_render(ViewExecutable $view) {
     $seen = [];
 
     // Iterate through the result set.
-   /*  foreach ($view->result as $key => $row) {
-      // Check if the field exists in the row.
-      if (isset($row->{$unique_field}->value)) {
-        $field_value = $row->{$unique_field}->value;
+    /*  foreach ($view->result as $key => $row) {
+    // Check if the field exists in the row.
+    if (isset($row->{$unique_field}->value)) {
+    $field_value = $row->{$unique_field}->value;
 
-        // If the value has already been seen, remove the result.
-        if (in_array($field_value, $seen, TRUE)) {
-          unset($view->result[$key]);
-        } else {
-          // Otherwise, add it to the seen list.
-          $seen[] = $field_value;
-        }
-      }
+    // If the value has already been seen, remove the result.
+    if (in_array($field_value, $seen, TRUE)) {
+    unset($view->result[$key]);
+    } else {
+    // Otherwise, add it to the seen list.
+    $seen[] = $field_value;
+    }
+    }
     } */
 
     // Re-index the array to avoid gaps after unsetting.
