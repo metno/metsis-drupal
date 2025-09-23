@@ -22,7 +22,7 @@ jobs:
 
       - name: Check coding standards
         run: |
-          phpcs --config-set installed_paths .ci/vendor/drupal/coder/coder_sniffer, .ci/vendor/sirbrillig/phpcs-variable-analysis, .ci/vendor/slevomat/coding-standard
+          .ci/vendor/bib/phpcs --config-set installed_paths .ci/vendor/drupal/coder/coder_sniffer, .ci/vendor/sirbrillig/phpcs-variable-analysis, .ci/vendor/slevomat/coding-standard
           .ci/vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
   phpcs_8_3:
     runs-on: ubuntu-latest
