@@ -549,7 +549,8 @@ class DynamicLandingPagesController extends ControllerBase {
         '#allowed_tags' => ['a', 'strong'],
       ];
     }
-    //add suggested citation if citation elements are available.
+
+    // Add suggested citation if citation elements are available.
     if (isset($fields['dataset_citation_title']) && isset($fields['dataset_citation_author']) && isset($fields['dataset_citation_publication_date'])
     && isset($fields['dataset_citation_publisher']) && (isset($fields['dataset_citation_doi']) || isset($fields['dataset_citation_url']))) {
       $linkcit = $fields['dataset_citation_doi'][0] ?? $fields['dataset_citation_url'][0];
