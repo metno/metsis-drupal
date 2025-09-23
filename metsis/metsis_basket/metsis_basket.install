@@ -1,11 +1,12 @@
 <?php
 
 /**
- * @file metsis_basket.install
+ * @file
+ * metsis_basket.install
  */
 
 /**
- * Provides installerfunctions for install basket schema
+ * Provides installerfunctions for install basket schema.
  */
 function metsis_basket_install() {
   \Drupal::logger('METSIS')->notice("metsis_basket.install creating tables: metsis_basket, metsis_basket_revision");

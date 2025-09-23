@@ -1080,7 +1080,13 @@ class DynamicLandingPagesController extends ControllerBase {
       $i++;
     }
 
-    if (isset($fields['storage_information_file_name'])) {
+    if (isset($fields['storage_information_file_name'])
+    || isset($fields['storage_information_file_location'])
+    || isset($fields['storage_information_file_size'])
+     || isset($fields['storage_information_file_size_unit'])
+    || isset($fields['storage_information_file_checksum'])
+    || isset($fields['storage_information_file_checksum_type'])
+    || isset($fields['storage_information_file_format'])) {
       $renderArray['storage_information_wrapper'] = [
         '#type' => 'fieldset',
         '#title' => $this->t('Storage Information'),

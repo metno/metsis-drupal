@@ -4,7 +4,7 @@
     "description": "METSIS drupal modules",
     "license": "GPL-2.0-or-later",
     "scripts": {
-        "sniff": "phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis",
-        "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml metsis"
+        "sniff": "phpcs --colors -n --standard=Drupal,DrupalPractice --extensions=php,module,yml,inc,install metsis",
+        "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml,inc,install metsis"
     }
 }

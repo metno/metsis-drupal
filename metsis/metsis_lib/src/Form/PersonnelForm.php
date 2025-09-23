@@ -105,24 +105,28 @@ class PersonnelForm extends FormBase {
           '#markup' => $author,
         // '#suffix' => '</p>',.
         ];
-        $form['metadata_author'][$i]['email'] = [
-          '#type' => 'item',
-          '#title' => $this->t('Email:'),
-        // '#prefix' => '<p>',.
-          '#markup' => '<a href="mailto://' . $fields['personnel_metadata_author_email'][$i] . '">' . $fields['personnel_metadata_author_email'][$i] . '</a>',
-          '#attributes' => [
-            'class' => ['contact-email'],
-          ],
+        if (isset($fields['personnel_metadata_author_email'][$i])) {
+          $form['metadata_author'][$i]['email'] = [
+            '#type' => 'item',
+            '#title' => $this->t('Email:'),
+          // '#prefix' => '<p>',.
+            '#markup' => '<a href="mailto://' . $fields['personnel_metadata_author_email'][$i] . '">' . $fields['personnel_metadata_author_email'][$i] . '</a>',
+            '#attributes' => [
+              'class' => ['contact-email'],
+            ],
+            // '#suffix' => '</p>',.
+          ];
+        }
+        if (isset($fields['personnel_metadata_author_organisation'][$i])) {
+          $form['metadata_author'][$i]['org'] = [
+            '#type' => 'item',
+            '#title' => $this->t('Organization:'),
+          // '#prefix' => '<p>',.
+            '#markup' => $fields['personnel_metadata_author_organisation'][$i],
           // '#suffix' => '</p>',.
-        ];
-        $form['metadata_author'][$i]['org'] = [
-          '#type' => 'item',
-          '#title' => $this->t('Organization:'),
-        // '#prefix' => '<p>',.
-          '#markup' => $fields['personnel_metadata_author_organisation'][$i],
-        // '#suffix' => '</p>',.
-        ];
-        $i++;
+          ];
+          $i++;
+        }
       }
     }
 
