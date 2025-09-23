@@ -549,6 +549,17 @@ class DynamicLandingPagesController extends ControllerBase {
         '#allowed_tags' => ['a', 'strong'],
       ];
     }
+    //add suggested citation if citation elements are available.
+    if (isset($fields['dataset_citation_title']) && isset($fields['dataset_citation_author']) && isset($fields['dataset_citation_publication_date'])
+    && isset($fields['dataset_citation_publisher']) && (isset($fields['dataset_citation_doi']) || isset($fields['dataset_citation_url']))) {
+      $linkcit = $fields['dataset_citation_doi'][0] ?? $fields['dataset_citation_url'][0];
+      $renderArray['citation_wrapper']['citation'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Suggested citation:'),
+        '#markup' => $fields['dataset_citation_author'][0] . ' (' . date('Y', $pub_time) . '):<em>' . $fields['dataset_citation_title'][0] . '.</em> ' . $fields['dataset_citation_publisher'][0] . '. ' . $linkcit,
+        '#allowed_tags' => ['a', 'em'],
+      ];
+    }
 
     // dpm(sizeof($renderArray['citation_wrapper']));.
     if (count($renderArray['citation_wrapper']) <= 2) {
