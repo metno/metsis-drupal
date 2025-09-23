@@ -17,18 +17,17 @@ jobs:
         run: |
           cd .ci
           php --version
-          composer require --dev dealerdirect/phpcodesniffer-composer-installer
-          composer require --dev drupal/coder
-          composer require --dev slevomat/coding-standard
+          composer require dealerdirect/phpcodesniffer-composer-installer
+          composer require  drupal/coder
+          
 
       - name: Check coding standards
         run: |
-          cd .ci
           vendor/bin/phpcs -i
           # vendor/bin/phpcs --config-show
-          vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer,vendor/sirbrillig/phpcs-variable-analysis,vendor/slevomat/coding-standard
-          vendor/bin/phpcs --config-show
-          vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml ../metsis
+          #.ci/vendor/bin/phpcs --config-set installed_paths vendor/drupal/coder/coder_sniffer,vendor/sirbrillig/phpcs-variable-analysis,vendor/slevomat/coding-standard
+          .ci/vendor/bin/phpcs --config-show
+          .ci/vendor/bin/phpcs --colors -n --standard=Drupal --extensions=php,module,yml metsis
   phpcs_8_3:
     runs-on: ubuntu-latest
     steps:
@@ -43,8 +42,10 @@ jobs:
         run: |
           cd .ci
           php --version
+          composer -V
           composer require --dev drupal/coder
-          composer require --dev dealerdirect/phpcodesniffer-composer-installer
+          composer require --dev "dealerdirect/phpcodesniffer-composer-installer:^1.0"
+          composer require --dev squizlabs/php_codesniffer
 
       - name: Check coding standards
         run: |
