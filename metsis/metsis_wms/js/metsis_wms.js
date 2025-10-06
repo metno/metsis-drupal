@@ -1536,20 +1536,20 @@ console.log("Start of wms map script:");
                     var res = map.getView().getResolution();
                     console.log(element.getSource().getParams().LAYERS);
                     console.log(element.getVisible());
-		    if (selected_style.includes('boxfill/')) {
-		      const palette = selected_style.split('boxfill/').pop();
+		            if (selected_style.includes('boxfill/')) {
+		              const palette = selected_style.split('boxfill/').pop();
                       var params = {
                         'LAYER': element.getSource().getParams().LAYERS,
                         'STYLE': selected_style,
                         'PALETTE': palette
                       };
-		    } else {
+		            } else {
                       var params = {
                         'LAYER': element.getSource().getParams().LAYERS,
                         'STYLE': selected_style,
                         'PALETTE': 'default'
                       };
-		    }
+		            }
                     console.log("legend params: " + params);
                     var legendUrl = element.getSource().getLegendUrl(res, params);
                     console.log("Legend url: " + legendUrl);

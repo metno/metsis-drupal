@@ -2010,16 +2010,16 @@ console.log("Start of metsis search map script:");
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 try {
                   var res = map.getView().getResolution();
-		  if (getWmsStyles()[0].includes('boxfill/')) {
-		    const palette = getWmsStyles()[0].split('boxfill/').pop();
+		          if (getWmsStyles()[0].includes('boxfill/')) {
+		            const palette = getWmsStyles()[0].split('boxfill/').pop();
                     var params = {
                       'STYLE': getWmsStyles()[0],
                       'PALETTE': palette
                     };
                     var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res, params);
-		  } else {
+		          } else {
                     var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res);
-		  }
+		          }
                   var img = document.getElementById('map-wms-legend');
                   img.src = legendUrl;
                 }
