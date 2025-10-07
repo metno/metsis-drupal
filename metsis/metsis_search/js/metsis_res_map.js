@@ -47,6 +47,7 @@ console.log("Start of metsis search map script:");
         const bbox_operator = drupalSettings.metsis_search_map_block.bbox_op;
         const bbox_filter_auto_show = drupalSettings.bbox_filter_auto_show;
         const search_view = drupalSettings.metsis_search.search_view;
+        const query_args = drupalSettings.metsis_search_map_block.query_args;
 
         // Some debugging
         const debug = true;
@@ -70,6 +71,8 @@ console.log("Start of metsis search map script:");
           console.log(bbox_filter);
           console.log(bbox_operator);
           console.log(search_view);
+          console.log("Search arguments:");
+          console.log(query_args);
 
         }
 
@@ -2788,30 +2791,64 @@ console.log("Start of metsis search map script:");
           limit: 5,
           keepOpen: true,
           autoComplete: true,
-          countrycodes: 'no,sj,se,dk,is,fo,fi,gb'
+          countrycodes: 'no,sj,se,dk,is,fo,fi,gb,ru'
         });
 
         geocoder.on('addresschosen', function (evt) {
           // it's up to you
           console.info(evt);
           var bbox = evt.place.bbox;
-          /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-          var myurl = '/metsis/search/place?tllat=' + bbox[1] + '&tllon=' + bbox[2] + '&brlat=' + bbox[0] + '&brlon=' + bbox[3] + '&proj=' + selected_proj;
-          console.log('calling controller url: ' + myurl);
-          data = Drupal.ajax({
-            url: myurl,
-            async: false,
-            success: function (response) {
+          console.log(bbox);
+          var searchForm = document.querySelector('#views-exposed-form-metsis-search-results');
+          console.log(searchForm);
 
-              //Store place in browser session
-              //sessionStorage.setItem("place_lat", evt.place.lat);
-              //sessionStorage.setItem("place_lon", evt.place.lon);
+          // Iterate over the query arguments and populate the search API exposed form.
+          Object.keys(query_args).forEach(function (key) {
+            if (key.startsWith("facet_")) {
+              // This is a facet, extract the name and value from the key.
+              var facetName = key.replace(/^facet_/g, "");
+              var facetValue = query_args[key];
 
-              console.log(window.location.href);
+              // Add the facet to the search API exposed form.
+              searchForm.append($("<input type='hidden' name='" + facetName + "' value='" + facetValue + "'>"));
+            } else if (key.startsWith("_facet_")) {
+              // This is a facet, extract the name and value from the key.
+              var facetName = key.replace(/^_facet_/g, "");
+              var facetValue = query_args[key];
 
-              location.href = window.location.href; //Redirect
+              // Add the facet to the search API exposed form.
+              searchForm.append($("<input type='hidden' name='" + facetName + "' value='" + facetValue + "'>"));
+            } else {
+              // This is not a facet, just add it as a normal argument.
+              var arg = query_args[key];
+              if (key == 'bbox') {
+                console.log("key: " + key + ", Arg: " + arg);
+                const bboxInput = searchForm.querySelector('[name="bbox"]');
+                bboxInput.value(arg)
+              }
+              else if (arg !== "") {
+                searchForm.append($("<input type='hidden' name='" + key + "' value='" + arg + "'>"));
+                console.log("adding key: " + key + " arg: " + arg);
+              }
             }
-          }).execute();
+          });
+          /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
+          // var myurl = '/metsis/search/place?tllat=' + bbox[1] + '&tllon=' + bbox[2] + '&brlat=' + bbox[0] + '&brlon=' + bbox[3] + '&proj=' + selected_proj;
+          // console.log('calling controller url: ' + myurl);
+          // data = Drupal.ajax({
+          //   url: myurl,
+          //   async: false,
+          //   success: function (response) {
+
+          //     //Store place in browser session
+          //     //sessionStorage.setItem("place_lat", evt.place.lat);
+          //     //sessionStorage.setItem("place_lon", evt.place.lon);
+
+          //     console.log(window.location.href);
+
+          //     location.href = window.location.href; //Redirect
+          //   }
+          // }).execute();
 
         });
         map.addControl(geocoder);

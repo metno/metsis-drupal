@@ -142,6 +142,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     // $brlat = $session->get('brlat');
     // $brlon = $session->get('brlon');
     // $filter = $session->get('cond');
+    $queryArgs = $this->request->query->all();
+
     // Get saved configuration.
     $config = $this->configFactory->get('metsis_search.settings');
     $bbox_filter_auto_show = $config->get('hide_bbox_filter_exposed');
@@ -434,6 +436,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
         'bbox_filter' => $this->metsisState->get('bbox_filter'),
         'bbox_op' => $this->metsisState->get('bbox_op'),
         'bbox_filter_auto_show' => $bbox_filter_auto_show,
+        'query_args' => $queryArgs,
       ],
     ];
     // Placeholder for dynamic drupalSettings.
