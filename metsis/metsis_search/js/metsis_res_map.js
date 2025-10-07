@@ -1707,14 +1707,14 @@ console.log("Start of metsis search map script:");
               console.log(bbox);
               for (var idx = 0; idx < layers.length; idx++) {
                 var ls = layers[idx].Layer;
-                if (!ls) {
+                if (ls === undefined) {
                   lst = layers[idx]
-                  if (lst) {
+                  if (lst !== undefined) {
                     ls = [lst];
                   }
 
                 }
-                if (ls) {
+                if (ls !== undefined) {
                   console.log(ls.Name);
                   for (let i = 0; i < ls.length; i++) {
                     var getTimeDimensions = function () {
@@ -1742,6 +1742,9 @@ console.log("Start of metsis search map script:");
                                 console.log("timedim default: " + defaultTimeDim);
                               }
                               if (startDate === endDate) {
+                                times = [startDate];
+                              }
+                             else if (endDate === undefined && duration === undefined) {
                                 times = [startDate];
                               }
                               else {
@@ -1938,10 +1941,20 @@ console.log("Start of metsis search map script:");
                     var res = map.getView().getResolution();
                     console.log(element.getSource().getParams().LAYERS);
                     console.log(element.getVisible());
-                    var params = {
-                      'LAYER': element.getSource().getParams().LAYERS,
-                      'STYLE': selected_style
-                    };
+                    if (selected_style.includes('boxfill/')) {
+                      const palette = selected_style.split('boxfill/').pop();
+                      var params = {
+                        'LAYER': element.getSource().getParams().LAYERS,
+                        'STYLE': selected_style,
+                        'PALETTE': palette
+                      };
+                    } else {
+                      var params = {
+                        'LAYER': element.getSource().getParams().LAYERS,
+                        'STYLE': selected_style,
+                        'PALETTE': 'default'
+                      };
+                    }
                     console.log("legend params: " + params);
                     var legendUrl = element.getSource().getLegendUrl(res, params);
                     console.log("Legend url: " + legendUrl);
@@ -2000,7 +2013,16 @@ console.log("Start of metsis search map script:");
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 try {
                   var res = map.getView().getResolution();
-                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res);
+		          if (getWmsStyles()[0].includes('boxfill/')) {
+		            const palette = getWmsStyles()[0].split('boxfill/').pop();
+                    var params = {
+                      'STYLE': getWmsStyles()[0],
+                      'PALETTE': palette
+                    };
+                    var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res, params);
+		          } else {
+                    var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res);
+		          }
                   var img = document.getElementById('map-wms-legend');
                   img.src = legendUrl;
                 }
@@ -2482,7 +2504,7 @@ console.log("Start of metsis search map script:");
 
                 })
                 //If we have wmsResource, display visulise wms button
-                if (wmsResource != null && wmsResource != "") {
+                if (wmsResource != null && wmsResource != "" && (!wmsResource.includes("k8s.met.no") || (wmsResource.includes("k8s.met.no") && init_proj !== 'EPSG:32661'))) {
                   $('#popupSelectedProductContent').append(
                     $(document.createElement('button')).prop({
                       id: 'popup-wms-button',
