@@ -142,6 +142,8 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     // $brlat = $session->get('brlat');
     // $brlon = $session->get('brlon');
     // $filter = $session->get('cond');
+    $queryArgs = $this->request->query->all();
+
     // Get saved configuration.
     $config = $this->configFactory->get('metsis_search.settings');
     $bbox_filter_auto_show = $config->get('hide_bbox_filter_exposed');
@@ -213,11 +215,11 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       '#markup' => '<span id="vizClass"><button id="vizAllButton" class="w3-center adc-button adc-sbutton"></button></span>',
       '#allowed_tags' => ['div', 'label', 'button', 'br', 'span'],
     ];
-    $build['search-map']['top-panel']['buttons-container']['reset'] = [
-      '#type' => 'markup',
-      '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sfaddbutton">Reset search</a></span>',
-      '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'input'],
-    ];
+    // $build['search-map']['top-panel']['buttons-container']['reset'] = [
+    // '#type' => 'markup',
+    // '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sfaddbutton">Reset search</a></span>',
+    // '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'input'],
+    // ];
     $build['search-map']['top-panel']['buttons-container']['reset-map'] = [
       '#type' => 'markup',
       '#markup' => '<span id="resetMapButtonID"><button id="resetMapButton" class="w3-center adc-button adc-sbutton" >Reset map</button></span>',
@@ -269,7 +271,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     $build['search-map']['map-fullscreen-wrapper']['side-panel']['legend'] = [
       '#type' => 'markup',
       '#prefix' => '<div class="w3-container w3-margin-left legend-placeholder">',
-      '#markup' => '<img id="map-wms-legend"/>',
+      '#markup' => '<img id="map-wms-legend" src="/modules/metsis/metsis_search/images/empty.png"/>',
       '#suffix' => '</div>',
       '#allowed_tags' => ['div', 'img'],
 
@@ -434,6 +436,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
         'bbox_filter' => $this->metsisState->get('bbox_filter'),
         'bbox_op' => $this->metsisState->get('bbox_op'),
         'bbox_filter_auto_show' => $bbox_filter_auto_show,
+        'query_args' => $queryArgs,
       ],
     ];
     // Placeholder for dynamic drupalSettings.

@@ -29,7 +29,8 @@ console.log("Start of wms map script:");
         var pywpsUrl = drupalSettings.metsis_wms_map.pywps_service;
         var wms_layers_skip = drupalSettings.metsis_wms_map.wms_layers_skip;
         var wms_data = drupalSettings.metsis_wms_map.wms_data;
-        var ups_north_proj = drupalSettings.metsis_wms_map.ups_north_proj ? true : false;
+        //var ups_north_proj = drupalSettings.metsis_wms_map.ups_north_proj ? true : false;
+        var ups_north_proj = false;
         let selected_proj = drupalSettings.metsis_wms_map.selected_proj;
         // Some debugging
         var debug = true;
@@ -48,6 +49,19 @@ console.log("Start of wms map script:");
         }
         console.log("Wms data is:");
         console.log(wms_data);
+        Object.keys(wms_data).forEach(key => {
+
+          Object.keys(wms_data[key]).forEach(key2 => {
+            if (key2 === 'dar') {
+              var wmsUrl = wms_data[key][key2];
+	      if (wmsUrl[0].includes('k8s.met.no')) {
+	        ups_north_proj = true;
+	      } else {
+		ups_north_proj = false;
+	      };
+            }
+          });
+        });
 
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
@@ -260,7 +274,7 @@ console.log("Start of wms map script:");
             console.log("change projection event: " + selected_proj);
 
             console.log("Update view to new selected projection: " + projObjectforCode[selected_proj].projection.getCode());
-            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation())
+            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation());
             //console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
               //center: ol.extent.getCenter(featuresExtent),
@@ -1522,10 +1536,20 @@ console.log("Start of wms map script:");
                     var res = map.getView().getResolution();
                     console.log(element.getSource().getParams().LAYERS);
                     console.log(element.getVisible());
-                    var params = {
-                      'LAYER': element.getSource().getParams().LAYERS,
-                      'STYLE': selected_style
-                    };
+		            if (selected_style.includes('boxfill/')) {
+		              const palette = selected_style.split('boxfill/').pop();
+                      var params = {
+                        'LAYER': element.getSource().getParams().LAYERS,
+                        'STYLE': selected_style,
+                        'PALETTE': palette
+                      };
+		            } else {
+                      var params = {
+                        'LAYER': element.getSource().getParams().LAYERS,
+                        'STYLE': selected_style,
+                        'PALETTE': 'default'
+                      };
+		            }
                     console.log("legend params: " + params);
                     var legendUrl = element.getSource().getLegendUrl(res, params);
                     console.log("Legend url: " + legendUrl);
@@ -1584,7 +1608,10 @@ console.log("Start of wms map script:");
                 //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
                 try {
                   var res = map.getView().getResolution();
-                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res);
+                  var params = {
+                    'STYLE': getWmsStyles()[0],
+                  };
+                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res, params);
                   var img = document.getElementById('map-wms-legend');
                   img.src = legendUrl;
                 }

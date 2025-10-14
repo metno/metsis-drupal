@@ -277,6 +277,17 @@ in fullscreen by openlayers fullScreenControl */
   font-size: 0.8em;
 }
 
+.ol-layerswitcher .panel li label {
+  max-width: fit-content !important;
+  white-space: normal !important;
+  height: 2.3em !important;
+  overflow: unset !important;
+}
+
+/*#map-wms-legend {
+ display: block !important;
+}*/
+
 .layerSwitcher {
   margin-left: 5px;
 }

@@ -1,11 +1,11 @@
 metadata_search_view:
-  version: 1.0.4
+  version: 1.0.5
   css:
     theme:
       css/metadata_search_view.css: {}
 
 ts_plot:
-  version: 1.0.3
+  version: 1.0.4
   js:
     https://cdn.pydata.org/bokeh/release/bokeh-2.3.3.min.js: { type: external, minified: true}
     https://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.3.min.js: { type: external, minified: true}
@@ -19,7 +19,7 @@ ts_plot:
     - core/drupalSettings
 
 search_map:
-  version: 1.0.5
+  version: 1.0.6
   css:
     theme:
       css/metsis_qsearch.css: {}
@@ -39,7 +39,7 @@ search_map:
     #- metsis_search/map_ol_ext
 
 search_map_block:
-  version: 1.0.5
+  version: 1.0.6
   css:
     theme:
       #/libraries/openlayers-6.5.0/ol.css: {minified: true}
@@ -62,7 +62,7 @@ search_map_block:
     - core/drupal.ajax
     - core/drupal.dialog
     - core/drupal.dialog.ajax
-    #- jquery_ui_slider/slider
+    - jquery_ui_slider/slider
     - metsis_search/map_ol
     #- metsis_search/map_projs
     # - metsis_search/map_ol_ext

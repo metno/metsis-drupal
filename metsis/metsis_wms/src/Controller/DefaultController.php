@@ -251,7 +251,7 @@ class DefaultController extends ControllerBase {
       $build['search-map']['map-fullscreen-wrapper']['side-panel']['legend'] = [
         '#type' => 'markup',
         '#prefix' => '<div class="w3-container w3-margin-left legend-placeholder">',
-        '#markup' => '<span class="map-sidepanel-title">Legend</span><img id="map-wms-legend"/>',
+        '#markup' => '<span class="map-sidepanel-title">Legend</span><img id="map-wms-legend" src="/core/misc/throbber-active.gif"/>',
         '#suffix' => '</div>',
         '#allowed_tags' => ['div', 'img'],
 
