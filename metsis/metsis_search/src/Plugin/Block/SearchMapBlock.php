@@ -271,7 +271,7 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
     $build['search-map']['map-fullscreen-wrapper']['side-panel']['legend'] = [
       '#type' => 'markup',
       '#prefix' => '<div class="w3-container w3-margin-left legend-placeholder">',
-      '#markup' => '<img id="map-wms-legend" src="/core/misc/throbber-active.gif"/>',
+      '#markup' => '<img id="map-wms-legend" src="/modules/metsis/metsis_search/images/empty.png"/>',
       '#suffix' => '</div>',
       '#allowed_tags' => ['div', 'img'],
 

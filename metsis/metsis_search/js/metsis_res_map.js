@@ -1990,12 +1990,17 @@ console.log("Start of metsis search map script:");
                         'PALETTE': 'default'
                       };
                     }
+                    try {
                     console.log("legend params: " + params);
                     var legendUrl = element.getSource().getLegendUrl(res, params);
                     console.log("Legend url: " + legendUrl);
                     //$('#bottomMapPanel').append('<img id="map-bottom-wms-legend" />');
                     var img = document.getElementById('map-wms-legend');
                     img.src = legendUrl;
+                    }
+                    catch {
+                  console.log("No legendUrl info for layer");
+                }
                   }
                 });
               });
