@@ -274,7 +274,7 @@ console.log("Start of wms map script:");
             console.log("change projection event: " + selected_proj);
 
             console.log("Update view to new selected projection: " + projObjectforCode[selected_proj].projection.getCode());
-            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation())
+            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation());
             //console.log("Features extent: " + featuresExtent);
             map.setView(new ol.View({
               //center: ol.extent.getCenter(featuresExtent),

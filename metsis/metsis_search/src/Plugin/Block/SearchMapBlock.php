@@ -215,11 +215,11 @@ class SearchMapBlock extends BlockBase implements BlockPluginInterface, Containe
       '#markup' => '<span id="vizClass"><button id="vizAllButton" class="w3-center adc-button adc-sbutton"></button></span>',
       '#allowed_tags' => ['div', 'label', 'button', 'br', 'span'],
     ];
-    $build['search-map']['top-panel']['buttons-container']['reset'] = [
-      '#type' => 'markup',
-      '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sfaddbutton">Reset search</a></span>',
-      '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'input'],
-    ];
+    // $build['search-map']['top-panel']['buttons-container']['reset'] = [
+    // '#type' => 'markup',
+    // '#markup' => '<span id="resetButtonID"><a id="resetButton" href="/metsis/search/reset" class="w3-center adc-button adc-sfaddbutton">Reset search</a></span>',
+    // '#allowed_tags' => ['div', 'label', 'button', 'br', 'a', 'span', 'input'],
+    // ];
     $build['search-map']['top-panel']['buttons-container']['reset-map'] = [
       '#type' => 'markup',
       '#markup' => '<span id="resetMapButtonID"><button id="resetMapButton" class="w3-center adc-button adc-sbutton" >Reset map</button></span>',

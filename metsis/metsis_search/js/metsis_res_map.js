@@ -49,6 +49,8 @@ console.log("Start of metsis search map script:");
         const search_view = drupalSettings.metsis_search.search_view;
         const query_args = drupalSettings.metsis_search_map_block.query_args;
 
+        var ups_north_proj = false;
+
         // Some debugging
         const debug = true;
         if (debug) {
@@ -75,12 +77,41 @@ console.log("Start of metsis search map script:");
           console.log(query_args);
 
         }
+        /** Function to check for mapserver8 wms links (k8s) */
+        function checkMapserv8(arr) {
+          for (let i = 0; i < arr.length; i++) {
+            const element = arr[i];
+
+            // Check if the element is an array.
+            if (Array.isArray(element)) {
+              // Check if any string in the array includes "k8s".
+              if (element.some(s => typeof s === 'string' && s.includes("k8s"))) {
+                return true;
+              }
+
+              // Iterate over nested arrays.
+              for (let j = 0; j < element.length; j++) {
+                const el2 = element[j];
+
+                // Check if el2 is an array.
+                if (Array.isArray(el2)) {
+                  if (el2.some(s => typeof s === 'string' && s.includes("k8s"))) {
+                    return true;
+                  }
+                }
+              }
+            }
+          }
+          return false;
+        }
 
         //Make extracted info empty array if null or undefined
         if (extracted_info === null || extracted_info === undefined) {
           console.log('The array is null or undefined');
           extracted_info = [];
         }
+        // Handle special projection for UPS North when using Mapserver >= 8.x
+        ups_north_proj = checkMapserv8(extracted_info);
         //Set the configured zoom level as the same as default:
         defZoom = mapZoom;
         //Set current selected projection to initial projection if not altered by user $session
@@ -88,8 +119,7 @@ console.log("Start of metsis search map script:");
         if (selected_proj == null) {
           selected_proj = init_proj;
           proj = init_proj;
-        } else {
-          proj = selected_proj;
+           console.log("Set selected proj to: " + selected_proj);
         }
 
         //Set the current selected filter
@@ -365,7 +395,13 @@ console.log("Start of metsis search map script:");
         // two projections will be possible
         // 32661
         //proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs');
-        proj4.defs('EPSG:32661', '+proj=stere +lat_0=90 +lat_ts=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs');
+        if (ups_north_proj == true) {
+          proj4.defs("EPSG:32661", 'PROJCS["WGS 84 / UPS North (N,E)",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Polar_Stereographic"],PARAMETER["latitude_of_origin",90],PARAMETER["central_meridian",0],PARAMETER["scale_factor",0.994],PARAMETER["false_easting",2000000],PARAMETER["false_northing",2000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Northing",SOUTH],AXIS["Easting",SOUTH],AUTHORITY["EPSG","32661"]]');
+        }
+        else {
+          proj4.defs("EPSG:32661", "+proj=stere +lat_0=90 +lon_0=0 +k=0.994 +x_0=2000000 +y_0=2000000 +datum=WGS84 +units=m +no_defs +type=crs");
+        }
+
         ol.proj.proj4.register(proj4);
         var ext32661 = [-6e+06, -3e+06, 9e+06, 6e+06];
         var center32661 = [0, 80];
@@ -386,7 +422,7 @@ console.log("Start of metsis search map script:");
 
         // 4326
         var ext4326 = [-350.0000, -100.0000, 350.0000, 100.0000];
-        var center4326 = [15, 0];
+        var center4326 = [0, 0];
         var proj4326 = new ol.proj.Projection({
           code: 'EPSG:4326',
           extent: ext4326
@@ -437,17 +473,18 @@ console.log("Start of metsis search map script:");
           ch[i].onchange = function change_projection() {
             prj = this.value;
             proj = prj;
-            selected_proj = prj;
+            selected_proj = this.value;
             console.log("change projection event: " + prj);
-
+            console.log("Update view to new selected projection: " + projObjectforCode[selected_proj].projection.getCode());
+            console.log("Axis orientation is: " + projObjectforCode[selected_proj].projection.getAxisOrientation());
             //Update session information with user selected projection
             /* Send the bboundingbox back to drupal metsis search controller to add the current boundingbox filter to the search query */
-            var myurl = '/metsis/search/map/projection?&proj=' + selected_proj;
-            console.log('calling controller url: ' + myurl);
-            let data = Drupal.ajax({
-              url: myurl,
-              async: true
-            }).execute();
+            // var myurl = '/metsis/search/map/projection?&proj=' + selected_proj;
+            // console.log('calling controller url: ' + myurl);
+            // let data = Drupal.ajax({
+            //   url: myurl,
+            //   async: true
+            // }).execute();
 
             //Do something after ajax call are complete
             //$(document).ajaxComplete(function(event, xhr, settings) {
@@ -466,11 +503,9 @@ console.log("Start of metsis search map script:");
             map.setView(new ol.View({
               minZoom: 0,
               maxZoom: 23,
-              center: ol.extent.getCenter(featuresExtent),
-              extent: projObjectforCode[prj].extent,
-              //maxResolution: 43008.234375,
-              //projection: projObjectforCode[prj].projection,
-              projection: selected_proj,
+              center: projObjectforCode[selected_proj].center,
+              extent: projObjectforCode[selected_proj].extent,
+              projection: projObjectforCode[selected_proj].projection.getCode(),
             }));
             console.log("Rebuild pins and polygons features with projection: " + prj);
             featuresExtent = buildFeatures(projObjectforCode[prj].projection);
@@ -946,7 +981,7 @@ console.log("Start of metsis search map script:");
               //rotation: 0.5,
               center: projObjectforCode[selected_proj].center,
               extent: projObjectforCode[selected_proj].extent,
-              projection: projObjectforCode[selected_proj].projection,
+              projection: projObjectforCode[selected_proj].projection.getCode(),
               //projection: selected_proj,
             }),
           });
@@ -1880,7 +1915,7 @@ console.log("Start of metsis search map script:");
                         elevationDimensions = newElevationDim;
                       }
                     }
-                    visible = (idx === 0) ? true : false;
+                    visible = (i === 0) ? true : false;
                     console.log("i=" + idx + " layer_name: " + ls[i].Name);
                     if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
                       wmsGroup.getLayers().insertAt(i,
@@ -1897,7 +1932,7 @@ console.log("Start of metsis search map script:");
                           source: new ol.source.TileWMS(({
                             url: wmsUrl,
                             reprojectionErrorThreshold: 0.1,
-                            projection: selected_proj,
+                            //projection: selected_proj,
                             params: {
                               'LAYERS': ls[i].Name,
                               'VERSION': result.version,
@@ -2873,7 +2908,7 @@ console.log("Start of metsis search map script:");
           // }).execute();
 
         });
-        map.addControl(geocoder);
+        // map.addControl(geocoder);
         //createOverViewMap(selected_proj)
 
         //Function to zoom to extent of all features:

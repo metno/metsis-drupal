@@ -1,5 +1,5 @@
 wms_ol6:
-  version: 1.4.1
+  version: 1.4.4
   css:
     theme:
      # /libraries/ol-6.15.1/ol.css: {minified: true}
