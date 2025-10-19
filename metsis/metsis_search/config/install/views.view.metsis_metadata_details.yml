@@ -1,3 +1,4 @@
+uuid: 729f51f4-441d-4150-808f-d614ff1690f4
 langcode: en
 status: true
 dependencies:
@@ -815,8 +816,9 @@ display:
           hide_alter_empty: true
           fields:
             - keywords_vocabulary
-            - sm_keywords
+            - keywords_keyword
             - nothing_4
+            - sm_keywords
           wrapper: details
           legend: 'Show Keywords'
           classes: ''
@@ -875,14 +877,14 @@ display:
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
-        sm_keywords:
-          id: sm_keywords
+        keywords_keyword:
+          id: keywords_keyword
           table: search_api_index_metsis
-          field: sm_keywords
+          field: keywords_keyword
           relationship: none
           group_type: group
-          admin_label: keywords
-          plugin_id: search_api
+          admin_label: ''
+          plugin_id: search_api_text
           label: Keywords
           exclude: true
           alter:
@@ -914,20 +916,21 @@ display:
             html: false
           element_type: ''
           element_class: ''
-          element_label_type: strong
+          element_label_type: ''
           element_label_class: ''
           element_label_colon: true
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
+          hide_empty: false
           empty_zero: false
           hide_alter_empty: true
           link_to_item: false
           use_highlighting: false
           multi_type: separator
           multi_separator: ', '
+          filter_type: plain
         nothing_4:
           id: nothing_4
           table: views
@@ -940,7 +943,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if keywords_vocabulary %}\r\n{% for key,voc in  keywords_vocabulary|split(',') %}\r\n    <a href=\"https://vocab.met.no/mmd/Keywords_Vocabulary/{{ voc | replace({' ':''})| replace({'none':'None'})}}\" target=\"_blank\">{{ voc | replace({'CFSTDN':'CF standard names'})| replace({'GCMDSK':'GCMD Science Keyword'}) | replace({'GCMDLOC':'GCMD Locations'}) | replace({'GCMDPROV':'GCMD Providers'}) | replace({'GEMET':'INSPIRE Themes'}) | replace({'none':'None'})}}</a>:\r\n    {% for key1, keyword in  sm_keywords|split(',') %}\r\n        {% if key == key1 %}\r\n            {% if 'GCMDSK' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDLOC' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDPROV' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GEMET' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'CFSTDN' in voc %}\r\n                <a href=\"http://vocab.nerc.ac.uk/standard_name/{{ keyword|replace({' ':''}) }}\" target=\"_blank\">{{ keyword }}</a>\r\n             {% else %}\r\n               {{ keyword }} \r\n            {% endif %}\r\n       {% endif %}\r\n    {% endfor %}\r\n     <br>\r\n{% endfor %}\r\n{% else %}\r\n    {{ sm_keywords }}\r\n{% endif %}"
+            text: "{% if keywords_vocabulary %}\r\n{% for key,voc in  keywords_vocabulary|split(',') %}\r\n    <a href=\"https://vocab.met.no/mmd/Keywords_Vocabulary/{{ voc | replace({' ':''})| replace({'none':'None'})}}\" target=\"_blank\">{{ voc | replace({'CFSTDN':'CF standard names'})| replace({'GCMDSK':'GCMD Science Keyword'}) | replace({'GCMDLOC':'GCMD Locations'}) | replace({'GCMDPROV':'GCMD Providers'}) | replace({'GEMET':'INSPIRE Themes'}) | replace({'none':'None'})}}</a>:\r\n    {% for key1, keyword in  keywords_keyword|split(',') %}\r\n        {% if key == key1 %}\r\n            {% if 'GCMDSK' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDLOC' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GCMDPROV' in voc %}\r\n               {{ keyword | split('&gt;')|join('>')|upper}}\r\n            {% elseif 'GEMET' in voc %}\r\n               {{ keyword }}\r\n            {% elseif 'CFSTDN' in voc %}\r\n                <a href=\"http://vocab.nerc.ac.uk/standard_name/{{ keyword|replace({' ':''}) }}\" target=\"_blank\">{{ keyword }}</a>\r\n             {% else %}\r\n               {{ keyword }} \r\n            {% endif %}\r\n       {% endif %}\r\n    {% endfor %}\r\n     <br>\r\n{% endfor %}\r\n{% else %}\r\n    {{ keywords_keyword }}\r\n{% endif %}"
             make_link: false
             path: ''
             absolute: false
