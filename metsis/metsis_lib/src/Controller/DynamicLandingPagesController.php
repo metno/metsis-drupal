@@ -542,10 +542,10 @@ class DynamicLandingPagesController extends ControllerBase {
       ];
     }
     if (isset($fields['dataset_citation_url'])) {
-      $renderArray['citation_wrapper']['publisher_url'] = [
+      $renderArray['citation_wrapper']['citation_url'] = [
         '#type' => 'item',
         '#title' => $this->t('Publication Url:'),
-        '#url' => Url::fromUri($fields['dataset_citation_url'][0]),
+        '#markup' => '<a class="w3-text-blue" href="' . $fields['dataset_citation_url'][0] . '">' . $fields['dataset_citation_url'][0] . '</a>',
         '#allowed_tags' => ['a', 'strong'],
       ];
     }
