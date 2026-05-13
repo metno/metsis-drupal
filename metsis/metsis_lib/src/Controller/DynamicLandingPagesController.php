@@ -1335,11 +1335,15 @@ class DynamicLandingPagesController extends ControllerBase {
     if (isset($fields['data_access_url_http'])) {
       $datadownloads = [];
       foreach ($fields['data_access_url_http'] as $datadownload) {
-        $datadownloads[] = [
+        $datadownloaditem = [
           '@type' => 'DataDownload',
           'description' => 'Direct dowload',
           'contentUrl' => $datadownload,
         ];
+        if (isset($fields['storage_information_file_format'])) {
+          $datadownloaditem['encodingFormat'] = $fields['storage_information_file_format'];
+        }
+        $datadownloads[] = $datadownloaditem;
       }
     }
     if (isset($fields['geographic_extent_rectangle_north'])) {
@@ -1392,6 +1396,7 @@ class DynamicLandingPagesController extends ControllerBase {
       'temporalCoverage' => $start_date . '/' . $end_date ,
       'spatialCoverage' => $spatialcoverage,
       'conditionsOfAccess' => $fields['access_constraint'] ?? '',
+      'distribution' => $datadownloads ?? '',
       'creator' => $creators ?? '',
       'contributor' => $contributors ?? '',
       'provider' => $providers ?? '',
