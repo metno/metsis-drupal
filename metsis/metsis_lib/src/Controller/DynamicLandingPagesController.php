@@ -459,14 +459,14 @@ class DynamicLandingPagesController extends ControllerBase {
     // $settings['map_position']['center']['lat'] = $features['lat'];
     // $settings['map_position']['center']['lon'] = $features['lon'];
     // Set $map array with leafletMapGetInfo.
-    $map = $this->leaflet->leafletMapGetInfo();
+    $map = $this->leaflet->leafletMapGetInfo('openstreetmap');
     // $map = leaflet_leaflet_map_info();
-    $map['OSM Mapnik']['settings']['leaflet_markercluster'] = [
+    $map['settings']['leaflet_markercluster'] = [
 
       'control' => FALSE,
 
     ];
-    $map['OSM Mapnik']['settings']['reset_map'] = [
+    $map['settings']['reset_map'] = [
 
       'control' => FALSE,
 
@@ -474,14 +474,14 @@ class DynamicLandingPagesController extends ControllerBase {
 
     // Set manual zoom for points.
     if ($isPoint) {
-      $map['OSM Mapnik']['settings']['zoom'] = 7;
+      $map['settings']['zoom'] = 7;
       // $map['settings']['map_position_force'] = true;.
     }
     // dpm($map);
     // dpm($features);
     // $map['settings']['zoom'] = 1;
     // render the map.
-    $map_result = $this->leaflet->leafletRenderMap($map['OSM Mapnik'], $features, $height = '400px');
+    $map_result = $this->leaflet->leafletRenderMap($map, $features, $height = '400px');
     // Add the rendered map to the renderArray.
     $renderArray['map'] = $map_result;
 
