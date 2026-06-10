@@ -6,5 +6,34 @@
     "scripts": {
         "sniff": "phpcs --colors -n --standard=Drupal,DrupalPractice --extensions=php,module,yml,inc,install metsis",
         "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml,inc,install metsis"
+    },
+"require": {
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-simplexml": "*",
+    "sweetrdf/easyrdf": "^1",
+    "drupal/search_api": "^1.39",
+    "drupal/search_api_solr": "^4.3",
+    "drupal/search_api_solr_nlp": "^1.1",
+    "drupal/facets": "^3.0",
+    "drupal/search_api_autocomplete": "^1.10",
+    "drupal/better_exposed_filters": "^7",
+    "drupal/redis": "^1",
+    "drupal/leaflet": "^10.4",
+    "drupal/views_ajax_history": "^1.8",
+    "drupal/views_filters_summary": "^3.2",
+    "drupal/tagify": "^1.2",
+    "drupal/field_group": "^4.1",
+    "drupal/token": "^1.17",
+    "drupal/token_views_filter": "^2.1"
+},
+"require-dev": {
+    "drush/drush": "^13",
+    "drupal/upgrade_status": "^4.3"
+},
+    "config": {
+        "allow-plugins": {
+            "drupal/core-composer-scaffold": true
+        }
     }
 }
