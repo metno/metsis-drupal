@@ -42,7 +42,7 @@ class DashboardBokehController extends ControllerBase {
   /**
    * Build the render array for the dashboard.
    */
-  public function build(Request $reqeust) {
+  public function build(Request $request) {
     $config = $this->config('metsis_dashboard_bokeh.configuration');
     $backend_uri = $config->get('dashboard_bokeh_service');
     // $backend_uri = 'https://metsis.metsis-api.met.no/dashboard';
@@ -223,9 +223,9 @@ class DashboardBokehController extends ControllerBase {
       // $markup = $data;
       // return ($json_response);.
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       $this->messenger()->addError("Could not contact bokeh dashboard api at @uri .", ['@uri' => $backend_uri]);
-      $this->messenger()->addError($e);
+      $this->messenger()->addError($e->getMessage());
     }
     // $markup = preg_replace("/\n/"," ",$data);
     // $markup = trim(preg_replace('/\s\s+/', ' ', $data));
@@ -366,9 +366,9 @@ class DashboardBokehController extends ControllerBase {
       $json_response = Json::decode($data);
       // Return ($json_response);.
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       $this->messenger()->addError("Could not contact bokeh dashboard api at @uri .", ['@uri' => $backend_uri]);
-      $this->messenger()->addError($e);
+      $this->messenger()->addError($e->getMessage());
     }
     return $data;
     // Return $json_response;.

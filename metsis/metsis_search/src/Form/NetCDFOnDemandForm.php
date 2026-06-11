@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drupal\metsis_search\Form;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Form\FormBase;
@@ -18,7 +17,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\RequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Provides a NetCDF OnDemand Form for one product.
@@ -287,7 +286,7 @@ class NetCDFOnDemandForm extends FormBase {
         ];
       }
     }
-    catch (RequestException $e) {
+    catch (BadRequestHttpException $e) {
       return [
         'success' => FALSE,
         'message' => $this->t('An error occurred while trying to send the request: @error', ['@error' => $e->getMessage()]),

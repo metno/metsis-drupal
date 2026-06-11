@@ -100,9 +100,7 @@ class SearchUtils {
       $item = '<li><a href="' . $referer . '&' . $facet->getField() . '=' . $facet->getValue() . '">' . $facet->getValue() . '(' . $facet->getCount() . ')</a></li>';
       // \Drupal::logger('metsis_search-facet-facets')->debug($item);
       $markup .= $item;
-      foreach ($pivot->getPivot() as $nextPivot) {
-        $markup .= SearchUtils::displayPivotFacet($nextPivot, $referer);
-      }
+
       $markup .= '</ul>';
       return $markup;
     }
@@ -499,35 +497,35 @@ class SearchUtils {
 
       // Create extracted_info array from collected data.
       $extracted_info[$metadata_div_counter] = [
-      [
-        $address_o,
-        $address_w,
-        $address_h,
-        $address_od,
-        $netcdf_download,
-        $odata_download,
-      ],
+        [
+          $address_o,
+          $address_w,
+          $address_h,
+          $address_od,
+          $netcdf_download,
+          $odata_download,
+        ],
         $dataset_name,
         $geographical_extent,
         $latlon,
         $title,
-      // $fields['abstract'],
+        // $fields['abstract'],
         'abstract',
-      [$temporal_extent_start_date, $temporal_extent_end_date],
-      [$mapthumb, $target_url],
-      [$related_lp, $related_lp_url],
-      [$isotopic, $keywords, $collection, $activity, $project],
-      [$ds_prod_status, $md_status, $last_md_update],
-      [$dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce],
-      [
-      // $fimex_link,
-      // $visualize_button,
-      // $ascii_button,
-      // $leveltwo_button,
-      // $target_url,
+        [$temporal_extent_start_date, $temporal_extent_end_date],
+        [$mapthumb, $target_url],
+        [$related_lp, $related_lp_url],
+        [$isotopic, $keywords, $collection, $activity, $project],
+        [$ds_prod_status, $md_status, $last_md_update],
+        [$dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce],
+        [
+        // $fimex_link,
+        // $visualize_button,
+        // $ascii_button,
+        // $leveltwo_button,
+        // $target_url,
       ],
-      [$institutions, $personnel_name],
-      [$access_const, $use_const],
+        [$institutions, $personnel_name],
+        [$access_const, $use_const],
         'metsis',
         $feature_type,
         $wms_layer,
@@ -718,35 +716,35 @@ class SearchUtils {
       }
       // Create extracted_info array from collected data.
       $extracted_info[$metadata_div_counter] = [
-      [
-        $address_o,
-        $address_w,
-        $address_h,
-        $address_od,
-        $netcdf_download,
-        $odata_download,
-      ],
+        [
+          $address_o,
+          $address_w,
+          $address_h,
+          $address_od,
+          $netcdf_download,
+          $odata_download,
+        ],
         $dataset_name,
         $geographical_extent,
         $latlon,
         $fields['title'],
-      // $fields['abstract'],
+        // $fields['abstract'],
         'abstract',
-      [$temporal_extent_start_date, $temporal_extent_end_date],
-      [$mapthumb, $target_url],
-      [$related_lp, $related_lp_url],
-      [$isotopic, $keywords, $collection, $activity, $project],
-      [$ds_prod_status, $md_status, $last_md_update],
-      [$dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce],
-      [
-      // $fimex_link,
-      // $visualize_button,
-      // $ascii_button,
-      // $leveltwo_button,
-      // $target_url,
+        [$temporal_extent_start_date, $temporal_extent_end_date],
+        [$mapthumb, $target_url],
+        [$related_lp, $related_lp_url],
+        [$isotopic, $keywords, $collection, $activity, $project],
+        [$ds_prod_status, $md_status, $last_md_update],
+        [$dc_sh, $dc_ln, $dc_url, $dc_cr, $dc_cn, $dc_ce],
+        [
+        // $fimex_link,
+        // $visualize_button,
+        // $ascii_button,
+        // $leveltwo_button,
+        // $target_url,
       ],
-      [$institutions, $personnel_name],
-      [$access_const, $use_const],
+        [$institutions, $personnel_name],
+        [$access_const, $use_const],
         'metsis',
         $feature_type,
         $wms_layer,

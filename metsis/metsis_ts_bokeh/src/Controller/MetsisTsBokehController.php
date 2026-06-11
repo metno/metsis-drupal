@@ -69,9 +69,9 @@ class MetsisTsBokehController extends ControllerBase {
       // $markup = $data;
       // return ($json_response);
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       \Drupal::messenger()->addError("Could not contact bokeh dashboard api at @uri .", ['@uri' => $backend_uri]);
-      \Drupal::messenger()->addError($e);
+      \Drupal::messenger()->addError($e->getMessage());
     }
     // $markup = preg_replace("/\n/"," ",$data);
     // $markup = trim(preg_replace('/\s\s+/', ' ', $data));

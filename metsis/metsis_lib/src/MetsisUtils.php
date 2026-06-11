@@ -2,7 +2,6 @@
 
 namespace Drupal\metsis_lib;
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\search_api\Entity\Index;
 
@@ -22,71 +21,14 @@ class MetsisUtils {
    * Class constructor.
    */
   public function __construct(ConfigEntityInterface $config) {
-    $this->$config = $config->get('metsis_lib.settings');
+    $this->config = $config->get('metsis_lib.settings');
   }
 
   /**
    * Get current config.
    */
   public function getConfig() {
-    return $this->$config;
-  }
-
-  /**
-   * Get OD variables from OPeNDAP parser service.
-   */
-  public static function adcGetOdGlobalAttributes($metadata_identifier, $collection_core) {
-    /*
-     * Get the OPeNDAP parser service config
-     */
-    $config = \Drupal::config('metsis_lib.settings');
-    $od_server_ip = $config->get('metsis_opendap_parser_ip');
-    $od_server_port = $config->get('metsis_opendap_parser_port');
-    $od_server_service = $config->get('metsis_opendap_parser_service');
-
-    // Create uri from config:
-    // var_dump($uri);
-    // Get the referer:
-    $odquery = '{
-                findAllAttributes(
-                  datasetId: "' . $metadata_identifier . '", collection: "' . $collection_core . '"
-                    ) {
-                        name value
-                    }
-               }';
-
-    $con = new HttpConnection($od_server_ip, $od_server_port);
-    $res = $con->get($od_server_service, ["query" => $odquery]);
-    $jres = Json::decode($res['body'], TRUE);
-    return $jres;
-  }
-
-  /**
-   * Get DAP variables.
-   */
-  public static function adcGetOdVariables($metadata_identifier, $collection_core) {
-    /*
-     * Get the OPeNDAP parser service config
-     */
-    $config = \Drupal::config('metsis_lib.settings');
-    $od_server_ip = $config->get('metsis_opendap_parser_ip');
-    $od_server_port = $config->get('metsis_opendap_parser_port');
-    $od_server_service = $config->get('metsis_opendap_parser_service');
-    $odquery = '{
-                      findAllVariables(
-                        datasetId: "' . $metadata_identifier . '", collection: "' . $collection_core . '"
-                          ) {
-                              name
-                                   attributes {
-                                     name value
-                                      }
-                          }
-                     }';
-
-    $con = new HttpConnection($od_server_ip, $od_server_port);
-    $res = $con->get($od_server_service, ["query" => $odquery]);
-    $jres = Json::decode($res['body'], TRUE);
-    return $jres;
+    return $this->config;
   }
 
   /**

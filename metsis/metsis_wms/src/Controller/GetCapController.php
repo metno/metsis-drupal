@@ -71,7 +71,7 @@ class GetCapController extends ControllerBase {
       }
       catch (RequestException $e) {
         // Log the error.
-        $this->getLogger('metsis_wms:getCapDoc')->error(\str($e));
+        $this->getLogger('metsis_wms:getCapDoc')->error($e->getMessage());
       }
       // Get the response.
       // $responseStatus = $request->getStatusCode();
