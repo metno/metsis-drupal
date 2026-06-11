@@ -407,6 +407,17 @@ class DynamicLandingPagesController extends ControllerBase {
       '#allowed_tags' => ['a', 'em', 'div'],
     ];
 
+    // Add link to the data catalogue.
+    // if ($mid = $fields['metadata_identifier']) {
+    // $renderArray['metadata_identifier'] = [
+    // '#type' => 'markup',
+    // '#prefix' => '<div class="w3-container">',
+    // '#suffix' => '</div>',
+    // '#markup' => '<a class="button w3-button w3-border w3-theme-border w3-margin-top w3-margin-bottom" href="/metsis/search?fulltext=' . $mid . '">Search and view this record in the data catalogue</a>',
+    // '#allowed_tags' => ['a', 'em', 'div', 'button'],
+    // ];
+    // }.
+
     /*
      *  Render map with dataset location
      */
