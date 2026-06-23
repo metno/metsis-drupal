@@ -2,10 +2,11 @@ name: 'Metsis Search'
 type: module
 description: 'METSIS Metadata Search'
 core_version_requirement: '^10 || ^11'
-version: 2.0.2
+version: 2.0.3
 package: METSIS
 dependencies:
   - search_api_solr:search_api_solr
+  - search_api:search_api
   - drupal:user
   - views_fieldsets:views_fieldsets
   - better_exposed_filters:better_exposed_filters
@@ -24,5 +25,5 @@ dependencies:
   - extlink:extlink
   - fontawesome:fontawesome
   - date_popup:date_popup
-  - views_autocomplete_filters
+  - views_autocomplete_filters:views_autocomplete_filters
   - search_api_solr_autocomplete:search_api_solr_autocomplete

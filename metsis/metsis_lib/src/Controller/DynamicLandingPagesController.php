@@ -407,6 +407,17 @@ class DynamicLandingPagesController extends ControllerBase {
       '#allowed_tags' => ['a', 'em', 'div'],
     ];
 
+    // Add link to the data catalogue.
+    // if ($mid = $fields['metadata_identifier']) {
+    // $renderArray['metadata_identifier'] = [
+    // '#type' => 'markup',
+    // '#prefix' => '<div class="w3-container">',
+    // '#suffix' => '</div>',
+    // '#markup' => '<a class="button w3-button w3-border w3-theme-border w3-margin-top w3-margin-bottom" href="/metsis/search?fulltext=' . $mid . '">Search and view this record in the data catalogue</a>',
+    // '#allowed_tags' => ['a', 'em', 'div', 'button'],
+    // ];
+    // }.
+
     /*
      *  Render map with dataset location
      */
@@ -425,23 +436,32 @@ class DynamicLandingPagesController extends ControllerBase {
     }
     else {
       $features = [
-      /*
-      [
-      'type' => 'json',
-      'json' => $geo_json_decoded,
+        [
+          'type' => 'polygon',
+          'points' => [
+            [
+              'lon' => $fields['geographic_extent_rectangle_west'],
+              'lat' => $fields['geographic_extent_rectangle_south']
+            ],
+            [
+              'lon' => $fields['geographic_extent_rectangle_west'],
+              'lat' => $fields['geographic_extent_rectangle_north']
+            ],
+            [
+              'lon' => $fields['geographic_extent_rectangle_east'],
+              'lat' => $fields['geographic_extent_rectangle_north']
+            ],
+            [
+              'lon' => $fields['geographic_extent_rectangle_east'],
+              'lat' => $fields['geographic_extent_rectangle_south']
+            ],
+            [
+              'lon' => $fields['geographic_extent_rectangle_west'],
+              'lat' => $fields['geographic_extent_rectangle_south']
+            ],
 
-      ],*/
-      [
-        'type' => 'polygon',
-        'points' => [
-      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
-      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_north']],
-      ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_north']],
-      ['lon' => $fields['geographic_extent_rectangle_east'], 'lat' => $fields['geographic_extent_rectangle_south']],
-      ['lon' => $fields['geographic_extent_rectangle_west'], 'lat' => $fields['geographic_extent_rectangle_south']],
-
+          ],
         ],
-      ],
       ];
     }
     /*
@@ -1119,12 +1139,12 @@ class DynamicLandingPagesController extends ControllerBase {
     // ADD JSONLD META.
     $jsonld = $this->getJsonld($fields, $host, $id_prefix);
     $renderArray['#attached']['html_head'][] = [
-    [
-      '#type' => 'html_tag',
-      '#tag' => 'script',
-      '#value' => json_encode($jsonld, JSON_UNESCAPED_SLASHES),
-      '#attributes' => ['type' => 'application/ld+json'],
-    ],
+      [
+        '#type' => 'html_tag',
+        '#tag' => 'script',
+        '#value' => json_encode($jsonld, JSON_UNESCAPED_SLASHES),
+        '#attributes' => ['type' => 'application/ld+json'],
+      ],
       'schema_metatag',
     ];
 
@@ -1361,7 +1381,7 @@ class DynamicLandingPagesController extends ControllerBase {
           '@type' => 'PropertyValue',
           'propertyID' => 'http://inspire.ec.europa.eu/glossary/SpatialReferenceSystem',
           'value' => 'http://www.opengis.net/def/crs/EPSG/0/'
-          . $fields['geographic_extent_rectangle_srsName'],
+            . $fields['geographic_extent_rectangle_srsName'],
         ],
       ];
     }

@@ -2,6 +2,7 @@
 
 namespace Drupal\metsis_dashboard_bokeh\Controller;
 
+use Drupal\search_api\Entity\Index;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\MessageCommand;
@@ -21,7 +22,7 @@ class BasketBokehController extends ControllerBase {
     // \Drupal::logger('metsis_basket_controller')->debug("/metsis/basket/add");
     $opendap_uris = $this->getResources($metaid);
 
-    $opendap_uri = urldecode($opendap_uri);
+    $opendap_uri = urldecode($opendap_uris);
 
     $selector = '#myBasketCount';
 
@@ -58,7 +59,7 @@ class BasketBokehController extends ControllerBase {
    */
   public function getResources($metaid) {
 
-    /** @var Index $index  TODO: Change to metsis when prepeare for release */
+    /** @var \Drupal\search_api\Entity\Index $index  TODO: Change to metsis when prepeare for release */
     $index = Index::load('metsis');
 
     /** @var SearchApiSolrBackend $backend */
@@ -88,8 +89,10 @@ class BasketBokehController extends ControllerBase {
     // Can't find much documentation for this apart from https://lucene.472066.n3.nabble.com/Response-status-td490876.html#a3703172.
     // $status = $result->getStatus();
     $fields = NULL;
+    $data = $result->getData();
+    $docs = $data['response']['docs'] ?? [];
 
-    $fields = $doc->getFields();
+    $fields = $docs[0]->getFields() ?? [];
 
     $opendap_uris = [];
     if (isset($fields['data_access_url_opendap'])) {

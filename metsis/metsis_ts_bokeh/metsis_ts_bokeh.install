@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the metsis_ts_bokeh module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Removes runtime configuration written by MetsisTsBokehConfigurationForm
+ * (metsis_ts_bokeh.configuration).  The module ships a root-level
+ * metsis_ts_bokeh.configuration.yml that is NOT located under config/install,
+ * so Drupal does not track it as module-owned config and will not delete it
+ * automatically on uninstall.
+ */
+function metsis_ts_bokeh_uninstall(bool $is_syncing = FALSE): void {
+  // Delete runtime configuration not managed by config/install.
+  $config = \Drupal::configFactory()->getEditable('metsis_ts_bokeh.configuration');
+  if (!$config->isNew()) {
+    $config->delete();
+    \Drupal::logger('metsis_ts_bokeh')->notice(
+      'Deleted runtime config metsis_ts_bokeh.configuration on uninstall.'
+    );
+  }
+}

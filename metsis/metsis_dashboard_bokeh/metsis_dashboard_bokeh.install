@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the metsis_dashboard_bokeh module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Removes runtime configuration written by DashboardBokehConfigurationForm
+ * (metsis_dashboard_bokeh.configuration) which has no config/install
+ * counterpart and is therefore not automatically removed by Drupal's uninstall
+ * process.
+ *
+ * Also removes any private tempstore data stored under the
+ * 'metsis_dashboard_bokeh' collection by BasketBokehController and
+ * BasketBlock.
+ */
+function metsis_dashboard_bokeh_uninstall(bool $is_syncing = FALSE): void {
+  // Delete runtime configuration (no config/install directory in this module).
+  $config = \Drupal::configFactory()->getEditable('metsis_dashboard_bokeh.configuration');
+  if (!$config->isNew()) {
+    $config->delete();
+    \Drupal::logger('metsis_dashboard_bokeh')->notice(
+      'Deleted runtime config metsis_dashboard_bokeh.configuration on uninstall.'
+    );
+  }
+
+  // Clear private tempstore data written by BasketBokehController::add() and
+  // BasketBlock under the 'metsis_dashboard_bokeh' collection.
+  try {
+    \Drupal::service('keyvalue.expirable')
+      ->get('tempstore.private.metsis_dashboard_bokeh')
+      ->deleteAll();
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('metsis_dashboard_bokeh')->warning(
+      'Could not clear private tempstore on uninstall: @msg',
+      ['@msg' => $e->getMessage()]
+    );
+  }
+}

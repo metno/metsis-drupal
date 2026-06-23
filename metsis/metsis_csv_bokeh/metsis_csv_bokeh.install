@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the metsis_csv_bokeh module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Metsis_csv_bokeh.settings is shipped in config/install and is removed
+ * automatically by Drupal's uninstall process.  No content entities, custom
+ * cache bins, or runtime-only config objects are created by this module, so
+ * no additional cleanup is required here.
+ */
+function metsis_csv_bokeh_uninstall(bool $is_syncing = FALSE): void {
+  // All module-owned configuration is tracked in config/install and will be
+  // removed automatically.  No explicit action required.
+  \Drupal::logger('metsis_csv_bokeh')->notice(
+    'metsis_csv_bokeh uninstalled. All module-owned configuration removed.'
+  );
+}

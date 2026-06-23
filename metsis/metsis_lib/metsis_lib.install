@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the metsis_lib module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ *
+ * Two cleanup tasks that Drupal does not perform automatically:
+ *
+ * 1. Delete metsis_lib.settings – this config object is written by
+ *    MetsisLibConfigurationForm.  The module ships a root-level
+ *    metsis_lib.settings.yml that is NOT under config/install, so Drupal
+ *    does not track it as module-owned config and will not delete it
+ *    automatically on uninstall.
+ *
+ * 2. Flush the dynamic_landingpages custom cache bin – landing page renders
+ *    are stored with CacheBackendInterface::CACHE_PERMANENT and will never
+ *    expire on their own.  Leaving them after uninstall wastes space and
+ *    may serve stale content if the module is later reinstalled.
+ */
+function metsis_lib_uninstall(bool $is_syncing = FALSE): void {
+  // Delete runtime configuration not managed by config/install.
+  $config = \Drupal::configFactory()->getEditable('metsis_lib.settings');
+  if (!$config->isNew()) {
+    $config->delete();
+    \Drupal::logger('metsis_lib')->notice(
+      'Deleted runtime config metsis_lib.settings on uninstall.'
+    );
+  }
+
+  // Flush all CACHE_PERMANENT entries from the dynamic landing pages cache bin
+  // that are set by DynamicLandingPagesController.
+  try {
+    \Drupal::service('cache_factory')->get('dynamic_landingpages')->deleteAll();
+    \Drupal::logger('metsis_lib')->notice(
+      'Flushed dynamic_landingpages cache bin on uninstall.'
+    );
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('metsis_lib')->warning(
+      'Could not flush dynamic_landingpages cache bin on uninstall: @msg',
+      ['@msg' => $e->getMessage()]
+    );
+  }
+}

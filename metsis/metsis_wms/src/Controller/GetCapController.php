@@ -36,8 +36,8 @@ class GetCapController extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) {
-    return new static(
+  public static function create(ContainerInterface $container): self {
+    return new self(
     $container->get('http_client')
     );
   }
@@ -71,7 +71,7 @@ class GetCapController extends ControllerBase {
       }
       catch (RequestException $e) {
         // Log the error.
-        $this->getLogger('metsis_wms:getCapDoc')->error(str($e));
+        $this->getLogger('metsis_wms:getCapDoc')->error($e->getMessage());
       }
       // Get the response.
       // $responseStatus = $request->getStatusCode();

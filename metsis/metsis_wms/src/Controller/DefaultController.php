@@ -40,8 +40,8 @@ class DefaultController extends ControllerBase {
    *
    * @return static
    */
-  public static function create(ContainerInterface $container) {
-    return new static(
+  public static function create(ContainerInterface $container): self {
+    return new self(
           $container->get('module_handler')
       );
   }

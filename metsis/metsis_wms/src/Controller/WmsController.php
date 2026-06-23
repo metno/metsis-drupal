@@ -18,8 +18,8 @@ class WmsController extends ControllerBase {
   /**
    * Get the wms map.
    */
-  public function getWmsMap(Request $reqeust) {
-    $query_from_request = $reqeust->query->all();
+  public function getWmsMap(Request $request) {
+    $query_from_request = $request->query->all();
     $query = UrlHelper::filterQueryParameters($query_from_request);
     // $referer = $request->headers->get('referer');
     /*
@@ -40,7 +40,7 @@ class WmsController extends ControllerBase {
     if (count($query) > 0) {
       $datasets = explode(",", $query['dataset']);
 
-      $webMapServers = $this->getWebMapServers($datasets);
+      $webMapServers = $this->getWebMapServers($request, $datasets);
       // dpm($webMapServers);
       $markup = $this->prepareWmsMarkup(
             $wms_lon,
@@ -147,7 +147,7 @@ class WmsController extends ControllerBase {
         }
       }
       else {
-        $this->messeger()->addError($this->t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
+        // $this->messeger()->addError($this->t("Selected datasets does not contain any WMS resource.<br> Visualization not possible"));
         return new RedirectResponse($referer);
       }
     }

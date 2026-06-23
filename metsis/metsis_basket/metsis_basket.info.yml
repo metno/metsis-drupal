@@ -1,16 +1,15 @@
 name: 'METSIS basket'
 description: 'Provides a user basket.'
 core_version_requirement: ^10 || ^11
-version: 2.0.1
+version: 2.0.2
 package: METSIS
-configure: metsis_basket.metsis_basket_admin_settings_form
 dependencies:
-  - metsis_lib
-  - metsis_dashboard_bokeh
-  - views
-  - views_bulk_operations
-  - metsis_basket
+  - metsis_lib:metsis_lib
+  - metsis_dashboard_bokeh:metsis_dashboard_bokeh
+  - views:views
+  - views_bulk_operations:views_bulk_operations
+  - metsis_basket:metsis_basket
   - user
-  - leaflet
-  - geofield
+  - leaflet:leaflet
+  - geofield:geofield
 type: module
