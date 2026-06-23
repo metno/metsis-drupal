@@ -10,7 +10,56 @@
  */
 function metsis_basket_install() {
   \Drupal::logger('METSIS')->notice("metsis_basket.install creating tables: metsis_basket, metsis_basket_revision");
+}
 
+/**
+ * Implements hook_uninstall().
+ *
+ * Removes all metsis_basket_item content entities and any runtime configuration
+ * that is not tracked under config/install (and therefore not auto-deleted by
+ * Drupal's uninstall process).
+ */
+function metsis_basket_uninstall(bool $is_syncing = FALSE): void {
+  // Delete all basket item content entities.  Skip during config-sync
+  // uninstalls because the module may be reinstalled and data should persist.
+  if (!$is_syncing) {
+    try {
+      $storage = \Drupal::entityTypeManager()->getStorage('metsis_basket_item');
+      $ids = $storage->getQuery()->accessCheck(FALSE)->execute();
+      if (!empty($ids)) {
+        $storage->delete($storage->loadMultiple($ids));
+        \Drupal::logger('metsis_basket')->notice(
+          'Deleted @count metsis_basket_item entities on uninstall.',
+          ['@count' => count($ids)]
+        );
+      }
+    }
+    catch (\Exception $e) {
+      \Drupal::logger('metsis_basket')->warning(
+        'Could not delete basket items on uninstall: @msg',
+        ['@msg' => $e->getMessage()]
+      );
+    }
+  }
+
+  // Delete runtime configuration written by MetsisBasketConfigurationForm.
+  // This config object (metsis_basket.configuration) has no config/install
+  // counterpart and is therefore not automatically removed by Drupal on
+  // module uninstall.
+  $config_factory = \Drupal::configFactory();
+  $runtime_configs = [
+    'metsis_basket.configuration',
+  ];
+  foreach ($runtime_configs as $config_name) {
+    $config = $config_factory->getEditable($config_name);
+    if (!$config->isNew()) {
+      $config->delete();
+      \Drupal::logger('metsis_basket')->notice(
+        'Deleted runtime config @name on uninstall.',
+        ['@name' => $config_name]
+      );
+    }
+  }
 }
 
 /*

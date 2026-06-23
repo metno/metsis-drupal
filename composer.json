@@ -7,30 +7,44 @@
         "sniff": "phpcs --colors -n --standard=Drupal,DrupalPractice --extensions=php,module,yml,inc,install metsis",
         "snifferfix": "phpcbf --colors -n --standard=Drupal --extensions=php,module,yml,inc,install metsis"
     },
-"require": {
-    "ext-dom": "*",
-    "ext-json": "*",
-    "ext-simplexml": "*",
-    "sweetrdf/easyrdf": "^1",
-    "drupal/search_api": "^1.39",
-    "drupal/search_api_solr": "^4.3",
-    "drupal/search_api_solr_nlp": "^1.1",
-    "drupal/facets": "^3.0",
-    "drupal/search_api_autocomplete": "^1.10",
-    "drupal/better_exposed_filters": "^7",
-    "drupal/redis": "^1",
-    "drupal/leaflet": "^10.4",
-    "drupal/views_ajax_history": "^1.8",
-    "drupal/views_filters_summary": "^3.2",
-    "drupal/tagify": "^1.2",
-    "drupal/field_group": "^4.1",
-    "drupal/token": "^1.17",
-    "drupal/token_views_filter": "^2.1"
-},
-"require-dev": {
-    "drush/drush": "^13",
-    "drupal/upgrade_status": "^4.3"
-},
+    "require": {
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-simplexml": "*",
+        "sweetrdf/easyrdf": "^1",
+        "drupal/search_api": "^1.39",
+        "drupal/search_api_solr": "^4.3",
+        "drupal/search_api_solr_nlp": "^1.1",
+        "drupal/facets": "^3.0",
+        "drupal/search_api_autocomplete": "^1.10",
+        "drupal/better_exposed_filters": "^7",
+        "drupal/redis": "^1",
+        "drupal/ctools": "^4",
+        "drupal/leaflet": "^10.4",
+        "drupal/views_ajax_history": "^1.8",
+        "drupal/views_filters_summary": "^3.2",
+        "drupal/tagify": "^2",
+        "drupal/field_group": "^4.1",
+        "drupal/token": "^1.17",
+        "drupal/token_views_filter": "^2.1",
+        "drupal/jquery_ui_draggable": "^2",
+        "drupal/jquery_ui": "^1.8",
+        "drupal/twig_tweak": "^3",
+        "drupal/twig_views": "^2",
+        "drupal/views_fieldsets": "^4",
+        "drupal/search_api_sorts": "^1.2",
+        "drupal/lazy": "^4.0",
+        "drupal/back_to_top": "^3.0",
+        "drupal/extlink": "^2.0",
+        "drupal/fontawesome": "^3.0",
+        "drupal/date_popup": "^2.0",
+        "drupal/views_autocomplete_filters": "^2.0",
+        "drupal/views_bulk_operations": "^4.4"
+    },
+    "require-dev": {
+        "drush/drush": "^13",
+        "drupal/upgrade_status": "^4.3"
+    },
     "config": {
         "allow-plugins": {
             "drupal/core-composer-scaffold": true

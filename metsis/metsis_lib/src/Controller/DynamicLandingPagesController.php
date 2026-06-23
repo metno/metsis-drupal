@@ -1370,7 +1370,7 @@ class DynamicLandingPagesController extends ControllerBase {
           '@type' => 'PropertyValue',
           'propertyID' => 'http://inspire.ec.europa.eu/glossary/SpatialReferenceSystem',
           'value' => 'http://www.opengis.net/def/crs/EPSG/0/'
-            . $fields['geographic_extent_rectangle_srsName'],
+          . $fields['geographic_extent_rectangle_srsName'],
         ],
       ];
     }

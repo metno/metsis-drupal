@@ -4,7 +4,7 @@ core_version_requirement: ^10 || ^11
 version: 2.0.2
 package: METSIS
 type: module
-configure: metsis_csv_bokeh.metsis_csv_bokeh_admin_settings_form
+configure: metsis_csv_bokeh.admin_settings_form
 dependencies:
   - metsis_lib
   - metsis_ts_bokeh

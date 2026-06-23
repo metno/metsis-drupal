@@ -192,14 +192,14 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Check this box to also search within children.'),
       '#description' =>
-        $this->t("Will return the parent of matching children when only returning level 1 datasets."),
+      $this->t("Will return the parent of matching children when only returning level 1 datasets."),
       '#default_value' => $config->get('search_match_children'),
     ];
     $form['remove_parent_zero_children'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Check this box to remove parent from search results if children subquery returns 0'),
       '#description' =>
-        $this->t("Will remove the parent from the search results, if the children subquery returns zero children."),
+      $this->t("Will remove the parent from the search results, if the children subquery returns zero children."),
       '#default_value' => $config->get('remove_parent_zero_children'),
     ];
 
@@ -207,7 +207,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Check this box to remove the search fulltext key if children subquery returns 0'),
       '#description' =>
-        $this->t("Will remove the searched fulltext keys from the child subquery so that the child button will show more than 0 results."),
+      $this->t("Will remove the searched fulltext keys from the child subquery so that the child button will show more than 0 results."),
       '#default_value' => $config->get('remove_keys_zero_children'),
     ];
 
@@ -317,7 +317,7 @@ class MetsisSearchConfigurationForm extends ConfigFormBase {
       '#title' => $this->t('Initial map location'),
     // '#description' => t("Select initial map location "),
       '#options' =>
-        array_combine(array_keys($config->get('map_locations')), array_keys($config->get('map_locations'))),
+      array_combine(array_keys($config->get('map_locations')), array_keys($config->get('map_locations'))),
 
       '#default_value' => 'longyearbyen',
     ];

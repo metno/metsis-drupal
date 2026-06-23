@@ -13,6 +13,87 @@ function metsis_search_install() {
 }
 
 /**
+ * Implements hook_uninstall().
+ *
+ * All configuration shipped in config/install and config/optional (Search API
+ * server, indexes, facets, views, blocks, date formats, sort fields, and the
+ * autocomplete config) is removed automatically by Drupal's uninstall process
+ * because the module owns those config objects.
+ *
+ * This hook invalidates cached render output so stale search result pages and
+ * blocks are not served after the module is removed.  Solr indexed documents
+ * are intentionally left intact.
+ */
+function metsis_search_uninstall(bool $is_syncing = FALSE): void {
+  // Explicitly delete only the configuration objects shipped by this module
+  // that match the requested config domains.
+  $module_path = \Drupal::service('extension.list.module')->getPath('metsis_search');
+  $config_dirs = [
+    $module_path . '/config/install',
+    $module_path . '/config/optional',
+  ];
+
+  // Deletion order matters: remove dependents before their dependencies.
+  $prefix_order = [
+    'views.view.',
+    'facets.facet.',
+    'facets.facet_source.',
+    'search_api.index.',
+    'search_api.server.',
+  ];
+
+  $config_to_delete = [];
+  foreach ($prefix_order as $prefix) {
+    $config_to_delete[$prefix] = [];
+  }
+
+  foreach ($config_dirs as $dir) {
+    if (!is_dir($dir)) {
+      continue;
+    }
+    $entries = scandir($dir);
+    if ($entries === FALSE) {
+      continue;
+    }
+    foreach ($entries as $entry) {
+      if (!str_ends_with($entry, '.yml')) {
+        continue;
+      }
+      $config_name = pathinfo($entry, PATHINFO_FILENAME);
+      foreach ($prefix_order as $prefix) {
+        if (str_starts_with($config_name, $prefix)) {
+          $config_to_delete[$prefix][$config_name] = $config_name;
+          break;
+        }
+      }
+    }
+  }
+
+  $config_factory = \Drupal::configFactory();
+  $deleted = 0;
+  foreach ($prefix_order as $prefix) {
+    foreach ($config_to_delete[$prefix] as $config_name) {
+      $config = $config_factory->getEditable($config_name);
+      if (!$config->isNew()) {
+        $config->delete();
+        $deleted++;
+      }
+    }
+  }
+
+  // Invalidate render cache entries so stale search blocks and result pages
+  // produced by this module are not served from cache.
+  \Drupal::cache('render')->invalidateAll();
+
+  \Drupal::logger('metsis_search')->notice(
+    'metsis_search uninstalled. Deleted @count module-owned facets, facet '
+    . 'sources, views, and Search API server/index configs. Solr index data '
+    . 'has been preserved (must be cleared manually if required).',
+    ['@count' => $deleted]
+  );
+}
+
+/**
  * Update function.
  */
 function metsis_search_update_9303() {

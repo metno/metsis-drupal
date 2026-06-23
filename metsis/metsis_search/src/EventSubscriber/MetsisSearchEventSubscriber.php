@@ -566,7 +566,7 @@ class MetsisSearchEventSubscriber implements EventSubscriberInterface {
         $solarium_query->addParam('bq',
         [
           'iParent' =>
-            '(isParent:true^4 OR isParent:false^2)',
+          '(isParent:true^4 OR isParent:false^2)',
           'isChild' => 'isChild:true^1',
         ]);
 
