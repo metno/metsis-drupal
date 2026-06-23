@@ -105,7 +105,7 @@ class MetsisWmsConfigurationForm extends ConfigFormBase {
       '#title' => $this->t('Initial map location'),
       '#description' => $this->t("Select initial map location"),
       '#options' =>
-      array_combine(array_keys($config->get('wms_locations')), array_keys($config->get('wms_locations'))),
+        array_combine(array_keys($config->get('wms_locations')), array_keys($config->get('wms_locations'))),
 
       '#default_value' => 'longyearbyen',
     ];
