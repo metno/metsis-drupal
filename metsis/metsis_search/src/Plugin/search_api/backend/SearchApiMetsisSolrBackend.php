@@ -85,6 +85,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     MessengerInterface $messenger,
     LockBackendInterface $lock,
     ModuleExtensionList $module_extension_list,
+    ContainerInterface $container,
     Config $metsis_search_settings,
     RequestStack $requestStack,
     MetsisSearchState $metsis_state,
@@ -108,7 +109,8 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     $state,
     $messenger,
     $lock,
-    $module_extension_list);
+    $module_extension_list,
+    $container);
   }
 
   /**
@@ -133,6 +135,7 @@ class SearchApiMetsisSolrBackend extends SearchApiSolrBackend implements Contain
     $container->get('messenger'),
     $container->get('lock'),
     $container->get('extension.list.module'),
+    $container,
     $container->get('config.factory')->get('metsis_search.settings'),
     $container->get('request_stack'),
     $container->get('metsis_search.state')
