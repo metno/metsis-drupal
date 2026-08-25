@@ -54,11 +54,11 @@ console.log("Start of wms map script:");
           Object.keys(wms_data[key]).forEach(key2 => {
             if (key2 === 'dar') {
               var wmsUrl = wms_data[key][key2];
-	      if (wmsUrl[0].includes('k8s.met.no')) {
-	        ups_north_proj = true;
-	      } else {
-		ups_north_proj = false;
-	      };
+              if (wmsUrl[0].includes('k8s.met.no')) {
+                ups_north_proj = true;
+              } else {
+                ups_north_proj = false;
+              };
             }
           });
         });
@@ -1158,6 +1158,28 @@ console.log("Start of wms map script:");
           return dateArray;
         }
 
+        // Capabilities nesting depth varies by server (ncWMS nests one level deeper than MapServer),
+        // so collect the renderable leaf layers in document order regardless of depth.
+        function flattenWmsLayers(node) {
+          var leaves = [];
+          if (node === undefined || node === null) {
+            return leaves;
+          }
+          if (Array.isArray(node)) {
+            for (var i = 0; i < node.length; i++) {
+              leaves = leaves.concat(flattenWmsLayers(node[i]));
+            }
+            return leaves;
+          }
+          if (node.Layer !== undefined) {
+            return leaves.concat(flattenWmsLayers(node.Layer));
+          }
+          if (node.Name !== undefined) {
+            leaves.push(node);
+          }
+          return leaves;
+        }
+
         //Function for retrieving wms capabilities
         function getWmsLayers2(wmsUrl, title, geom, wmsLayerMmd) {
           if (wmsUrl != null && wmsUrl != "") {
@@ -1235,286 +1257,207 @@ console.log("Start of wms map script:");
               //console.log(defaultProjection);
               //console.log(layers);
               console.log(bbox);
-              for (var idx = 0; idx < layers.length; idx++) {
-                var ls = layers[idx].Layer;
-                if (ls === undefined) {
-                  lst = layers[idx]
-                  if (lst !== undefined) {
-                    ls = [lst];
-                  }
+              var getTimeDimensions = function (leaf) {
+                var dimensions = leaf.Dimension;
+                if (dimensions) {
+                  for (var j = 0; j < dimensions.length; j++) {
+                    if ("time" === dimensions[j].name.toLowerCase()) {
+                      var times = dimensions[j].values.split(",");
+                      if (times.length == 1 && dimensions[j].values.indexOf('/')) {
+                        var startDate = dimensions[j].values.split("/")[0];
+                        var endDate = dimensions[j].values.split("/")[1];
+                        var duration = dimensions[j].values.split("/")[2];
 
-                }
-                if (ls !== undefined) {
-                  console.log("Got layer: " + ls.Name);
-                  for (let i = 0; i < ls.length; i++) {
-                    var getTimeDimensions = function () {
-                      var dimensions = ls[i].Dimension;
-                      if (ls[i].Dimension) {
-                        for (var j = 0; j < dimensions.length; j++) {
-                          if ("time" === dimensions[j].name.toLowerCase()) {
-                            var times = dimensions[j].values.split(",");
-                            if (times.length == 1 && dimensions[j].values.indexOf('/')) {
-                              var startDate = dimensions[j].values.split("/")[0];
-                              var endDate = dimensions[j].values.split("/")[1];
-                              var duration = dimensions[j].values.split("/")[2];
+                        var _defaultTimeDim = dimensions[j].default;
 
-
-                              _defaultTimeDim = dimensions[j].default;
-
-                              //console.log("wms2: got timerange. default: " + _defaultTimeDim);
-                              //console.log("start: " + startDate);
-                              //console.log("end: " + endDate);
-                              //console.log("duration: " + duration);
-
-
-                              if (_defaultTimeDim !== undefined) {
-                                defaultTimeDim = _defaultTimeDim;
-                                console.log("timedim default: " + defaultTimeDim);
-                              }
-                              if (startDate === endDate) {
-                                times = [startDate];
-                              }
-                              else if (endDate === undefined && duration === undefined) {
-                                times = [startDate];
-                              }
-                              else {
-                                times = getTimesArray(startDate, endDate, duration);
-                              }
-                              //console.log("New Times array:: " + times);
-
-                            }
-                            return times;
-                          }
+                        if (_defaultTimeDim !== undefined) {
+                          defaultTimeDim = _defaultTimeDim;
+                          console.log("timedim default: " + defaultTimeDim);
+                        }
+                        if (startDate === endDate) {
+                          times = [startDate];
+                        }
+                        else if (endDate === undefined && duration === undefined) {
+                          times = [startDate];
+                        }
+                        else {
+                          times = getTimesArray(startDate, endDate, duration);
                         }
                       }
-                      return [];
-                    };
-                    var getElevationDimensions = function () {
-                      var dimensions = ls[i].Dimension;
-                      if (ls[i].Dimension) {
-                        for (var j = 0; j < dimensions.length; j++) {
-                          if ("elevation" === dimensions[j].name.toLowerCase() || "depth" === dimensions[j].name.toLowerCase()) {
-                            elevationUnits = dimensions[j].units;
-                            var elevations = dimensions[j].values.split(",");
-                            return elevations;
-                          }
-                        }
-                      }
-                      return [];
-                    };
-                    var getWmsStyles = function () {
-                      var styles = ls[i].Style;
-                      let styleList = [];
-                      if (styles !== undefined) {
-                        for (const val of styles) {
-                          styleList.push(val.Name);
-
-                        }
-                      }
-                      console.log(styleList);
-                      return styleList
-                    }
-                    var makeAxisAwareExtent = function () {
-                      var bboxs = ls[i].BoundingBox;
-                      if (bboxs) {
-                        for (var k = 0; k < bboxs.length; k++) {
-                          if (result.version === '1.3.0' && bboxs[k].crs === 'EPSG:4326') {
-                            //switch minx with min y and max x with maxy
-                            var axisAwareExtent = [];
-                            axisAwareExtent[0] = bboxs[k].extent[1];
-                            axisAwareExtent[1] = bboxs[k].extent[0];
-                            axisAwareExtent[2] = bboxs[k].extent[3];
-                            axisAwareExtent[3] = bboxs[k].extent[2];
-                            return axisAwareExtent;
-                          }
-                        }
-                      }
-                      return bboxs[0].extent;
-                    };
-                    let timedim = getTimeDimensions()
-                    if (timedim.length > 0) {
-                      //console.log(timedim);
-                      hasTimeDimension = true;
-                    }
-                    let elevatedim = getElevationDimensions()
-                    if (elevatedim.length > 0) {
-                      //console.log(timedim);
-                      hasElevationDimension = true;
-                    }
-                    let wmsLayerStyles = getWmsStyles()
-                    if (wmsLayerStyles.length > 0) {
-                      wmsStyles = wmsLayerStyles
-                    }
-                    var layerProjections = ls[i].CRS;
-                    console.log(layerProjections);
-                    var visible = false;
-                    //var extent = ol.proj.transformExtent(makeAxisAwareExtent(), 'EPSG:4326', selected_proj);
-                    //var extent = ol.proj.transformExtent(geom.getExtent(), 'EPSG:4326', selected_proj);
-
-                    var title = ls[i].Title;
-                    var layerName = ls[i].Name;
-                    console.log('title: ' + title + " name: " + layerName)
-                    if (layerName === 'lon' || layerName === 'lat') {
-                      visible = false;
-                    }
-                    if (layerName === wmsLayerMmd || title === wmsLayerMmd) {
-                      visible = true;
-                      styleValues = getWmsStyles();
-                      styleValuesUniq = styleValues.reduce(function (prev, cur) {
-                        return (prev.indexOf(cur) < 0) ? prev.concat([cur]) : prev;
-                      }, []);
-                      console.log(styleValuesUniq);
-                      let wmsSelect = document.getElementById('wms-styles-select');
-
-                      for (const val of styleValuesUniq) {
-                        var option = document.createElement("option");
-                        option.value = val;
-                        option.text = val;
-                        if ($('#wms-styles-select option[value="' + option.value + '"]').length === 0) {
-                          $('#wms-styles-select').append('<option value="' + option.value + '">' + option.text + '</option>');
-                        }
-                        //wmsSelect.appendChild(option);
-                      }
-
-                    }
-                    else {
-                      if (i === 0) {
-                        visible = true;
-                        styleValues = getWmsStyles();
-                        let styleValuesUniq = styleValues.reduce(function (prev, cur) {
-                          return (prev.indexOf(cur) < 0) ? prev.concat([cur]) : prev;
-                        }, []);
-                        console.log(styleValuesUniq);
-                        let wmsSelect = document.getElementById('wms-styles-select');
-                        for (const val of styleValuesUniq) {
-                          var option = document.createElement("option");
-                          option.value = val;
-                          option.text = val;
-                          if ($('#wms-styles-select option[value="' + option.value + '"]').length === 0) {
-                            $('#wms-styles-select').append('<option value="' + option.value + '">' + option.text + '</option>');
-                          }
-                          //wmsSelect.appendChild(option);
-                        }
-                      }
-                      else visible = false;
-                    }
-                    if (hasTimeDimension) {
-                      let newTimeDim = getTimeDimensions();
-                      if (newTimeDim.length > timeDimensions.length) {
-                        timeDimensions = newTimeDim;
-                      }
-                    }
-                    if (hasElevationDimension) {
-                      let newElevationDim = getElevationDimensions();
-                      if (newElevationDim.length > elevationDimensions.length) {
-                        elevationDimensions = newElevationDim;
-                      }
-                    }
-                    visible = (i === 0) ? true : false;
-                    console.log("i=" + idx + " layer_name: " + ls[i].Name);
-                    if (wmsLayerMmd.length > 0) {
-                      console.log("Got wms layers from MMD. Loading only those provided");
-                      if (($.inArray(ls[i].Name, wms_layers_skip) === -1) &&
-                        (($.inArray(ls[i].Name, wmsLayerMmd) !== -1) ||
-                          ($.inArray(ls[i].Title, wmsLayerMmd) !== -1))) // ||
-                      //(($.inArray(ls[i].Title, wmsLayerMmd) === -1) ||
-                      // ($.inArray(ls[i].Title, wmsLayerMmd) === -1)))
-                      {
-                        //visible = (idx === 0) ? true : false;
-			 if (wmsUrl.includes('?')) {
-        			// Remove everything starting from the '?' character
-        			wmsUrl = wmsUrl.split('?')[0];
-    			}
-			console.log("Adding layer: " + ls[i].Name + " with url: " + wmsUrl);
-
-                        wmsGroup.getLayers().insertAt(i,
-                          new ol.layer.Tile({
-                            title: title,
-                            visible: false,
-                            //extent: extent,
-
-                            //keepVisible: false,
-                            //preload: 5,
-                            //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
-                            dimensions: getTimeDimensions(),
-                            styles: ls[i].Style,
-                            source: new ol.source.TileWMS(({
-                              url: wmsUrl,
-                              reprojectionErrorThreshold: 0.1,
-                              //projection: selected_proj,
-                              hidpi: hidpi,
-                              serverType: server_type,
-                              params: {
-                                'TILED': true,
-                                'LAYERS': ls[i].Name,
-                                'VERSION': result.version,
-                                'FORMAT': 'image/png',
-                                'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
-                                'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
-                                'TRANSPARENT': true,
-                              },
-                              crossOrigin: 'anonymous',
-
-                            })),
-                          }));
-                        console.log("Added layer: " + title + " visible: " + visible);
-                        console.log("hidpi: " + hidpi + " serverType: " + server_type);
-                      }
-                    }
-                    else {
-                      console.log("No given mmd layers. Loading all");
-                      if ($.inArray(ls[i].Name, wms_layers_skip) === -1) {
-			if (wmsUrl.includes('?')) {
-                                // Remove everything starting from the '?' character
-                                wmsUrl = wmsUrl.split('?')[0];
-                        }
-
-			console.log("Adding layer: " + ls[i].Name + " with url: " + wmsUrl);
-                        wmsGroup.getLayers().insertAt(i,
-                          new ol.layer.Tile({
-                            title: title,
-                            visible: false,
-                            //extent: extent,
-
-                            //keepVisible: false,
-                            //preload: 5,
-                            //projections: ol.control.Projection.CommonProjections(outerThis.projections, (layerProjections) ? layerProjections : wmsProjs),
-                            dimensions: getTimeDimensions(),
-                            styles: ls[i].Style,
-                            source: new ol.source.TileWMS(({
-                              url: wmsUrl,
-                              reprojectionErrorThreshold: 0.1,
-                              hidpi: hidpi,
-                              serverType: server_type,
-                              //projection: selected_proj,
-                              params: {
-                                'TILED': true,
-                                'LAYERS': ls[i].Name,
-                                'VERSION': result.version,
-                                'FORMAT': 'image/png',
-                                'STYLES': (typeof ls[i].Style !== "undefined") ? ls[i].Style[0].Name : '',
-                                'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
-                                'TRANSPARENT': true,
-                              },
-                              crossOrigin: 'anonymous',
-
-                            })),
-                          }));
-                        console.log("Added layer: " + title + " visible: " + visible);
-                        console.log("hidpi: " + hidpi + " serverType: " + server_type);
-                      }
+                      return times;
                     }
                   }
+                }
+                return [];
+              };
+              var getElevationDimensions = function (leaf) {
+                var dimensions = leaf.Dimension;
+                if (dimensions) {
+                  for (var j = 0; j < dimensions.length; j++) {
+                    if ("elevation" === dimensions[j].name.toLowerCase() || "depth" === dimensions[j].name.toLowerCase()) {
+                      elevationUnits = dimensions[j].units;
+                      var elevations = dimensions[j].values.split(",");
+                      return elevations;
+                    }
+                  }
+                }
+                return [];
+              };
+              var getWmsStyles = function (leaf) {
+                var styles = leaf.Style;
+                let styleList = [];
+                if (styles !== undefined) {
+                  for (const val of styles) {
+                    styleList.push(val.Name);
+                  }
+                }
+                return styleList;
+              };
+              var uniqueStyles = function (styleList) {
+                return styleList.reduce(function (prev, cur) {
+                  return (prev.indexOf(cur) < 0) ? prev.concat([cur]) : prev;
+                }, []);
+              };
 
-                  //Update timedimension variables for animation
-                  //hasTimeDimension = false;
+              var leafLayers = flattenWmsLayers(result.Capability.Layer);
+              console.log("Found " + leafLayers.length + " leaf layers in capabilities");
 
+              // Built in capabilities document order, together with the parsed leaf they came from.
+              var builtLayers = [];
+              var builtLeaves = [];
+              var styleNamesByLayer = new Map();
+
+              for (let i = 0; i < leafLayers.length; i++) {
+                var leaf = leafLayers[i];
+                var layerName = leaf.Name;
+                var layerTitle = leaf.Title;
+                console.log("i=" + i + " title: " + layerTitle + " name: " + layerName);
+
+                let timedim = getTimeDimensions(leaf);
+                if (timedim.length > 0) {
+                  hasTimeDimension = true;
+                }
+                let elevatedim = getElevationDimensions(leaf);
+                if (elevatedim.length > 0) {
+                  hasElevationDimension = true;
+                }
+                let wmsLayerStyles = getWmsStyles(leaf);
+                if (wmsLayerStyles.length > 0) {
+                  wmsStyles = wmsLayerStyles;
+                }
+                if (timedim.length > timeDimensions.length) {
+                  timeDimensions = timedim;
+                }
+                if (elevatedim.length > elevationDimensions.length) {
+                  elevationDimensions = elevatedim;
                 }
 
+                if ($.inArray(layerName, wms_layers_skip) !== -1) {
+                  console.log("Skipping layer: " + layerName);
+                  continue;
+                }
+                if (wmsLayerMmd.length > 0 &&
+                  $.inArray(layerName, wmsLayerMmd) === -1 &&
+                  $.inArray(layerTitle, wmsLayerMmd) === -1) {
+                  console.log("Layer not listed in MMD, skipping: " + layerName);
+                  continue;
+                }
+
+                if (wmsUrl.includes('?')) {
+                  // Remove everything starting from the '?' character
+                  wmsUrl = wmsUrl.split('?')[0];
+                }
+                console.log("Adding layer: " + layerName + " with url: " + wmsUrl);
+                var tileLayer = new ol.layer.Tile({
+                  title: layerTitle,
+                  visible: false,
+                  dimensions: timedim,
+                  styles: leaf.Style,
+                  source: new ol.source.TileWMS(({
+                    url: wmsUrl,
+                    reprojectionErrorThreshold: 0.1,
+                    hidpi: hidpi,
+                    serverType: server_type,
+                    params: {
+                      'TILED': true,
+                      'LAYERS': layerName,
+                      'VERSION': result.version,
+                      'FORMAT': 'image/png',
+                      'STYLES': (typeof leaf.Style !== "undefined") ? leaf.Style[0].Name : '',
+                      'TIME': (hasTimeDimension && timeDimensions != null) ? timeDimensions[0] : '',
+                      'TRANSPARENT': true,
+                    },
+                    crossOrigin: 'anonymous',
+
+                  })),
+                });
+                styleNamesByLayer.set(tileLayer, uniqueStyles(wmsLayerStyles));
+                builtLayers.push(tileLayer);
+                builtLeaves.push(leaf);
+                console.log("hidpi: " + hidpi + " serverType: " + server_type);
               }
-              //})
-              wmsGroup.getLayers().item(0).setVisible(true);
-              wmsGroup.getLayers().getArray().reverse();
+
+              // The layer switcher lists the topmost layer first, so add in reverse document order.
+              for (let i = builtLayers.length - 1; i >= 0; i--) {
+                wmsGroup.getLayers().push(builtLayers[i]);
+              }
+
+              var stylesForLayer = function (layer) {
+                return styleNamesByLayer.get(layer) || [];
+              };
+              var updateLegend = function (layer, styleName) {
+                try {
+                  var params = {
+                    'LAYER': layer.getSource().getParams().LAYERS,
+                    'PALETTE': (styleName && styleName.includes('boxfill/')) ? styleName.split('boxfill/').pop() : 'default',
+                  };
+                  if (styleName) {
+                    params.STYLE = styleName;
+                  }
+                  var legendUrl = layer.getSource().getLegendUrl(map.getView().getResolution(), params);
+                  console.log("Legend url: " + legendUrl);
+                  document.getElementById('map-wms-legend').src = legendUrl;
+                }
+                catch (e) {
+                  console.log("No legendUrl info for layer: " + e);
+                }
+              };
+              // Styles are per layer, so the dropdown and legend follow whichever layer is visible.
+              var syncStyleSelect = function (layer) {
+                var names = stylesForLayer(layer);
+                var current = layer.getSource().getParams().STYLES;
+                var selected = (names.indexOf(current) !== -1) ? current : names[0];
+                console.log("Syncing style select for " + layer.getSource().getParams().LAYERS + ": " + names);
+                $('#wms-styles-select').empty();
+                for (const val of names) {
+                  $('#wms-styles-select').append('<option value="' + val + '">' + val + '</option>');
+                }
+                if (selected !== undefined) {
+                  $('#wms-styles-select').val(selected);
+                  layer.getSource().updateParams({ 'STYLES': selected });
+                }
+                updateLegend(layer, selected);
+              };
+
+              builtLayers.forEach(function (layer) {
+                layer.on('change:visible', function () {
+                  if (layer.getVisible()) {
+                    syncStyleSelect(layer);
+                  }
+                });
+              });
+
+              var defaultIdx = builtLeaves.findIndex(function (leaf) {
+                return leaf.Name !== 'lon' && leaf.Name !== 'lat';
+              });
+              if (defaultIdx < 0) {
+                defaultIdx = 0;
+              }
+              var defaultLayer = builtLayers[defaultIdx];
+              if (defaultLayer !== undefined) {
+                defaultLayer.setVisible(true);
+                console.log("Default visible layer: " + defaultLayer.getSource().getParams().LAYERS);
+              }
 
               wmsLayerGroup.getLayers().push(wmsGroup);
               //wmsLayerGroup.set('title', productTitle, false);
@@ -1526,36 +1469,13 @@ console.log("Start of wms map script:");
                 //wmsLayerGroup.setOpacity(ui.value / 100);
                 console.log("Selected style: " + event.target.value);
                 const selected_style = event.target.value;
-                //console.log("currentTime: " +timeDimensions[ui.value])
                 wmsGroup.getLayers().forEach(function (element, index, array) {
-                  //console.log(element);
-                  element.getSource().updateParams({
-                    'STYLES': selected_style
-                  });
-                  if (element.getVisible() == true) {
-                    var res = map.getView().getResolution();
-                    console.log(element.getSource().getParams().LAYERS);
-                    console.log(element.getVisible());
-		            if (selected_style.includes('boxfill/')) {
-		              const palette = selected_style.split('boxfill/').pop();
-                      var params = {
-                        'LAYER': element.getSource().getParams().LAYERS,
-                        'STYLE': selected_style,
-                        'PALETTE': palette
-                      };
-		            } else {
-                      var params = {
-                        'LAYER': element.getSource().getParams().LAYERS,
-                        'STYLE': selected_style,
-                        'PALETTE': 'default'
-                      };
-		            }
-                    console.log("legend params: " + params);
-                    var legendUrl = element.getSource().getLegendUrl(res, params);
-                    console.log("Legend url: " + legendUrl);
-                    //$('#bottomMapPanel').append('<img id="map-bottom-wms-legend" />');
-                    var img = document.getElementById('map-wms-legend');
-                    img.src = legendUrl;
+                  // Only the visible layer that actually offers this style may use it.
+                  if (element.getVisible() && stylesForLayer(element).indexOf(selected_style) !== -1) {
+                    element.getSource().updateParams({
+                      'STYLES': selected_style
+                    });
+                    updateLegend(element, selected_style);
                   }
                 });
               });
@@ -1605,19 +1525,6 @@ console.log("Start of wms map script:");
 
                 });
                 $('#time').text(timeDimensions[0]);
-                //var legendUrl = wmsLayerGroup.getLayers().item(0).getSource().getLegendUrl(undefined);
-                try {
-                  var res = map.getView().getResolution();
-                  var params = {
-                    'STYLE': getWmsStyles()[0],
-                  };
-                  var legendUrl = wmsGroup.getLayers().item(0).getSource().getLegendUrl(res, params);
-                  var img = document.getElementById('map-wms-legend');
-                  img.src = legendUrl;
-                }
-                catch {
-                  console.log("No legendUrl info for layer");
-                }
                 //$('#bottomMapPanel').show();
                 map.updateSize();
               }
