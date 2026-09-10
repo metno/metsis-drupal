@@ -1207,19 +1207,27 @@ class DynamicLandingPagesController extends ControllerBase {
     };
     // Set the custom entity loader for libxml.
     libxml_set_external_entity_loader($entityLoader);
+    libxml_clear_errors();
+    libxml_use_internal_errors(TRUE);
 
     // Load the XSLT stylesheet.
     $xslDoc = new \DOMDocument();
     $xslDoc->loadXML($style);
 
+    libxml_clear_errors();
+    libxml_use_internal_errors(TRUE);
     // Initialize the XSLTProcessor.
     $xslt = new \XSLTProcessor();
     $xslt->importStylesheet($xslDoc);
 
+    libxml_clear_errors();
+    libxml_use_internal_errors(TRUE);
     // Load the XML document.
     $xmlDoc = new \DOMDocument();
     $xmlDoc->loadXML($xml);
 
+    libxml_clear_errors();
+    libxml_use_internal_errors(TRUE);
     // Return the transformed XML.
     return $xslt->transformToXml($xmlDoc);
   }
